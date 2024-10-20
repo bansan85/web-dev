@@ -1,0 +1,53 @@
+name: Node.js CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [22.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: 'true'
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: angular/package-lock.json
+    - name: Install dependencies
+      run: sudo apt-get install -y ninja-build
+    - name: Emscripten
+      run: |
+        cd emsdk
+        ./emsdk install latest
+        ./emsdk activate latest
+        source ./emsdk_env.sh
+        cd ..
+        emcmake cmake -S . -B build -G "Ninja Multi-Config"
+        cmake --build build --config Release --parallel 8
+        mkdir angular/src/assets
+        cp build/Release/web_demangler.* angular/src/assets/
+    - name: Angular
+      run: |
+        cd angular
+        npm install -g @angular/cli
+        npm install
+        ng build
+    - name: Upload to website
+      run: |
+        mkdir /home/runner/.ssh
+        chmod 700 /home/runner/.ssh
+        echo "${{ secrets.UPLOAD_KNOW_HOST }}" >> /home/runner/.ssh/known_hosts
+        sshpass -p ${{ secrets.UPLOAD_PASSWORD }} sftp -P ${{ secrets.UPLOAD_PORT }} ${{ secrets.UPLOAD_USERNAME }}@${{ secrets.UPLOAD_HOST }}:${{ secrets.UPLOAD_PATH }} <<EOF
+          rm *
+          mput angular/dist/web-demangler/browser/*
+        bye
+        EOF
