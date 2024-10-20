@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import web_demangler from '../assets/web-demangler.js';
+import web_demangler from '../assets/web_demangler.js';
 
 @Injectable({
   providedIn: 'root'

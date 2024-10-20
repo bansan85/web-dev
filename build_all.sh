@@ -4,7 +4,13 @@ git pull
 ./emsdk activate latest
 source ./emsdk_env.sh
 cd ..
-emcmake cmake -S llvm/llvm -B llvm-build -G "Ninja Multi-Config" -DLLVM_TARGETS_TO_BUILD=
-cmake --build llvm-build --target LLVMDemangle --config Release --parallel 8
-emcc src/web-demangler.cpp -o web-demangler.js -s MODULARIZE -s 'EXPORT_ES6=1' -s EXPORT_NAME=web_demangler -Illvm/llvm/include llvm-build/Release/lib/libLLVMDemangle.a -Oz --no-entry -lembind
+emcmake cmake -S . -B build -G "Ninja Multi-Config"
+cmake --build build --config Release --parallel 8
+mkdir angular/src/assets
+cp build/Release/web_demangler.* angular/src/assets/
+cd angular
+npm install -g npm@latest
+npm install -g @angular/cli
+npm install
+ng build
 
