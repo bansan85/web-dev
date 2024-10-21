@@ -1,8 +1,11 @@
-<div>
-  <h1>Demangle C++ Names</h1>
-  <textarea #mangledInput rows="6" cols="60" placeholder="Enter mangled names (one per line)" (input)="onDemangle(mangledInput.value)"></textarea>
-  <div *ngIf="demangledName.length > 0">
-    <h3>Demangled Names:</h3>
-    <textarea rows="6" cols="60" [value]="demangledName.join('\n')" readonly></textarea>
+<div class="textareas">
+  <div class="textarea">
+    <h2>Mangled symbol (C++, D, Rust, MSVC, Itanium)</h2>
+    <textarea #mangledInput wrap="off" placeholder="Enter mangled names (one per line)"
+      (input)="onDemangle(mangledInput.value)"></textarea>
+  </div>
+  <div class="textarea">
+    <h2>Demangled symbol</h2>
+    <textarea wrap="off" [value]="demangledName.join('\n')" readonly></textarea>
   </div>
 </div>
