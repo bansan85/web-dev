@@ -30,7 +30,7 @@ export class AppComponent implements OnInit {
     const wasmInstance = this.wasmLoader.wasm();
     if (wasmInstance && mangledName) {
       const lines = mangledName.split('\n');
-      this.demangledName = lines.map(line => wasmInstance.demangle(line.trim()));
+      this.demangledName = lines.map(line => wasmInstance.web_demangle(line.trim()));
     }
   }
 }

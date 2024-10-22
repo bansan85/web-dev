@@ -8,6 +8,6 @@ std::string demangle(const std::string& mangledName) {
 }
 
 EMSCRIPTEN_BINDINGS(web_demangler) {
-    emscripten::function("demangle", &demangle);
+    emscripten::function("web_demangle", &demangle);
 }
 
