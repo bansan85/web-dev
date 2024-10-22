@@ -32,21 +32,41 @@ jobs:
         source ./emsdk_env.sh
         cd ..
         emcmake cmake -S . -B build -G "Ninja Multi-Config"
+        cmake --build build --config Debug --parallel 8
         cmake --build build --config Release --parallel 8
-        mkdir angular/src/assets
-        cp build/Release/web_demangler.* angular/src/assets/
-    - name: Angular
+    - name: Angular Debug
       run: |
+        mkdir angular/src/assets
+        cp build/Debug/web_demangler.* angular/src/assets/
         cd angular
         npm install -g @angular/cli
         npm install
-        ng build
-    - name: Upload to website
+        ng build --configuration development
+        cd ..
+    - name: Register Debug website in known_hosts
       run: |
         mkdir /home/runner/.ssh
         chmod 700 /home/runner/.ssh
         echo "${{ secrets.UPLOAD_KNOW_HOST }}" >> /home/runner/.ssh/known_hosts
-        sshpass -p ${{ secrets.UPLOAD_PASSWORD }} sftp -P ${{ secrets.UPLOAD_PORT }} ${{ secrets.UPLOAD_USERNAME }}@${{ secrets.UPLOAD_HOST }}:${{ secrets.UPLOAD_PATH }} <<EOF
+    - name: Upload to Debug website
+      run: |
+        sshpass -p ${{ secrets.UPLOAD_PASSWORD }} sftp -P ${{ secrets.UPLOAD_PORT }} ${{ secrets.UPLOAD_USERNAME }}@${{ secrets.UPLOAD_HOST }}:${{ secrets.UPLOAD_PATH_DEBUG }} <<EOF
+          rm *
+          mput angular/dist/web-demangler/browser/*
+        bye
+        EOF
+    - name: Angular Release
+      run: |
+        rm angular/src/assets/*
+        rm -Rf angular/build
+        cp build/Release/web_demangler.* angular/src/assets/
+        cd angular
+        npm install -g @angular/cli
+        npm install
+        ng build --configuration production
+    - name: Upload to Release website
+      run: |
+        sshpass -p ${{ secrets.UPLOAD_PASSWORD }} sftp -P ${{ secrets.UPLOAD_PORT }} ${{ secrets.UPLOAD_USERNAME }}@${{ secrets.UPLOAD_HOST }}:${{ secrets.UPLOAD_PATH_RELEASE }} <<EOF
           rm *
           mput angular/dist/web-demangler/browser/*
         bye
