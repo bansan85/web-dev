@@ -16,6 +16,9 @@ set(LLVM_BUILD_UTILS OFF)
 set(LLVM_ENABLE_THREADS OFF)
 set(LLVM_INDIVIDUAL_TEST_COVERAGE OFF)
 
+include(CheckIPOSupported)
+check_ipo_supported(RESULT supported OUTPUT error)
+
 add_subdirectory(llvm/llvm EXCLUDE_FROM_ALL)
 
 add_executable(${PROJECT_NAME})
@@ -25,4 +28,21 @@ target_sources(
                           "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt")
 target_link_libraries(${PROJECT_NAME} PRIVATE embind LLVMDemangle)
 target_include_directories(${PROJECT_NAME} PRIVATE ${LLVM_SOURCE_DIR}/include)
-target_link_options( ${PROJECT_NAME} PRIVATE "SHELL:-s MODULARIZE" "SHELL:-s EXPORT_ES6=1" "SHELL:-s EXPORT_NAME=web_demangler" "SHELL:-s ENVIRONMENT=web,worker" --no-entry)
+target_link_options(
+  ${PROJECT_NAME}
+  PRIVATE
+  "SHELL:-s MODULARIZE=1"
+  "SHELL:-s EXPORT_ES6=1"
+  "SHELL:-s EXPORT_NAME=web_demangler"
+  "SHELL:-s ENVIRONMENT=web"
+  "SHELL:-s INVOKE_RUN=0"
+  "SHELL:-s MALLOC='emmalloc'"
+  "$<IF:$<CONFIG:Debug>,--closure 0,--closure 1>"
+  "$<IF:$<CONFIG:Debug>,-s ASSERTIONS=1,-s ASSERTIONS=0>"
+  "$<$<CONFIG:Debug>:-s SAFE_HEAP=1>"
+  "$<$<CONFIG:Debug>:-s STACK_OVERFLOW_CHECK=2>"
+  "$<$<CONFIG:Debug>:--emit-symbol-map>"
+  "$<$<CONFIG:Debug>:-gsource-map>"
+  "$<$<CONFIG:Debug>:-gseparate-dwarf>"
+  --no-entry)
+set_property(TARGET ${PROJECT_NAME} PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
