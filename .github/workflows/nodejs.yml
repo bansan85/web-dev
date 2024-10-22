@@ -31,13 +31,14 @@ jobs:
         ./emsdk activate latest
         source ./emsdk_env.sh
         cd ..
-        emcmake cmake -S . -B build -G "Ninja Multi-Config"
-        cmake --build build --config Debug --parallel 8
-        cmake --build build --config Release --parallel 8
+        emcmake cmake -S . -B build_debug -G "Ninja" -DLLVM_ENABLE_PROJECTS="clang" -DLLVM_TARGETS_TO_BUILD="" -DCMAKE_BUILD_TYPE="Debug"
+        emcmake cmake -S . -B build_release -G "Ninja" -DLLVM_ENABLE_PROJECTS="clang" -DLLVM_TARGETS_TO_BUILD="" -DCMAKE_BUILD_TYPE="Release"
+        cmake --build build_debug --parallel 4
+        cmake --build build_release --parallel 4
     - name: Angular Debug
       run: |
         mkdir angular/src/assets
-        cp build/Debug/web_demangler.* angular/src/assets/
+        cp build_debug/web_* angular/src/assets/
         cd angular
         npm install -g @angular/cli
         npm install
@@ -59,7 +60,7 @@ jobs:
       run: |
         rm angular/src/assets/*
         rm -Rf angular/build
-        cp build/Release/web_demangler.* angular/src/assets/
+        cp build_release/web_* angular/src/assets/
         cd angular
         npm install -g @angular/cli
         npm install
