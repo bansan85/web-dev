@@ -1,6 +1,6 @@
 name: Node.js Debug
 
-on: [workflow_dispatch]
+on: [push, pull_request]
 
 jobs:
   debug:
