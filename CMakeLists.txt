@@ -2,17 +2,26 @@ cmake_minimum_required(VERSION 3.20)
 
 project(web_demangler LANGUAGES CXX)
 
-set(LLVM_TARGETS_TO_BUILD "X86")
-set(LLVM_INCLUDE_TESTS OFF)
-set(LLVM_BUILD_TESTS OFF)
-set(LLVM_INCLUDE_EXAMPLES OFF)
-set(LLVM_BUILD_EXAMPLES OFF)
-set(LLVM_INCLUDE_BENCHMARKS OFF)
-set(LLVM_BUILD_BENCHMARKS OFF)
-set(LLVM_ENABLE_THREADS OFF)
-set(LLVM_INDIVIDUAL_TEST_COVERAGE OFF)
+set(LLVM_TARGETS_TO_BUILD
+    ""
+    CACHE STRING "Semicolon-separated list of targets to build, or \"all\".")
+option(LLVM_INCLUDE_TESTS "Generate build targets for the LLVM unit tests." OFF)
+option(LLVM_INCLUDE_EXAMPLES "Generate build targets for the LLVM examples" OFF)
+option(LLVM_INCLUDE_BENCHMARKS
+       "Generate benchmark targets. If OFF, benchmarks can't be built." OFF)
+option(LLVM_INCLUDE_UTILS "Generate build targets for the LLVM utils." OFF)
+option(LLVM_BUILD_UTILS
+       "Build LLVM utility binaries. If OFF, just generate build targets." OFF)
+option(LLVM_INCLUDE_UTILS "Generate build targets for the LLVM utils." OFF)
+option(LLVM_BUILD_UTILS
+       "Build LLVM utility binaries. If OFF, just generate build targets." OFF)
 # For clang::format
-set(LLVM_ENABLE_PROJECTS "clang")
+set(LLVM_ENABLE_PROJECTS
+    "clang"
+    CACHE
+      STRING
+      "Semicolon-separated list of projects to build (${LLVM_KNOWN_PROJECTS}), or \"all\"."
+)
 
 include(CheckIPOSupported)
 check_ipo_supported(RESULT supported OUTPUT error)
