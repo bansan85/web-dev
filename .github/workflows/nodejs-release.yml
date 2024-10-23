@@ -1,17 +1,13 @@
-name: Node.js CI
+name: Node.js Release
 
 on: [push, pull_request]
 
 jobs:
-  build:
-
+  release:
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         node-version: [22.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
     steps:
     - uses: actions/checkout@v4
       with:
@@ -31,36 +27,17 @@ jobs:
         ./emsdk activate latest
         source ./emsdk_env.sh
         cd ..
-        emcmake cmake -S . -B build_debug -G "Ninja" -DLLVM_ENABLE_PROJECTS="clang" -DLLVM_TARGETS_TO_BUILD="" -DCMAKE_BUILD_TYPE="Debug"
-        emcmake cmake -S . -B build_release -G "Ninja" -DLLVM_ENABLE_PROJECTS="clang" -DLLVM_TARGETS_TO_BUILD="" -DCMAKE_BUILD_TYPE="Release"
-        cmake --build build_debug --parallel 4
-        cmake --build build_release --parallel 4
-    - name: Angular Debug
-      run: |
-        mkdir angular/src/assets
-        cp build_debug/web_* angular/src/assets/
-        cd angular
-        npm install -g @angular/cli
-        npm install
-        ng build --configuration development
-        cd ..
-    - name: Register Debug website in known_hosts
+        emcmake cmake -S . -B build -G "Ninja" -DLLVM_ENABLE_PROJECTS="clang" -DLLVM_TARGETS_TO_BUILD="" -DCMAKE_BUILD_TYPE="Release"
+        cmake --build build --parallel 4
+    - name: Register website in known_hosts
       run: |
         mkdir /home/runner/.ssh
         chmod 700 /home/runner/.ssh
         echo "${{ secrets.UPLOAD_KNOW_HOST }}" >> /home/runner/.ssh/known_hosts
-    - name: Upload to Debug website
+    - name: Angular
       run: |
-        sshpass -p ${{ secrets.UPLOAD_PASSWORD }} sftp -P ${{ secrets.UPLOAD_PORT }} ${{ secrets.UPLOAD_USERNAME }}@${{ secrets.UPLOAD_HOST }}:${{ secrets.UPLOAD_PATH_DEBUG }} <<EOF
-          rm *
-          mput angular/dist/web-demangler/browser/*
-        bye
-        EOF
-    - name: Angular Release
-      run: |
-        rm angular/src/assets/*
-        rm -Rf angular/build
-        cp build_release/web_* angular/src/assets/
+        mkdir angular/src/assets
+        cp build/web_* angular/src/assets/
         cd angular
         npm install -g @angular/cli
         npm install

@@ -1,0 +1,52 @@
+name: Node.js Debug
+
+on: [workflow_dispatch]
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22.x]
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: 'true'
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: angular/package-lock.json
+    - name: Install dependencies
+      run: sudo apt-get install -y ninja-build
+    - name: Emscripten
+      run: |
+        cd emsdk
+        ./emsdk install latest
+        ./emsdk activate latest
+        source ./emsdk_env.sh
+        cd ..
+        emcmake cmake -S . -B build -G "Ninja" -DLLVM_ENABLE_PROJECTS="clang" -DLLVM_TARGETS_TO_BUILD="" -DCMAKE_BUILD_TYPE="Debug"
+        cmake --build build --parallel 4
+    - name: Angular
+      run: |
+        mkdir angular/src/assets
+        cp build/web_* angular/src/assets/
+        cd angular
+        npm install -g @angular/cli
+        npm install
+        ng build --configuration development
+        cd ..
+    - name: Register website in known_hosts
+      run: |
+        mkdir /home/runner/.ssh
+        chmod 700 /home/runner/.ssh
+        echo "${{ secrets.UPLOAD_KNOW_HOST }}" >> /home/runner/.ssh/known_hosts
+    - name: Upload to website
+      run: |
+        sshpass -p ${{ secrets.UPLOAD_PASSWORD }} sftp -P ${{ secrets.UPLOAD_PORT }} ${{ secrets.UPLOAD_USERNAME }}@${{ secrets.UPLOAD_HOST }}:${{ secrets.UPLOAD_PATH_DEBUG }} <<EOF
+          rm *
+          mput angular/dist/web-demangler/browser/*
+        bye
+        EOF
