@@ -45,7 +45,7 @@ jobs:
         echo "${{ secrets.UPLOAD_KNOW_HOST }}" >> /home/runner/.ssh/known_hosts
     - name: Upload to website
       run: |
-        sshpass -p ${{ secrets.UPLOAD_PASSWORD }} sftp -P ${{ env.UPLOAD_PORT }} ${{ secrets.UPLOAD_USERNAME }}@${{ secrets.UPLOAD_HOST }}:${{ secrets.UPLOAD_PATH_DEBUG }} <<EOF
+        sshpass -p ${{ secrets.UPLOAD_PASSWORD }} sftp -P ${{ vars.UPLOAD_PORT }} ${{ secrets.UPLOAD_USERNAME }}@${{ secrets.UPLOAD_HOST }}:${{ secrets.UPLOAD_PATH_DEBUG }} <<EOF
           rm *
           mput angular/dist/web-demangler/browser/*
         bye
