@@ -71,6 +71,7 @@ target_link_options(
   "SHELL:-s ENVIRONMENT=web"
   "SHELL:-s INVOKE_RUN=0"
   "SHELL:-s MALLOC='emmalloc'"
+  "SHELL:-s ALLOW_MEMORY_GROWTH=1"
   "$<IF:$<CONFIG:Debug>,--closure 0,--closure 1>"
   "$<IF:$<CONFIG:Debug>,-s ASSERTIONS=1,-s ASSERTIONS=0>"
   "$<$<CONFIG:Debug>:-s SAFE_HEAP=1>"
