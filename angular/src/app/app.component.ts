@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { WasmLoaderService } from './wasm-loader.service';
+import { WasmLoaderDemanglerService } from './wasm-loader-demangler.service';
+import { WasmLoaderFormatterService } from './wasm-loader-formatter.service';
 import { NgFor, NgIf } from '@angular/common';
 
 @Component({
@@ -12,25 +13,35 @@ import { NgFor, NgIf } from '@angular/common';
 export class AppComponent implements OnInit {
   demangledName: string[] = [];
 
-  constructor(private wasmLoader: WasmLoaderService) { }
+  constructor(private wasmLoaderDemangler: WasmLoaderDemanglerService, private wasmLoaderFormatter: WasmLoaderFormatterService) { }
 
   async ngOnInit() {
-    if (!this.wasmLoader.wasm()) {
-      await this.loadWasmModule();
+    if (!this.wasmLoaderDemangler.wasm()) {
+      await this.loadWasmDemanglerModule();
+    }
+    if (!this.wasmLoaderFormatter.wasm()) {
+      await this.loadWasmFormatterModule();
     }
   }
 
-  async loadWasmModule() {
-    while (!this.wasmLoader.wasm()) {
+  async loadWasmDemanglerModule() {
+    while (!this.wasmLoaderDemangler.wasm()) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+  }
+
+  async loadWasmFormatterModule() {
+    while (!this.wasmLoaderFormatter.wasm()) {
       await new Promise(resolve => setTimeout(resolve, 100));
     }
   }
 
   onDemangle(mangledName: string) {
-    const wasmInstance = this.wasmLoader.wasm();
-    if (wasmInstance && mangledName) {
+    const wasmDemanglerInstance = this.wasmLoaderDemangler.wasm();
+    const wasmFormatterInstance = this.wasmLoaderFormatter.wasm();
+    if (wasmDemanglerInstance && wasmFormatterInstance && mangledName) {
       const lines = mangledName.split('\n');
-      this.demangledName = lines.map(line => wasmInstance.web_demangle(line.trim()));
+      this.demangledName = lines.map(line => wasmFormatterInstance.formatter(wasmDemanglerInstance.web_demangle(line.trim())));
     }
   }
 }

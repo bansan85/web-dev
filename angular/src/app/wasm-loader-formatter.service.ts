@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import web_demangler from '../assets/web_demangler.js';
+import web_formatter from '../assets/web_formatter.js';
 
 @Injectable({
   providedIn: 'root'
 })
-export class WasmLoaderService {
+export class WasmLoaderFormatterService {
   private instance?: any;
 
   constructor() {
-    web_demangler().then(async (instance: any) => {
+    web_formatter().then(async (instance: any) => {
       this.instance = instance;
     });
   }

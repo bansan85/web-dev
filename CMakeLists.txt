@@ -67,7 +67,7 @@ target_link_options(
   PRIVATE
   "SHELL:-s MODULARIZE=1"
   "SHELL:-s EXPORT_ES6=1"
-  "SHELL:-s EXPORT_NAME=web_demangler"
+  "SHELL:-s EXPORT_NAME=web_formatter"
   "SHELL:-s ENVIRONMENT=web"
   "SHELL:-s INVOKE_RUN=0"
   "SHELL:-s MALLOC='emmalloc'"
