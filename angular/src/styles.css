@@ -1,3 +1,15 @@
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #1c1c1e;
+    color: #fefefe;
+  }
+
+  textarea {
+    background-color: #1c1c1e;
+    color: #fefefe;
+  }
+}
+
 textarea {
   overflow-x: auto;
 }
