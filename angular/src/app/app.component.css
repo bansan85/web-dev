@@ -2,6 +2,7 @@ textarea {
   overflow-x: auto;
   box-sizing: border-box;
   width: 100%;
+  resize: none;
 }
 
 .textareas {
@@ -10,21 +11,29 @@ textarea {
 }
 
 div.textarea {
-  padding: 0.5em;
+  margin: 0.5em;
+}
+
+h2 {
+  margin:0 0 0.5em 0;
+  padding:0em;
 }
 
 @media screen and (max-width: 70em) {
   .textareas {
-    flex-wrap: wrap;
-    height: 85vh;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
   }
 
-  div.textarea {
-    width: 100%;
+  .textarea {
+    display: flex;
+    flex-direction: column;
+    height: 50%;
   }
 
   textarea {
-    resize: vertical;
+    flex: 1;
   }
 }
 
@@ -41,6 +50,5 @@ div.textarea {
 
   textarea {
     height: 100%;
-    resize: none;
   }
 }
