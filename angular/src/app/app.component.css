@@ -1,0 +1,46 @@
+textarea {
+  overflow-x: auto;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.textareas {
+  display: inline-flex;
+  width: 100%;
+}
+
+div.textarea {
+  padding: 0.5em;
+}
+
+@media screen and (max-width: 70em) {
+  .textareas {
+    flex-wrap: wrap;
+    height: 85vh;
+  }
+
+  div.textarea {
+    width: 100%;
+  }
+
+  textarea {
+    resize: vertical;
+  }
+}
+
+@media screen and not (max-width: 70em) {
+  .textareas {
+    box-sizing: border-box;
+    width: 100%;
+    height: 85vh;
+  }
+
+  div.textarea {
+    width: 50vw;
+  }
+
+  textarea {
+    height: 100%;
+    resize: none;
+  }
+}
