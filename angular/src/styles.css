@@ -1,10 +1,8 @@
 @media (prefers-color-scheme: dark) {
-  body {
-    background-color: #1c1c1e;
-    color: #fefefe;
-  }
 
-  textarea {
+  body,
+  textarea,
+  dialog {
     background-color: #1c1c1e;
     color: #fefefe;
   }
@@ -24,4 +22,5 @@ body {
 .lucide-settings {
   vertical-align: middle;
   margin-left: 0.5em;
+  cursor: pointer;
 }

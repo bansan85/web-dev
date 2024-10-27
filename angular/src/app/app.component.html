@@ -1,3 +1,16 @@
+<dialog #dialog>
+  <div>
+    Option 1:
+    <select>
+      <option value="default">Opt1</option>
+      <option>Opt2</option>
+    </select>
+  </div>
+  <div>
+    <button (click)="dialog.close()">OK</button>
+  </div>
+</dialog>
+
 <div class="textareas">
   <div class="textarea">
     <h2>Mangled symbol (C++, D, Rust, MSVC, Itanium)</h2>
@@ -5,7 +18,7 @@
       (input)="onDemangle(mangledInput.value)"></textarea>
   </div>
   <div class="textarea">
-    <h2>Demangled symbol<lucide-icon name="settings"></lucide-icon></h2>
+    <h2>Demangled symbol<lucide-icon name="settings" (click)="dialog.showModal()"></lucide-icon></h2>
     <textarea wrap="off" [value]="demangledName.join('\n')" readonly></textarea>
   </div>
 </div>
