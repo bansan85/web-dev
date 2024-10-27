@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { WasmLoaderDemanglerService } from './wasm-loader-demangler.service';
 import { WasmLoaderFormatterService } from './wasm-loader-formatter.service';
 import { NgFor, NgIf } from '@angular/common';
+import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [NgFor, NgIf],
+  imports: [NgFor, NgIf, LucideAngularModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
