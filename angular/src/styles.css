@@ -13,3 +13,10 @@
 body {
   margin: 0px;
 }
+
+.github_logo {
+  position: absolute;
+  top: 0.5em;
+  right: 0.5em;
+  width: 2em;
+}

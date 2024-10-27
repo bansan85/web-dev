@@ -36,7 +36,6 @@ jobs:
         echo "${{ secrets.UPLOAD_KNOW_HOST }}" >> /home/runner/.ssh/known_hosts
     - name: Angular
       run: |
-        mkdir angular/src/assets
         cp build/web_* angular/src/assets/
         cd angular
         npm install -g @angular/cli
@@ -45,7 +44,10 @@ jobs:
     - name: Upload to Release website
       run: |
         sshpass -p ${{ secrets.UPLOAD_PASSWORD }} sftp -P ${{ vars.UPLOAD_PORT }} ${{ secrets.UPLOAD_USERNAME }}@${{ secrets.UPLOAD_HOST }}:${{ secrets.UPLOAD_PATH_RELEASE }} <<EOF
-          rm *
+          rm -r *
           mput angular/dist/web-demangler/browser/*
+          mkdir img
+          cd img
+          mput angular/dist/web-demangler/browser/img/*
         bye
         EOF
