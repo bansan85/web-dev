@@ -1,4 +1,4 @@
-<dialog #dialog>
+<dialog #dialog [ngClass]="{ 'open': isOpen }">
   <div>
     Option 1:
     <select>
@@ -7,7 +7,7 @@
     </select>
   </div>
   <div>
-    <button (click)="dialog.close()">OK</button>
+    <button (click)="closeDialog()">OK</button>
   </div>
 </dialog>
 
@@ -18,7 +18,7 @@
       (input)="onDemangle(mangledInput.value)"></textarea>
   </div>
   <div class="textarea">
-    <h2>Demangled symbol<lucide-icon name="settings" (click)="dialog.showModal()"></lucide-icon></h2>
+    <h2>Demangled symbol<lucide-icon name="settings" (click)="openDialog()"></lucide-icon></h2>
     <textarea wrap="off" [value]="demangledName.join('\n')" readonly></textarea>
   </div>
 </div>

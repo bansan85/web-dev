@@ -15,8 +15,8 @@ div.textarea {
 }
 
 h2 {
-  margin:0 0 0.5em 0;
-  padding:0em;
+  margin: 0 0 0.5em 0;
+  padding: 0em;
 }
 
 @media screen and (max-width: 70em) {
@@ -46,10 +46,29 @@ h2 {
   .textarea {
     display: flex;
     flex-direction: column;
-    width:100%;
+    width: 100%;
   }
 
   textarea {
     flex: 1;
   }
+}
+
+dialog::backdrop {
+  background: rgb(0 0 0 / 25%);
+}
+
+@media (prefers-color-scheme: dark) {
+  dialog::backdrop {
+    background: rgb(0 0 0 / 75%);
+  }
+}
+
+dialog {
+  opacity: 0;
+  transition: opacity 0.5s ease-in;
+}
+
+dialog.open {
+  opacity: 1;
 }
