@@ -12,9 +12,6 @@ option(LLVM_INCLUDE_BENCHMARKS
 option(LLVM_INCLUDE_UTILS "Generate build targets for the LLVM utils." OFF)
 option(LLVM_BUILD_UTILS
        "Build LLVM utility binaries. If OFF, just generate build targets." OFF)
-option(LLVM_INCLUDE_UTILS "Generate build targets for the LLVM utils." OFF)
-option(LLVM_BUILD_UTILS
-       "Build LLVM utility binaries. If OFF, just generate build targets." OFF)
 # For clang::format
 set(LLVM_ENABLE_PROJECTS
     "clang"

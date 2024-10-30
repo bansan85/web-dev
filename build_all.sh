@@ -15,3 +15,7 @@ npm install -g @angular/cli
 npm install
 ng build
 ng serve --open --host 0.0.0.0
+
+# native llvm for clang-format emscripten wrapper generator
+cmake -S utils -B build_utils -G Ninja -DCMAKE_BUILD_TYPE=Release
+cmake --build build_utils --parallel 8
