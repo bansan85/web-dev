@@ -18,8 +18,21 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
         cache-dependency-path: angular/package-lock.json
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        max-size: "5000M"
+        key: ${{ github.job }}-Debug
     - name: Install dependencies
-      run: sudo apt-get install -y ninja-build
+      run: |
+        wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+        sudo apt-add-repository -y 'deb https://apt.llvm.org/jammy/ llvm-toolchain-jammy-19 main'
+        sudo apt-get remove --purge -y '*clang*' '*llvm*'
+        sudo apt-get install -y ninja-build clang-19 libclang-19-dev llvm-19-dev
+    - name: Generate Format.h wrapper
+      run: |
+        cmake -S utils -B build_utils -G Ninja -DCMAKE_BUILD_TYPE=Debug
+        cmake --build build_utils --parallel 4
     - name: Emscripten
       run: |
         cd emsdk
@@ -27,11 +40,19 @@ jobs:
         ./emsdk activate latest
         source ./emsdk_env.sh
         cd ..
-        emcmake cmake -S . -B build -G "Ninja" -DCMAKE_BUILD_TYPE="Debug"
-        cmake --build build --parallel 4
+        emcmake cmake -S . -B build -G "Ninja" -DCMAKE_BUILD_TYPE="Debug" -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+        cd build
+        npm install typescript
+        export PATH=$PATH:$(pwd)/node_modules/.bin
+        cmake --build . --parallel 4
+        cd ..
     - name: Angular
       run: |
-        cp build/web_* angular/src/assets/
+        cp build/web_*.js angular/src/assets/
+        cp build/web_*.js.symbols angular/src/assets/
+        cp build/web_*.wasm angular/src/assets/
+        cp build/web_*.wasm.debug.wasm angular/src/assets/
+        cp build/web_*.wasm.map angular/src/assets/
         cd angular
         npm install -g @angular/cli
         npm install

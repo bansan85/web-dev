@@ -47,6 +47,8 @@ target_link_options(
   "$<$<CONFIG:Debug>:--emit-symbol-map>"
   "$<$<CONFIG:Debug>:-gsource-map>"
   "$<$<CONFIG:Debug>:-gseparate-dwarf>"
+  "--emit-tsd"
+  "web_demangler.d.ts"
   --no-entry)
 set_property(TARGET web_demangler PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 
@@ -76,5 +78,7 @@ target_link_options(
   "$<$<CONFIG:Debug>:--emit-symbol-map>"
   "$<$<CONFIG:Debug>:-gsource-map>"
   "$<$<CONFIG:Debug>:-gseparate-dwarf>"
+  "--emit-tsd"
+  "web_formatter.d.ts"
   --no-entry)
 set_property(TARGET web_formatter PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)

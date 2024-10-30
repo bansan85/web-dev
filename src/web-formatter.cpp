@@ -29,96 +29,16 @@ std::string Format(const std::string &code) {
 }
 
 void RegisterFormatStyle() {
-  emscripten::enum_<clang::format::FormatStyle::BracketAlignmentStyle>(
-      "BracketAlignmentStyle")
-      .value("Align",
-             clang::format::FormatStyle::BracketAlignmentStyle::BAS_Align)
-      .value("DontAlign",
-             clang::format::FormatStyle::BracketAlignmentStyle::BAS_DontAlign)
-      .value("AlwaysBreak",
-             clang::format::FormatStyle::BracketAlignmentStyle::BAS_AlwaysBreak)
-      .value(
-          "BlockIndent",
-          clang::format::FormatStyle::BracketAlignmentStyle::BAS_BlockIndent);
-
-  emscripten::enum_<clang::format::FormatStyle::ArrayInitializerAlignmentStyle>(
-      "ArrayInitializerAlignmentStyle")
-      .value(
-          "Left",
-          clang::format::FormatStyle::ArrayInitializerAlignmentStyle::AIAS_Left)
-      .value("Right", clang::format::FormatStyle::
-                          ArrayInitializerAlignmentStyle::AIAS_Right)
-      .value("None", clang::format::FormatStyle::
-                         ArrayInitializerAlignmentStyle::AIAS_None);
-
-  emscripten::class_<clang::format::FormatStyle::AlignConsecutiveStyle>(
-      "AlignConsecutiveStyle")
-      .property("Enabled",
-                &clang::format::FormatStyle::AlignConsecutiveStyle::Enabled)
-      .property(
-          "AcrossEmptyLines",
-          &clang::format::FormatStyle::AlignConsecutiveStyle::AcrossEmptyLines)
-      .property(
-          "AcrossComments",
-          &clang::format::FormatStyle::AlignConsecutiveStyle::AcrossComments)
-      .property(
-          "AlignCompound",
-          &clang::format::FormatStyle::AlignConsecutiveStyle::AlignCompound)
-      .property("AlignFunctionPointers",
-                &clang::format::FormatStyle::AlignConsecutiveStyle::
-                    AlignFunctionPointers)
-      .property(
-          "PadOperators",
-          &clang::format::FormatStyle::AlignConsecutiveStyle::PadOperators);
-
-  emscripten::class_<
-      clang::format::FormatStyle::ShortCaseStatementsAlignmentStyle>(
-      "ShortCaseStatementsAlignmentStyle")
-      .property("Enabled", &clang::format::FormatStyle::
-                               ShortCaseStatementsAlignmentStyle::Enabled)
-      .property("AcrossEmptyLines",
-                &clang::format::FormatStyle::ShortCaseStatementsAlignmentStyle::
-                    AcrossEmptyLines)
-      .property("AcrossComments",
-                &clang::format::FormatStyle::ShortCaseStatementsAlignmentStyle::
-                    AcrossComments)
-      .property("AlignCaseArrows",
-                &clang::format::FormatStyle::ShortCaseStatementsAlignmentStyle::
-                    AlignCaseArrows)
-      .property("AlignCaseColons",
-                &clang::format::FormatStyle::ShortCaseStatementsAlignmentStyle::
-                    AlignCaseColons);
-
-  emscripten::class_<clang::format::FormatStyle>("FormatStyle")
-      .property("InheritsParentConfig",
-                &clang::format::FormatStyle::InheritsParentConfig)
-      .property("AccessModifierOffset",
-                &clang::format::FormatStyle::AccessModifierOffset)
-      .property("AlignAfterOpenBracket",
-                &clang::format::FormatStyle::AlignAfterOpenBracket)
-      .property("AlignArrayOfStructures",
-                &clang::format::FormatStyle::AlignArrayOfStructures)
-      .property("AlignConsecutiveMacros",
-                &clang::format::FormatStyle::AlignConsecutiveMacros,
-                emscripten::return_value_policy::reference())
-      .property("AlignConsecutiveAssignments",
-                &clang::format::FormatStyle::AlignConsecutiveAssignments,
-                emscripten::return_value_policy::reference())
-      .property("AlignConsecutiveBitFields",
-                &clang::format::FormatStyle::AlignConsecutiveBitFields,
-                emscripten::return_value_policy::reference())
-      .property("AlignConsecutiveDeclarations",
-                &clang::format::FormatStyle::AlignConsecutiveDeclarations,
-                emscripten::return_value_policy::reference())
-      .property(
-          "AlignConsecutiveShortCaseStatements",
-          &clang::format::FormatStyle::AlignConsecutiveShortCaseStatements,
-          emscripten::return_value_policy::reference());
+#include "web-formatter-binding.cpp.inc"
 }
 
 } // namespace web_demangler
 
 EMSCRIPTEN_BINDINGS(web_formatter) {
   emscripten::function("formatter", &web_demangler::Format);
+  emscripten::register_vector<std::string>("StringList");
+  emscripten::register_vector<clang::tooling::IncludeStyle::IncludeCategory>("IncludeCategoryList");
+  emscripten::register_vector<clang::format::FormatStyle::RawStringFormat>("RawStringFormatList");
+  emscripten::register_optional<unsigned int>();
   web_demangler::RegisterFormatStyle();
 }
