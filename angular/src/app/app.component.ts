@@ -2,15 +2,16 @@ import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { WasmLoaderDemanglerService } from './wasm-loader-demangler.service';
 import { WasmLoaderFormatterService } from './wasm-loader-formatter.service';
 import { NgFor, NgIf, NgClass } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
 
 import { EmbindModule as DemanglerModule } from '../assets/web_demangler.js';
-import { EmbindModule as FormatterModule } from '../assets/web_formatter.js';
+import { EmbindModule as FormatterModule, FormatStyle } from '../assets/web_formatter.js';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [NgFor, NgIf, NgClass, LucideAngularModule],
+  imports: [NgFor, NgIf, NgClass, FormsModule, LucideAngularModule],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -22,19 +23,22 @@ export class AppComponent implements OnInit {
 
   isOpen: boolean = false;
 
+  formatStyle: FormatStyle | undefined;
+
   // Text by pending if text insert while wasm is loading.
   pendingText: boolean = false;
 
   @ViewChild('dialog', { static: false }) dialogRef!: ElementRef<HTMLDialogElement>;
   @ViewChild('mangledInput') mangledInput!: ElementRef<HTMLTextAreaElement>;
 
-  constructor(private wasmLoaderDemangler: WasmLoaderDemanglerService, private wasmLoaderFormatter: WasmLoaderFormatterService) { }
+  constructor(private wasmLoaderDemangler: WasmLoaderDemanglerService,
+    private wasmLoaderFormatter: WasmLoaderFormatterService) { }
 
   async ngOnInit() {
-    if (!this.wasmLoaderDemangler.wasm()) {
+    if (!this.demangler) {
       await this.loadWasmDemanglerModule();
     }
-    if (!this.wasmLoaderFormatter.wasm()) {
+    if (!this.formatter) {
       await this.loadWasmFormatterModule();
     }
   }
@@ -43,17 +47,21 @@ export class AppComponent implements OnInit {
     while (!this.wasmLoaderDemangler.wasm()) {
       await new Promise(resolve => setTimeout(resolve, 100));
     }
-    this.demangler = this.wasmLoaderDemangler.wasm();
+    this.demangler = this.wasmLoaderDemangler.wasm()!;
   }
 
   async loadWasmFormatterModule() {
     while (!this.wasmLoaderFormatter.wasm()) {
       await new Promise(resolve => setTimeout(resolve, 100));
     }
-    this.formatter = this.wasmLoaderFormatter.wasm();
+    this.formatter = this.wasmLoaderFormatter.wasm()!;
 
-    const event = new Event('input', { bubbles: true });
-    this.mangledInput.nativeElement.dispatchEvent(event);
+    this.formatStyle = this.formatter.getMozillaStyle();
+
+    if (this.pendingText) {
+      const event = new Event('input', { bubbles: true });
+      this.mangledInput.nativeElement.dispatchEvent(event);
+    }
     this.pendingText = false;
   }
 
@@ -64,9 +72,11 @@ export class AppComponent implements OnInit {
     if (!this.formatter) {
       this.loadWasmFormatterModule();
     }
-    if (this.demangler && this.formatter) {
+    if (this.demangler && this.formatter && this.formatStyle) {
       const lines = mangledName.split('\n');
-      this.demangledName = lines.map(line => this.formatter!.formatter(this.demangler!.web_demangle(line.trim())));
+      this.demangledName = lines.map(line =>
+        this.formatter!.formatter(
+          this.demangler!.web_demangle(line.trim()), this.formatStyle!));
     } else {
       this.pendingText = true;
     }
@@ -87,5 +97,13 @@ export class AppComponent implements OnInit {
 
     this.dialogRef.nativeElement.addEventListener('transitionend', close);
     this.isOpen = false;
+  }
+
+  onColumnLimitChange(newValue: number) {
+    if (this.formatStyle) {
+      this.formatStyle.ColumnLimit = newValue;
+      const event = new Event('input', { bubbles: true });
+      this.mangledInput.nativeElement.dispatchEvent(event);
+    }
   }
 }

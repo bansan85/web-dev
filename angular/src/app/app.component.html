@@ -1,11 +1,10 @@
 <dialog #dialog [ngClass]="{ 'open': isOpen }">
-  <div>
-    Option 1:
-    <select>
-      <option value="default">Opt1</option>
-      <option>Opt2</option>
-    </select>
-  </div>
+  <dl>
+    <dt>ColumnLimit</dt>
+    <dd><input type="number" *ngIf="formatStyle" [(ngModel)]="formatStyle!.ColumnLimit"
+        (ngModelChange)="onColumnLimitChange($event)" />
+    </dd>
+  </dl>
   <div>
     <button (click)="closeDialog()">OK</button>
   </div>
@@ -18,7 +17,9 @@
       (input)="onDemangle(mangledInput.value)"></textarea>
   </div>
   <div class="textarea">
-    <h2>Demangled symbol<lucide-icon name="settings" (click)="openDialog()"></lucide-icon></h2>
+    <h2>Demangled symbol<lucide-icon [class.disabled]="!formatStyle" name="settings"
+        (click)="openDialog()"></lucide-icon>
+    </h2>
     <textarea wrap="off" [value]="demangledName.join('\n')" readonly></textarea>
   </div>
 </div>
