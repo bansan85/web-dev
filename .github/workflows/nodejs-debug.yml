@@ -25,7 +25,7 @@ jobs:
         key: ${{ github.job }}-Debug
     - name: Install dependencies
       run: |
-        wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+        wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | sudo tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc
         sudo apt-add-repository -y 'deb https://apt.llvm.org/jammy/ llvm-toolchain-jammy-19 main'
         sudo apt-get remove --purge -y '*clang*' '*llvm*'
         sudo apt-get install -y ninja-build clang-19 libclang-19-dev llvm-19-dev
@@ -53,6 +53,7 @@ jobs:
         cp build/web_*.wasm angular/src/assets/
         cp build/web_*.wasm.debug.wasm angular/src/assets/
         cp build/web_*.wasm.map angular/src/assets/
+        cp build/web_*.d.ts angular/src/assets/
         cd angular
         npm install -g @angular/cli
         npm install
