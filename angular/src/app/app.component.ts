@@ -99,12 +99,9 @@ export class AppComponent implements OnInit {
     this.isOpen = false;
   }
 
-  onColumnLimitChange(newValue: number) {
-    if (this.formatStyle) {
-      this.formatStyle.ColumnLimit = newValue;
-      const event = new Event('input', { bubbles: true });
-      this.mangledInput.nativeElement.dispatchEvent(event);
-    }
+  onColumnLimitChange() {
+    const event = new Event('input', { bubbles: true });
+    this.mangledInput.nativeElement.dispatchEvent(event);
   }
 
   get formatStyleKeys(): (keyof FormatStyle)[] {
@@ -115,8 +112,11 @@ export class AppComponent implements OnInit {
     }
 
     for (const key in this.formatStyle) {
-      if (this.formatStyle.hasOwnProperty(key) || key in this.formatStyle) {
+      if ((this.formatStyle.hasOwnProperty(key) || key in this.formatStyle) &&
+        typeof this.formatStyle[key as keyof FormatStyle] === 'number') {
         keys.push(key as (keyof FormatStyle));
+      } else {
+        console.log("SKIP " + key);
       }
     }
 
