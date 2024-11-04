@@ -106,4 +106,20 @@ export class AppComponent implements OnInit {
       this.mangledInput.nativeElement.dispatchEvent(event);
     }
   }
+
+  get formatStyleKeys(): (keyof FormatStyle)[] {
+    const keys: (keyof FormatStyle)[] = [];
+
+    if (!this.formatStyle) {
+      return keys;
+    }
+
+    for (const key in this.formatStyle) {
+      if (this.formatStyle.hasOwnProperty(key) || key in this.formatStyle) {
+        keys.push(key as (keyof FormatStyle));
+      }
+    }
+
+    return keys;
+  }
 }

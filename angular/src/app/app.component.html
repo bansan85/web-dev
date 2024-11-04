@@ -8,6 +8,10 @@
   <div>
     <button (click)="closeDialog()">OK</button>
   </div>
+  <dl *ngFor="let key of formatStyleKeys">
+    <label>{{ key }}:</label>
+    <span>{{ formatStyle![key] }}</span>
+  </dl>
 </dialog>
 
 <div class="textareas">
