@@ -4,6 +4,8 @@
 #include <emscripten/bind.h>
 #include <string>
 
+    EMSCRIPTEN_DECLARE_VAL_TYPE(BitFieldColonSpacingStyle2);
+
 namespace web_demangler {
 
 std::string Format(const std::string &code,
@@ -68,5 +70,10 @@ EMSCRIPTEN_BINDINGS(web_formatter) {
                        &clang::format::getClangFormatStyle);
   emscripten::function("getNoStyle", &clang::format::getNoStyle);
 
+    emscripten::register_type<BitFieldColonSpacingStyle2>("BitFieldColonSpacingStyle2");
+
   web_demangler::RegisterFormatStyle();
+
+      // Utilisation de BindingType pour l’enregistrement comme entier
+    //emscripten::internal::BindingType<BitFieldColonSpacingStyle>::bind();
 }

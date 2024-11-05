@@ -6,7 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
 
 import { EmbindModule as DemanglerModule } from '../assets/web_demangler.js';
-import { EmbindModule as FormatterModule, FormatStyle } from '../assets/web_formatter.js';
+import { EmbindModule as FormatterModule, FormatStyle, BitFieldColonSpacingStyle, BitFieldColonSpacingStyleValue } from '../assets/web_formatter.js';
 
 @Component({
   selector: 'app-root',
@@ -112,14 +112,48 @@ export class AppComponent implements OnInit {
     }
 
     for (const key in this.formatStyle) {
-      if ((this.formatStyle.hasOwnProperty(key) || key in this.formatStyle) &&
-        typeof this.formatStyle[key as keyof FormatStyle] === 'number') {
+      if (this.formatStyle.hasOwnProperty(key) || key in this.formatStyle) {
         keys.push(key as (keyof FormatStyle));
-      } else {
-        console.log("SKIP " + key);
       }
     }
 
     return keys;
+  }
+
+  isNumber(value: any): boolean {
+    return typeof value === 'number';
+  }
+
+  isBoolean(value: any): boolean {
+    return typeof value === 'boolean';
+  }
+
+  isString(value: any): boolean {
+    return typeof value === 'string';
+  }
+
+  isEnum(value: any): boolean {
+    return typeof value === 'object' && typeof value.$$ === 'undefined';
+  }
+
+  getEnum(value: any): boolean {
+    return value.constructor.name.split('_').slice(2).join('_');
+  }
+
+  allEnums(value: any): string[] {
+    const items = Object.getOwnPropertyNames(Object.getPrototypeOf(value).constructor);
+    return items.filter(item => !["values", "prototype", "length", "name"].includes(item)).map(item => item.split('_').slice(1).join('_'));
+  }
+
+  updateEnum(newValue: string, key: string): void {
+    console.log((this.formatStyle! as any)[key].value);
+
+    (this.formatStyle! as any)[key] = (this.formatter! as any)[(this.formatStyle! as any)[key].constructor.name.split('_')[0]][(this.formatStyle! as any)[key].constructor.name.split('_')[1] + '_' + newValue]
+
+    this.onColumnLimitChange();
+  }
+
+  typeOf(value: any): string {
+    return typeof value;
   }
 }

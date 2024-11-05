@@ -4,7 +4,28 @@
   </div>
   <dl *ngFor="let key of formatStyleKeys">
     <dt>{{ key }}:</dt>
-    <dd><input [(ngModel)]="formatStyle![key]" (ngModelChange)="onColumnLimitChange()" />
+    <dd>
+      <ng-container *ngIf="isNumber(formatStyle![key])">
+        <input type="number" [(ngModel)]="formatStyle![key]" (ngModelChange)="onColumnLimitChange()" />
+      </ng-container>
+      <ng-container *ngIf="isBoolean(formatStyle![key])">
+        <input type="checkbox" [(ngModel)]="formatStyle![key]" (ngModelChange)="onColumnLimitChange()" />
+      </ng-container>
+      <ng-container *ngIf="isString(formatStyle![key])">
+        <input [(ngModel)]="formatStyle![key]" (ngModelChange)="onColumnLimitChange()" />
+      </ng-container>
+      <ng-container *ngIf="isEnum(formatStyle![key])">
+        <select [ngModel]="getEnum(formatStyle![key])" (ngModelChange)="updateEnum($event, key)">
+          <option *ngFor="let style of allEnums(formatStyle![key])" [ngValue]="style">
+            {{ style }}
+          </option>
+        </select>
+      </ng-container>
+      <ng-container
+        *ngIf="!isNumber(formatStyle![key]) && !isBoolean(formatStyle![key]) && !isString(formatStyle![key]) && !isEnum(formatStyle![key])">
+        <span>{{ typeOf(formatStyle![key]) }}</span>
+      </ng-container>
+    </dd>
   </dl>
 </dialog>
 
