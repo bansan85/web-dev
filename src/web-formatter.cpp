@@ -62,7 +62,7 @@ EMSCRIPTEN_BINDINGS(web_formatter) {
   emscripten::function("getWebKitStyle", &clang::format::getWebKitStyle);
   emscripten::function("getGNUStyle", &clang::format::getGNUStyle);
   emscripten::function(
-      "getGoogleStyle", +[] {
+      "getMicrosoftStyle", +[] {
         return clang::format::getMicrosoftStyle(
             clang::format::FormatStyle::LanguageKind::LK_Cpp);
       });
