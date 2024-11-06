@@ -23,6 +23,8 @@ export class AppComponent implements OnInit {
 
   isOpen: boolean = false;
 
+  emptyStyle: FormatStyle | undefined;
+
   formatStyle: FormatStyle | undefined;
 
   // Text by pending if text insert while wasm is loading.
@@ -57,6 +59,7 @@ export class AppComponent implements OnInit {
     this.formatter = this.wasmLoaderFormatter.wasm()!;
 
     this.formatStyle = this.formatter.getMozillaStyle();
+    this.emptyStyle = this.formatter.getNoStyle();
 
     if (this.pendingText) {
       const event = new Event('input', { bubbles: true });
@@ -107,12 +110,12 @@ export class AppComponent implements OnInit {
   get formatStyleKeys(): (keyof FormatStyle)[] {
     const keys: (keyof FormatStyle)[] = [];
 
-    if (!this.formatStyle) {
+    if (!this.formatter) {
       return keys;
     }
 
-    for (const key in this.formatStyle) {
-      if (this.formatStyle.hasOwnProperty(key) || key in this.formatStyle) {
+    for (const key in this.emptyStyle) {
+      if (this.emptyStyle.hasOwnProperty(key) || key in this.emptyStyle) {
         keys.push(key as (keyof FormatStyle));
       }
     }
@@ -151,6 +154,21 @@ export class AppComponent implements OnInit {
     (this.formatStyle! as any)[key] = (this.formatter! as any)[(this.formatStyle! as any)[key].constructor.name.split('_')[0]][(this.formatStyle! as any)[key].constructor.name.split('_')[1] + '_' + newValue]
 
     this.onColumnLimitChange();
+  }
+
+  isUndefined(value: any): boolean {
+    return typeof value === 'undefined';
+  }
+
+  onUndefinedCheckboxChange(event: Event, inputValue: string, key: string) {
+    const checked = (event.target as HTMLInputElement).checked;
+    (this.formatStyle! as any)[key] = checked ? inputValue : undefined;
+  }
+
+  onUndefinedInputChange(value: string, key: string) {
+    if ((this.formatStyle! as any)[key] !== undefined) {
+      (this.formatStyle! as any)[key] = value;
+    }
   }
 
   typeOf(value: any): string {
