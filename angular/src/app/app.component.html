@@ -3,7 +3,9 @@
     <button (click)="closeDialog()">OK</button>
   </div>
   <dl *ngFor="let key of formatStyleKeys">
-    <dt>{{ key }}:</dt>
+    <ng-container *ngIf="!isFunction(emptyStyle![key])">
+      <dt>{{ key }}:</dt>
+    </ng-container>
     <dd>
       <ng-container *ngIf="isNumber(emptyStyle![key])">
         <input type="number" [(ngModel)]="formatStyle![key]" (ngModelChange)="reformat()" />
@@ -31,7 +33,7 @@
           (input)="onStringList($event, key)">{{ stringListToTextArea(formatStyle![key]) }}</textarea>
       </ng-container>
       <ng-container
-        *ngIf="!isNumber(emptyStyle![key]) && !isBoolean(emptyStyle![key]) && !isString(emptyStyle![key]) && !isEnum(emptyStyle![key]) && !isUndefined(emptyStyle![key]) && !isStringList(emptyStyle![key])">
+        *ngIf="!isNumber(emptyStyle![key]) && !isBoolean(emptyStyle![key]) && !isString(emptyStyle![key]) && !isEnum(emptyStyle![key]) && !isUndefined(emptyStyle![key]) && !isStringList(emptyStyle![key]) && !isFunction(emptyStyle![key])">
         <span>{{ typeOf(formatStyle![key]) }}TODO</span>
       </ng-container>
     </dd>

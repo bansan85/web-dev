@@ -192,6 +192,10 @@ export class AppComponent implements OnInit {
     this.reformat();
   }
 
+  isFunction(value: any): boolean {
+    return typeof value === 'function';
+  }
+
   typeOf(value: any): string {
     return typeof value;
   }
