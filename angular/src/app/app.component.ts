@@ -6,7 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
 
 import { EmbindModule as DemanglerModule } from '../assets/web_demangler.js';
-import { EmbindModule as FormatterModule, FormatStyle, BitFieldColonSpacingStyle, BitFieldColonSpacingStyleValue } from '../assets/web_formatter.js';
+import { EmbindModule as FormatterModule, FormatStyle, StringList } from '../assets/web_formatter.js';
 
 @Component({
   selector: 'app-root',
@@ -102,7 +102,7 @@ export class AppComponent implements OnInit {
     this.isOpen = false;
   }
 
-  onColumnLimitChange() {
+  reformat() {
     const event = new Event('input', { bubbles: true });
     this.mangledInput.nativeElement.dispatchEvent(event);
   }
@@ -153,7 +153,7 @@ export class AppComponent implements OnInit {
 
     (this.formatStyle! as any)[key] = (this.formatter! as any)[(this.formatStyle! as any)[key].constructor.name.split('_')[0]][(this.formatStyle! as any)[key].constructor.name.split('_')[1] + '_' + newValue]
 
-    this.onColumnLimitChange();
+    this.reformat();
   }
 
   isUndefined(value: any): boolean {
@@ -169,6 +169,27 @@ export class AppComponent implements OnInit {
     if ((this.formatStyle! as any)[key] !== undefined) {
       (this.formatStyle! as any)[key] = value;
     }
+  }
+
+  isStringList(value: any): boolean {
+    return typeof value === 'object' && typeof value.$$ !== 'undefined' && value.$$.ptrType.registeredClass.name == 'StringList';
+  }
+
+  stringListToTextArea(raw_value: any): string {
+    let value: StringList = raw_value as StringList;
+    let retval: string[] = [];
+    for (let i = 0; i < value.size(); i++) {
+      retval.push(value.get(i) as string);
+    }
+    return retval.join('\n');
+  }
+
+  public onStringList(event: Event, key: string): void {
+    ((this.formatStyle! as any)[key] as StringList).resize(0, '');
+    const data: string = (event.target as any).value;
+    data.split('\n').forEach(data_i => ((this.formatStyle! as any)[key] as StringList).push_back(data_i));
+
+    this.reformat();
   }
 
   typeOf(value: any): string {

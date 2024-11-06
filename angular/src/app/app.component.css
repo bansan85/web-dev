@@ -77,3 +77,7 @@ dialog.open {
   opacity: 0.5;
   pointer-events: none;
 }
+
+.textarea_field {
+  height: auto;
+}
