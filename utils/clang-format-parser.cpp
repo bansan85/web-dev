@@ -24,7 +24,8 @@ public:
          Declaration->getAccess() == clang::AccessSpecifier::AS_public)) {
       emscripten_file << "emscripten::class_<"
                       << Declaration->getQualifiedNameAsString() << ">(\""
-                      << Declaration->getNameAsString() << "\")";
+                      << Declaration->getNameAsString() << "\")\n"
+                      << ".constructor()";
       for (const auto *Field : Declaration->fields()) {
         if (Field->getAccess() == clang::AccessSpecifier::AS_public) {
           emscripten_file << "\n.property(\"" << Field->getNameAsString()
