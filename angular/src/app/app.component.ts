@@ -6,7 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
 
 import { EmbindModule as DemanglerModule } from '../assets/web_demangler.js';
-import { EmbindModule as FormatterModule, FormatStyle, StringList } from '../assets/web_formatter.js';
+import { EmbindModule as FormatterModule, FormatStyle, StringList, RawStringFormat } from '../assets/web_formatter.js';
 
 @Component({
   selector: 'app-root',
@@ -60,6 +60,17 @@ export class AppComponent implements OnInit {
 
     this.formatStyle = this.formatter.getMozillaStyle();
     this.emptyStyle = this.formatter.getNoStyle();
+
+    let t: RawStringFormat = new this.formatter.RawStringFormat();
+    t.BasedOnStyle = "google";
+    t.Delimiters.push_back("p");
+    t.Delimiters.push_back("b");
+    t.Language = this.formatter.LanguageKind.LK_Proto;
+
+    this.formatStyle.RawStringFormats.push_back(t);
+
+    console.log(this.formatStyle.RawStringFormats);
+    console.log(this.formatStyle.RawStringFormats.get(0));
 
     if (this.pendingText) {
       const event = new Event('input', { bubbles: true });
@@ -180,16 +191,23 @@ export class AppComponent implements OnInit {
     return items.filter(item => !["values", "prototype", "length", "name"].includes(item)).map(item => item.split('_').slice(1).join('_'));
   }
 
-  updateEnum(newValue: string, key: string): void {
-    (this.formatStyle! as any)[key] = (this.formatter! as any)[(this.formatStyle! as any)[key].constructor.name.split('_')[0]][(this.formatStyle! as any)[key].constructor.name.split('_')[1] + '_' + newValue]
-    this.reformat();
+  getLastStruct(root: FormatStyle, keys: (string | number)[]) {
+    let target = root as any;
+    for (let i = 0; i < keys.length - 1; i++) {
+      if (typeof keys[i] === "number") {
+        target = target.get(keys[i]);
+      } else {
+        target = target[keys[i]];
+      }
+    }
+    return target;
   }
-  updateSubEnum(newValue: string, key: string, subkey: string): void {
-    (this.formatStyle! as any)[key][subkey] = (this.formatter! as any)[(this.formatStyle! as any)[key][subkey].constructor.name.split('_')[0]][(this.formatStyle! as any)[key][subkey].constructor.name.split('_')[1] + '_' + newValue]
-    this.reformat();
-  }
-  updateSubSubEnum(newValue: string, key: string, subkey: string, subsubkey: string): void {
-    (this.formatStyle! as any)[key][subkey][subsubkey] = (this.formatter! as any)[(this.formatStyle! as any)[key][subkey][subsubkey].constructor.name.split('_')[0]][(this.formatStyle! as any)[key][subkey][subsubkey].constructor.name.split('_')[1] + '_' + newValue]
+
+  updateEnum(newValue: string, keys: (string | number)[]): void {
+    const target = this.getLastStruct(this.formatStyle!, keys);
+    const lastKey = keys.at(-1)!;
+
+    target[lastKey] = (this.formatter! as any)[target[lastKey].constructor.name.split('_')[0]][target[lastKey].constructor.name.split('_')[1] + '_' + newValue]
     this.reformat();
   }
 
@@ -197,32 +215,20 @@ export class AppComponent implements OnInit {
     return typeof value === 'undefined';
   }
 
-  onUndefinedCheckboxChange(event: Event, inputValue: string, key: string) {
+  onUndefinedCheckboxChange(event: Event, inputValue: string, keys: (string | number)[]) {
+    const target = this.getLastStruct(this.formatStyle!, keys);
+    const lastKey = keys.at(-1)!;
+
     const checked = (event.target as HTMLInputElement).checked;
-    (this.formatStyle! as any)[key] = checked ? inputValue : undefined;
-  }
-  onSubUndefinedCheckboxChange(event: Event, inputValue: string, key: string, subkey: string) {
-    const checked = (event.target as HTMLInputElement).checked;
-    (this.formatStyle! as any)[key][subkey] = checked ? inputValue : undefined;
-  }
-  onSubSubUndefinedCheckboxChange(event: Event, inputValue: string, key: string, subkey: string, subsubkey: string) {
-    const checked = (event.target as HTMLInputElement).checked;
-    (this.formatStyle! as any)[key][subkey][subsubkey] = checked ? inputValue : undefined;
+    target[lastKey] = checked ? inputValue : undefined;
   }
 
-  onUndefinedInputChange(value: string, key: string) {
-    if ((this.formatStyle! as any)[key] !== undefined) {
-      (this.formatStyle! as any)[key] = value;
-    }
-  }
-  onSubUndefinedInputChange(value: string, key: string, subkey: string) {
-    if ((this.formatStyle! as any)[key][subkey] !== undefined) {
-      (this.formatStyle! as any)[key][subkey] = value;
-    }
-  }
-  onSubSubUndefinedInputChange(value: string, key: string, subkey: string, subsubkey: string) {
-    if ((this.formatStyle! as any)[key][subkey][subsubkey] !== undefined) {
-      (this.formatStyle! as any)[key][subkey][subsubkey] = value;
+  onUndefinedInputChange(value: string, keys: (string | number)[]) {
+    const target = this.getLastStruct(this.formatStyle!, keys);
+    const lastKey = keys.at(-1)!;
+
+    if (target[lastKey] !== undefined) {
+      target[lastKey] = value;
     }
   }
 
@@ -239,26 +245,17 @@ export class AppComponent implements OnInit {
     return retval.join('\n');
   }
 
-  public onStringList(event: Event, key: string): void {
-    ((this.formatStyle! as any)[key] as StringList).resize(0, '');
+  public onStringList(event: Event, keys: (string | number)[]): void {
+    const target = this.getLastStruct(this.formatStyle!, keys);
+    const lastKey = keys.at(-1)!;
+
+    (target[lastKey] as StringList).resize(0, '');
     const data: string = (event.target as any).value;
-    data.split('\n').forEach(data_i => ((this.formatStyle! as any)[key] as StringList).push_back(data_i));
+    data.split('\n').forEach(data_i => (target[lastKey] as StringList).push_back(data_i));
 
     this.reformat();
-  }
-  public onSubStringList(event: Event, key: string, subkey: string): void {
-    ((this.formatStyle! as any)[key][subkey] as StringList).resize(0, '');
-    const data: string = (event.target as any).value;
-    data.split('\n').forEach(data_i => ((this.formatStyle! as any)[key][subkey] as StringList).push_back(data_i));
 
-    this.reformat();
-  }
-  public onSubSubStringList(event: Event, key: string, subkey: string, subsubkey: string): void {
-    ((this.formatStyle! as any)[key][subkey][subsubkey] as StringList).resize(0, '');
-    const data: string = (event.target as any).value;
-    data.split('\n').forEach(data_i => ((this.formatStyle! as any)[key][subkey][subsubkey] as StringList).push_back(data_i));
-
-    this.reformat();
+    console.log(this.formatStyle!.AttributeMacros.get(1));
   }
 
   isFunction(value: any): boolean {
