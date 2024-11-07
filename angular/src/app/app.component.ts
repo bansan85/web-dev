@@ -61,17 +61,6 @@ export class AppComponent implements OnInit {
     this.formatStyle = this.formatter.getMozillaStyle();
     this.emptyStyle = this.formatter.getNoStyle();
 
-    let t: RawStringFormat = new this.formatter.RawStringFormat();
-    t.BasedOnStyle = "google";
-    t.Delimiters.push_back("p");
-    t.Delimiters.push_back("b");
-    t.Language = this.formatter.LanguageKind.LK_Proto;
-
-    this.formatStyle.RawStringFormats.push_back(t);
-
-    console.log(this.formatStyle.RawStringFormats);
-    console.log(this.formatStyle.RawStringFormats.get(0));
-
     if (this.pendingText) {
       const event = new Event('input', { bubbles: true });
       this.mangledInput.nativeElement.dispatchEvent(event);
@@ -118,52 +107,37 @@ export class AppComponent implements OnInit {
     this.mangledInput.nativeElement.dispatchEvent(event);
   }
 
-  get formatStyleKeys(): (keyof FormatStyle)[] {
-    const keys: (keyof FormatStyle)[] = [];
-
-    if (!this.formatter) {
-      return keys;
-    }
-
-    for (const key in this.emptyStyle) {
-      if (this.emptyStyle.hasOwnProperty(key) || key in this.emptyStyle) {
-        keys.push(key as (keyof FormatStyle));
+  getLastStruct(root: FormatStyle, keys: (string | number)[]) {
+    let target = root as any;
+    for (let i = 0; i < keys.length - 1; i++) {
+      if (typeof keys[i] === "number") {
+        target = target.get(keys[i]);
+      } else {
+        target = target[keys[i]];
       }
     }
-
-    return keys;
+    return target;
   }
 
-  formatStyleSubKeys(key: string): any[] {
-    const keys: any[] = [];
-
-    if (!this.formatter) {
-      return keys;
+  formatStyleKeys(keys: (string | number)[]): any {
+    let target = this.getLastStruct(this.emptyStyle!, keys);
+    if (keys.length != 0) {
+      target = target[keys.at(-1)!];
     }
 
-    for (const subkey in (this.emptyStyle as any)[key]) {
-      if ((this.emptyStyle as any)[key].hasOwnProperty(subkey) || subkey in (this.emptyStyle as any)[key]) {
-        keys.push(subkey);
+    const retval: any = [];
+
+    if (!this.formatter) {
+      return retval;
+    }
+
+    for (const key in target) {
+      if (target.hasOwnProperty(key) || key in target) {
+        retval.push(key);
       }
     }
 
-    return keys;
-  }
-
-  formatStyleSubSubKeys(key: string, subkey: string): any[] {
-    const keys: any[] = [];
-
-    if (!this.formatter) {
-      return keys;
-    }
-
-    for (const subsubkey in (this.emptyStyle as any)[key][subkey]) {
-      if ((this.emptyStyle as any)[key][subkey].hasOwnProperty(subsubkey) || subsubkey in (this.emptyStyle as any)[key][subkey]) {
-        keys.push(subsubkey);
-      }
-    }
-
-    return keys;
+    return retval;
   }
 
   isNumber(value: any): boolean {
@@ -189,18 +163,6 @@ export class AppComponent implements OnInit {
   allEnums(value: any): string[] {
     const items = Object.getOwnPropertyNames(Object.getPrototypeOf(value).constructor);
     return items.filter(item => !["values", "prototype", "length", "name"].includes(item)).map(item => item.split('_').slice(1).join('_'));
-  }
-
-  getLastStruct(root: FormatStyle, keys: (string | number)[]) {
-    let target = root as any;
-    for (let i = 0; i < keys.length - 1; i++) {
-      if (typeof keys[i] === "number") {
-        target = target.get(keys[i]);
-      } else {
-        target = target[keys[i]];
-      }
-    }
-    return target;
   }
 
   updateEnum(newValue: string, keys: (string | number)[]): void {
@@ -254,8 +216,6 @@ export class AppComponent implements OnInit {
     data.split('\n').forEach(data_i => (target[lastKey] as StringList).push_back(data_i));
 
     this.reformat();
-
-    console.log(this.formatStyle!.AttributeMacros.get(1));
   }
 
   isFunction(value: any): boolean {
