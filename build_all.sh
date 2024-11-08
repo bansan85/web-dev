@@ -1,3 +1,5 @@
+git submodule update --init --recursive
+
 # Build generator with native llvm to prepare wrapper for clang-format
 cmake -S utils -B build_utils_release -G Ninja -DCMAKE_BUILD_TYPE=Release
 cd build_utils_release
@@ -16,7 +18,7 @@ cd ..
 emcmake cmake -S . -B build_release -G "Ninja" -DCMAKE_BUILD_TYPE="Release"
 cmake --build build_release --parallel 8
 mkdir -p angular/src/assets
-rm -Rf angular/src/assets/*
+rm -f angular/src/assets/*
 cp build_release/web* angular/src/assets/
 
 # Build Angular project

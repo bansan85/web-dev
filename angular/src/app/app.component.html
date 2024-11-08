@@ -8,13 +8,13 @@
     </ng-container>
     <dd>
       <ng-container *ngIf="isNumber($any(emptyStyle)[key])">
-        <input type="number" [(ngModel)]="$any(formatStyle)[key]" (ngModelChange)="reformat()" />
+        <input type="number" [ngModel]="$any(formatStyle)[key]" (ngModelChange)="updateRawType($event, [key])" />
       </ng-container>
       <ng-container *ngIf="isBoolean($any(emptyStyle)[key])">
-        <input type="checkbox" [(ngModel)]="$any(formatStyle)[key]" (ngModelChange)="reformat()" />
+        <input type="checkbox" [ngModel]="$any(formatStyle)[key]" (ngModelChange)="updateRawType($event, [key])" />
       </ng-container>
       <ng-container *ngIf="isString($any(emptyStyle)[key])">
-        <input [(ngModel)]="$any(formatStyle)[key]" (ngModelChange)="reformat()" />
+        <input [ngModel]="$any(formatStyle)[key]" (ngModelChange)="updateRawType($event, [key])" />
       </ng-container>
       <ng-container *ngIf="isEnum($any(emptyStyle)[key])">
         <select [ngModel]="getEnum($any(formatStyle)[key])" (ngModelChange)="updateEnum($event, [key])">
@@ -32,22 +32,68 @@
         <textarea class="textarea_field" rows="5"
           (input)="onStringList($event, [key])">{{ stringListToTextArea($any(formatStyle)[key]) }}</textarea>
       </ng-container>
-
+      <ng-container *ngIf="isList($any(emptyStyle)[key]) && !isStringList($any(emptyStyle)[key])">
+        <span>Size:</span>
+        <input type="number" [ngModel]="$any(formatStyle)[key].size()" (ngModelChange)="resizeList($event, [key])" />
+        <dl *ngFor="let index of [].constructor($any(formatStyle)[key].size()); let i = index">
+          <dt>Element {{ i }}</dt>
+          <dd>
+            <dl *ngFor="let subkey of formatStyleKeys([key, i])">
+              <ng-container *ngIf="!isFunction($any(formatStyle)[key].get(i)[subkey])">
+                <dt>{{ subkey }}:</dt>
+              </ng-container>
+              <dd>
+                <ng-container *ngIf="isNumber($any(formatStyle)[key].get(i)[subkey])">
+                  <input type="number" [ngModel]="$any(formatStyle)[key].get(i)[subkey]"
+                    (ngModelChange)="updateRawType($event, [key, i, subkey])" />
+                </ng-container>
+                <ng-container *ngIf="isBoolean($any(formatStyle)[key].get(i)[subkey])">
+                  <input type="checkbox" [ngModel]="$any(formatStyle)[key].get(i)[subkey]"
+                    (ngModelChange)="updateRawType($event, [key, i, subkey])" />
+                </ng-container>
+                <ng-container *ngIf="isString($any(formatStyle)[key].get(i)[subkey])">
+                  <input [ngModel]="$any(formatStyle)[key].get(i)[subkey]"
+                    (ngModelChange)="updateRawType($event, [key, i, subkey])" />
+                </ng-container>
+                <ng-container *ngIf="isEnum($any(formatStyle)[key].get(i)[subkey])">
+                  <select [ngModel]="getEnum($any(formatStyle)[key].get(i)[subkey])"
+                    (ngModelChange)="updateEnum($event, [key, i, subkey])">
+                    <option *ngFor="let style of allEnums($any(formatStyle)[key].get(i)[subkey])" [ngValue]="style">
+                      {{ style }}
+                    </option>
+                  </select>
+                </ng-container>
+                <ng-container *ngIf="isUndefined($any(formatStyle)[key].get(i)[subkey])">
+                  <input type="checkbox"
+                    (change)="onUndefinedCheckboxChange($event, inputElement.value, [key, i, subkey])" />
+                  <input #inputElement type="number" [disabled]="$any(formatStyle)[key].get(i)[subkey] === undefined"
+                    (input)="onUndefinedInputChange(inputElement.value, [key, i, subkey])" />
+                </ng-container>
+                <ng-container *ngIf="isStringList($any(formatStyle)[key].get(i)[subkey])">
+                  <textarea class="textarea_field" rows="5"
+                    (input)="onStringList($event, [key, i, subkey])">{{ stringListToTextArea($any(formatStyle)[key].get(i)[subkey]) }}</textarea>
+                </ng-container>
+            </dl>
+          </dd>
+        </dl>
+      </ng-container>
       <ng-container *ngIf="isMiscStruct($any(emptyStyle)[key])">
-
         <dl *ngFor="let subkey of formatStyleKeys([key])">
           <ng-container *ngIf="!isFunction($any(emptyStyle)[key][subkey])">
             <dt>{{ subkey }}:</dt>
           </ng-container>
           <dd>
             <ng-container *ngIf="isNumber($any(emptyStyle)[key][subkey])">
-              <input type="number" [(ngModel)]="$any(formatStyle)[key][subkey]" (ngModelChange)="reformat()" />
+              <input type="number" [ngModel]="$any(formatStyle)[key][subkey]"
+                (ngModelChange)="updateRawType($event, [key, subkey])" />
             </ng-container>
             <ng-container *ngIf="isBoolean($any(emptyStyle)[key][subkey])">
-              <input type="checkbox" [(ngModel)]="$any(formatStyle)[key][subkey]" (ngModelChange)="reformat()" />
+              <input type="checkbox" [ngModel]="$any(formatStyle)[key][subkey]"
+                (ngModelChange)="updateRawType($event, [key, subkey])" />
             </ng-container>
             <ng-container *ngIf="isString($any(emptyStyle)[key][subkey])">
-              <input [(ngModel)]="$any(formatStyle)[key][subkey]" (ngModelChange)="reformat()" />
+              <input [ngModel]="$any(formatStyle)[key][subkey]"
+                (ngModelChange)="updateRawType($event, [key, subkey])" />
             </ng-container>
             <ng-container *ngIf="isEnum($any(emptyStyle)[key][subkey])">
               <select [ngModel]="getEnum($any(formatStyle)[key][subkey])"
@@ -66,24 +112,71 @@
               <textarea class="textarea_field" rows="5"
                 (input)="onStringList($event, [key, subkey])">{{ stringListToTextArea($any(formatStyle)[key][subkey]) }}</textarea>
             </ng-container>
-
+            <ng-container *ngIf="isList($any(emptyStyle)[key][subkey]) && !isStringList($any(emptyStyle)[key][subkey])">
+              <span>Size:</span>
+              <input type="number" [ngModel]="$any(formatStyle)[key][subkey].size()"
+                (ngModelChange)="resizeList($event, [key, subkey])" />
+              <dl *ngFor="let index of [].constructor($any(formatStyle)[key][subkey].size()); let i = index">
+                <dt>Element {{ i }}</dt>
+                <dd>
+                  <dl *ngFor="let subkey2 of formatStyleKeys([key, subkey, i])">
+                    <ng-container *ngIf="!isFunction($any(formatStyle)[key][subkey].get(i)[subkey2])">
+                      <dt>{{ subkey2 }}:</dt>
+                    </ng-container>
+                    <dd>
+                      <ng-container *ngIf="isNumber($any(formatStyle)[key][subkey].get(i)[subkey2])">
+                        <input type="number" [ngModel]="$any(formatStyle)[key][subkey].get(i)[subkey2]"
+                          (ngModelChange)="updateRawType($event, [key, subkey, i, subkey2])" />
+                      </ng-container>
+                      <ng-container *ngIf="isBoolean($any(formatStyle)[key][subkey].get(i)[subkey2])">
+                        <input type="checkbox" [ngModel]="$any(formatStyle)[key][subkey].get(i)[subkey2]"
+                          (ngModelChange)="updateRawType($event, [key, subkey, i, subkey2])" />
+                      </ng-container>
+                      <ng-container *ngIf="isString($any(formatStyle)[key][subkey].get(i)[subkey2])">
+                        <input [ngModel]="$any(formatStyle)[key][subkey].get(i)[subkey2]"
+                          (ngModelChange)="updateRawType($event, [key, subkey, i, subkey2])" />
+                      </ng-container>
+                      <ng-container *ngIf="isEnum($any(formatStyle)[key][subkey].get(i)[subkey2])">
+                        <select [ngModel]="getEnum($any(formatStyle)[key][subkey].get(i)[subkey2])"
+                          (ngModelChange)="updateEnum($event, [key, subkey, i, subkey2])">
+                          <option *ngFor="let style of allEnums($any(formatStyle)[subkey].get(i)[subkey2])"
+                            [ngValue]="style">
+                            {{ style }}
+                          </option>
+                        </select>
+                      </ng-container>
+                      <ng-container *ngIf="isUndefined($any(formatStyle)[key][subkey].get(i)[subkey2])">
+                        <input type="checkbox"
+                          (change)="onUndefinedCheckboxChange($event, inputElement.value, [key, subkey, i, subkey2])" />
+                        <input #inputElement type="number"
+                          [disabled]="$any(formatStyle)[key][subkey].get(i)[subkey2] === undefined"
+                          (input)="onUndefinedInputChange(inputElement.value, [key, subkey, i, subkey2])" />
+                      </ng-container>
+                      <ng-container *ngIf="isStringList($any(formatStyle)[key][subkey].get(i)[subkey2])">
+                        <textarea class="textarea_field" rows="5"
+                          (input)="onStringList($event, [key, subkey, i, subkey2])">{{ stringListToTextArea($any(formatStyle)[key][subkey].get(i)[subkey2]) }}</textarea>
+                      </ng-container>
+                  </dl>
+                </dd>
+              </dl>
+            </ng-container>
             <ng-container *ngIf="isMiscStruct($any(emptyStyle)[key][subkey])">
-
               <dl *ngFor="let subsubkey of formatStyleKeys([key, subkey])">
                 <ng-container *ngIf="!isFunction($any(emptyStyle)[key][subkey][subsubkey])">
                   <dt>{{ subsubkey }}:</dt>
                 </ng-container>
                 <dd>
                   <ng-container *ngIf="isNumber($any(emptyStyle)[key][subkey][subsubkey])">
-                    <input type="number" [(ngModel)]="$any(formatStyle)[key][subkey][subsubkey]"
-                      (ngModelChange)="reformat()" />
+                    <input type="number" [ngModel]="$any(formatStyle)[key][subkey][subsubkey]"
+                      (ngModelChange)="updateRawType($event, [key, subkey, subsubkey])" />
                   </ng-container>
                   <ng-container *ngIf="isBoolean($any(emptyStyle)[key][subkey][subsubkey])">
-                    <input type="checkbox" [(ngModel)]="$any(formatStyle)[key][subkey][subsubkey]"
-                      (ngModelChange)="reformat()" />
+                    <input type="checkbox" [ngModel]="$any(formatStyle)[key][subkey][subsubkey]"
+                      (ngModelChange)="updateRawType($event, [key, subkey, subsubkey])" />
                   </ng-container>
                   <ng-container *ngIf="isString($any(emptyStyle)[key][subkey][subsubkey])">
-                    <input [(ngModel)]="$any(formatStyle)[key][subkey][subsubkey]" (ngModelChange)="reformat()" />
+                    <input [ngModel]="$any(formatStyle)[key][subkey][subsubkey]"
+                      (ngModelChange)="updateRawType($event, [key, subkey, subsubkey])" />
                   </ng-container>
                   <ng-container *ngIf="isEnum($any(emptyStyle)[key][subkey][subsubkey])">
                     <select [ngModel]="getEnum($any(formatStyle)[key][subkey][subsubkey])"
@@ -105,12 +198,15 @@
                     <textarea class="textarea_field" rows="5"
                       (input)="onStringList($event, [key, subkey, subsubkey])">{{ stringListToTextArea($any(formatStyle)[key][subkey][subsubkey]) }}</textarea>
                   </ng-container>
+                  <ng-container
+                    *ngIf="isList($any(emptyStyle)[key][subkey][subsubkey]) && !isStringList($any(emptyStyle)[key][subkey][subsubkey])">
+                    <span>COUCOU</span>
+                  </ng-container>
                 </dd>
               </dl>
             </ng-container>
           </dd>
         </dl>
-
       </ng-container>
     </dd>
   </dl>
