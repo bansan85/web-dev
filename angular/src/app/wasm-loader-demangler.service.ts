@@ -3,7 +3,7 @@ import web_demangler from '../assets/web_demangler.js';
 import { EmbindModule as DemanglerModule } from '../assets/web_demangler.js';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class WasmLoaderDemanglerService {
   private instance?: DemanglerModule;

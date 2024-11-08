@@ -3,7 +3,7 @@ import web_formatter from '../assets/web_formatter.js';
 import { EmbindModule as FormatterModule } from '../assets/web_formatter.js';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class WasmLoaderFormatterService {
   private instance?: FormatterModule;

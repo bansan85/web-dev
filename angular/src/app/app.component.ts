@@ -6,14 +6,19 @@ import { FormsModule } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
 
 import { EmbindModule as DemanglerModule } from '../assets/web_demangler.js';
-import { EmbindModule as FormatterModule, FormatStyle, StringList, RawStringFormat } from '../assets/web_formatter.js';
+import {
+  EmbindModule as FormatterModule,
+  FormatStyle,
+  StringList,
+  RawStringFormat,
+} from '../assets/web_formatter.js';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [NgFor, NgIf, NgClass, FormsModule, LucideAngularModule],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrl: './app.component.css',
 })
 export class AppComponent implements OnInit {
   demangler: DemanglerModule | undefined;
@@ -30,11 +35,14 @@ export class AppComponent implements OnInit {
   // Text by pending if text insert while wasm is loading.
   pendingText: boolean = false;
 
-  @ViewChild('dialog', { static: false }) dialogRef!: ElementRef<HTMLDialogElement>;
+  @ViewChild('dialog', { static: false })
+  dialogRef!: ElementRef<HTMLDialogElement>;
   @ViewChild('mangledInput') mangledInput!: ElementRef<HTMLTextAreaElement>;
 
-  constructor(private wasmLoaderDemangler: WasmLoaderDemanglerService,
-    private wasmLoaderFormatter: WasmLoaderFormatterService) { }
+  constructor(
+    private wasmLoaderDemangler: WasmLoaderDemanglerService,
+    private wasmLoaderFormatter: WasmLoaderFormatterService
+  ) {}
 
   async ngOnInit() {
     if (!this.demangler) {
@@ -47,14 +55,14 @@ export class AppComponent implements OnInit {
 
   async loadWasmDemanglerModule() {
     while (!this.wasmLoaderDemangler.wasm()) {
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
     }
     this.demangler = this.wasmLoaderDemangler.wasm()!;
   }
 
   async loadWasmFormatterModule() {
     while (!this.wasmLoaderFormatter.wasm()) {
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
     }
     this.formatter = this.wasmLoaderFormatter.wasm()!;
 
@@ -77,9 +85,12 @@ export class AppComponent implements OnInit {
     }
     if (this.demangler && this.formatter && this.formatStyle) {
       const lines = mangledName.split('\n');
-      this.demangledName = lines.map(line =>
+      this.demangledName = lines.map((line) =>
         this.formatter!.formatter(
-          this.demangler!.web_demangle(line.trim()), this.formatStyle!));
+          this.demangler!.web_demangle(line.trim()),
+          this.formatStyle!
+        )
+      );
     } else {
       this.pendingText = true;
     }
@@ -87,14 +98,17 @@ export class AppComponent implements OnInit {
 
   openDialog() {
     this.dialogRef.nativeElement.showModal();
-    setTimeout(() => this.isOpen = true, 0);
+    setTimeout(() => (this.isOpen = true), 0);
   }
 
   closeDialog() {
     const close = (event: TransitionEvent) => {
       if (event.propertyName === 'opacity') {
         this.dialogRef.nativeElement.close();
-        this.dialogRef.nativeElement.removeEventListener('transitionend', close);
+        this.dialogRef.nativeElement.removeEventListener(
+          'transitionend',
+          close
+        );
       }
     };
 
@@ -110,7 +124,7 @@ export class AppComponent implements OnInit {
   getLastStruct(root: FormatStyle, keys: (string | number)[]) {
     let target = root as any;
     for (let i = 0; i < keys.length - 1; i++) {
-      if (typeof keys[i] === "number") {
+      if (typeof keys[i] === 'number') {
         target = target.get(keys[i]);
       } else {
         target = target[keys[i]];
@@ -161,15 +175,23 @@ export class AppComponent implements OnInit {
   }
 
   allEnums(value: any): string[] {
-    const items = Object.getOwnPropertyNames(Object.getPrototypeOf(value).constructor);
-    return items.filter(item => !["values", "prototype", "length", "name"].includes(item)).map(item => item.split('_').slice(1).join('_'));
+    const items = Object.getOwnPropertyNames(
+      Object.getPrototypeOf(value).constructor
+    );
+    return items
+      .filter(
+        (item) => !['values', 'prototype', 'length', 'name'].includes(item)
+      )
+      .map((item) => item.split('_').slice(1).join('_'));
   }
 
   updateEnum(newValue: string, keys: (string | number)[]): void {
     const target = this.getLastStruct(this.formatStyle!, keys);
     const lastKey = keys.at(-1)!;
 
-    target[lastKey] = (this.formatter! as any)[target[lastKey].constructor.name.split('_')[0]][target[lastKey].constructor.name.split('_')[1] + '_' + newValue]
+    target[lastKey] = (this.formatter! as any)[
+      target[lastKey].constructor.name.split('_')[0]
+    ][target[lastKey].constructor.name.split('_')[1] + '_' + newValue];
     this.reformat();
   }
 
@@ -177,7 +199,11 @@ export class AppComponent implements OnInit {
     return typeof value === 'undefined';
   }
 
-  onUndefinedCheckboxChange(event: Event, inputValue: string, keys: (string | number)[]) {
+  onUndefinedCheckboxChange(
+    event: Event,
+    inputValue: string,
+    keys: (string | number)[]
+  ) {
     const target = this.getLastStruct(this.formatStyle!, keys);
     const lastKey = keys.at(-1)!;
 
@@ -195,7 +221,11 @@ export class AppComponent implements OnInit {
   }
 
   isStringList(value: any): boolean {
-    return typeof value === 'object' && typeof value.$$ !== 'undefined' && value.$$.ptrType.registeredClass.name == 'StringList';
+    return (
+      typeof value === 'object' &&
+      typeof value.$$ !== 'undefined' &&
+      value.$$.ptrType.registeredClass.name == 'StringList'
+    );
   }
 
   stringListToTextArea(raw_value: any): string {
@@ -213,7 +243,9 @@ export class AppComponent implements OnInit {
 
     (target[lastKey] as StringList).resize(0, '');
     const data: string = (event.target as any).value;
-    data.split('\n').forEach(data_i => (target[lastKey] as StringList).push_back(data_i));
+    data
+      .split('\n')
+      .forEach((data_i) => (target[lastKey] as StringList).push_back(data_i));
 
     this.reformat();
   }
@@ -223,7 +255,11 @@ export class AppComponent implements OnInit {
   }
 
   isMiscStruct(value: any): boolean {
-    return typeof value === 'object' && typeof value.$$ !== 'undefined' && !this.isStringList(value);
+    return (
+      typeof value === 'object' &&
+      typeof value.$$ !== 'undefined' &&
+      !this.isStringList(value)
+    );
   }
 
   typeOf(value: any): string {
