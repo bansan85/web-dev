@@ -57,6 +57,7 @@ jobs:
         cd angular
         npm install -g @angular/cli
         npm install
+        ng test --browsers=ChromeHeadless --watch=false
         ng build --configuration development
         cd ..
     - name: Register website in known_hosts
