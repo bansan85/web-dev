@@ -34,8 +34,7 @@ export class AppComponent implements OnInit {
   // Text by pending if text insert while wasm is loading.
   pendingText: boolean = false;
 
-  @ViewChild('dialog', { static: false })
-  dialogRef!: ElementRef<HTMLDialogElement>;
+  @ViewChild('dialog') dialogRef!: ElementRef<HTMLDialogElement>;
   @ViewChild('mangledInput') mangledInput!: ElementRef<HTMLTextAreaElement>;
 
   constructor(
@@ -221,7 +220,7 @@ export class AppComponent implements OnInit {
     );
     return items
       .filter(
-        (item) => !['values', 'prototype', 'length', 'name'].includes(item)
+        (item) => !['values', 'prototype', 'length', 'name', 'argCount'].includes(item)
       )
       .map((item) => item.split('_').slice(1).join('_'));
   }
@@ -245,14 +244,14 @@ export class AppComponent implements OnInit {
   ) {
     this.updateField(keys, (x: any[]) => {
       const checked = (event.target as HTMLInputElement).checked;
-      x[x.length - 1] = checked ? inputValue : undefined;
+      x[x.length - 1] = checked ? (inputValue === '' ? 0 : inputValue) : undefined;
     });
   }
 
   onUndefinedInputChange(value: string, keys: (string | number)[]) {
     this.updateField(keys, (x: any[]) => {
       if (x[x.length - 1] !== undefined) {
-        x[x.length - 1] = value;
+        x[x.length - 1] = Number(value);
       }
     });
   }

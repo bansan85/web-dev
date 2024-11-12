@@ -9,70 +9,70 @@ jobs:
       matrix:
         node-version: [22.x]
     steps:
-    - uses: actions/checkout@v4
-      with:
-        submodules: 'true'
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-        cache-dependency-path: angular/package-lock.json
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
-      with:
-        max-size: "1000M"
-        key: ${{ github.job }}-Debug
-    - name: Install dependencies
-      run: |
-        wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | sudo tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc
-        sudo apt-add-repository -y 'deb https://apt.llvm.org/jammy/ llvm-toolchain-jammy-19 main'
-        sudo apt-get remove --purge -y '*clang*' '*llvm*'
-        sudo apt-get install -y ninja-build clang-19 libclang-19-dev llvm-19-dev
-    - name: Generate Format.h wrapper
-      run: |
-        cmake -S utils -B build_utils -G Ninja -DCMAKE_BUILD_TYPE=Debug
-        cmake --build build_utils --parallel 4
-    - name: Emscripten
-      run: |
-        cd emsdk
-        ./emsdk install latest
-        ./emsdk activate latest
-        source ./emsdk_env.sh
-        cd ..
-        emcmake cmake -S . -B build -G "Ninja" -DCMAKE_BUILD_TYPE="Debug" -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
-        cd build
-        npm install typescript
-        export PATH=$PATH:$(pwd)/node_modules/.bin
-        cmake --build . --parallel 4
-        cd ..
-    - name: Angular
-      run: |
-        cp build/web_*.js angular/src/assets/
-        cp build/web_*.js.symbols angular/src/assets/
-        cp build/web_*.wasm angular/src/assets/
-        cp build/web_*.wasm.debug.wasm angular/src/assets/
-        cp build/web_*.wasm.map angular/src/assets/
-        cp build/web_*.d.ts angular/src/assets/
-        cd angular
-        npm install -g @angular/cli
-        npm install
-        ng test --browsers=ChromeHeadless --watch=false
-        ng build --configuration development
-        cd ..
-    - name: Register website in known_hosts
-      run: |
-        mkdir /home/runner/.ssh
-        chmod 700 /home/runner/.ssh
-        echo "${{ secrets.UPLOAD_KNOW_HOST }}" >> /home/runner/.ssh/known_hosts
-    - name: Upload to website
-      run: |
-        sshpass -p ${{ secrets.UPLOAD_PASSWORD }} sftp -P ${{ vars.UPLOAD_PORT }} ${{ secrets.UPLOAD_USERNAME }}@${{ secrets.UPLOAD_HOST }}:${{ secrets.UPLOAD_PATH_DEBUG }} <<EOF
-          rm -r *
-          mput angular/dist/web-demangler/browser/*
-          mput angular/dist/web-demangler/browser/.*
-          mkdir img
-          cd img
-          mput angular/dist/web-demangler/browser/img/*
-        bye
-        EOF
+      - uses: actions/checkout@v4
+        with:
+          submodules: "true"
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+          cache-dependency-path: angular/package-lock.json
+      - name: ccache
+        uses: hendrikmuhs/ccache-action@v1.2
+        with:
+          max-size: "1000M"
+          key: ${{ github.job }}-Debug
+      - name: Install dependencies
+        run: |
+          wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | sudo tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc
+          sudo apt-add-repository -y 'deb https://apt.llvm.org/jammy/ llvm-toolchain-jammy-19 main'
+          sudo apt-get remove --purge -y '*clang*' '*llvm*'
+          sudo apt-get install -y ninja-build clang-19 libclang-19-dev llvm-19-dev
+      - name: Generate Format.h wrapper
+        run: |
+          cmake -S utils -B build_utils -G Ninja -DCMAKE_BUILD_TYPE=Debug
+          cmake --build build_utils --parallel 4
+      - name: Emscripten
+        run: |
+          cd emsdk
+          ./emsdk install latest
+          ./emsdk activate latest
+          source ./emsdk_env.sh
+          cd ..
+          emcmake cmake -S . -B build -G "Ninja" -DCMAKE_BUILD_TYPE="Debug" -DWITH_SANITIZE_ADDRESS=ON -DWITH_SANITIZE_UNDEFINED=ON -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+          cd build
+          npm install typescript
+          export PATH=$PATH:$(pwd)/node_modules/.bin
+          cmake --build . --parallel 4
+          cd ..
+      - name: Angular
+        run: |
+          cp build/web_*.js angular/src/assets/
+          cp build/web_*.js.symbols angular/src/assets/
+          cp build/web_*.wasm angular/src/assets/
+          cp build/web_*.wasm.debug.wasm angular/src/assets/
+          cp build/web_*.wasm.map angular/src/assets/
+          cp build/web_*.d.ts angular/src/assets/
+          cd angular
+          npm install -g @angular/cli
+          npm install
+          ng test --browsers=ChromeHeadless --watch=false
+          ng build --configuration development
+          cd ..
+      - name: Register website in known_hosts
+        run: |
+          mkdir /home/runner/.ssh
+          chmod 700 /home/runner/.ssh
+          echo "${{ secrets.UPLOAD_KNOW_HOST }}" >> /home/runner/.ssh/known_hosts
+      - name: Upload to website
+        run: |
+          sshpass -p ${{ secrets.UPLOAD_PASSWORD }} sftp -P ${{ vars.UPLOAD_PORT }} ${{ secrets.UPLOAD_USERNAME }}@${{ secrets.UPLOAD_HOST }}:${{ secrets.UPLOAD_PATH_DEBUG }} <<EOF
+            rm -r *
+            mput angular/dist/web-demangler/browser/*
+            mput angular/dist/web-demangler/browser/.*
+            mkdir img
+            cd img
+            mput angular/dist/web-demangler/browser/img/*
+          bye
+          EOF
