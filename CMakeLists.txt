@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.20)
 
 project(web_demangler LANGUAGES CXX)
 
+option(WITH_SANITIZE_ADDRESS "Build with address sanitizer." OFF)
+option(WITH_SANITIZE_UNDEFINED "Build with undefined sanitizer." OFF)
+
 set(LLVM_TARGETS_TO_BUILD
     ""
     CACHE STRING "Semicolon-separated list of targets to build, or \"all\".")
@@ -19,6 +22,20 @@ set(LLVM_ENABLE_PROJECTS
       STRING
       "Semicolon-separated list of projects to build (${LLVM_KNOWN_PROJECTS}), or \"all\"."
 )
+
+if(WITH_SANITIZE_UNDEFINED)
+  set(LLVM_ENABLE_RTTI ON)
+endif()
+set(LIST_SANITIZER "")
+if(WITH_SANITIZE_ADDRESS)
+  set(LIST_SANITIZER ${LIST_SANITIZER} "Address")
+endif()
+if(WITH_SANITIZE_UNDEFINED)
+  set(LIST_SANITIZER ${LIST_SANITIZER} "Undefined")
+endif()
+set(LLVM_USE_SANITIZER
+    "${LIST_SANITIZER}"
+    CACHE STRING "Define the sanitizer used to build binaries and tests.")
 
 include(CheckIPOSupported)
 check_ipo_supported(RESULT supported OUTPUT error)
@@ -84,3 +101,19 @@ target_link_options(
   "web_formatter.d.ts"
   --no-entry)
 set_property(TARGET web_formatter PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+
+if(WITH_SANITIZE_ADDRESS)
+  foreach(target_i IN ITEMS web_demangler web_formatter)
+    target_compile_options(${target_i} PRIVATE "-fsanitize=address"
+                                               "-fno-omit-frame-pointer")
+    target_link_options(${target_i} PRIVATE "-fsanitize=address")
+  endforeach()
+endif()
+if(WITH_SANITIZE_UNDEFINED)
+  foreach(target_i IN ITEMS web_demangler web_formatter)
+    target_compile_options(
+      ${target_i} PRIVATE "-fsanitize=undefined" "-fno-sanitize-recover=all"
+                          "-fno-omit-frame-pointer")
+    target_link_options(${target_i} PRIVATE "-fsanitize=undefined")
+  endforeach()
+endif()
