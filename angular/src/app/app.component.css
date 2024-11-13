@@ -5,6 +5,10 @@ textarea {
   resize: none;
 }
 
+dialog textarea {
+  resize: vertical;
+}
+
 .textareas {
   display: inline-flex;
   width: 100%;
