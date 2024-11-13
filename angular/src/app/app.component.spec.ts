@@ -590,5 +590,13 @@ describe('AppComponent', () => {
     // Can't test formatStyle.XXX.YYY[i].ZZZ enum
     // Can't test formatStyle.XXX.YYY[i].ZZZ optional
     // Can't test formatStyle.XXX.YYY[i].ZZZ StringList
+
+    {
+      const spans = document.querySelectorAll('span');
+      const notImplementedSpans = Array.from(spans).filter((span) =>
+        span.textContent?.startsWith('Not implemented')
+      );
+      expect(notImplementedSpans.length).toEqual(0);
+    }
   });
 });
