@@ -32,7 +32,7 @@ jobs:
       - name: Generate Format.h wrapper
         run: |
           cmake -S utils -B build_utils -G Ninja -DCMAKE_BUILD_TYPE=Debug
-          cmake --build build_utils --parallel 4
+          cmake --build build_utils --parallel $(nproc --all)
       - name: Emscripten
         run: |
           cd emsdk
@@ -44,7 +44,7 @@ jobs:
           cd build
           npm install typescript
           export PATH=$PATH:$(pwd)/node_modules/.bin
-          cmake --build . --parallel 4
+          cmake --build . --parallel $(nproc --all)
           cd ..
       - name: Angular
         run: |
@@ -65,10 +65,10 @@ jobs:
           mkdir /home/runner/.ssh
           chmod 700 /home/runner/.ssh
           echo "${{ secrets.UPLOAD_KNOW_HOST }}" >> /home/runner/.ssh/known_hosts
-      - name: Upload to website
+      - name: Upload to Debug website
         run: |
           sshpass -p ${{ secrets.UPLOAD_PASSWORD }} sftp -P ${{ vars.UPLOAD_PORT }} ${{ secrets.UPLOAD_USERNAME }}@${{ secrets.UPLOAD_HOST }}:${{ secrets.UPLOAD_PATH_DEBUG }} <<EOF
-            rm -r *
+            rm *
             mput angular/dist/web-demangler/browser/*
             mput angular/dist/web-demangler/browser/.*
             mkdir img
