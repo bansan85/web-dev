@@ -1,7 +1,9 @@
 @media (prefers-color-scheme: dark) {
   body,
   textarea,
-  dialog {
+  dialog,
+  input,
+  select {
     background-color: #1c1c1e;
     color: #fefefe;
   }
