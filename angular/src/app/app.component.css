@@ -62,9 +62,17 @@ dialog::backdrop {
   background: rgb(0 0 0 / 25%);
 }
 
+.github_logo {
+  color: #1c1c1e;
+}
+
 @media (prefers-color-scheme: dark) {
   dialog::backdrop {
     background: rgb(0 0 0 / 75%);
+  }
+
+  .github_logo {
+    color: #fefefe;
   }
 }
 
@@ -102,4 +110,11 @@ dialog.open {
   transform: translate(-50%, -50%);
 
   animation: rotating 2s linear infinite;
+}
+
+.github_logo {
+  position: absolute;
+  top: 0.5em;
+  right: 0.5em;
+  width: 2em;
 }

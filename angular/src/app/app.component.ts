@@ -10,6 +10,7 @@ import { WasmLoaderFormatterService } from './wasm-loader-formatter.service';
 import { NgFor, NgIf, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
+import { GithubMarkInlineComponent } from './img/github-mark-inline.component';
 
 import { EmbindModule as DemanglerModule } from '../assets/web_demangler.js';
 import {
@@ -21,7 +22,14 @@ import {
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [NgFor, NgIf, NgClass, FormsModule, LucideAngularModule],
+  imports: [
+    NgFor,
+    NgIf,
+    NgClass,
+    FormsModule,
+    LucideAngularModule,
+    GithubMarkInlineComponent,
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
