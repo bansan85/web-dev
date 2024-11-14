@@ -1,13 +1,17 @@
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { importProvidersFrom } from '@angular/core';
-import { LucideAngularModule, Settings } from 'lucide-angular';
+import { LucideAngularModule, Settings, LoaderCircle } from 'lucide-angular';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AppComponent],
-      providers: [importProvidersFrom(LucideAngularModule.pick({ Settings }))],
+      providers: [
+        importProvidersFrom(
+          LucideAngularModule.pick({ Settings, LoaderCircle })
+        ),
+      ],
     }).compileComponents();
   });
 

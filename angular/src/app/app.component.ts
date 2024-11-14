@@ -1,4 +1,10 @@
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ElementRef,
+  ViewChild,
+  HostListener,
+} from '@angular/core';
 import { WasmLoaderDemanglerService } from './wasm-loader-demangler.service';
 import { WasmLoaderFormatterService } from './wasm-loader-formatter.service';
 import { NgFor, NgIf, NgClass } from '@angular/common';
@@ -23,6 +29,8 @@ export class AppComponent implements OnInit {
   demangler: DemanglerModule | undefined;
   formatter: FormatterModule | undefined;
 
+  loadingSize: number = 0;
+
   demangledName: string[] = [];
 
   isOpen: boolean = false;
@@ -31,11 +39,18 @@ export class AppComponent implements OnInit {
 
   formatStyle: FormatStyle | undefined;
 
+  isLoading: boolean = false;
+
   // Text by pending if text insert while wasm is loading.
   pendingText: boolean = false;
 
   @ViewChild('dialog') dialogRef!: ElementRef<HTMLDialogElement>;
   @ViewChild('mangledInput') mangledInput!: ElementRef<HTMLTextAreaElement>;
+
+  @HostListener('window:resize')
+  onResize() {
+    this.updateIconSize();
+  }
 
   constructor(
     private wasmLoaderDemangler: WasmLoaderDemanglerService,
@@ -43,6 +58,8 @@ export class AppComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
+    this.updateIconSize();
+
     if (!this.demangler) {
       await this.loadWasmDemanglerModule();
     }
@@ -52,13 +69,16 @@ export class AppComponent implements OnInit {
   }
 
   async loadWasmDemanglerModule() {
+    this.isLoading = true;
     while (!this.wasmLoaderDemangler.wasm()) {
       await new Promise((resolve) => setTimeout(resolve, 100));
     }
     this.demangler = this.wasmLoaderDemangler.wasm()!;
+    this.isLoading = false;
   }
 
   async loadWasmFormatterModule() {
+    this.isLoading = true;
     while (!this.wasmLoaderFormatter.wasm()) {
       await new Promise((resolve) => setTimeout(resolve, 100));
     }
@@ -72,6 +92,11 @@ export class AppComponent implements OnInit {
       this.mangledInput.nativeElement.dispatchEvent(event);
     }
     this.pendingText = false;
+    this.isLoading = false;
+  }
+
+  updateIconSize() {
+    this.loadingSize = Math.min(window.innerWidth / 4, window.innerHeight / 2);
   }
 
   onDemangle(mangledName: string) {
@@ -220,7 +245,8 @@ export class AppComponent implements OnInit {
     );
     return items
       .filter(
-        (item) => !['values', 'prototype', 'length', 'name', 'argCount'].includes(item)
+        (item) =>
+          !['values', 'prototype', 'length', 'name', 'argCount'].includes(item)
       )
       .map((item) => item.split('_').slice(1).join('_'));
   }
@@ -244,7 +270,11 @@ export class AppComponent implements OnInit {
   ) {
     this.updateField(keys, (x: any[]) => {
       const checked = (event.target as HTMLInputElement).checked;
-      x[x.length - 1] = checked ? (inputValue === '' ? 0 : inputValue) : undefined;
+      x[x.length - 1] = checked
+        ? inputValue === ''
+          ? 0
+          : inputValue
+        : undefined;
     });
   }
 
