@@ -36,8 +36,6 @@ describe('AppComponent', () => {
 
     fixture.detectChanges();
 
-    expect(app.formatStyle).toBeDefined();
-
     // Test open clang-format dialog
     const settingsImage = <HTMLElement>(
       document.querySelector('lucide-icon[name="settings"]')
@@ -48,6 +46,15 @@ describe('AppComponent', () => {
     settingsImage!.click();
 
     await fixture.whenStable();
+
+    const checkedClangFormat = <HTMLElement>(
+      document.querySelector('input[name="enableClangFormat"]')
+    );
+    checkedClangFormat.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(app.formatStyle).toBeDefined();
 
     // Test formatStyle.XXX number
     {

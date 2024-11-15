@@ -42,6 +42,7 @@ export class AppComponent implements OnInit {
   demangledName: string[] = [];
 
   isOpen: boolean = false;
+  enableClangFormat: boolean = false;
 
   emptyStyle: FormatStyle | undefined;
 
@@ -71,12 +72,12 @@ export class AppComponent implements OnInit {
     if (!this.demangler) {
       await this.loadWasmDemanglerModule();
     }
-    if (!this.formatter) {
-      await this.loadWasmFormatterModule();
-    }
   }
 
   async loadWasmDemanglerModule() {
+    if (this.demangler || this.isLoading) {
+      return;
+    }
     this.isLoading = true;
     while (!this.wasmLoaderDemangler.wasm()) {
       await new Promise((resolve) => setTimeout(resolve, 100));
@@ -86,6 +87,9 @@ export class AppComponent implements OnInit {
   }
 
   async loadWasmFormatterModule() {
+    if (this.formatter || this.isLoading) {
+      return;
+    }
     this.isLoading = true;
     while (!this.wasmLoaderFormatter.wasm()) {
       await new Promise((resolve) => setTimeout(resolve, 100));
@@ -107,21 +111,31 @@ export class AppComponent implements OnInit {
     this.loadingSize = Math.min(window.innerWidth / 4, window.innerHeight / 2);
   }
 
+  async onEnableClangFormat(value: boolean) {
+    this.enableClangFormat = value;
+
+    await this.loadWasmFormatterModule();
+
+    this.reformat();
+  }
+
   onDemangle(mangledName: string) {
     if (!this.demangler) {
       this.loadWasmDemanglerModule();
     }
-    if (!this.formatter) {
+    if (this.enableClangFormat) {
       this.loadWasmFormatterModule();
     }
-    if (this.demangler && this.formatter && this.formatStyle) {
+    if (this.demangler) {
       const lines = mangledName.split('\n');
       this.demangledName = lines.map((line) =>
-        this.formatter!.formatter(
-          this.demangler!.web_demangle(line.trim()),
-          this.formatStyle!
-        )
+        this.demangler!.web_demangle(line.trim())
       );
+      if (this.enableClangFormat && this.formatter && this.formatStyle) {
+        this.demangledName = this.demangledName.map((line) =>
+          this.formatter!.formatter(line, this.formatStyle!)
+        );
+      }
     } else {
       this.pendingText = true;
     }
