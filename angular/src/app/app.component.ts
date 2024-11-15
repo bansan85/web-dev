@@ -96,7 +96,7 @@ export class AppComponent implements OnInit {
     }
     this.formatter = this.wasmLoaderFormatter.wasm()!;
 
-    this.formatStyle = this.formatter.getMozillaStyle();
+    this.formatStyle = this.formatter.getNoStyle();
     this.emptyStyle = this.formatter.getNoStyle();
 
     if (this.pendingText) {
@@ -159,6 +159,40 @@ export class AppComponent implements OnInit {
 
     this.dialogRef.nativeElement.addEventListener('transitionend', close);
     this.isOpen = false;
+  }
+
+  loadStyle(newValue: Event) {
+    switch ((newValue.target as HTMLSelectElement).value) {
+      case 'llvm':
+        this.formatStyle = this.formatter?.getLLVMStyle();
+        break;
+      case 'google':
+        this.formatStyle = this.formatter?.getGoogleStyle();
+        break;
+      case 'chromium':
+        this.formatStyle = this.formatter?.getChromiumStyle();
+        break;
+      case 'mozilla':
+        this.formatStyle = this.formatter?.getMozillaStyle();
+        break;
+      case 'webKit':
+        this.formatStyle = this.formatter?.getWebKitStyle();
+        break;
+      case 'gnu':
+        this.formatStyle = this.formatter?.getGNUStyle();
+        break;
+      case 'microsoft':
+        this.formatStyle = this.formatter?.getMicrosoftStyle();
+        break;
+      case 'clangFormat':
+        this.formatStyle = this.formatter?.getClangFormatStyle();
+        break;
+      case 'none':
+        this.formatStyle = this.formatter?.getNoStyle();
+        break;
+    }
+
+    this.reformat();
   }
 
   reformat() {

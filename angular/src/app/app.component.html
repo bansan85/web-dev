@@ -3,8 +3,22 @@
     <button (click)="closeDialog()">OK</button>
   </div>
   <input type="checkbox" name="enableClangFormat" [ngModel]="enableClangFormat"
-    (ngModelChange)="onEnableClangFormat($event)"> Format with clang-format
+    (ngModelChange)="onEnableClangFormat($event)"> Format with clang-format<br />
   <ng-container *ngIf="enableClangFormat">
+    <dt>Style:</dt>
+    <dd>
+      <select [value]="" (change)="loadStyle($event)">
+        <option value="llvm">LLVM</option>
+        <option value="google">Google</option>
+        <option value="chromium">Chromium</option>
+        <option value="mozilla">Mozilla</option>
+        <option value="webKit">WebKit</option>
+        <option value="gnu">GNU</option>
+        <option value="microsoft">Microsoft</option>
+        <option value="clangFormat">ClangFormat</option>
+        <option value="none">None</option>
+      </select>
+    </dd>
     <dl *ngFor="let key of formatStyleKeys([])">
       <ng-container *ngIf="!isFunction($any(emptyStyle)[key])">
         <dt>{{ key }}:</dt>
