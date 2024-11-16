@@ -1,3 +1,6 @@
+npm install -g npm@latest
+npm install -g @angular/cli
+
 git submodule update --init --recursive --depth=1
 
 # Build generator with native llvm to prepare wrapper for clang-format
@@ -37,9 +40,8 @@ cp build_debug/web* angular/src/assets/
 
 # Build Angular project
 cd angular
-npm install -g npm@latest
-npm install -g @angular/cli
 npm install
 ng build
 ng serve --open --host 0.0.0.0
 ng test --browsers=ChromeHeadless --watch=false
+

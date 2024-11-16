@@ -48,6 +48,7 @@ target_sources(
                         "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt")
 target_link_libraries(web_demangler PRIVATE embind LLVMDemangle)
 target_include_directories(web_demangler PRIVATE ${LLVM_SOURCE_DIR}/include)
+target_compile_options(web_demangler PRIVATE "-fexceptions")
 target_link_options(
   web_demangler
   PRIVATE
@@ -67,6 +68,7 @@ target_link_options(
   "$<$<CONFIG:Debug>:-gseparate-dwarf>"
   "--emit-tsd"
   "web_demangler.d.ts"
+  "-fexceptions"
   --no-entry)
 if(ipo_supported)
   set_property(TARGET web_demangler PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
@@ -81,6 +83,7 @@ target_include_directories(
   web_formatter
   PRIVATE ${LLVM_SOURCE_DIR}/include ${LLVM_EXTERNAL_CLANG_SOURCE_DIR}/include
           ${LLVM_BINARY_DIR}/include/ ${LLVM_BINARY_DIR}/tools/clang/include)
+target_compile_options(web_formatter PRIVATE "-fexceptions")
 target_link_options(
   web_formatter
   PRIVATE
@@ -101,6 +104,7 @@ target_link_options(
   "$<$<CONFIG:Debug>:-gseparate-dwarf>"
   "--emit-tsd"
   "web_formatter.d.ts"
+  "-fexceptions"
   --no-entry)
 if(ipo_supported)
   set_property(TARGET web_formatter PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)

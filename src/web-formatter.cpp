@@ -67,6 +67,15 @@ EMSCRIPTEN_BINDINGS(web_formatter) {
   emscripten::function("getClangFormatStyle",
                        &clang::format::getClangFormatStyle);
   emscripten::function("getNoStyle", &clang::format::getNoStyle);
+  emscripten::function("serializeToYaml", &clang::format::configurationAsText);
+  emscripten::function(
+      "deserializeFromYaml", +[](const std::string &yaml) {
+        clang::format::FormatStyle retval;
+        retval.Language = clang::format::FormatStyle::LanguageKind::LK_Cpp;
+        retval.InheritsParentConfig = false;
+        clang::format::parseConfiguration(yaml, &retval);
+        return retval;
+      });
 
   web_demangler::RegisterFormatStyle();
 }

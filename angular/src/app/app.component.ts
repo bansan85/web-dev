@@ -55,6 +55,7 @@ export class AppComponent implements OnInit {
 
   @ViewChild('dialog') dialogRef!: ElementRef<HTMLDialogElement>;
   @ViewChild('mangledInput') mangledInput!: ElementRef<HTMLTextAreaElement>;
+  @ViewChild('newStyle') newStyle!: ElementRef<HTMLSelectElement>;
 
   @HostListener('window:resize')
   onResize() {
@@ -69,8 +70,14 @@ export class AppComponent implements OnInit {
   async ngOnInit() {
     this.updateIconSize();
 
-    if (!this.demangler) {
-      await this.loadWasmDemanglerModule();
+    await this.loadWasmDemanglerModule();
+
+    const enableClangFormat = localStorage.getItem('enableClangFormat');
+    if (enableClangFormat) {
+      this.enableClangFormat = enableClangFormat === 'true';
+      if (this.enableClangFormat) {
+        await this.loadWasmFormatterModule();
+      }
     }
   }
 
@@ -96,7 +103,20 @@ export class AppComponent implements OnInit {
     }
     this.formatter = this.wasmLoaderFormatter.wasm()!;
 
-    this.formatStyle = this.formatter.getNoStyle();
+    const formatStyleLocalStorage = localStorage.getItem('formatStyle');
+    if (formatStyleLocalStorage) {
+      try {
+        this.formatStyle = this.formatter.deserializeFromYaml(
+          formatStyleLocalStorage
+        );
+      } catch (error) {
+        console.error(error);
+        localStorage.removeItem('formatStyle');
+        this.formatStyle = this.formatter.getNoStyle();
+      }
+    } else {
+      this.formatStyle = this.formatter.getMozillaStyle();
+    }
     this.emptyStyle = this.formatter.getNoStyle();
 
     if (this.pendingText) {
@@ -114,7 +134,11 @@ export class AppComponent implements OnInit {
   async onEnableClangFormat(value: boolean) {
     this.enableClangFormat = value;
 
-    await this.loadWasmFormatterModule();
+    localStorage.setItem('enableClangFormat', value.toString());
+
+    if (value) {
+      await this.loadWasmFormatterModule();
+    }
 
     this.reformat();
   }
@@ -161,34 +185,34 @@ export class AppComponent implements OnInit {
     this.isOpen = false;
   }
 
-  loadStyle(newValue: Event) {
-    switch ((newValue.target as HTMLSelectElement).value) {
+  loadStyle() {
+    switch (this.newStyle.nativeElement.value) {
       case 'llvm':
-        this.formatStyle = this.formatter?.getLLVMStyle();
+        this.formatStyle = this.formatter!.getLLVMStyle();
         break;
       case 'google':
-        this.formatStyle = this.formatter?.getGoogleStyle();
+        this.formatStyle = this.formatter!.getGoogleStyle();
         break;
       case 'chromium':
-        this.formatStyle = this.formatter?.getChromiumStyle();
+        this.formatStyle = this.formatter!.getChromiumStyle();
         break;
       case 'mozilla':
-        this.formatStyle = this.formatter?.getMozillaStyle();
+        this.formatStyle = this.formatter!.getMozillaStyle();
         break;
       case 'webKit':
-        this.formatStyle = this.formatter?.getWebKitStyle();
+        this.formatStyle = this.formatter!.getWebKitStyle();
         break;
       case 'gnu':
-        this.formatStyle = this.formatter?.getGNUStyle();
+        this.formatStyle = this.formatter!.getGNUStyle();
         break;
       case 'microsoft':
-        this.formatStyle = this.formatter?.getMicrosoftStyle();
+        this.formatStyle = this.formatter!.getMicrosoftStyle();
         break;
       case 'clangFormat':
-        this.formatStyle = this.formatter?.getClangFormatStyle();
+        this.formatStyle = this.formatter!.getClangFormatStyle();
         break;
       case 'none':
-        this.formatStyle = this.formatter?.getNoStyle();
+        this.formatStyle = this.formatter!.getNoStyle();
         break;
     }
 
@@ -198,6 +222,11 @@ export class AppComponent implements OnInit {
   reformat() {
     const event = new Event('input', { bubbles: true });
     this.mangledInput.nativeElement.dispatchEvent(event);
+
+    localStorage.setItem(
+      'formatStyle',
+      this.formatter!.serializeToYaml(this.formatStyle!)
+    );
   }
 
   getLastStruct(root: FormatStyle, keys: (string | number)[]) {
