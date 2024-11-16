@@ -82,7 +82,8 @@ target_link_libraries(web_formatter PRIVATE embind clangFormat)
 target_include_directories(
   web_formatter
   PRIVATE ${LLVM_SOURCE_DIR}/include ${LLVM_EXTERNAL_CLANG_SOURCE_DIR}/include
-          ${LLVM_BINARY_DIR}/include/ ${LLVM_BINARY_DIR}/tools/clang/include)
+          ${LLVM_BINARY_DIR}/include/ ${LLVM_BINARY_DIR}/tools/clang/include
+          "${CMAKE_CURRENT_SOURCE_DIR}/pfr/include")
 target_compile_options(web_formatter PRIVATE "-fexceptions")
 target_link_options(
   web_formatter

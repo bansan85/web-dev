@@ -425,8 +425,7 @@ export class AppComponent implements OnInit {
         );
       } else if (x[x.length - 1].size() < value) {
         for (let i = x[x.length - 1].size(); i < value; i++) {
-          x[x.length - 1].resize(
-            value,
+          x[x.length - 1].push_back(
             new (this.formatter as any)![
               x[x.length - 1].$$.ptrType.registeredClass.name.slice(0, -4)
             ]()

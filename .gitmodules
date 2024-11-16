@@ -5,3 +5,6 @@
 [submodule "emsdk"]
 	path = emsdk
 	url = https://github.com/emscripten-core/emsdk.git
+[submodule "pfr"]
+	path = pfr
+	url = https://github.com/boostorg/pfr.git

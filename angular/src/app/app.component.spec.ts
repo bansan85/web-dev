@@ -249,19 +249,19 @@ describe('AppComponent', () => {
         .filter((x) => x.textContent! === 'Language:')
         .forEach((x, i) => {
           const nextInput = x.nextElementSibling!.querySelector('select')!;
-          nextInput.selectedIndex = i;
+          nextInput.selectedIndex = i+1;
           nextInput.dispatchEvent(new Event('change'));
           fixture.detectChanges();
         });
 
       expect(app.formatStyle!.RawStringFormats.get(0)!.Language.value).toEqual(
-        0
-      );
-      expect(app.formatStyle!.RawStringFormats.get(1)!.Language.value).toEqual(
         1
       );
-      expect(app.formatStyle!.RawStringFormats.get(2)!.Language.value).toEqual(
+      expect(app.formatStyle!.RawStringFormats.get(1)!.Language.value).toEqual(
         2
+      );
+      expect(app.formatStyle!.RawStringFormats.get(2)!.Language.value).toEqual(
+        3
       );
 
       // Check that reducing the size of the list don't lose existing data.
@@ -270,10 +270,10 @@ describe('AppComponent', () => {
       fixture.detectChanges();
       expect(app.formatStyle!.RawStringFormats.size()).toEqual(2);
       expect(app.formatStyle!.RawStringFormats.get(0)?.Language.value).toEqual(
-        0
+        1
       );
       expect(app.formatStyle!.RawStringFormats.get(1)?.Language.value).toEqual(
-        1
+        2
       );
 
       // Check formatStyleKeys
@@ -331,7 +331,7 @@ describe('AppComponent', () => {
       expect(iLanguage.length).toEqual(11);
       expect(iLanguage.options[0].text).toEqual('None');
       const iLanguageValue = iLanguage.selectedIndex;
-      expect(iLanguage.selectedIndex).toEqual(0);
+      expect(iLanguage.selectedIndex).toEqual(1);
       expect(iLanguageValue).toEqual(
         app.formatStyle!.RawStringFormats.get(0)!.Language.value
       );

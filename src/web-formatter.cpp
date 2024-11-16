@@ -1,8 +1,31 @@
+#include <boost/pfr.hpp>
 #include <clang/Format/Format.h>
 #include <clang/Tooling/Tooling.h>
 #include <emscripten.h>
 #include <emscripten/bind.h>
 #include <string>
+
+namespace {
+template <typename T> std::enable_if_t<std::is_aggregate_v<T>, T> initialize() {
+  T obj;
+  boost::pfr::for_each_field(obj, [](auto &field) {
+    if constexpr (std::is_same_v<decltype(field),
+                                 clang::format::FormatStyle::LanguageKind &>) {
+      // LK_None is not allowed by YAML.
+      field = clang::format::FormatStyle::LK_Cpp;
+    } else {
+      field = {};
+    }
+  });
+  return obj;
+}
+
+template <typename T>
+std::enable_if_t<!std::is_aggregate_v<T>, T> initialize() {
+  return T{};
+}
+
+} // namespace
 
 namespace web_demangler {
 
