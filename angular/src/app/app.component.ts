@@ -4,6 +4,7 @@ import {
   ElementRef,
   ViewChild,
   HostListener,
+  Renderer2,
 } from '@angular/core';
 import { WasmLoaderDemanglerService } from './wasm-loader-demangler.service';
 import { WasmLoaderFormatterService } from './wasm-loader-formatter.service';
@@ -44,6 +45,12 @@ export class AppComponent implements OnInit {
   isOpen: boolean = false;
   enableClangFormat: boolean = false;
 
+  isDragging = false;
+  offsetX = 0;
+  offsetY = 0;
+  mouseMoveListener?: () => void;
+  mouseUpListener?: () => void;
+
   emptyStyle: FormatStyle | undefined;
 
   formatStyle: FormatStyle | undefined;
@@ -64,7 +71,8 @@ export class AppComponent implements OnInit {
 
   constructor(
     private wasmLoaderDemangler: WasmLoaderDemanglerService,
-    private wasmLoaderFormatter: WasmLoaderFormatterService
+    private wasmLoaderFormatter: WasmLoaderFormatterService,
+    private renderer: Renderer2
   ) {}
 
   async ngOnInit() {
@@ -168,6 +176,10 @@ export class AppComponent implements OnInit {
   openDialog() {
     this.dialogRef.nativeElement.showModal();
     setTimeout(() => (this.isOpen = true), 0);
+    const bounds = this.dialogRef.nativeElement.getBoundingClientRect();
+    this.dialogRef.nativeElement.style.margin = '0';
+    this.dialogRef.nativeElement.style.left = `${bounds.x}px`;
+    this.dialogRef.nativeElement.style.top = `${bounds.y}px`;
   }
 
   closeDialog() {
@@ -445,5 +457,50 @@ export class AppComponent implements OnInit {
 
   typeOf(value: any): string {
     return typeof value;
+  }
+
+  onMouseDown(event: MouseEvent): void {
+    this.isDragging = true;
+
+    const dialogElement = this.dialogRef.nativeElement;
+    this.offsetX = event.clientX - dialogElement.getBoundingClientRect().left;
+    this.offsetY = event.clientY - dialogElement.getBoundingClientRect().top;
+
+    this.mouseMoveListener = this.renderer.listen(
+      'window',
+      'mousemove',
+      this.onMouseMove.bind(this)
+    );
+    this.mouseUpListener = this.renderer.listen(
+      'window',
+      'mouseup',
+      this.onMouseUp.bind(this)
+    );
+  }
+
+  private onMouseMove(event: MouseEvent): void {
+    if (!this.isDragging) return;
+
+    const dialogElement = this.dialogRef.nativeElement;
+    dialogElement.style.left = `${event.clientX - this.offsetX}px`;
+    dialogElement.style.top = `${event.clientY - this.offsetY}px`;
+  }
+
+  private onMouseUp(): void {
+    this.isDragging = false;
+
+    if (this.mouseMoveListener) {
+      this.mouseMoveListener();
+      this.mouseMoveListener = undefined;
+    }
+    if (this.mouseUpListener) {
+      this.mouseUpListener();
+      this.mouseUpListener = undefined;
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.mouseMoveListener) this.mouseMoveListener();
+    if (this.mouseUpListener) this.mouseUpListener();
   }
 }
