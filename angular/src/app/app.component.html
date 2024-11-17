@@ -1,8 +1,10 @@
 <dialog id="myDialog" #dialog [ngClass]="{ 'open': isOpen }">
-  <div id="dialogHeader" class="dialog-header" #dialogHeader  (mousedown)="onMouseDown($event)">clang-format's options</div>
+  <div id="dialogHeader" class="dialog-header" #dialogHeader (mousedown)="onMouseDown($event)">
+    <span>clang-format's options</span>
+    <lucide-icon name="x" (click)="closeDialog()"></lucide-icon>
+  </div>
   <div class="dialog-body">
     <div>
-      <button (click)="closeDialog()">OK</button>
     </div>
     <input type="checkbox" name="enableClangFormat" [ngModel]="enableClangFormat"
       (ngModelChange)="onEnableClangFormat($event)"> Format with clang-format<br />

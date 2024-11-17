@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { importProvidersFrom } from '@angular/core';
-import { LucideAngularModule, Settings, LoaderCircle } from 'lucide-angular';
+import { LucideAngularModule, Settings, LoaderCircle, X } from 'lucide-angular';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
@@ -9,7 +9,7 @@ describe('AppComponent', () => {
       imports: [AppComponent],
       providers: [
         importProvidersFrom(
-          LucideAngularModule.pick({ Settings, LoaderCircle })
+          LucideAngularModule.pick({ Settings, LoaderCircle, X })
         ),
       ],
     }).compileComponents();
