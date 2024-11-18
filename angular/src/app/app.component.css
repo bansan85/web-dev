@@ -152,4 +152,5 @@ dialog lucide-icon[name="x"] {
   display: flex;
   position: absolute;
   right: 0.5em;
+  cursor: pointer;
 }
