@@ -5,6 +5,7 @@ import {
   ViewChild,
   HostListener,
   Renderer2,
+  NgZone,
 } from '@angular/core';
 import { WasmLoaderDemanglerService } from './wasm-loader-demangler.service';
 import { WasmLoaderFormatterService } from './wasm-loader-formatter.service';
@@ -72,7 +73,8 @@ export class AppComponent implements OnInit {
   constructor(
     private wasmLoaderDemangler: WasmLoaderDemanglerService,
     private wasmLoaderFormatter: WasmLoaderFormatterService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private ngZone: NgZone
   ) {}
 
   async ngOnInit() {
@@ -466,16 +468,18 @@ export class AppComponent implements OnInit {
     this.offsetX = event.clientX - dialogElement.getBoundingClientRect().left;
     this.offsetY = event.clientY - dialogElement.getBoundingClientRect().top;
 
-    this.mouseMoveListener = this.renderer.listen(
-      'window',
-      'mousemove',
-      this.onMouseMove.bind(this)
-    );
-    this.mouseUpListener = this.renderer.listen(
-      'window',
-      'mouseup',
-      this.onMouseUp.bind(this)
-    );
+    this.ngZone.runOutsideAngular(() => {
+      this.mouseMoveListener = this.renderer.listen(
+        'window',
+        'mousemove',
+        this.onMouseMove.bind(this)
+      );
+      this.mouseUpListener = this.renderer.listen(
+        'window',
+        'mouseup',
+        this.onMouseUp.bind(this)
+      );
+    });
   }
 
   private onMouseMove(event: MouseEvent): void {
