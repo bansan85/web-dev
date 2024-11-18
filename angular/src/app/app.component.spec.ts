@@ -249,7 +249,7 @@ describe('AppComponent', () => {
         .filter((x) => x.textContent! === 'Language:')
         .forEach((x, i) => {
           const nextInput = x.nextElementSibling!.querySelector('select')!;
-          nextInput.selectedIndex = i+1;
+          nextInput.selectedIndex = i + 1;
           nextInput.dispatchEvent(new Event('change'));
           fixture.detectChanges();
         });
