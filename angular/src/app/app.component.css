@@ -120,9 +120,16 @@ dialog.open {
 }
 
 dialog {
-  display: flex;
   flex-direction: column;
   padding: 0;
+}
+
+dialog :not(.open) {
+  display: absolute;
+}
+
+dialog.open {
+  display: flex;
 }
 
 .dialog-header {
