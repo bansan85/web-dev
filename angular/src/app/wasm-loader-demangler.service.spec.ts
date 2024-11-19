@@ -16,14 +16,7 @@ describe('WasmLoaderDemanglerService', () => {
   });
 
   it('check demangler', async () => {
-    let i = 0;
-    while (!service.wasm() && i < 10) {
-      await new Promise((resolve) => setTimeout(resolve, 100));
-      i++;
-    }
-    expect(i).toBeLessThan(10);
-    expect(service.wasm()).toBeDefined();
-    let demangler: DemanglerModule = service.wasm()!;
+    let demangler: DemanglerModule = await service.wasm()!;
 
     expect(demangler.web_demangle('_ZTI1Y')).toEqual('typeinfo for Y');
     expect(demangler.web_demangle('_ZN1BD1Ev')).toEqual('B::~B()');
