@@ -25,9 +25,6 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
 
-    // Test dialog is not opened
-    expect(app.isOpen).toBeFalse();
-
     // Test the loading of wasm for formatStyle
     expect(app.formatStyle).toBeUndefined();
 

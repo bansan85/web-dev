@@ -1,9 +1,8 @@
-<dialog id="myDialog" #dialog [ngClass]="{ 'open': isOpen }">
-  <div id="dialogHeader" class="dialog-header" #dialogHeader (mousedown)="onMouseDown($event)">
+<app-dialog-ext #dialog>
+  <div dialog-header>
     <span>clang-format's options</span>
-    <lucide-icon name="x" (click)="closeDialog()"></lucide-icon>
   </div>
-  <div class="dialog-body">
+  <div dialog-body>
     <div>
     </div>
     <input type="checkbox" name="enableClangFormat" [ngModel]="enableClangFormat"
@@ -269,7 +268,7 @@
       </dl>
     </ng-container>
   </div>
-</dialog>
+</app-dialog-ext>
 
 <div class="textareas">
   <div class="textarea">
@@ -278,7 +277,7 @@
       (input)="onDemangle(mangledInput.value)"></textarea>
   </div>
   <div class="textarea">
-    <h2>Demangled symbol<lucide-icon name="settings" (click)="openDialog()"></lucide-icon>
+    <h2>Demangled symbol<lucide-icon name="settings" (click)="dialog.openDialog()"></lucide-icon>
     </h2>
     <textarea wrap="off" [value]="demangledName.join('\n')" readonly></textarea>
   </div>

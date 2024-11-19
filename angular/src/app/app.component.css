@@ -5,10 +5,6 @@ textarea {
   resize: none;
 }
 
-dialog textarea {
-  resize: vertical;
-}
-
 .textareas {
   display: inline-flex;
   width: 100%;
@@ -58,8 +54,8 @@ h2 {
   }
 }
 
-dialog::backdrop {
-  background: rgb(0 0 0 / 25%);
+app-dialog-ext textarea {
+  resize: vertical;
 }
 
 .github_logo {
@@ -67,22 +63,9 @@ dialog::backdrop {
 }
 
 @media (prefers-color-scheme: dark) {
-  dialog::backdrop {
-    background: rgb(0 0 0 / 75%);
-  }
-
   .github_logo {
     color: #fefefe;
   }
-}
-
-dialog {
-  opacity: 0;
-  transition: opacity 0.5s ease-in;
-}
-
-dialog.open {
-  opacity: 1;
 }
 
 .disabled {
@@ -117,47 +100,4 @@ dialog.open {
   top: 0.5em;
   right: 0.5em;
   width: 2em;
-}
-
-dialog {
-  flex-direction: column;
-  padding: 0;
-}
-
-dialog :not(.open) {
-  display: absolute;
-}
-
-dialog.open {
-  display: flex;
-}
-
-.dialog-header {
-  background: #ddd;
-  padding: 0.5em 1em;
-  cursor: move;
-  user-select: none;
-  flex-shrink: 0;
-
-  display: flex;
-  align-items: center;
-}
-
-@media (prefers-color-scheme: dark) {
-  .dialog-header {
-    background: #000;
-  }
-}
-
-.dialog-body {
-  overflow-y: auto;
-  padding: 1em;
-  flex-grow: 1;
-}
-
-dialog lucide-icon[name="x"] {
-  display: flex;
-  position: absolute;
-  right: 0.5em;
-  cursor: pointer;
 }

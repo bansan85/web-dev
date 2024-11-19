@@ -4,8 +4,6 @@ import {
   ElementRef,
   ViewChild,
   HostListener,
-  Renderer2,
-  NgZone,
 } from '@angular/core';
 import { WasmLoaderDemanglerService } from './wasm-loader-demangler.service';
 import { WasmLoaderFormatterService } from './wasm-loader-formatter.service';
@@ -13,6 +11,7 @@ import { NgFor, NgIf, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
 import { GithubMarkInlineComponent } from './img/github-mark-inline.component';
+import { DialogExtComponent } from './utils/dialog-ext/dialog-ext.component';
 
 import { EmbindModule as DemanglerModule } from '../assets/web_demangler.js';
 import {
@@ -31,6 +30,7 @@ import {
     FormsModule,
     LucideAngularModule,
     GithubMarkInlineComponent,
+    DialogExtComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
@@ -43,14 +43,7 @@ export class AppComponent implements OnInit {
 
   demangledName: string[] = [];
 
-  isOpen: boolean = false;
   enableClangFormat: boolean = false;
-
-  isDragging = false;
-  offsetX = 0;
-  offsetY = 0;
-  mouseMoveListener?: () => void;
-  mouseUpListener?: () => void;
 
   emptyStyle: FormatStyle | undefined;
 
@@ -61,7 +54,6 @@ export class AppComponent implements OnInit {
   // Text by pending if text insert while wasm is loading.
   pendingText: boolean = false;
 
-  @ViewChild('dialog') dialogRef!: ElementRef<HTMLDialogElement>;
   @ViewChild('mangledInput') mangledInput!: ElementRef<HTMLTextAreaElement>;
   @ViewChild('newStyle') newStyle!: ElementRef<HTMLSelectElement>;
 
@@ -72,9 +64,7 @@ export class AppComponent implements OnInit {
 
   constructor(
     private wasmLoaderDemangler: WasmLoaderDemanglerService,
-    private wasmLoaderFormatter: WasmLoaderFormatterService,
-    private renderer: Renderer2,
-    private ngZone: NgZone
+    private wasmLoaderFormatter: WasmLoaderFormatterService
   ) {}
 
   async ngOnInit() {
@@ -173,30 +163,6 @@ export class AppComponent implements OnInit {
     } else {
       this.pendingText = true;
     }
-  }
-
-  openDialog() {
-    this.dialogRef.nativeElement.showModal();
-    setTimeout(() => (this.isOpen = true), 0);
-    const bounds = this.dialogRef.nativeElement.getBoundingClientRect();
-    this.dialogRef.nativeElement.style.margin = '0';
-    this.dialogRef.nativeElement.style.left = `${bounds.x}px`;
-    this.dialogRef.nativeElement.style.top = `${bounds.y}px`;
-  }
-
-  closeDialog() {
-    const close = (event: TransitionEvent) => {
-      if (event.propertyName === 'opacity') {
-        this.dialogRef.nativeElement.close();
-        this.dialogRef.nativeElement.removeEventListener(
-          'transitionend',
-          close
-        );
-      }
-    };
-
-    this.dialogRef.nativeElement.addEventListener('transitionend', close);
-    this.isOpen = false;
   }
 
   loadStyle() {
@@ -459,52 +425,5 @@ export class AppComponent implements OnInit {
 
   typeOf(value: any): string {
     return typeof value;
-  }
-
-  onMouseDown(event: MouseEvent): void {
-    this.isDragging = true;
-
-    const dialogElement = this.dialogRef.nativeElement;
-    this.offsetX = event.clientX - dialogElement.getBoundingClientRect().left;
-    this.offsetY = event.clientY - dialogElement.getBoundingClientRect().top;
-
-    this.ngZone.runOutsideAngular(() => {
-      this.mouseMoveListener = this.renderer.listen(
-        'window',
-        'mousemove',
-        this.onMouseMove.bind(this)
-      );
-      this.mouseUpListener = this.renderer.listen(
-        'window',
-        'mouseup',
-        this.onMouseUp.bind(this)
-      );
-    });
-  }
-
-  private onMouseMove(event: MouseEvent): void {
-    if (!this.isDragging) return;
-
-    const dialogElement = this.dialogRef.nativeElement;
-    dialogElement.style.left = `${event.clientX - this.offsetX}px`;
-    dialogElement.style.top = `${event.clientY - this.offsetY}px`;
-  }
-
-  private onMouseUp(): void {
-    this.isDragging = false;
-
-    if (this.mouseMoveListener) {
-      this.mouseMoveListener();
-      this.mouseMoveListener = undefined;
-    }
-    if (this.mouseUpListener) {
-      this.mouseUpListener();
-      this.mouseUpListener = undefined;
-    }
-  }
-
-  ngOnDestroy(): void {
-    if (this.mouseMoveListener) this.mouseMoveListener();
-    if (this.mouseUpListener) this.mouseUpListener();
   }
 }
