@@ -31,4 +31,8 @@ export class WasmLoaderDemanglerService {
 
     return this.instance!;
   }
+
+  loading(): boolean {
+    return this.isLoading;
+  }
 }

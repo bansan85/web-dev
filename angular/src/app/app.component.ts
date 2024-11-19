@@ -36,8 +36,8 @@ import {
   styleUrl: './app.component.css',
 })
 export class AppComponent implements OnInit {
-  demangler: DemanglerModule | undefined;
-  formatter: FormatterModule | undefined;
+  demangler?: DemanglerModule;
+  formatter?: FormatterModule;
 
   loadingSize: number = 0;
 
@@ -45,11 +45,9 @@ export class AppComponent implements OnInit {
 
   enableClangFormat: boolean = false;
 
-  emptyStyle: FormatStyle | undefined;
+  emptyStyle?: FormatStyle;
 
-  formatStyle: FormatStyle | undefined;
-
-  isLoading: boolean = false;
+  formatStyle?: FormatStyle;
 
   // Text by pending if text insert while wasm is loading.
   pendingText: boolean = false;
@@ -82,27 +80,22 @@ export class AppComponent implements OnInit {
   }
 
   async loadWasmDemanglerModule() {
-    if (this.demangler || this.isLoading) {
-      return;
+    if (!this.demangler) {
+      this.demangler = await this.wasmLoaderDemangler.wasm();
     }
-    this.isLoading = true;
-    while (!this.wasmLoaderDemangler.wasm()) {
-      await new Promise((resolve) => setTimeout(resolve, 100));
-    }
-    this.demangler = this.wasmLoaderDemangler.wasm()!;
-    this.isLoading = false;
   }
 
   async loadWasmFormatterModule() {
-    if (this.formatter || this.isLoading) {
+    if (this.formatter) {
       return;
     }
-    this.isLoading = true;
-    while (!this.wasmLoaderFormatter.wasm()) {
-      await new Promise((resolve) => setTimeout(resolve, 100));
-    }
-    this.formatter = this.wasmLoaderFormatter.wasm()!;
+    this.formatter = await this.wasmLoaderFormatter.wasm();
 
+    if (this.formatStyle) {
+      return;
+    }
+
+    // No await after this comment.
     const formatStyleLocalStorage = localStorage.getItem('formatStyle');
     if (formatStyleLocalStorage) {
       try {
@@ -124,7 +117,6 @@ export class AppComponent implements OnInit {
       this.mangledInput.nativeElement.dispatchEvent(event);
     }
     this.pendingText = false;
-    this.isLoading = false;
   }
 
   updateIconSize() {
@@ -143,12 +135,10 @@ export class AppComponent implements OnInit {
     this.reformat();
   }
 
-  onDemangle(mangledName: string) {
-    if (!this.demangler) {
-      this.loadWasmDemanglerModule();
-    }
+  async onDemangle(mangledName: string) {
+    await this.loadWasmDemanglerModule();
     if (this.enableClangFormat) {
-      this.loadWasmFormatterModule();
+      await this.loadWasmFormatterModule();
     }
     if (this.demangler) {
       const lines = mangledName.split('\n');
@@ -425,5 +415,11 @@ export class AppComponent implements OnInit {
 
   typeOf(value: any): string {
     return typeof value;
+  }
+
+  isLoading(): boolean {
+    return (
+      this.wasmLoaderDemangler.loading() || this.wasmLoaderFormatter.loading()
+    );
   }
 }
