@@ -5,6 +5,7 @@ import {
   ViewChild,
   HostListener,
   ChangeDetectorRef,
+  ViewEncapsulation,
 } from '@angular/core';
 import { WasmLoaderDemanglerService } from './wasm-loader-demangler.service';
 import { WasmLoaderFormatterService } from './wasm-loader-formatter.service';
@@ -34,6 +35,7 @@ import {
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
+  encapsulation: ViewEncapsulation.None,
 })
 export class AppComponent implements OnInit {
   demangler?: DemanglerModule;

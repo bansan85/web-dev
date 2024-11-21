@@ -56,6 +56,7 @@ h2 {
 
 app-dialog-ext textarea {
   resize: vertical;
+  width: 100%;
 }
 
 .github_logo {
