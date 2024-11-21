@@ -43,6 +43,7 @@ export class AppComponent implements OnInit {
   demangledName: string[] = [];
 
   enableClangFormat: boolean = false;
+  enableClangFormatExpert: boolean = false;
 
   formatStyle?: FormatStyle;
   emptyStyle?: FormatStyle;
@@ -75,6 +76,9 @@ export class AppComponent implements OnInit {
         await this.loadWasmFormatterModule();
       }
     }
+
+    this.enableClangFormatExpert =
+      localStorage.getItem('enableClangFormatExpert') === 'true';
   }
 
   async loadWasmDemanglerModule() {
@@ -131,6 +135,12 @@ export class AppComponent implements OnInit {
     }
 
     this.reformat();
+  }
+
+  async onEnableClangFormatExpert(value: boolean) {
+    this.enableClangFormatExpert = value;
+
+    localStorage.setItem('enableClangFormatExpert', value.toString());
   }
 
   async onDemangle(mangledName: string) {

@@ -21,9 +21,13 @@
         </select>
         <button (click)="loadStyle()">Reset</button>
       </dd>
-      <app-formatter-options [formatStyle]="formatStyle!" [formatter]="formatter!" [emptyStyle]="emptyStyle!"
-        (onChange)="reformat()">
-      </app-formatter-options>
+      <input type="checkbox" name="enableClangFormatExpert" [ngModel]="enableClangFormatExpert"
+        (ngModelChange)="onEnableClangFormatExpert($event)">Expert<br />
+      <ng-container *ngIf="enableClangFormatExpert">
+        <app-formatter-options [formatStyle]="formatStyle!" [formatter]="formatter!" [emptyStyle]="emptyStyle!"
+          (onChange)="reformat()">
+        </app-formatter-options>
+      </ng-container>
     </ng-container>
   </div>
 </app-dialog-ext>
