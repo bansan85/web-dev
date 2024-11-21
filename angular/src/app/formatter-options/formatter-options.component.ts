@@ -92,6 +92,66 @@ export class FormatterOptionsComponent {
     return typeof value === 'number';
   }
 
+  minNumber(root_field: any, field: string): number {
+    switch (root_field['get' + field + 'Type']()) {
+      case -8: {
+        return -127;
+        break;
+      }
+      case 8: {
+        return 0;
+        break;
+      }
+      case -16: {
+        return -32767;
+        break;
+      }
+      case 16: {
+        return 0;
+        break;
+      }
+      case -32: {
+        return -2147483647;
+        break;
+      }
+      case 32: {
+        return 0;
+        break;
+      }
+    }
+    return 0;
+  }
+
+  maxNumber(root_field: any, field: string): number {
+    switch (root_field['get' + field + 'Type']()) {
+      case -8: {
+        return 0x7f;
+        break;
+      }
+      case 8: {
+        return 0xff;
+        break;
+      }
+      case -16: {
+        return 0x7fff;
+        break;
+      }
+      case 16: {
+        return 0xffff;
+        break;
+      }
+      case -32: {
+        return 0x7fffffff;
+        break;
+      }
+      case 32: {
+        return 0xffffffff;
+        break;
+      }
+    }
+    return 0;
+  }
+
   isBoolean(value: any): boolean {
     return typeof value === 'boolean';
   }

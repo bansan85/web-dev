@@ -1,4 +1,6 @@
 #include <fstream>
+#include <iostream>
+#include <map>
 #include <vector>
 
 #include <clang/AST/ASTConsumer.h>
@@ -8,6 +10,11 @@
 #include <clang/Tooling/Tooling.h>
 
 using namespace clang;
+
+namespace {
+std::map<std::string_view, int> typeStrToSize{
+    {"int", -32}, {"unsigned int", 32}, {"int8_t", -8}};
+}
 
 class FindNamedClassVisitor
     : public RecursiveASTVisitor<FindNamedClassVisitor> {
@@ -30,6 +37,8 @@ public:
                       << Declaration->getQualifiedNameAsString() << ">();"
                       << "})";
       for (const auto *Field : Declaration->fields()) {
+        QualType fieldType = Field->getType();
+
         if (Field->getAccess() == clang::AccessSpecifier::AS_public) {
           emscripten_file << "\n.property(\"" << Field->getNameAsString()
                           << "\", &" << Field->getQualifiedNameAsString();
@@ -39,6 +48,14 @@ public:
           }
 
           emscripten_file << ")";
+          if (fieldType->isIntegralType(*Context) &&
+              !fieldType->isBooleanType()) {
+            emscripten_file << "\n";
+            emscripten_file
+                << ".function(\"get" << Field->getNameAsString()
+                << "Type\", +[](const " << Declaration->getQualifiedNameAsString() << "&){return "
+                << typeStrToSize.at(fieldType.getAsString()) << ";})";
+          }
         }
       }
       emscripten_file << ";\n\n";

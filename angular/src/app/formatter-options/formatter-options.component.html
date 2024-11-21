@@ -4,7 +4,8 @@
   </ng-container>
   <dd>
     <ng-container *ngIf="isNumber($any(emptyStyle)[key]); else isBooleanK">
-      <input type="number" [ngModel]="$any(formatStyle)[key]" (ngModelChange)="updateRawType($event, [key])" />
+      <input type="number" [ngModel]="$any(formatStyle)[key]" (ngModelChange)="updateRawType($event, [key])"
+        [min]="minNumber($any(formatStyle), key)" [max]="maxNumber($any(formatStyle), key)" />
     </ng-container>
     <ng-template #isBooleanK>
       <ng-container *ngIf="isBoolean($any(emptyStyle)[key]); else isStringK">
@@ -41,7 +42,8 @@
     <ng-template #isListK>
       <ng-container *ngIf="isList($any(emptyStyle)[key]); else isMiscStructK">
         <span>Size:</span>
-        <input type="number" [ngModel]="$any(formatStyle)[key].size()" (ngModelChange)="resizeList($event, [key])" />
+        <input type="number" [ngModel]="$any(formatStyle)[key].size()" (ngModelChange)="resizeList($event, [key])"
+          min="0" max="0xFFFFFFFF" />
         <dl *ngFor="let index of [].constructor($any(formatStyle)[key].size()); let i = index">
           <dt>Item {{ i }}</dt>
           <dd>
@@ -52,7 +54,9 @@
               <dd>
                 <ng-container *ngIf="isNumber($any(formatStyle)[key].get(i)[subkey]); else isBooleanKiK">
                   <input type="number" [ngModel]="$any(formatStyle)[key].get(i)[subkey]"
-                    (ngModelChange)="updateRawType($event, [key, i, subkey])" />
+                    (ngModelChange)="updateRawType($event, [key, i, subkey])"
+                    [min]="minNumber($any(formatStyle)[key].get(i), subkey)"
+                    [max]="maxNumber($any(formatStyle)[key].get(i), subkey)" />
                 </ng-container>
                 <ng-template #isBooleanKiK>
                   <ng-container *ngIf="isBoolean($any(formatStyle)[key].get(i)[subkey]); else isStringKiK">
@@ -110,7 +114,8 @@
           <dd>
             <ng-container *ngIf="isNumber($any(emptyStyle)[key][subkey]); else isBooleanKK">
               <input type="number" [ngModel]="$any(formatStyle)[key][subkey]"
-                (ngModelChange)="updateRawType($event, [key, subkey])" />
+                (ngModelChange)="updateRawType($event, [key, subkey])" [min]="minNumber($any(formatStyle)[key], subkey)"
+                [max]="maxNumber($any(formatStyle)[key], subkey)" />
             </ng-container>
             <ng-template #isBooleanKK>
               <ng-container *ngIf="isBoolean($any(emptyStyle)[key][subkey]); else isStringKK">
@@ -152,7 +157,7 @@
               <ng-container *ngIf="isList($any(emptyStyle)[key][subkey]); else elseKK">
                 <span>Size:</span>
                 <input type="number" [ngModel]="$any(formatStyle)[key][subkey].size()"
-                  (ngModelChange)="resizeList($event, [key, subkey])" />
+                  (ngModelChange)="resizeList($event, [key, subkey])" min="0" max="0xFFFFFFFF" />
                 <dl *ngFor="let index of [].constructor($any(formatStyle)[key][subkey].size()); let i = index">
                   <dt>Item {{ i }}</dt>
                   <dd>
@@ -164,7 +169,9 @@
                         <ng-container
                           *ngIf="isNumber($any(formatStyle)[key][subkey].get(i)[subkey2]); else isBooleanKKiK">
                           <input type="number" [ngModel]="$any(formatStyle)[key][subkey].get(i)[subkey2]"
-                            (ngModelChange)="updateRawType($event, [key, subkey, i, subkey2])" />
+                            (ngModelChange)="updateRawType($event, [key, subkey, i, subkey2])"
+                            [min]="minNumber($any(formatStyle)[key][subkey].get(i), subkey2)"
+                            [max]="maxNumber($any(formatStyle)[key][subkey].get(i), subkey2)" />
                         </ng-container>
                         <ng-template #isBooleanKKiK>
                           <ng-container
