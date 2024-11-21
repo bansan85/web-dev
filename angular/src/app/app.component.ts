@@ -4,6 +4,7 @@ import {
   ElementRef,
   ViewChild,
   HostListener,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { WasmLoaderDemanglerService } from './wasm-loader-demangler.service';
 import { WasmLoaderFormatterService } from './wasm-loader-formatter.service';
@@ -53,6 +54,7 @@ export class AppComponent implements OnInit {
 
   @ViewChild('mangledInput') mangledInput!: ElementRef<HTMLTextAreaElement>;
   @ViewChild('newStyle') newStyle!: ElementRef<HTMLSelectElement>;
+  @ViewChild('dialog') dialog!: DialogExtComponent;
 
   @HostListener('window:resize')
   onResize() {
@@ -61,7 +63,8 @@ export class AppComponent implements OnInit {
 
   constructor(
     private wasmLoaderDemangler: WasmLoaderDemanglerService,
-    private wasmLoaderFormatter: WasmLoaderFormatterService
+    private wasmLoaderFormatter: WasmLoaderFormatterService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   async ngOnInit() {
@@ -134,6 +137,15 @@ export class AppComponent implements OnInit {
       await this.loadWasmFormatterModule();
     }
 
+    if (value && this.enableClangFormatExpert) {
+      this.cdr.detectChanges();
+      this.dialog.dialogRef.nativeElement.style.top =
+        (window.innerHeight -
+          this.dialog.dialogRef.nativeElement.offsetHeight) /
+          2 +
+        'px';
+    }
+
     this.reformat();
   }
 
@@ -141,6 +153,15 @@ export class AppComponent implements OnInit {
     this.enableClangFormatExpert = value;
 
     localStorage.setItem('enableClangFormatExpert', value.toString());
+
+    if (value) {
+      this.cdr.detectChanges();
+      this.dialog.dialogRef.nativeElement.style.top =
+        (window.innerHeight -
+          this.dialog.dialogRef.nativeElement.offsetHeight) /
+          2 +
+        'px';
+    }
   }
 
   async onDemangle(mangledName: string) {
