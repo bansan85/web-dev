@@ -67,7 +67,7 @@ export class AppComponent implements OnInit {
     private wasmLoaderDemangler: WasmLoaderDemanglerService,
     private wasmLoaderFormatter: WasmLoaderFormatterService,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   async ngOnInit() {
     this.updateIconSize();
@@ -140,12 +140,7 @@ export class AppComponent implements OnInit {
     }
 
     if (value && this.enableClangFormatExpert) {
-      this.cdr.detectChanges();
-      this.dialog.dialogRef.nativeElement.style.top =
-        (window.innerHeight -
-          this.dialog.dialogRef.nativeElement.offsetHeight) /
-          2 +
-        'px';
+      this.centerDialog();
     }
 
     this.reformat();
@@ -157,11 +152,22 @@ export class AppComponent implements OnInit {
     localStorage.setItem('enableClangFormatExpert', value.toString());
 
     if (value) {
-      this.cdr.detectChanges();
-      this.dialog.dialogRef.nativeElement.style.top =
-        (window.innerHeight -
-          this.dialog.dialogRef.nativeElement.offsetHeight) /
-          2 +
+      this.centerDialog();
+    }
+  }
+
+  private centerDialog() {
+    this.cdr.detectChanges();
+    this.dialog.dialogRef.nativeElement.style.top =
+      (window.innerHeight -
+        this.dialog.dialogRef.nativeElement.offsetHeight) /
+      2 +
+      'px';
+    const rect = this.dialog.dialogRef.nativeElement.getBoundingClientRect();
+    if (rect.right > window.innerWidth) {
+      this.dialog.dialogRef.nativeElement.style.left =
+        window.innerWidth -
+        this.dialog.dialogRef.nativeElement.offsetWidth +
         'px';
     }
   }
