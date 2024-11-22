@@ -1,13 +1,26 @@
 #include <fstream>
-#include <iostream>
 #include <map>
 #include <vector>
 
 #include <clang/AST/ASTConsumer.h>
+#include <clang/AST/ASTContext.h>
+#include <clang/AST/Decl.h>
+#include <clang/AST/DeclBase.h>
+#include <clang/AST/DeclCXX.h>
 #include <clang/AST/RecursiveASTVisitor.h>
+#include <clang/AST/Type.h>
+#include <clang/Basic/Specifiers.h>
 #include <clang/Frontend/CompilerInstance.h>
 #include <clang/Frontend/FrontendAction.h>
 #include <clang/Tooling/Tooling.h>
+#include <cstring>
+#include <llvm/ADT/StringRef.h>
+#include <llvm/Support/ErrorOr.h>
+#include <llvm/Support/MemoryBuffer.h>
+#include <memory>
+#include <string>
+#include <string_view>
+#include <utility>
 
 using namespace clang;
 
@@ -53,7 +66,8 @@ public:
             emscripten_file << "\n";
             emscripten_file
                 << ".function(\"get" << Field->getNameAsString()
-                << "Type\", +[](const " << Declaration->getQualifiedNameAsString() << "&){return "
+                << "Type\", +[](const "
+                << Declaration->getQualifiedNameAsString() << "&){return "
                 << typeStrToSize.at(fieldType.getAsString()) << ";})";
           }
         }
