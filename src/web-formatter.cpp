@@ -36,7 +36,7 @@ namespace web_formatter {
 
 namespace {
 
-std::string Format(const std::string &code,
+std::string format(const std::string &code,
                    const clang::format::FormatStyle &format_style) {
   const clang::tooling::Range range(0, code.size());
 
@@ -46,17 +46,17 @@ std::string Format(const std::string &code,
       clang::format::reformat(format_style, code, {range}, "<stdin>", &status);
 
   if (status.FormatComplete) {
-    llvm::Expected<std::string> formattedCode =
+    llvm::Expected<std::string> formatted_code =
         clang::tooling::applyAllReplacements(code, replacements);
 
-    if (formattedCode) {
-      return formattedCode.get();
+    if (formatted_code) {
+      return formatted_code.get();
     }
   }
   return code;
 }
 
-void RegisterFormatStyle() {
+void registerFormatStyle() {
 #include "web-formatter-binding.cpp.inc" // IWYU pragma: keep
 }
 
@@ -65,7 +65,7 @@ void RegisterFormatStyle() {
 } // namespace web_formatter
 
 EMSCRIPTEN_BINDINGS(web_formatter) {
-  emscripten::function("formatter", &web_formatter::Format);
+  emscripten::function("formatter", &web_formatter::format);
   emscripten::register_vector<std::string>("StringList");
   emscripten::register_vector<clang::tooling::IncludeStyle::IncludeCategory>(
       "IncludeCategoryList");
@@ -114,5 +114,5 @@ EMSCRIPTEN_BINDINGS(web_formatter) {
         return retval;
       });
 
-  web_formatter::RegisterFormatStyle();
+  web_formatter::registerFormatStyle();
 }

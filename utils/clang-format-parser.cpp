@@ -23,11 +23,16 @@
 #include <utility> // IWYU pragma: keep
 #include <vector>
 
+using clang::AccessSpecifier;
+using clang::ASTConsumer;
 using clang::ASTContext;
+using clang::ASTFrontendAction;
+using clang::CompilerInstance;
 using clang::CXXRecordDecl;
 using clang::EnumDecl;
 using clang::QualType;
 using clang::RecursiveASTVisitor;
+using llvm::StringRef;
 
 namespace frozen {
 template <> struct elsa<std::string_view> {
@@ -43,7 +48,7 @@ template <> struct elsa<std::string_view> {
 
 namespace {
 
-constexpr frozen::unordered_map<std::string_view, int, 3> typeStrToSize{
+constexpr frozen::unordered_map<std::string_view, int, 3> type_str_to_size{
     {"int", -32}, {"unsigned int", 32}, {"int8_t", -8}};
 
 } // namespace
@@ -51,98 +56,98 @@ constexpr frozen::unordered_map<std::string_view, int, 3> typeStrToSize{
 class FindNamedClassVisitor
     : public RecursiveASTVisitor<FindNamedClassVisitor> {
 public:
-  explicit FindNamedClassVisitor(ASTContext *Context, std::string_view name)
-      : Context(Context),
-        emscripten_file(std::string{name.data(), name.size()}) {}
+  explicit FindNamedClassVisitor(ASTContext *context, std::string_view name)
+      : _context(context),
+        _emscripten_file(std::string{name.data(), name.size()}) {}
 
-  bool VisitCXXRecordDecl(CXXRecordDecl *Declaration) {
-    if ((Declaration->getQualifiedNameAsString().starts_with(
+  bool VisitCXXRecordDecl(CXXRecordDecl *declaration) {
+    if ((declaration->getQualifiedNameAsString().starts_with(
              "clang::format::FormatStyle") ||
-         Declaration->getQualifiedNameAsString().starts_with(
+         declaration->getQualifiedNameAsString().starts_with(
              "clang::tooling::IncludeStyle")) &&
-        (Declaration->getDeclContext()->isNamespace() ||
-         Declaration->getAccess() == clang::AccessSpecifier::AS_public)) {
-      emscripten_file << "emscripten::class_<"
-                      << Declaration->getQualifiedNameAsString() << ">(\""
-                      << Declaration->getNameAsString() << "\")\n"
+        (declaration->getDeclContext()->isNamespace() ||
+         declaration->getAccess() == AccessSpecifier::AS_public)) {
+      _emscripten_file << "emscripten::class_<"
+                      << declaration->getQualifiedNameAsString() << ">(\""
+                      << declaration->getNameAsString() << "\")\n"
                       << ".constructor(+[]() {\n"
                       << "  return initialize<"
-                      << Declaration->getQualifiedNameAsString() << ">();"
+                      << declaration->getQualifiedNameAsString() << ">();"
                       << "})";
-      for (const auto *Field : Declaration->fields()) {
-        if (Field->getAccess() == clang::AccessSpecifier::AS_public) {
-          emscripten_file << "\n.property(\"" << Field->getNameAsString()
-                          << "\", &" << Field->getQualifiedNameAsString();
-          const QualType FieldType = Field->getType();
-          if (FieldType->isRecordType()) {
-            emscripten_file << ", emscripten::return_value_policy::reference()";
+      for (const auto *field : declaration->fields()) {
+        if (field->getAccess() == AccessSpecifier::AS_public) {
+          _emscripten_file << "\n.property(\"" << field->getNameAsString()
+                          << "\", &" << field->getQualifiedNameAsString();
+          const QualType field_type = field->getType();
+          if (field_type->isRecordType()) {
+            _emscripten_file << ", emscripten::return_value_policy::reference()";
           }
 
-          emscripten_file << ")";
-          if (FieldType->isIntegralType(*Context) &&
-              !FieldType->isBooleanType()) {
-            emscripten_file << "\n";
-            emscripten_file
-                << ".function(\"get" << Field->getNameAsString()
+          _emscripten_file << ")";
+          if (field_type->isIntegralType(*_context) &&
+              !field_type->isBooleanType()) {
+            _emscripten_file << "\n";
+            _emscripten_file
+                << ".function(\"get" << field->getNameAsString()
                 << "Type\", +[](const "
-                << Declaration->getQualifiedNameAsString() << "&){return "
-                << typeStrToSize.at(FieldType.getAsString()) << ";})";
+                << declaration->getQualifiedNameAsString() << "&){return "
+                << type_str_to_size.at(field_type.getAsString()) << ";})";
           }
         }
       }
-      emscripten_file << ";\n\n";
+      _emscripten_file << ";\n\n";
     }
     return true;
   }
 
-  bool VisitEnumDecl(EnumDecl *Declaration) {
-    if (Declaration->getQualifiedNameAsString().starts_with(
+  bool VisitEnumDecl(EnumDecl *declaration) {
+    if (declaration->getQualifiedNameAsString().starts_with(
             "clang::format::FormatStyle") ||
-        Declaration->getQualifiedNameAsString().starts_with(
+        declaration->getQualifiedNameAsString().starts_with(
             "clang::tooling::IncludeStyle") &&
-            Declaration->getAccess() == clang::AccessSpecifier::AS_public) {
-      emscripten_file << "emscripten::enum_<"
-                      << Declaration->getQualifiedNameAsString() << ">(\""
-                      << Declaration->getNameAsString() << "\")";
-      for (const auto *Field : Declaration->enumerators()) {
-        emscripten_file << "\n.value(\"" << Field->getNameAsString() << "\", "
-                        << Field->getQualifiedNameAsString() << ")";
+            declaration->getAccess() == AccessSpecifier::AS_public) {
+      _emscripten_file << "emscripten::enum_<"
+                      << declaration->getQualifiedNameAsString() << ">(\""
+                      << declaration->getNameAsString() << "\")";
+      for (const auto *field : declaration->enumerators()) {
+        _emscripten_file << "\n.value(\"" << field->getNameAsString() << "\", "
+                        << field->getQualifiedNameAsString() << ")";
       }
-      emscripten_file << ";\n\n";
+      _emscripten_file << ";\n\n";
     }
     return true;
   }
 
 private:
-  ASTContext *Context;
-  std::ofstream emscripten_file;
+  ASTContext *_context;
+  std::ofstream _emscripten_file;
 };
 
-class FindNamedClassConsumer : public clang::ASTConsumer {
+class FindNamedClassConsumer : public ASTConsumer {
 public:
-  explicit FindNamedClassConsumer(ASTContext *Context, std::string_view name)
-      : Visitor(Context, name) {}
+  explicit FindNamedClassConsumer(ASTContext *context, std::string_view name)
+      : _visitor(context, name) {}
 
-  void HandleTranslationUnit(clang::ASTContext &Context) override {
-    Visitor.TraverseDecl(Context.getTranslationUnitDecl());
+  void HandleTranslationUnit(ASTContext &context) override {
+    _visitor.TraverseDecl(context.getTranslationUnitDecl());
   }
 
 private:
-  FindNamedClassVisitor Visitor;
+  FindNamedClassVisitor _visitor;
 };
 
-class FindNamedClassAction : public clang::ASTFrontendAction {
+class FindNamedClassAction : public ASTFrontendAction {
 public:
-  explicit FindNamedClassAction(std::string_view name) : filename(name) {}
-  std::unique_ptr<clang::ASTConsumer>
-  CreateASTConsumer(clang::CompilerInstance &Compiler,
-                    llvm::StringRef /*InFile*/) override {
-    return std::make_unique<FindNamedClassConsumer>(&Compiler.getASTContext(),
-                                                    filename);
+  explicit FindNamedClassAction(std::string_view name) : _filename(name) {}
+  std::unique_ptr<ASTConsumer>
+  CreateASTConsumer(CompilerInstance &compiler,
+                    StringRef /*InFile*/) override {
+    return std::make_unique<FindNamedClassConsumer>(&compiler.getASTContext(),
+                                                    _filename);
   }
 
 private:
-  std::string_view filename;
+  std::string_view _filename;
 };
 
 int main(int argc, char **argv) {
