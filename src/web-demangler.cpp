@@ -1,14 +1,17 @@
 #include <emscripten/bind.h>
 #include <llvm/Demangle/Demangle.h>
 #include <string>
-#include <string_view>
+
+namespace web_demangler {
+
+namespace {
 
 std::string demangle(const std::string &mangledName) {
-  std::string retval = llvm::demangle(mangledName.c_str());
+  std::string retval = llvm::demangle(mangledName);
   if (retval == mangledName) {
     // Make a second try by prefixing with _Z for Itanium.
-    std::string mangledNameZ = "_Z" + mangledName;
-    std::string retvalZ = llvm::demangle(mangledNameZ.c_str());
+    const std::string mangledNameZ = "_Z" + mangledName;
+    const std::string retvalZ = llvm::demangle(mangledNameZ);
     if (retvalZ != mangledNameZ) {
       return retvalZ;
     }
@@ -16,6 +19,10 @@ std::string demangle(const std::string &mangledName) {
   return retval;
 }
 
+} // namespace
+
+} // namespace web_demangler
+
 EMSCRIPTEN_BINDINGS(web_demangler) {
-  emscripten::function("web_demangle", &demangle);
+  emscripten::function("web_demangle", &web_demangler::demangle);
 }

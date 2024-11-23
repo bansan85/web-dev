@@ -20,7 +20,6 @@ cd ..
 
 # Build wasm-assembly wrapper
 cd emsdk
-git pull
 ./emsdk install latest
 ./emsdk activate latest
 source ./emsdk_env.sh
@@ -47,7 +46,9 @@ ng serve --open --host 0.0.0.0
 
 cmake -S utils -B build_utils_iwyu -G "Ninja" -DCMAKE_BUILD_TYPE="Release" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 /usr/lib/llvm/18/bin/iwyu_tool.py -p build_utils_iwyu utils/*.cpp > iwyu_tool.log
+run-clang-tidy -p build_utils_iwyu > clang-tidy-utils.log
 
 emcmake cmake -S . -B build_iwyu -G "Ninja" -DCMAKE_BUILD_TYPE="Release" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 cmake --build build_iwyu --parallel 8
 /usr/lib/llvm/18/bin/iwyu_tool.py -p build_iwyu src/*.cpp > iwyu_tool.log
+run-clang-tidy -p build_iwyu src/*.cpp > clang-tidy-utils.log

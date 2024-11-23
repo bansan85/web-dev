@@ -35,8 +35,9 @@ foreach(lib ${CL_LIBRARIES})
   endif()
 endforeach()
 
-target_include_directories(clang_format_parser PRIVATE SYSTEM
-                                                       ${LLVM_INCLUDE_DIRS})
+target_include_directories(
+  clang_format_parser PRIVATE SYSTEM ${LLVM_INCLUDE_DIRS}
+                              "${CMAKE_CURRENT_SOURCE_DIR}/../frozen/include")
 if(ipo_supported)
   set_property(TARGET clang_format_parser PROPERTY INTERPROCEDURAL_OPTIMIZATION
                                                    TRUE)

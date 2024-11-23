@@ -3,14 +3,16 @@
 #include <clang/Tooling/Core/Replacement.h>
 #include <clang/Tooling/Inclusions/IncludeStyle.h>
 #include <emscripten/bind.h>
-#include <llvm/ADT/ArrayRef.h>
+#include <llvm/ADT/ArrayRef.h> // IWYU pragma: keep
 #include <llvm/Support/Error.h>
+#include <stdexcept>
 #include <string>
+#include <system_error>
 #include <type_traits>
 
 namespace {
 template <typename T> std::enable_if_t<std::is_aggregate_v<T>, T> initialize() {
-  T obj;
+  T obj{};
   boost::pfr::for_each_field(obj, [](auto &field) {
     if constexpr (std::is_same_v<decltype(field),
                                  clang::format::FormatStyle::LanguageKind &>) {
@@ -30,15 +32,17 @@ std::enable_if_t<!std::is_aggregate_v<T>, T> initialize() {
 
 } // namespace
 
-namespace web_demangler {
+namespace web_formatter {
+
+namespace {
 
 std::string Format(const std::string &code,
                    const clang::format::FormatStyle &format_style) {
-  clang::tooling::Range range(0, code.size());
+  const clang::tooling::Range range(0, code.size());
 
   clang::format::FormattingAttemptStatus status;
 
-  clang::tooling::Replacements replacements =
+  const clang::tooling::Replacements replacements =
       clang::format::reformat(format_style, code, {range}, "<stdin>", &status);
 
   if (status.FormatComplete) {
@@ -56,10 +60,12 @@ void RegisterFormatStyle() {
 #include "web-formatter-binding.cpp.inc" // IWYU pragma: keep
 }
 
-} // namespace web_demangler
+} // namespace
+
+} // namespace web_formatter
 
 EMSCRIPTEN_BINDINGS(web_formatter) {
-  emscripten::function("formatter", &web_demangler::Format);
+  emscripten::function("formatter", &web_formatter::Format);
   emscripten::register_vector<std::string>("StringList");
   emscripten::register_vector<clang::tooling::IncludeStyle::IncludeCategory>(
       "IncludeCategoryList");
@@ -99,9 +105,14 @@ EMSCRIPTEN_BINDINGS(web_formatter) {
         clang::format::FormatStyle retval;
         retval.Language = clang::format::FormatStyle::LanguageKind::LK_Cpp;
         retval.InheritsParentConfig = false;
-        clang::format::parseConfiguration(yaml, &retval);
+        const std::error_code ec =
+            clang::format::parseConfiguration(yaml, &retval);
+        if (ec) {
+          throw std::runtime_error("Failed to parse yaml config file.\n" +
+                                   ec.message());
+        }
         return retval;
       });
 
-  web_demangler::RegisterFormatStyle();
+  web_formatter::RegisterFormatStyle();
 }
