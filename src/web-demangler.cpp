@@ -1,7 +1,7 @@
-#include <emscripten.h>
 #include <emscripten/bind.h>
 #include <llvm/Demangle/Demangle.h>
 #include <string>
+#include <string_view>
 
 std::string demangle(const std::string &mangledName) {
   std::string retval = llvm::demangle(mangledName.c_str());

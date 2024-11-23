@@ -42,6 +42,12 @@ cp build_debug/web* angular/src/assets/
 cd angular
 npm install
 ng build
-ng serve --open --host 0.0.0.0
 ng test --browsers=ChromeHeadless --watch=false
+ng serve --open --host 0.0.0.0
 
+cmake -S utils -B build_utils_iwyu -G "Ninja" -DCMAKE_BUILD_TYPE="Release" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+/usr/lib/llvm/18/bin/iwyu_tool.py -p build_utils_iwyu utils/*.cpp > iwyu_tool.log
+
+emcmake cmake -S . -B build_iwyu -G "Ninja" -DCMAKE_BUILD_TYPE="Release" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+cmake --build build_iwyu --parallel 8
+/usr/lib/llvm/18/bin/iwyu_tool.py -p build_iwyu src/*.cpp > iwyu_tool.log

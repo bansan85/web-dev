@@ -2,6 +2,15 @@ cmake_minimum_required(VERSION 3.20)
 
 project(web_demangler LANGUAGES CXX)
 
+if(CMAKE_EXPORT_COMPILE_COMMANDS)
+  execute_process(
+    COMMAND "${CMAKE_CXX_COMPILER}" "--cflags"
+    OUTPUT_VARIABLE EMCC_FLAGS
+    OUTPUT_STRIP_TRAILING_WHITESPACE)
+  string(REPLACE "-enable-emscripten-sjlj" "" EMCC_FLAGS ${EMCC_FLAGS})
+  separate_arguments(EMCC_FLAGS)
+endif()
+
 option(WITH_SANITIZE_ADDRESS "Build with address sanitizer." OFF)
 option(WITH_SANITIZE_UNDEFINED "Build with undefined sanitizer." OFF)
 
@@ -47,7 +56,8 @@ target_sources(
   web_demangler PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src/web-demangler.cpp"
                         "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt")
 target_link_libraries(web_demangler PRIVATE embind LLVMDemangle)
-target_include_directories(web_demangler PRIVATE ${LLVM_SOURCE_DIR}/include)
+target_include_directories(web_demangler PRIVATE SYSTEM
+                                                 ${LLVM_SOURCE_DIR}/include)
 target_compile_options(web_demangler PRIVATE "-fexceptions")
 target_link_options(
   web_demangler
@@ -81,8 +91,11 @@ target_sources(
 target_link_libraries(web_formatter PRIVATE embind clangFormat)
 target_include_directories(
   web_formatter
-  PRIVATE ${LLVM_SOURCE_DIR}/include ${LLVM_EXTERNAL_CLANG_SOURCE_DIR}/include
-          ${LLVM_BINARY_DIR}/include/ ${LLVM_BINARY_DIR}/tools/clang/include
+  PRIVATE SYSTEM
+          ${LLVM_SOURCE_DIR}/include
+          ${LLVM_EXTERNAL_CLANG_SOURCE_DIR}/include
+          ${LLVM_BINARY_DIR}/include/
+          ${LLVM_BINARY_DIR}/tools/clang/include
           "${CMAKE_CURRENT_SOURCE_DIR}/pfr/include")
 target_compile_options(web_formatter PRIVATE "-fexceptions")
 target_link_options(
@@ -125,4 +138,8 @@ if(WITH_SANITIZE_UNDEFINED)
                           "-fno-omit-frame-pointer")
     target_link_options(${target_i} PRIVATE "-fsanitize=undefined")
   endforeach()
+endif()
+if(CMAKE_EXPORT_COMPILE_COMMANDS)
+  target_compile_options(web_demangler PRIVATE ${EMCC_FLAGS})
+  target_compile_options(web_formatter PRIVATE ${EMCC_FLAGS})
 endif()

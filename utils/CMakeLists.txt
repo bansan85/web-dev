@@ -35,7 +35,8 @@ foreach(lib ${CL_LIBRARIES})
   endif()
 endforeach()
 
-target_include_directories(clang_format_parser PRIVATE ${LLVM_INCLUDE_DIRS})
+target_include_directories(clang_format_parser PRIVATE SYSTEM
+                                                       ${LLVM_INCLUDE_DIRS})
 if(ipo_supported)
   set_property(TARGET clang_format_parser PROPERTY INTERPROCEDURAL_OPTIMIZATION
                                                    TRUE)
@@ -49,5 +50,5 @@ add_custom_command(
   COMMAND
     $<TARGET_FILE:clang_format_parser>
     "${CMAKE_CURRENT_SOURCE_DIR}/../llvm/clang/include/clang/Format/Format.h"
-    "-I" "${LLVM_INCLUDE_DIRS}" "-I" "${GCC_INCLUDE}"
-    "-OCPP" "${CMAKE_CURRENT_SOURCE_DIR}/../src/web-formatter-binding.cpp.inc")
+    "-I" "${LLVM_INCLUDE_DIRS}" "-I" "${GCC_INCLUDE}" "-OCPP"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../src/web-formatter-binding.cpp.inc")

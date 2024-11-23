@@ -1,9 +1,12 @@
-#include <boost/pfr.hpp>
+#include <boost/pfr/core.hpp>
 #include <clang/Format/Format.h>
-#include <clang/Tooling/Tooling.h>
-#include <emscripten.h>
+#include <clang/Tooling/Core/Replacement.h>
+#include <clang/Tooling/Inclusions/IncludeStyle.h>
 #include <emscripten/bind.h>
+#include <llvm/ADT/ArrayRef.h>
+#include <llvm/Support/Error.h>
 #include <string>
+#include <type_traits>
 
 namespace {
 template <typename T> std::enable_if_t<std::is_aggregate_v<T>, T> initialize() {
@@ -50,7 +53,7 @@ std::string Format(const std::string &code,
 }
 
 void RegisterFormatStyle() {
-#include "web-formatter-binding.cpp.inc"
+#include "web-formatter-binding.cpp.inc" // IWYU pragma: keep
 }
 
 } // namespace web_demangler
