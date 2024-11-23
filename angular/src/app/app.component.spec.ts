@@ -34,19 +34,18 @@ describe('AppComponent', () => {
     fixture.detectChanges();
 
     // Test open clang-format dialog
-    const settingsImage = <HTMLElement>(
-      document.querySelector('lucide-icon[name="settings"]')
-    );
-
+    const settingsImage = document.querySelector(
+      'lucide-icon[name="settings"]'
+    ) as HTMLElement;
     expect(settingsImage).toBeDefined();
 
     settingsImage!.click();
 
     await fixture.whenStable();
 
-    const checkedClangFormat = <HTMLElement>(
-      document.querySelector('input[name="enableClangFormat"]')
-    );
+    const checkedClangFormat = document.querySelector(
+      'input[name="enableClangFormat"]'
+    ) as HTMLElement;
     checkedClangFormat.click();
     fixture.detectChanges();
     await fixture.whenStable();

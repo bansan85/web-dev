@@ -25,7 +25,7 @@
         (ngModelChange)="onEnableClangFormatExpert($event)">Expert<br />
       <ng-container *ngIf="enableClangFormatExpert">
         <app-formatter-options [formatStyle]="formatStyle!" [formatter]="formatter!" [emptyStyle]="emptyStyle!"
-          (onChange)="reformat()">
+          (changeOptions)="reformat()">
         </app-formatter-options>
       </ng-container>
     </ng-container>
@@ -50,5 +50,5 @@
 </ng-container>
 
 <a href="https://github.com/bansan85/web-demangler">
-  <github-mark-inline class="github_logo"></github-mark-inline>
+  <app-github-mark-inline class="github_logo"></app-github-mark-inline>
 </a>

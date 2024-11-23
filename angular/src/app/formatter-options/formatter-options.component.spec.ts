@@ -35,7 +35,7 @@ describe('FormatterOptionsComponent', () => {
     {
       const dtAccessModifierOffset = Array.from(
         document.querySelectorAll('dt')
-      ).find((dt) => dt.textContent! === 'AccessModifierOffset:')!;
+      ).find((dt) => dt.textContent === 'AccessModifierOffset:')!;
       const iAccessModifierOffset =
         dtAccessModifierOffset.nextElementSibling!.querySelector('input')!;
       expect(iAccessModifierOffset.getAttribute('type')).toEqual('number');
@@ -52,7 +52,7 @@ describe('FormatterOptionsComponent', () => {
     {
       const dtBinPackParameters = Array.from(
         document.querySelectorAll('dt')
-      ).find((dt) => dt.textContent! === 'BinPackParameters:')!;
+      ).find((dt) => dt.textContent === 'BinPackParameters:')!;
       const iBinPackParameters =
         dtBinPackParameters.nextElementSibling!.querySelector('input')!;
       expect(iBinPackParameters.getAttribute('type')).toEqual('checkbox');
@@ -71,7 +71,7 @@ describe('FormatterOptionsComponent', () => {
     {
       const dtMacroBlockBegin = Array.from(
         document.querySelectorAll('dt')
-      ).find((dt) => dt.textContent! === 'MacroBlockBegin:')!;
+      ).find((dt) => dt.textContent === 'MacroBlockBegin:')!;
       const iMacroBlockBegin =
         dtMacroBlockBegin.nextElementSibling!.querySelector('input')!;
       expect(iMacroBlockBegin.getAttribute('type')).toEqual('text');
@@ -88,7 +88,7 @@ describe('FormatterOptionsComponent', () => {
     {
       const dtAlignAfterOpenBracket = Array.from(
         document.querySelectorAll('dt')
-      ).find((dt) => dt.textContent! === 'AlignAfterOpenBracket:')!;
+      ).find((dt) => dt.textContent === 'AlignAfterOpenBracket:')!;
       const iAlignAfterOpenBracket =
         dtAlignAfterOpenBracket.nextElementSibling!.querySelector('select')!;
       expect(iAlignAfterOpenBracket.length).toEqual(4);
@@ -113,7 +113,7 @@ describe('FormatterOptionsComponent', () => {
     {
       const dtBracedInitializerIndentWidth = Array.from(
         document.querySelectorAll('dt')
-      ).find((dt) => dt.textContent! === 'BracedInitializerIndentWidth:')!;
+      ).find((dt) => dt.textContent === 'BracedInitializerIndentWidth:')!;
       const cBracedInitializerIndentWidth =
         dtBracedInitializerIndentWidth.nextElementSibling!.querySelector(
           'input'
@@ -121,9 +121,8 @@ describe('FormatterOptionsComponent', () => {
       expect(cBracedInitializerIndentWidth.getAttribute('type')).toEqual(
         'checkbox'
       );
-      const iBracedInitializerIndentWidth = <HTMLInputElement>(
-        cBracedInitializerIndentWidth.nextElementSibling
-      );
+      const iBracedInitializerIndentWidth =
+        cBracedInitializerIndentWidth.nextElementSibling as HTMLInputElement;
       expect(iBracedInitializerIndentWidth.getAttribute('type')).toEqual(
         'number'
       );
@@ -170,12 +169,12 @@ describe('FormatterOptionsComponent', () => {
     {
       const dtWhitespaceSensitiveMacros = Array.from(
         document.querySelectorAll('dt')
-      ).find((dt) => dt.textContent! === 'WhitespaceSensitiveMacros:')!;
+      ).find((dt) => dt.textContent === 'WhitespaceSensitiveMacros:')!;
       const tWhitespaceSensitiveMacros =
         dtWhitespaceSensitiveMacros.nextElementSibling!.querySelector(
           'textarea'
         )!;
-      let stringList: string[] = [];
+      const stringList: string[] = [];
       for (
         let i = 0;
         i < component.formatStyle.WhitespaceSensitiveMacros.size();
@@ -190,7 +189,7 @@ describe('FormatterOptionsComponent', () => {
       tWhitespaceSensitiveMacros.dispatchEvent(new Event('input'));
       fixture.detectChanges();
       expect(component.formatStyle.WhitespaceSensitiveMacros.size()).toEqual(2);
-      let stringList2: string[] = [];
+      const stringList2: string[] = [];
       for (
         let i = 0;
         i < component.formatStyle.WhitespaceSensitiveMacros.size();
@@ -207,7 +206,7 @@ describe('FormatterOptionsComponent', () => {
     {
       const dtRawStringFormats = Array.from(
         document.querySelectorAll('dt')
-      ).find((dt) => dt.textContent! === 'RawStringFormats:')!;
+      ).find((dt) => dt.textContent === 'RawStringFormats:')!;
       const iRawStringFormatsSize =
         dtRawStringFormats.nextElementSibling!.querySelector('input')!;
       expect(iRawStringFormatsSize.getAttribute('type')).toEqual('number');
@@ -226,7 +225,7 @@ describe('FormatterOptionsComponent', () => {
       ).toEqual(3);
 
       Array.from(dtRawStringFormats.nextElementSibling!.querySelectorAll('dt'))
-        .filter((x) => x.textContent! === 'Language:')
+        .filter((x) => x.textContent === 'Language:')
         .forEach((x, i) => {
           const nextInput = x.nextElementSibling!.querySelector('select')!;
           nextInput.selectedIndex = i + 1;
@@ -283,9 +282,9 @@ describe('FormatterOptionsComponent', () => {
     {
       const dtCanonicalDelimiter = Array.from(
         Array.from(document.querySelectorAll('dt'))
-          .find((dt) => dt.textContent! === 'RawStringFormats:')!
+          .find((dt) => dt.textContent === 'RawStringFormats:')!
           .nextElementSibling!.querySelectorAll('dl dd dl dt')
-      ).find((dt) => dt.textContent! === 'CanonicalDelimiter:')!;
+      ).find((dt) => dt.textContent === 'CanonicalDelimiter:')!;
       const iCanonicalDelimiter =
         dtCanonicalDelimiter.nextElementSibling!.querySelector('input')!;
       expect(iCanonicalDelimiter.getAttribute('type')).toEqual('text');
@@ -304,9 +303,9 @@ describe('FormatterOptionsComponent', () => {
     {
       const dtLanguage = Array.from(
         Array.from(document.querySelectorAll('dt'))
-          .find((dt) => dt.textContent! === 'RawStringFormats:')!
+          .find((dt) => dt.textContent === 'RawStringFormats:')!
           .nextElementSibling!.querySelectorAll('dl dd dl dt')
-      ).find((dt) => dt.textContent! === 'Language:')!;
+      ).find((dt) => dt.textContent === 'Language:')!;
       const iLanguage = dtLanguage.nextElementSibling!.querySelector('select')!;
       expect(iLanguage.length).toEqual(11);
       expect(iLanguage.options[0].text).toEqual('None');
@@ -330,12 +329,12 @@ describe('FormatterOptionsComponent', () => {
     {
       const dtDelimiters = Array.from(
         Array.from(document.querySelectorAll('dt'))
-          .find((dt) => dt.textContent! === 'RawStringFormats:')!
+          .find((dt) => dt.textContent === 'RawStringFormats:')!
           .nextElementSibling!.querySelectorAll('dl dd dl dt')
-      ).find((dt) => dt.textContent! === 'Delimiters:')!;
+      ).find((dt) => dt.textContent === 'Delimiters:')!;
       const tDelimiters =
         dtDelimiters.nextElementSibling!.querySelector('textarea')!;
-      let stringList: string[] = [];
+      const stringList: string[] = [];
       for (
         let i = 0;
         i < component.formatStyle.RawStringFormats.get(0)!.Delimiters.size();
@@ -354,7 +353,7 @@ describe('FormatterOptionsComponent', () => {
       expect(
         component.formatStyle.RawStringFormats.get(0)!.Delimiters.size()
       ).toEqual(3);
-      let stringList2: string[] = [];
+      const stringList2: string[] = [];
       for (
         let i = 0;
         i < component.formatStyle.RawStringFormats.get(0)!.Delimiters.size();
@@ -372,7 +371,7 @@ describe('FormatterOptionsComponent', () => {
     // Test formatStyle.XXX.YYY number
     {
       const dtOverEmptyLines = Array.from(document.querySelectorAll('dt')).find(
-        (dt) => dt.textContent! === 'OverEmptyLines:'
+        (dt) => dt.textContent === 'OverEmptyLines:'
       )!;
       const iOverEmptyLines =
         dtOverEmptyLines.nextElementSibling!.querySelector('input')!;
@@ -391,7 +390,7 @@ describe('FormatterOptionsComponent', () => {
     // Test formatStyle.XXX.YYY boolean
     {
       const dtAtStartOfBlock = Array.from(document.querySelectorAll('dt')).find(
-        (dt) => dt.textContent! === 'AtStartOfBlock:'
+        (dt) => dt.textContent === 'AtStartOfBlock:'
       )!;
       const iAtStartOfBlock =
         dtAtStartOfBlock.nextElementSibling!.querySelector('input')!;
@@ -411,7 +410,7 @@ describe('FormatterOptionsComponent', () => {
     {
       const dtIncludeIsMainRegex = Array.from(
         document.querySelectorAll('dt')
-      ).find((dt) => dt.textContent! === 'IncludeIsMainRegex:')!;
+      ).find((dt) => dt.textContent === 'IncludeIsMainRegex:')!;
       const iIncludeIsMainRegex =
         dtIncludeIsMainRegex.nextElementSibling!.querySelector('input')!;
       expect(iIncludeIsMainRegex.getAttribute('type')).toEqual('text');
@@ -429,7 +428,7 @@ describe('FormatterOptionsComponent', () => {
     // Test formatStyle.XXX.YYY enum
     {
       const dtKind = Array.from(document.querySelectorAll('dt')).find(
-        (dt) => dt.textContent! === 'Kind:'
+        (dt) => dt.textContent === 'Kind:'
       )!;
       const iKind = dtKind.nextElementSibling!.querySelector('select')!;
       expect(iKind.length).toEqual(3);
@@ -454,7 +453,7 @@ describe('FormatterOptionsComponent', () => {
     {
       const dtIncludeCategories = Array.from(
         document.querySelectorAll('dt')
-      ).find((dt) => dt.textContent! === 'IncludeCategories:')!;
+      ).find((dt) => dt.textContent === 'IncludeCategories:')!;
       const iIncludeCategoriesSize =
         dtIncludeCategories.nextElementSibling!.querySelector('input')!;
       expect(iIncludeCategoriesSize.getAttribute('type')).toEqual('number');
@@ -475,7 +474,7 @@ describe('FormatterOptionsComponent', () => {
       ).toEqual(3);
 
       Array.from(dtIncludeCategories.nextElementSibling!.querySelectorAll('dt'))
-        .filter((x) => x.textContent! === 'Priority:')
+        .filter((x) => x.textContent === 'Priority:')
         .forEach((x, i) => {
           const nextInput = x.nextElementSibling!.querySelector('input')!;
           nextInput.value = i.toString();
@@ -529,7 +528,7 @@ describe('FormatterOptionsComponent', () => {
     // Test formatStyle.XXX.YYY[i].ZZZ number
     {
       const dtSortPriority = Array.from(document.querySelectorAll('dt')).find(
-        (dt) => dt.textContent! === 'SortPriority:'
+        (dt) => dt.textContent === 'SortPriority:'
       )!;
       const iSortPriority =
         dtSortPriority.nextElementSibling!.querySelector('input')!;
@@ -551,7 +550,7 @@ describe('FormatterOptionsComponent', () => {
     {
       const dtRegexIsCaseSensitive = Array.from(
         document.querySelectorAll('dt')
-      ).find((dt) => dt.textContent! === 'RegexIsCaseSensitive:')!;
+      ).find((dt) => dt.textContent === 'RegexIsCaseSensitive:')!;
       const iRegexIsCaseSensitive =
         dtRegexIsCaseSensitive.nextElementSibling!.querySelector('input')!;
       expect(iRegexIsCaseSensitive.getAttribute('type')).toEqual('checkbox');
@@ -571,7 +570,7 @@ describe('FormatterOptionsComponent', () => {
     // Test formatStyle.XXX.YYY[i].ZZZ string
     {
       const dtRegex = Array.from(document.querySelectorAll('dt')).find(
-        (dt) => dt.textContent! === 'Regex:'
+        (dt) => dt.textContent === 'Regex:'
       )!;
       const iRegex = dtRegex.nextElementSibling!.querySelector('input')!;
       expect(iRegex.getAttribute('type')).toEqual('text');

@@ -18,7 +18,7 @@ import { LucideAngularModule } from 'lucide-angular';
 export class DialogExtComponent {
   @ViewChild('dialog') dialogRef!: ElementRef<HTMLDialogElement>;
 
-  isOpen: boolean = false;
+  isOpen = false;
 
   isDragging = false;
   offsetX = 0;

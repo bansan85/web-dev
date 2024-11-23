@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { WasmLoaderDemanglerService } from './wasm-loader-demangler.service';
 import { WasmLoaderFormatterService } from './wasm-loader-formatter.service';
-import { NgFor, NgIf, NgClass } from '@angular/common';
+import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
 import { GithubMarkInlineComponent } from './img/github-mark-inline.component';
@@ -41,18 +41,18 @@ export class AppComponent implements OnInit {
   demangler?: DemanglerModule;
   formatter?: FormatterModule;
 
-  loadingSize: number = 0;
+  loadingSize = 0;
 
   demangledName: string[] = [];
 
-  enableClangFormat: boolean = false;
-  enableClangFormatExpert: boolean = false;
+  enableClangFormat = false;
+  enableClangFormatExpert = false;
 
   formatStyle?: FormatStyle;
   emptyStyle?: FormatStyle;
 
   // Text by pending if text insert while wasm is loading.
-  pendingText: boolean = false;
+  pendingText = false;
 
   @ViewChild('mangledInput') mangledInput!: ElementRef<HTMLTextAreaElement>;
   @ViewChild('newStyle') newStyle!: ElementRef<HTMLSelectElement>;

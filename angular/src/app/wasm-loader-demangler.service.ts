@@ -8,7 +8,7 @@ import { EmbindModule as DemanglerModule } from '../assets/web_demangler';
 export class WasmLoaderDemanglerService {
   private instance?: DemanglerModule;
 
-  private isLoading: boolean = true;
+  private isLoading = true;
 
   constructor() {
     web_demangler().then(async (instance: DemanglerModule) => {

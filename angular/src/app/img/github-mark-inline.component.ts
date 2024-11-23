@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'github-mark-inline',
+  selector: 'app-github-mark-inline',
   standalone: true,
   templateUrl: '../../assets/img/github-mark.svg',
 })

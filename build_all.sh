@@ -43,6 +43,8 @@ npm install
 ng build
 ng test --browsers=ChromeHeadless --watch=false
 ng serve --open --host 0.0.0.0
+ng lint
+cd ..
 
 cmake -S utils -B build_utils_iwyu -G "Ninja" -DCMAKE_BUILD_TYPE="Release" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 /usr/lib/llvm/18/bin/iwyu_tool.py -p build_utils_iwyu utils/*.cpp > iwyu_tool.log

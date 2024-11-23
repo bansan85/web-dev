@@ -8,9 +8,7 @@ import { EmbindModule as FormatterModule } from '../assets/web_formatter';
 export class WasmLoaderFormatterService {
   private instance?: FormatterModule;
 
-  private isLoading: boolean = false;
-
-  constructor() {}
+  private isLoading = false;
 
   async wasm(): Promise<FormatterModule> {
     if (this.isLoading) {

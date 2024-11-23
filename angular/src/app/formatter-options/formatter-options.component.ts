@@ -20,7 +20,7 @@ export class FormatterOptionsComponent {
   @Input({ required: true }) formatStyle!: FormatStyle;
   @Input({ required: true }) emptyStyle!: FormatStyle;
 
-  @Output() onChange: EventEmitter<any> = new EventEmitter();
+  @Output() changeOptions: EventEmitter<any> = new EventEmitter<any>();
 
   private getLastStruct(root: FormatStyle, keys: (string | number)[]) {
     let target = root as any;
@@ -61,13 +61,13 @@ export class FormatterOptionsComponent {
   }
 
   updateField(keys: (string | number)[], assign: (x: any[]) => void): void {
-    let tree: any[] = [];
+    const tree: any[] = [];
     let target = this.formatStyle as any;
-    for (let i = 0; i < keys.length; i++) {
-      if (typeof keys[i] === 'number') {
-        target = target.get(keys[i]);
+    for (const key of keys) {
+      if (typeof key === 'number') {
+        target = target.get(key);
       } else {
-        target = target[keys[i]];
+        target = target[key];
       }
       tree.push(target);
     }
@@ -85,7 +85,7 @@ export class FormatterOptionsComponent {
 
     (this.formatStyle as any)[keys.at(0)!] = tree[0];
 
-    this.onChange.emit();
+    this.changeOptions.emit();
   }
 
   isNumber(value: any): boolean {
@@ -233,8 +233,8 @@ export class FormatterOptionsComponent {
   }
 
   stringListToTextArea(raw_value: any): string {
-    let value: StringList = raw_value as StringList;
-    let retval: string[] = [];
+    const value: StringList = raw_value as StringList;
+    const retval: string[] = [];
     for (let i = 0; i < value.size(); i++) {
       retval.push(value.get(i) as string);
     }

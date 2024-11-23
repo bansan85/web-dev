@@ -26,7 +26,7 @@ describe('WasmLoaderFormatterService', () => {
     }
     expect(i).toBeLessThan(10);
     expect(service.wasm()).toBeDefined();
-    let formatter: FormatterModule = await service.wasm()!;
+    const formatter: FormatterModule = await service.wasm()!;
 
     const llvmStyle: FormatStyle = formatter.getLLVMStyle();
     expect(formatter.formatter('int main(){int a; int b;}', llvmStyle))
