@@ -57,6 +57,8 @@ export class AppComponent implements OnInit {
   @ViewChild('mangledInput') mangledInput!: ElementRef<HTMLTextAreaElement>;
   @ViewChild('newStyle') newStyle!: ElementRef<HTMLSelectElement>;
   @ViewChild('dialog') dialog!: DialogExtComponent;
+  @ViewChild('textClangConfig')
+  textClangConfig!: ElementRef<HTMLTextAreaElement>;
 
   @HostListener('window:resize')
   onResize() {
@@ -67,7 +69,7 @@ export class AppComponent implements OnInit {
     private wasmLoaderDemangler: WasmLoaderDemanglerService,
     private wasmLoaderFormatter: WasmLoaderFormatterService,
     private cdr: ChangeDetectorRef
-  ) { }
+  ) {}
 
   async ngOnInit() {
     this.updateIconSize();
@@ -159,9 +161,8 @@ export class AppComponent implements OnInit {
   private centerDialog() {
     this.cdr.detectChanges();
     this.dialog.dialogRef.nativeElement.style.top =
-      (window.innerHeight -
-        this.dialog.dialogRef.nativeElement.offsetHeight) /
-      2 +
+      (window.innerHeight - this.dialog.dialogRef.nativeElement.offsetHeight) /
+        2 +
       'px';
     const rect = this.dialog.dialogRef.nativeElement.getBoundingClientRect();
     if (rect.right > window.innerWidth) {
@@ -239,6 +240,44 @@ export class AppComponent implements OnInit {
   isLoading(): boolean {
     return (
       this.wasmLoaderDemangler.loading() || this.wasmLoaderFormatter.loading()
+    );
+  }
+
+  loadYamlFromFile(event: Event) {
+    let fileReader = new FileReader();
+    fileReader.onload = (e) => {
+      this.formatStyle = this.formatter!.deserializeFromYaml(
+        fileReader.result!
+      );
+      this.reformat();
+    };
+    fileReader.readAsText(
+      (event.currentTarget as HTMLInputElement).files!.item(0)!
+    );
+  }
+
+  loadYamlFromText() {
+    this.formatStyle = this.formatter!.deserializeFromYaml(
+      this.textClangConfig.nativeElement.value
+    );
+    this.reformat();
+  }
+
+  downloadYaml(event: Event) {
+    const newBlob = new Blob(
+      [this.formatter!.serializeToYaml(this.formatStyle!)],
+      { type: 'application/x-yaml' }
+    );
+    const data = window.URL.createObjectURL(newBlob);
+    const link = document.createElement('a');
+    link.href = data;
+    link.download = '.clang-format'; // set a name for the file
+    link.click();
+  }
+
+  saveYamlToText() {
+    navigator.clipboard.writeText(
+      this.formatter!.serializeToYaml(this.formatStyle!)
     );
   }
 }

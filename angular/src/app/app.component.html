@@ -6,21 +6,65 @@
     <input type="checkbox" name="enableClangFormat" [ngModel]="enableClangFormat"
       (ngModelChange)="onEnableClangFormat($event)"> Format with clang-format<br />
     <ng-container *ngIf="enableClangFormat && formatter">
-      <dt>Style:</dt>
-      <dd>
-        <select #newStyle>
-          <option value="llvm">LLVM</option>
-          <option value="google">Google</option>
-          <option value="chromium">Chromium</option>
-          <option value="mozilla">Mozilla</option>
-          <option value="webKit">WebKit</option>
-          <option value="gnu">GNU</option>
-          <option value="microsoft">Microsoft</option>
-          <option value="clangFormat">ClangFormat</option>
-          <option value="none">None</option>
-        </select>
-        <button (click)="loadStyle()">Load</button>
-      </dd>
+      <dl>
+        <dt>Load style from:</dt>
+        <dd>
+          <dl>
+            <dt>Preset:</dt>
+            <dd>
+              <select #newStyle>
+                <option value="llvm">LLVM</option>
+                <option value="google">Google</option>
+                <option value="chromium">Chromium</option>
+                <option value="mozilla">Mozilla</option>
+                <option value="webKit">WebKit</option>
+                <option value="gnu">GNU</option>
+                <option value="microsoft">Microsoft</option>
+                <option value="clangFormat">ClangFormat</option>
+                <option value="none">None</option>
+              </select>
+              <button (click)="loadStyle()">Load</button>
+            </dd>
+          </dl>
+        </dd>
+        <dd>
+          <dl>
+            <dt>File:</dt>
+            <dd>
+              <button (click)="fileInput.click()">Browse</button>
+              <input type="file" #fileInput style="display: none" (change)="loadYamlFromFile($event)">
+            </dd>
+          </dl>
+        </dd>
+        <dd>
+          <dl>
+            <dt>Text:</dt>
+            <textarea #textClangConfig rows="5"></textarea>
+            <dd>
+              <button (click)="loadYamlFromText()">Load</button>
+            </dd>
+          </dl>
+        </dd>
+      </dl>
+      <dl>
+        <dt>Save style to:</dt>
+        <dd>
+          <dl>
+            <dt>File</dt>
+            <dd>
+              <button (click)="downloadYaml($event)">Save</button>
+            </dd>
+          </dl>
+        </dd>
+        <dd>
+          <dl>
+            <dt>Clipboard</dt>
+            <dd>
+              <button (click)="saveYamlToText()">Copy</button>
+            </dd>
+          </dl>
+        </dd>
+      </dl>
       <input type="checkbox" name="enableClangFormatExpert" [ngModel]="enableClangFormatExpert"
         (ngModelChange)="onEnableClangFormatExpert($event)">Expert<br />
       <ng-container *ngIf="enableClangFormatExpert">
