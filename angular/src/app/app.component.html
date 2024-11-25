@@ -52,7 +52,7 @@
           <dl>
             <dt>File</dt>
             <dd>
-              <button (click)="downloadYaml($event)">Save</button>
+              <button (click)="downloadYaml()">Save</button>
             </dd>
           </dl>
         </dd>
@@ -65,13 +65,12 @@
           </dl>
         </dd>
       </dl>
-      <input type="checkbox" name="enableClangFormatExpert" [ngModel]="enableClangFormatExpert"
-        (ngModelChange)="onEnableClangFormatExpert($event)">Expert<br />
-      <ng-container *ngIf="enableClangFormatExpert">
+      <details [attr.open]='enableClangFormatExpert ? true : null' (toggle)="onEnableClangFormatExpert()">
+        <summary>All parameters</summary>
         <app-formatter-options [formatStyle]="formatStyle!" [formatter]="formatter!" [emptyStyle]="emptyStyle!"
           (changeOptions)="reformat()">
         </app-formatter-options>
-      </ng-container>
+      </details>
     </ng-container>
   </div>
 </app-dialog-ext>

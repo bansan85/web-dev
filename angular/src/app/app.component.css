@@ -102,3 +102,7 @@ app-dialog-ext textarea {
   right: 0.5em;
   width: 2em;
 }
+
+details summary {
+  cursor: pointer;
+}

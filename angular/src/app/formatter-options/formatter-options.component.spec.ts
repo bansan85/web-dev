@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { FormatterOptionsComponent } from './formatter-options.component';
 import { WasmLoaderFormatterService } from '../wasm-loader-formatter.service';
+import { ChangeDetectorRef } from '@angular/core';
 
 describe('FormatterOptionsComponent', () => {
   let component: FormatterOptionsComponent;
@@ -22,12 +23,16 @@ describe('FormatterOptionsComponent', () => {
   });
 
   it('configuration of clang-format', async () => {
+    const changeDetectorRef =
+      fixture.debugElement.injector.get(ChangeDetectorRef);
+
     const wasmLoaderFormatter: WasmLoaderFormatterService =
       new WasmLoaderFormatterService();
     component.formatter = await wasmLoaderFormatter.wasm();
     component.formatStyle = component.formatter.getMozillaStyle();
     component.emptyStyle = component.formatter.getNoStyle();
 
+    changeDetectorRef.detectChanges();
     fixture.detectChanges();
     await fixture.whenStable();
 

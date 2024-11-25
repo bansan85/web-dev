@@ -26,12 +26,12 @@ import {
   selector: 'app-root',
   standalone: true,
   imports: [
-    NgIf,
-    FormsModule,
-    LucideAngularModule,
-    GithubMarkInlineComponent,
     DialogExtComponent,
     FormatterOptionsComponent,
+    FormsModule,
+    GithubMarkInlineComponent,
+    LucideAngularModule,
+    NgIf,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
@@ -148,18 +148,20 @@ export class AppComponent implements OnInit {
     this.reformat();
   }
 
-  async onEnableClangFormatExpert(value: boolean) {
-    this.enableClangFormatExpert = value;
+  async onEnableClangFormatExpert() {
+    this.enableClangFormatExpert = !this.enableClangFormatExpert;
 
-    localStorage.setItem('enableClangFormatExpert', value.toString());
+    localStorage.setItem(
+      'enableClangFormatExpert',
+      this.enableClangFormatExpert.toString()
+    );
 
-    if (value) {
+    if (this.enableClangFormatExpert) {
       this.centerDialog();
     }
   }
 
   private centerDialog() {
-    this.cdr.detectChanges();
     this.dialog.dialogRef.nativeElement.style.top =
       (window.innerHeight - this.dialog.dialogRef.nativeElement.offsetHeight) /
         2 +
@@ -244,8 +246,8 @@ export class AppComponent implements OnInit {
   }
 
   loadYamlFromFile(event: Event) {
-    let fileReader = new FileReader();
-    fileReader.onload = (e) => {
+    const fileReader = new FileReader();
+    fileReader.onload = () => {
       this.formatStyle = this.formatter!.deserializeFromYaml(
         fileReader.result!
       );
@@ -263,7 +265,7 @@ export class AppComponent implements OnInit {
     this.reformat();
   }
 
-  downloadYaml(event: Event) {
+  downloadYaml() {
     const newBlob = new Blob(
       [this.formatter!.serializeToYaml(this.formatStyle!)],
       { type: 'application/x-yaml' }
