@@ -141,14 +141,12 @@ export class AppComponent implements OnInit {
       await this.loadWasmFormatterModule();
     }
 
-    if (value && this.enableClangFormatExpert) {
-      this.centerDialog();
-    }
+    this.centerDialog();
 
     this.reformat();
   }
 
-  async onEnableClangFormatExpert(event:Event) {
+  async onEnableClangFormatExpert(event: Event) {
     this.enableClangFormatExpert = (event as any).newState === 'open';
 
     localStorage.setItem(
@@ -156,21 +154,24 @@ export class AppComponent implements OnInit {
       this.enableClangFormatExpert.toString()
     );
 
-    if (this.enableClangFormatExpert) {
-      this.centerDialog();
-    }
+    this.centerDialog();
   }
 
   private centerDialog() {
-    this.dialog.dialogRef.nativeElement.style.top =
-      (window.innerHeight - this.dialog.dialogRef.nativeElement.offsetHeight) /
-        2 +
-      'px';
+    this.cdr.detectChanges();
     const rect = this.dialog.dialogRef.nativeElement.getBoundingClientRect();
     if (rect.right > window.innerWidth) {
       this.dialog.dialogRef.nativeElement.style.left =
         window.innerWidth -
         this.dialog.dialogRef.nativeElement.offsetWidth +
+        'px';
+    }
+    console.log(rect.bottom + ' ' + window.innerHeight);
+    if (rect.bottom > window.innerHeight) {
+      this.dialog.dialogRef.nativeElement.style.top =
+        (window.innerHeight -
+          this.dialog.dialogRef.nativeElement.offsetHeight) /
+          2 +
         'px';
     }
   }
