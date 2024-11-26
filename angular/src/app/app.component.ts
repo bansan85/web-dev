@@ -148,8 +148,8 @@ export class AppComponent implements OnInit {
     this.reformat();
   }
 
-  async onEnableClangFormatExpert() {
-    this.enableClangFormatExpert = !this.enableClangFormatExpert;
+  async onEnableClangFormatExpert(event:Event) {
+    this.enableClangFormatExpert = (event as any).newState === 'open';
 
     localStorage.setItem(
       'enableClangFormatExpert',
