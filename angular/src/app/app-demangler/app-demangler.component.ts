@@ -7,20 +7,20 @@ import {
   ChangeDetectorRef,
   ViewEncapsulation,
 } from '@angular/core';
-import { WasmLoaderDemanglerService } from './wasm-loader-demangler.service';
-import { WasmLoaderFormatterService } from './wasm-loader-formatter.service';
+import { WasmLoaderDemanglerService } from '../wasm-loader-demangler.service';
+import { WasmLoaderFormatterService } from '../wasm-loader-formatter.service';
 import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
-import { GithubMarkInlineComponent } from './img/github-mark-inline.component';
-import { DialogExtComponent } from './utils/dialog-ext/dialog-ext.component';
-import { FormatterOptionsComponent } from './formatter-options/formatter-options.component';
+import { GithubMarkInlineComponent } from '../img/github-mark-inline.component';
+import { DialogExtComponent } from '../utils/dialog-ext/dialog-ext.component';
+import { FormatterOptionsComponent } from '../formatter-options/formatter-options.component';
 
-import { EmbindModule as DemanglerModule } from '../assets/web_demangler.js';
+import { EmbindModule as DemanglerModule } from '../../assets/web_demangler.js';
 import {
   EmbindModule as FormatterModule,
   FormatStyle,
-} from '../assets/web_formatter.js';
+} from '../../assets/web_formatter.js';
 
 @Component({
   selector: 'app-root',
@@ -33,11 +33,11 @@ import {
     LucideAngularModule,
     NgIf,
   ],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css',
+  templateUrl: './app-demangler.component.html',
+  styleUrl: './app-demangler.component.css',
   encapsulation: ViewEncapsulation.None,
 })
-export class AppComponent implements OnInit {
+export class AppDemanglerComponent implements OnInit {
   demangler?: DemanglerModule;
   formatter?: FormatterModule;
 
