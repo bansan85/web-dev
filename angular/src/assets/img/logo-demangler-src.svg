@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="180"
+   height="180"
+   viewBox="0 0 180 180"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="logo-demangler-src.svg"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="2.375"
+     inkscape:cx="114.94737"
+     inkscape:cy="118.10526"
+     inkscape:window-width="1920"
+     inkscape:window-height="1057"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     id="layer1">
+    <text
+       xml:space="preserve"
+       style="font-size:18.6667px;font-family:Serif;-inkscape-font-specification:Serif;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;stroke:#000000;stroke-width:0.159;stroke-linecap:square;paint-order:markers stroke fill"
+       x="90.410324"
+       y="24.778193"
+       id="text1"><tspan
+         id="tspan1"
+         x="90.410324"
+         y="24.778193"
+         style="font-size:18.6667px">_Z9demanglerPKc</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:26.6667px;line-height:31.856px;font-family:Serif;-inkscape-font-specification:Serif;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;stroke:#000000;stroke-width:0.159;stroke-linecap:square;paint-order:markers stroke fill"
+       x="89.466675"
+       y="136.1825"
+       id="text2"><tspan
+         sodipodi:role="line"
+         id="tspan24"
+         x="89.466675"
+         y="136.1825"
+         style="font-size:26.6667px;line-height:31.856px"><tspan
+           id="tspan2"
+           x="89.466675"
+           y="136.1825"
+           style="font-size:26.6667px;line-height:31.856px">demangler</tspan></tspan></text>
+    <path
+       fill="none"
+       stroke="currentColor"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       stroke-width="8.42898"
+       d="M 64.713092,74.694332 89.999999,99.981244 115.28691,74.694332 M 89.999999,96.469176 V 45.192934"
+       id="path1" />
+    <text
+       xml:space="preserve"
+       style="font-size:26.6667px;line-height:31.856px;font-family:Serif;-inkscape-font-specification:Serif;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;stroke:#000000;stroke-width:0.159;stroke-linecap:square;paint-order:markers stroke fill"
+       x="90.000015"
+       y="165.99516"
+       id="text2-8"><tspan
+         sodipodi:role="line"
+         id="tspan24-8"
+         x="90.000015"
+         y="165.99516"
+         style="font-size:26.6667px;line-height:31.856px"><tspan
+           id="tspan2-2"
+           x="90.000015"
+           y="165.99516"
+           style="font-size:26.6667px;line-height:31.856px">(const char*)</tspan></tspan></text>
+  </g>
+</svg>
