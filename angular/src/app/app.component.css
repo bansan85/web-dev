@@ -1,0 +1,9 @@
+.apps-box {
+  color: #1c1c1e;
+}
+
+@media (prefers-color-scheme: dark) {
+  .apps-box {
+    color: #fefefe;
+  }
+}
