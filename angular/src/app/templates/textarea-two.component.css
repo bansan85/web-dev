@@ -1,0 +1,50 @@
+textarea {
+  overflow-x: auto;
+  box-sizing: border-box;
+  width: 100%;
+  resize: none;
+}
+
+.textareas {
+  display: inline-flex;
+  width: 100%;
+}
+
+div.textarea {
+  margin: 0.5em;
+}
+
+@media screen and (max-width: 70em) {
+  .textareas {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+
+  .textarea {
+    display: flex;
+    flex-direction: column;
+    height: 50%;
+  }
+
+  textarea {
+    flex: 1;
+  }
+}
+
+@media screen and not (max-width: 70em) {
+  .textareas {
+    display: flex;
+    height: 100vh;
+  }
+
+  .textarea {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  textarea {
+    flex: 1;
+  }
+}
