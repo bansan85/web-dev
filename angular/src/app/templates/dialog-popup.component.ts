@@ -9,13 +9,13 @@ import { NgClass } from '@angular/common';
 import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
-  selector: 'app-dialog-ext',
+  selector: 'app-dialog-popup',
   standalone: true,
   imports: [NgClass, LucideAngularModule],
-  templateUrl: './dialog-ext.component.html',
-  styleUrl: './dialog-ext.component.css',
+  templateUrl: './dialog-popup.component.html',
+  styleUrl: './dialog-popup.component.css',
 })
-export class DialogExtComponent {
+export class DialogPopupComponent {
   @ViewChild('dialog') dialogRef!: ElementRef<HTMLDialogElement>;
 
   isOpen = false;

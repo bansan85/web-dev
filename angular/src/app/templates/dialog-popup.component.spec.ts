@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DialogExtComponent } from './dialog-ext.component';
+import { DialogPopupComponent } from './dialog-popup.component';
 import { importProvidersFrom } from '@angular/core';
 import { LucideAngularModule, X } from 'lucide-angular';
 
-describe('DialogExtComponent', () => {
-  let component: DialogExtComponent;
-  let fixture: ComponentFixture<DialogExtComponent>;
+describe('DialogPopupComponent', () => {
+  let component: DialogPopupComponent;
+  let fixture: ComponentFixture<DialogPopupComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DialogExtComponent],
+      imports: [DialogPopupComponent],
       providers: [importProvidersFrom(LucideAngularModule.pick({ X }))],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(DialogExtComponent);
+    fixture = TestBed.createComponent(DialogPopupComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
