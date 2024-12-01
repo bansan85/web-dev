@@ -7,6 +7,7 @@ import {
   RouterOutlet,
 } from '@angular/router';
 import { LogoDemanglerInlineComponent } from './img/logo-demangler-inline.component';
+import { GithubMarkInlineComponent } from './img/github-mark-inline.component';
 
 @Component({
   selector: 'app-root',
@@ -17,6 +18,7 @@ import { LogoDemanglerInlineComponent } from './img/logo-demangler-inline.compon
     RouterLink,
     RouterLinkActive,
     LogoDemanglerInlineComponent,
+    GithubMarkInlineComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',

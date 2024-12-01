@@ -8,16 +8,6 @@ app-textarea-two h2 {
   padding: 0em;
 }
 
-.github_logo {
-  color: #1c1c1e;
-}
-
-@media (prefers-color-scheme: dark) {
-  .github_logo {
-    color: #fefefe;
-  }
-}
-
 .disabled {
   opacity: 0.5;
   pointer-events: none;
@@ -43,13 +33,6 @@ app-textarea-two h2 {
   transform: translate(-50%, -50%);
 
   animation: rotating 2s linear infinite;
-}
-
-.github_logo {
-  position: absolute;
-  top: 0.5em;
-  right: 0.5em;
-  width: 2em;
 }
 
 details summary {

@@ -1,4 +1,9 @@
-<a *ngIf="isHomeRoute()" routerLink="/demangler" routerLinkActive="active" ariaCurrentWhenActive="page" title="Demangler (C++, D, Rust, MSVC, Itanium)">
+<a *ngIf="isHomeRoute()" routerLink="/demangler" routerLinkActive="active" ariaCurrentWhenActive="page"
+  title="Demangler (C++, D, Rust, MSVC, Itanium)">
   <app-logo-demangler-inline class="apps-box"></app-logo-demangler-inline>
 </a>
 <router-outlet></router-outlet>
+
+<a href="https://github.com/bansan85/web-demangler">
+  <app-github-mark-inline class="github_logo"></app-github-mark-inline>
+</a>
