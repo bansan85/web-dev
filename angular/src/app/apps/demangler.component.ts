@@ -12,7 +12,6 @@ import { WasmLoaderFormatterService } from '../wasm-loader-formatter.service';
 import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
-import { GithubMarkInlineComponent } from '../img/github-mark-inline.component';
 import { LogoDemanglerInlineComponent } from '../img/logo-demangler-inline.component';
 import { DialogPopupComponent } from '../templates/dialog-popup.component';
 import { FormatterOptionsComponent } from '../formatter-options/formatter-options.component';
@@ -31,7 +30,6 @@ import {
     DialogPopupComponent,
     FormatterOptionsComponent,
     FormsModule,
-    GithubMarkInlineComponent,
     LogoDemanglerInlineComponent,
     LucideAngularModule,
     NgIf,
