@@ -14,7 +14,7 @@ import { FormsModule } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
 import { GithubMarkInlineComponent } from '../img/github-mark-inline.component';
 import { LogoDemanglerInlineComponent } from '../img/logo-demangler-inline.component';
-import { DialogExtComponent } from '../utils/dialog-ext/dialog-ext.component';
+import { DialogPopupComponent } from '../templates/dialog-popup.component';
 import { FormatterOptionsComponent } from '../formatter-options/formatter-options.component';
 import { TextareaTwoComponent } from '../templates/textarea-two.component';
 
@@ -28,7 +28,7 @@ import {
   selector: 'app-demangler',
   standalone: true,
   imports: [
-    DialogExtComponent,
+    DialogPopupComponent,
     FormatterOptionsComponent,
     FormsModule,
     GithubMarkInlineComponent,
@@ -58,7 +58,7 @@ export class AppDemanglerComponent implements OnInit {
 
   @ViewChild('mangledInput') mangledInput!: ElementRef<HTMLTextAreaElement>;
   @ViewChild('newStyle') newStyle!: ElementRef<HTMLSelectElement>;
-  @ViewChild('dialog') dialog!: DialogExtComponent;
+  @ViewChild('dialog') dialog!: DialogPopupComponent;
   @ViewChild('textClangConfig')
   textClangConfig!: ElementRef<HTMLTextAreaElement>;
 
