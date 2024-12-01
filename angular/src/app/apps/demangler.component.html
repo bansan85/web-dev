@@ -75,18 +75,14 @@
   </div>
 </app-dialog-ext>
 
-<div class="textareas">
-  <div class="textarea">
+<app-textarea-two inputPlaceholder="Enter mangled names (one per line)" [inputChange]="demangle">
+  <div header-input>
     <h2>Mangled symbol (C++, D, Rust, MSVC, Itanium)</h2>
-    <textarea #mangledInput wrap="off" placeholder="Enter mangled names (one per line)"
-      (input)="onDemangle(mangledInput.value)"></textarea>
   </div>
-  <div class="textarea">
-    <h2>Demangled symbol<lucide-icon name="settings" (click)="dialog.openDialog()"></lucide-icon>
-    </h2>
-    <textarea wrap="off" [value]="demangledName.join('\n')" readonly></textarea>
+  <div header-output>
+    <h2>Demangled symbol<lucide-icon name="settings" (click)="dialog.openDialog()"></lucide-icon></h2>
   </div>
-</div>
+</app-textarea-two>
 
 <ng-container *ngIf="isLoading()">
   <lucide-icon name="loader-circle" class="loader" [size]="loadingSize"></lucide-icon>

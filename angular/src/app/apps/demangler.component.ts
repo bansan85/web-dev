@@ -16,6 +16,7 @@ import { GithubMarkInlineComponent } from '../img/github-mark-inline.component';
 import { LogoDemanglerInlineComponent } from '../img/logo-demangler-inline.component';
 import { DialogExtComponent } from '../utils/dialog-ext/dialog-ext.component';
 import { FormatterOptionsComponent } from '../formatter-options/formatter-options.component';
+import { TextareaTwoComponent } from '../templates/textarea-two.component';
 
 import { EmbindModule as DemanglerModule } from '../../assets/web_demangler.js';
 import {
@@ -34,6 +35,7 @@ import {
     LogoDemanglerInlineComponent,
     LucideAngularModule,
     NgIf,
+    TextareaTwoComponent,
   ],
   templateUrl: './demangler.component.html',
   styleUrl: './demangler.component.css',
@@ -44,8 +46,6 @@ export class AppDemanglerComponent implements OnInit {
   formatter?: FormatterModule;
 
   loadingSize = 0;
-
-  demangledName: string[] = [];
 
   enableClangFormat = false;
   enableClangFormatExpert = false;
@@ -71,7 +71,9 @@ export class AppDemanglerComponent implements OnInit {
     private wasmLoaderDemangler: WasmLoaderDemanglerService,
     private wasmLoaderFormatter: WasmLoaderFormatterService,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) {
+    this.demangle = this.demangle.bind(this);
+  }
 
   async ngOnInit() {
     this.updateIconSize();
@@ -168,7 +170,6 @@ export class AppDemanglerComponent implements OnInit {
         this.dialog.dialogRef.nativeElement.offsetWidth +
         'px';
     }
-    console.log(rect.bottom + ' ' + window.innerHeight);
     if (rect.bottom > window.innerHeight) {
       this.dialog.dialogRef.nativeElement.style.top =
         (window.innerHeight -
@@ -178,23 +179,25 @@ export class AppDemanglerComponent implements OnInit {
     }
   }
 
-  async onDemangle(mangledName: string) {
+  async demangle(mangledName: string): Promise<string> {
     await this.loadWasmDemanglerModule();
     if (this.enableClangFormat) {
       await this.loadWasmFormatterModule();
     }
     if (this.demangler) {
       const lines = mangledName.split('\n');
-      this.demangledName = lines.map((line) =>
+      let demangledNameList = lines.map((line) =>
         this.demangler!.web_demangle(line.trim())
       );
       if (this.enableClangFormat && this.formatter && this.formatStyle) {
-        this.demangledName = this.demangledName.map((line) =>
+        demangledNameList = demangledNameList.map((line) =>
           this.formatter!.formatter(line, this.formatStyle!)
         );
       }
+      return demangledNameList.join('\n');
     } else {
       this.pendingText = true;
+      return '';
     }
   }
 
@@ -276,7 +279,7 @@ export class AppDemanglerComponent implements OnInit {
     const data = window.URL.createObjectURL(newBlob);
     const link = document.createElement('a');
     link.href = data;
-    link.download = '.clang-format'; // set a name for the file
+    link.download = '.clang-format';
     link.click();
   }
 

@@ -1,0 +1,10 @@
+<div class="textareas">
+  <div class="textarea">
+    <ng-content select="[header-input]"></ng-content>
+    <textarea #inputElement wrap="off" [placeholder]="inputPlaceholder" (input)="inputToOutput(inputElement.value)"></textarea>
+  </div>
+  <div class="textarea">
+    <ng-content select="[header-output]"></ng-content>
+    <textarea wrap="off" [value]="outputStr | async" readonly></textarea>
+  </div>
+</div>
