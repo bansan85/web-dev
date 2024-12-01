@@ -24,7 +24,7 @@ import {
 } from '../../assets/web_formatter.js';
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-demangler',
   standalone: true,
   imports: [
     DialogExtComponent,
@@ -35,8 +35,8 @@ import {
     LucideAngularModule,
     NgIf,
   ],
-  templateUrl: './app-demangler.component.html',
-  styleUrl: './app-demangler.component.css',
+  templateUrl: './demangler.component.html',
+  styleUrl: './demangler.component.css',
   encapsulation: ViewEncapsulation.None,
 })
 export class AppDemanglerComponent implements OnInit {
