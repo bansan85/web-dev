@@ -17,24 +17,6 @@ app-textarea-two h2 {
   height: auto;
 }
 
-@keyframes rotating {
-  from {
-    transform: translate(-50%, -50%) rotate(0deg);
-  }
-  to {
-    transform: translate(-50%, -50%) rotate(360deg);
-  }
-}
-
-.loader {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-
-  animation: rotating 2s linear infinite;
-}
-
 details summary {
   cursor: pointer;
 }

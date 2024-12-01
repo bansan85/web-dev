@@ -16,6 +16,7 @@ import { LogoDemanglerInlineComponent } from '../img/logo-demangler-inline.compo
 import { DialogPopupComponent } from '../templates/dialog-popup.component';
 import { FormatterOptionsComponent } from '../formatter-options/formatter-options.component';
 import { TextareaTwoComponent } from '../templates/textarea-two.component';
+import { SpinnerLoadingComponent } from '../templates/spinner-loading.component';
 
 import { EmbindModule as DemanglerModule } from '../../assets/web_demangler.js';
 import {
@@ -34,6 +35,7 @@ import {
     LucideAngularModule,
     NgIf,
     TextareaTwoComponent,
+    SpinnerLoadingComponent,
   ],
   templateUrl: './demangler.component.html',
   styleUrl: './demangler.component.css',
@@ -43,7 +45,7 @@ export class AppDemanglerComponent implements OnInit {
   demangler?: DemanglerModule;
   formatter?: FormatterModule;
 
-  loadingSize = 0;
+  spinnerSize = 0;
 
   enableClangFormat = false;
   enableClangFormatExpert = false;
@@ -131,7 +133,7 @@ export class AppDemanglerComponent implements OnInit {
   }
 
   updateIconSize() {
-    this.loadingSize = Math.min(window.innerWidth / 4, window.innerHeight / 2);
+    this.spinnerSize = Math.min(window.innerWidth / 4, window.innerHeight / 2);
   }
 
   async onEnableClangFormat(value: boolean) {
