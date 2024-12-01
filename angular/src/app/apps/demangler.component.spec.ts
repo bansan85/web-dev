@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { AppDemanglerComponent } from './app-demangler.component';
+import { AppDemanglerComponent } from './demangler.component';
 import { importProvidersFrom } from '@angular/core';
 import { LucideAngularModule, Settings, LoaderCircle, X } from 'lucide-angular';
 
