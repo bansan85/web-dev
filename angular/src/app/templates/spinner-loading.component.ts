@@ -10,4 +10,5 @@ import { LucideAngularModule } from 'lucide-angular';
 })
 export class SpinnerLoadingComponent {
   @Input({ required: true }) size!: number;
+  @Input({ required: true }) title!: string;
 }
