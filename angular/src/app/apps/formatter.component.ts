@@ -7,7 +7,6 @@ import {
   ChangeDetectorRef,
   ViewEncapsulation,
 } from '@angular/core';
-import { WasmLoaderDemanglerService } from '../wasm-loader-demangler.service';
 import { WasmLoaderFormatterService } from '../wasm-loader-formatter.service';
 import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -17,14 +16,13 @@ import { FormatterOptionsComponent } from '../formatter-options/formatter-option
 import { TextareaTwoComponent } from '../templates/textarea-two.component';
 import { SpinnerLoadingComponent } from '../templates/spinner-loading.component';
 
-import { EmbindModule as DemanglerModule } from '../../assets/web_demangler.js';
 import {
   EmbindModule as FormatterModule,
   FormatStyle,
 } from '../../assets/web_formatter.js';
 
 @Component({
-  selector: 'app-demangler',
+  selector: 'app-formatter',
   standalone: true,
   imports: [
     DialogPopupComponent,
@@ -35,17 +33,15 @@ import {
     TextareaTwoComponent,
     SpinnerLoadingComponent,
   ],
-  templateUrl: './demangler.component.html',
-  styleUrl: './demangler.component.css',
+  templateUrl: './formatter.component.html',
+  styleUrl: './formatter.component.css',
   encapsulation: ViewEncapsulation.None,
 })
-export class AppDemanglerComponent implements OnInit {
-  demangler?: DemanglerModule;
+export class AppFormatterComponent implements OnInit {
   formatter?: FormatterModule;
 
   spinnerSize = 0;
 
-  enableClangFormat = false;
   enableClangFormatExpert = false;
 
   formatStyle?: FormatStyle;
@@ -67,34 +63,19 @@ export class AppDemanglerComponent implements OnInit {
   }
 
   constructor(
-    private wasmLoaderDemangler: WasmLoaderDemanglerService,
     private wasmLoaderFormatter: WasmLoaderFormatterService,
     private cdr: ChangeDetectorRef
   ) {
-    this.demangle = this.demangle.bind(this);
+    this.format = this.format.bind(this);
   }
 
   async ngOnInit() {
     this.updateIconSize();
 
-    await this.loadWasmDemanglerModule();
-
-    const enableClangFormat = localStorage.getItem('enableClangFormat');
-    if (enableClangFormat) {
-      this.enableClangFormat = enableClangFormat === 'true';
-      if (this.enableClangFormat) {
-        await this.loadWasmFormatterModule();
-      }
-    }
+    await this.loadWasmFormatterModule();
 
     this.enableClangFormatExpert =
       localStorage.getItem('enableClangFormatExpert') === 'true';
-  }
-
-  async loadWasmDemanglerModule() {
-    if (!this.demangler) {
-      this.demangler = await this.wasmLoaderDemangler.wasm();
-    }
   }
 
   async loadWasmFormatterModule() {
@@ -135,20 +116,6 @@ export class AppDemanglerComponent implements OnInit {
     this.spinnerSize = Math.min(window.innerWidth / 4, window.innerHeight / 2);
   }
 
-  async onEnableClangFormat(value: boolean) {
-    this.enableClangFormat = value;
-
-    localStorage.setItem('enableClangFormat', value.toString());
-
-    if (value) {
-      await this.loadWasmFormatterModule();
-    }
-
-    this.centerDialog();
-
-    this.reformat();
-  }
-
   async onEnableClangFormatExpert(event: Event) {
     this.enableClangFormatExpert = (event as any).newState === 'open';
 
@@ -178,22 +145,15 @@ export class AppDemanglerComponent implements OnInit {
     }
   }
 
-  async demangle(mangledName: string): Promise<string> {
-    await this.loadWasmDemanglerModule();
-    if (this.enableClangFormat) {
-      await this.loadWasmFormatterModule();
-    }
-    if (this.demangler) {
+  async format(mangledName: string): Promise<string> {
+    await this.loadWasmFormatterModule();
+    if (this.formatter) {
       const lines = mangledName.split('\n');
-      let demangledNameList = lines.map((line) =>
-        this.demangler!.web_demangle(line.trim())
+      let demangledName = this.formatter!.formatter(
+        mangledName,
+        this.formatStyle!
       );
-      if (this.enableClangFormat && this.formatter && this.formatStyle) {
-        demangledNameList = demangledNameList.map((line) =>
-          this.formatter!.formatter(line, this.formatStyle!)
-        );
-      }
-      return demangledNameList.join('\n');
+      return demangledName;
     } else {
       this.pendingText = true;
       return '';
@@ -245,10 +205,6 @@ export class AppDemanglerComponent implements OnInit {
   }
 
   isLoading(): boolean {
-    if (this.wasmLoaderDemangler.loading()) {
-      this.titleLoading = 'demangler';
-      return true;
-    }
     if (this.wasmLoaderFormatter.loading()) {
       this.titleLoading = 'formatter';
       return true;
