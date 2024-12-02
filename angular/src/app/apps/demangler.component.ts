@@ -55,6 +55,7 @@ export class AppDemanglerComponent implements OnInit {
 
   // Text by pending if text insert while wasm is loading.
   pendingText = false;
+  titleLoading = '';
 
   @ViewChild('mangledInput') mangledInput!: ElementRef<HTMLTextAreaElement>;
   @ViewChild('newStyle') newStyle!: ElementRef<HTMLSelectElement>;
@@ -246,9 +247,16 @@ export class AppDemanglerComponent implements OnInit {
   }
 
   isLoading(): boolean {
-    return (
-      this.wasmLoaderDemangler.loading() || this.wasmLoaderFormatter.loading()
-    );
+    if (this.wasmLoaderDemangler.loading()) {
+      this.titleLoading = 'demangler';
+      return true;
+    }
+    if (this.wasmLoaderFormatter.loading()) {
+      this.titleLoading = 'formatter';
+      return true;
+    }
+    this.titleLoading = '';
+    return false;
   }
 
   loadYamlFromFile(event: Event) {
