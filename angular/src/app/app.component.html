@@ -1,7 +1,12 @@
-<a *ngIf="isHomeRoute()" routerLink="/demangler" routerLinkActive="active" ariaCurrentWhenActive="page"
-  title="Demangler (C++, D, Rust, MSVC, Itanium)">
-  <app-logo-demangler-inline class="apps-box"></app-logo-demangler-inline>
-</a>
+<ng-container *ngIf="isHomeRoute()">
+  <a routerLink="/demangler" routerLinkActive="active" ariaCurrentWhenActive="page"
+    title="Demangler (C++, D, Rust, MSVC, Itanium)">
+    <app-logo-demangler-inline class="apps-box"></app-logo-demangler-inline>
+  </a>
+  <a routerLink="/formatter" routerLinkActive="active" ariaCurrentWhenActive="page" title="Format C++ code">
+    <app-logo-formatter-inline class="apps-box"></app-logo-formatter-inline>
+  </a>
+</ng-container>
 <router-outlet></router-outlet>
 
 <a href="https://github.com/bansan85/web-demangler">

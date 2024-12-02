@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="180"
+   height="180"
+   viewBox="0 0 180 180"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="logo-formatter-src.svg"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="2.375"
+     inkscape:cx="114.94737"
+     inkscape:cy="117.68421"
+     inkscape:window-width="1920"
+     inkscape:window-height="1057"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     id="layer1">
+    <text
+       xml:space="preserve"
+       style="font-size:15.3333px;line-height:18.3172px;font-family:Serif;-inkscape-font-specification:Serif;text-align:center;writing-mode:lr-tb;direction:ltr;text-anchor:middle;fill:#000000;stroke:#000000;stroke-width:0.159;stroke-linecap:square;paint-order:markers stroke fill"
+       x="8.5118933"
+       y="29.356375"
+       id="text1"><tspan
+         sodipodi:role="line"
+         id="tspan1"
+         x="8.5118933"
+         y="29.356375"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15.3333px;line-height:18.3172px;font-family:Monospace;-inkscape-font-specification:Monospace;text-align:start;text-anchor:start">formatter(char*)</tspan><tspan
+         sodipodi:role="line"
+         x="8.5118933"
+         y="48.058586"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15.3333px;line-height:18.3172px;font-family:Monospace;-inkscape-font-specification:Monospace;text-align:start;text-anchor:start"
+         id="tspan3">formatter</tspan><tspan
+         sodipodi:role="line"
+         x="8.5118933"
+         y="66.760796"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15.3333px;line-height:18.3172px;font-family:Monospace;-inkscape-font-specification:Monospace;text-align:start;text-anchor:start"
+         id="tspan4">  ( char * )</tspan><tspan
+         sodipodi:role="line"
+         x="8.5118933"
+         y="85.463013"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15.3333px;line-height:18.3172px;font-family:Monospace;-inkscape-font-specification:Monospace;text-align:start;text-anchor:start"
+         id="tspan5">formatter (</tspan><tspan
+         sodipodi:role="line"
+         x="8.5118933"
+         y="104.16522"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15.3333px;line-height:18.3172px;font-family:Monospace;-inkscape-font-specification:Monospace;text-align:start;text-anchor:start"
+         id="tspan6">  char*</tspan><tspan
+         sodipodi:role="line"
+         x="8.5118933"
+         y="122.86743"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15.3333px;line-height:18.3172px;font-family:Monospace;-inkscape-font-specification:Monospace;text-align:start;text-anchor:start"
+         id="tspan8">)</tspan><tspan
+         sodipodi:role="line"
+         x="8.5118933"
+         y="141.56964"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15.3333px;line-height:18.3172px;font-family:Monospace;-inkscape-font-specification:Monospace;text-align:start;text-anchor:start"
+         id="tspan9">formatter(char *)</tspan><tspan
+         sodipodi:role="line"
+         x="8.5118933"
+         y="160.27185"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15.3333px;line-height:18.3172px;font-family:Monospace;-inkscape-font-specification:Monospace;text-align:start;text-anchor:start"
+         id="tspan10">formatter (char* )</tspan></text>
+  </g>
+</svg>
