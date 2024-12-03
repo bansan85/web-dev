@@ -51,11 +51,12 @@ export class AppFormatterComponent implements OnInit {
   pendingText = false;
   titleLoading = '';
 
-  @ViewChild('mangledInput') mangledInput!: ElementRef<HTMLTextAreaElement>;
   @ViewChild('newStyle') newStyle!: ElementRef<HTMLSelectElement>;
   @ViewChild('dialog') dialog!: DialogPopupComponent;
   @ViewChild('textClangConfig')
   textClangConfig!: ElementRef<HTMLTextAreaElement>;
+
+  @ViewChild(TextareaTwoComponent) textareaTwo!: TextareaTwoComponent;
 
   @HostListener('window:resize')
   onResize() {
@@ -107,7 +108,7 @@ export class AppFormatterComponent implements OnInit {
 
     if (this.pendingText) {
       const event = new Event('input', { bubbles: true });
-      this.mangledInput.nativeElement.dispatchEvent(event);
+      this.textareaTwo.inputElement.nativeElement.dispatchEvent(event);
     }
     this.pendingText = false;
   }
@@ -196,7 +197,7 @@ export class AppFormatterComponent implements OnInit {
 
   reformat() {
     const event = new Event('input', { bubbles: true });
-    this.mangledInput.nativeElement.dispatchEvent(event);
+    this.textareaTwo.inputElement.nativeElement.dispatchEvent(event);
 
     localStorage.setItem(
       'formatStyle',

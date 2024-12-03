@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-textarea-two',
@@ -9,6 +9,8 @@ import { Component, Input } from '@angular/core';
   styleUrl: './textarea-two.component.css',
 })
 export class TextareaTwoComponent {
+  @ViewChild('inputElement') inputElement!: ElementRef<HTMLTextAreaElement>;
+
   @Input() inputPlaceholder!: string;
 
   @Input() inputChange!: (input: string) => Promise<string>;
