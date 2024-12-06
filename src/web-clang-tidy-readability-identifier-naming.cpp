@@ -1,17 +1,19 @@
-#include "clang/Frontend/CompilerInstance.h"
-#include "clang/Frontend/FrontendActions.h"
-#include "clang/ASTMatchers/ASTMatchFinder.h"
-#include "clang-tidy/ClangTidyCheck.h"
-#include "clang-tidy/ClangTidyOptions.h"
-#include "clang-tidy/Readability/IdentifierNamingCheck.h"
-#include "clang/Rewrite/Core/Rewriter.h"
-#include "llvm/Support/YAMLParser.h"
+#include <clang-tidy/ClangTidyCheck.h>
+#include <clang-tidy/ClangTidyOptions.h>
+#include <clang-tidy/readability/IdentifierNamingCheck.h>
+#include <clang/ASTMatchers/ASTMatchFinder.h>
+#include <clang/Frontend/CompilerInstance.h>
+#include <clang/Frontend/FrontendActions.h>
+#include <clang/Rewrite/Core/Rewriter.h>
+#include <emscripten/bind.h>
+#include <llvm/Support/YAMLParser.h>
 #include <sstream>
 #include <string>
 
 using namespace clang;
 using namespace clang::ast_matchers;
 using namespace clang::tidy;
+using namespace clang::tidy::readability;
 
 namespace web_clang_tidy {
 
@@ -19,33 +21,33 @@ namespace {
 
 class ApplyFixAction : public ASTFrontendAction {
 public:
-    ApplyFixAction(const ClangTidyOptions &Options, Rewriter &Rewriter)
-        : Options(Options), Rewriter(Rewriter) {}
+  ApplyFixAction(const ClangTidyOptions &Options, Rewriter &Rewriter)
+      : Options(Options), Rewriter(Rewriter) {}
 
-    void EndSourceFileAction() override {
-        auto &Context = getCompilerInstance().getASTContext();
-        IdentifierNamingCheck Check("readability-identifier-naming", &Options);
+  void EndSourceFileAction() override {
+    auto &Context = getCompilerInstance().getASTContext();
+    IdentifierNamingCheck Check("readability-identifier-naming", &Options);
 
-        Check.registerMatchers(&Finder);
-        Finder.matchAST(Context);
+    Check.registerMatchers(&Finder);
+    Finder.matchAST(Context);
 
-        for (const auto &Diag : Check.Diagnostics) {
-            for (const auto &FixIt : Diag.FixIts) {
-                auto Err = Rewriter.ReplaceText(FixIt.RemoveRange, FixIt.CodeToInsert);
-                if (Err)
-                    llvm::errs() << "Error applying fix: " << Err << "\n";
-            }
-        }
+    for (const auto &Diag : Check.Diagnostics) {
+      for (const auto &FixIt : Diag.FixIts) {
+        auto Err = Rewriter.ReplaceText(FixIt.RemoveRange, FixIt.CodeToInsert);
+        if (Err)
+          llvm::errs() << "Error applying fix: " << Err << "\n";
+      }
     }
+  }
 
 private:
-    MatchFinder Finder;
-    ClangTidyOptions Options;
-    Rewriter &Rewriter;
+  MatchFinder Finder;
+  ClangTidyOptions Options;
+  Rewriter &Rewriter;
 };
 
 ClangTidyOptions loadOptions() {
-    std::string yaml_options = R"(
+  std::string yaml_options = R"(
 Checks: -*,readability-identifier-naming
 FormatStyle: file
 CheckOptions:
@@ -98,54 +100,53 @@ CheckOptions:
     - key: readability-identifier-naming.VariableCase
       value: camelBack
 )";
-    llvm::yaml::Input YamlInput(yaml_options);
-    ClangTidyOptions Options;
-    YamlInput >> Options;
-    return Options;
+  llvm::yaml::Input YamlInput(yaml_options);
+  ClangTidyOptions Options;
+  YamlInput >> Options;
+  return Options;
 }
-
 
 } // namespace
 
 int clang_tidy_readability_identifier_naming() {
-    // Charger les options depuis le fichier config.yaml
-    auto Options = loadOptionsFromFile("config.yaml");
+  // Charger les options depuis le fichier config.yaml
+  auto Options = loadOptionsFromFile("config.yaml");
 
-    // Code source à analyser
-    std::string Code = R"(
+  // Code source à analyser
+  std::string Code = R"(
         void my_function() {
             int myVar = 42;
         }
     )";
 
-    // Configurer les composants nécessaires pour l'analyse
-    CompilerInstance Compiler;
-    Compiler.createDiagnostics();
-    LangOptions LangOpts;
-    LangOpts.CPlusPlus = true;
-    Compiler.getLangOpts() = LangOpts;
+  // Configurer les composants nécessaires pour l'analyse
+  CompilerInstance Compiler;
+  Compiler.createDiagnostics();
+  LangOptions LangOpts;
+  LangOpts.CPlusPlus = true;
+  Compiler.getLangOpts() = LangOpts;
 
-    SourceManager Sources(Compiler.getDiagnostics(), Compiler.getFileManager());
-    Rewriter Rewriter(Sources, LangOpts);
+  SourceManager Sources(Compiler.getDiagnostics(), Compiler.getFileManager());
+  Rewriter Rewriter(Sources, LangOpts);
 
-    // Charger le code en mémoire
-    auto Buffer = llvm::MemoryBuffer::getMemBuffer(Code, "input.cc");
-    auto FID = Sources.createFileID(std::move(Buffer));
-    Sources.setMainFileID(FID);
+  // Charger le code en mémoire
+  auto Buffer = llvm::MemoryBuffer::getMemBuffer(Code, "input.cc");
+  auto FID = Sources.createFileID(std::move(Buffer));
+  Sources.setMainFileID(FID);
 
-    // Lancer l'analyse et les corrections
-    ApplyFixAction Action(Options, Rewriter);
-    Action.BeginSourceFile(Compiler.getLangOpts(), &Sources);
-    Action.ExecuteAction();
-    Action.EndSourceFile();
+  // Lancer l'analyse et les corrections
+  ApplyFixAction Action(Options, Rewriter);
+  Action.BeginSourceFile(Compiler.getLangOpts(), &Sources);
+  Action.ExecuteAction();
+  Action.EndSourceFile();
 
-    // Afficher le code corrigé
-    llvm::errs() << "--- Corrected Code ---\n";
-    Rewriter.getEditBuffer(FID).write(llvm::outs());
-    return 0;
+  // Afficher le code corrigé
+  llvm::errs() << "--- Corrected Code ---\n";
+  Rewriter.getEditBuffer(FID).write(llvm::outs());
+  return 0;
 }
 
-} // namespace web_demangler
+} // namespace web_clang_tidy
 
 EMSCRIPTEN_BINDINGS(web_demangler) {
   emscripten::function("web_demangle", &web_demangler::demangle);

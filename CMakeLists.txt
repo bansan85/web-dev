@@ -139,8 +139,7 @@ target_include_directories(
           ${LLVM_EXTERNAL_CLANG_SOURCE_DIR}/include
           ${LLVM_BINARY_DIR}/include/
           ${LLVM_BINARY_DIR}/tools/clang/include
-          ${LLVM_EXTERNAL_CLANG_TOOLS_EXTRA_SOURCE_DIR}/clang-tidy
-          )
+          ${LLVM_EXTERNAL_CLANG_TOOLS_EXTRA_SOURCE_DIR})
 target_compile_options(web_clang_tidy_readability_identifier_naming
                        PRIVATE "-fexceptions")
 target_link_options(
