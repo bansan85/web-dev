@@ -1,0 +1,677 @@
+<div class="buttons">
+    <lucide-icon name="rotate-ccw" (click)="reset()" class="action" title="Reset"></lucide-icon>
+    <lucide-icon name="copy" (click)="saveToYaml()" class="action" title="Copy"></lucide-icon>
+    <lucide-icon name="notebook-pen" (click)="setMinimum()" class="action" title="Set to default"></lucide-icon>
+</div>
+
+<div class="case">
+    <h2 class="title">
+        Typedef
+    </h2>
+    <div class="content">
+        <div class="checkboxes">
+            <div>
+                <input type="checkbox" id="Typedef" name="Typedef" [checked]="isChecked('Typedef')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="Typedef">Typedef</label>
+            </div>
+        </div>
+        <div class="examples">
+            <code
+                class="comment">// Naming: <span [ngClass]="{ 'valid': isChecked('Typedef'), 'rule-checked': isChecked('Typedef') }">Typedef</span> / <span [ngClass]="{ 'valid': !isChecked('Typedef') }">unchanged</span></code><br />
+            <code class="code">typedef int INTeGER;</code>
+        </div>
+    </div>
+</div>
+
+<div class="case">
+    <h2 class="title">
+        Alias
+    </h2>
+    <div class="content">
+        <div class="checkboxes">
+            <div>
+                <input type="checkbox" id="TypeAlias" name="TypeAlias" [checked]="isChecked('TypeAlias')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="TypeAlias">TypeAlias</label>
+            </div>
+        </div>
+        <div class="examples">
+            <code
+                class="comment">// Naming: <span [ngClass]="{ 'valid': isChecked('TypeAlias'), 'rule-checked': isChecked('TypeAlias') }">TypeAlias</span> / <span [ngClass]="{ 'valid': !isChecked('TypeAlias') }">unchanged</span></code><br />
+            <code class="code">using DOUbLE = double;</code>
+        </div>
+    </div>
+</div>
+
+<div class="case">
+    <h2 class="title">
+        Namespaces
+    </h2>
+    <div class="content">
+        <div class="checkboxes">
+            <div>
+                <input type="checkbox" id="InlineNamespace" name="InlineNamespace"
+                    [checked]="isChecked('InlineNamespace')" (change)="onCheckboxChange($event)" />
+                <label for="InlineNamespace">InlineNamespace</label>
+            </div>
+            <div>
+                <input type="checkbox" id="Namespace" name="Namespace" [checked]="isChecked('Namespace')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="Namespace">Namespace</label>
+            </div>
+        </div>
+        <div class="examples">
+            <code
+                class="comment">// Naming: <span [ngClass]="{ 'valid': isChecked('InlineNamespace'), 'rule-checked': isChecked('InlineNamespace') }">InlineNamespace</span> / <span [ngClass]="{ 'valid': !isChecked('InlineNamespace') && isChecked('Namespace'), 'rule-checked': isChecked('Namespace') }">Namespace</span> / <span [ngClass]="{ 'valid': !isChecked('InlineNamespace') && !isChecked('Namespace') }">unchanged</span></code><br />
+            <code class="code">inline namespace NAMEsPACE &#123;&#125;<br /></code>
+            <code
+                class="comment">// Naming: <span [ngClass]="{ 'valid': isChecked('Namespace'), 'rule-checked': isChecked('Namespace') }">Namespace</span> / <span [ngClass]="{ 'valid': !isChecked('Namespace') }">unchanged</span></code><br />
+            <code class="code">namespace NAMEsPACE &#123;&#125;</code>
+        </div>
+    </div>
+</div>
+
+<div class="case">
+    <h2 class="title">
+        Enum
+    </h2>
+    <div class="content">
+        <div class="checkboxes">
+            <div>
+                <input type="checkbox" id="Enum" name="Enum" [checked]="isChecked('Enum')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="Enum">Enum</label>
+            </div>
+        </div>
+        <div class="examples">
+            <code
+                class="comment">// Naming: <span [ngClass]="{ 'valid': isChecked('Enum'), 'rule-checked': isChecked('Enum') }">Enum</span> / <span [ngClass]="{ 'valid': !isChecked('Enum') }">unchanged</span></code><br />
+            <code class="code">enum eNUM &#123;&#125;
+enum class eNuM &#123;&#125;</code>
+        </div>
+    </div>
+</div>
+
+<div class="case">
+    <h2 class="title">
+        Constants in enum
+    </h2>
+    <div class="content">
+        <div class="checkboxes">
+            <div>
+                <input type="checkbox" id="ScopedEnumConstant" name="ScopedEnumConstant"
+                    [checked]="isChecked('ScopedEnumConstant')" (change)="onCheckboxChange($event)" />
+                <label for="ScopedEnumConstant">ScopedEnumConstant</label>
+            </div>
+            <div>
+                <input type="checkbox" id="EnumConstant" name="EnumConstant" [checked]="isChecked('EnumConstant')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="EnumConstant">EnumConstant</label>
+            </div>
+            <div>
+                <input type="checkbox" id="Constant_Enum" name="Constant_Enum" [checked]="isChecked('Constant')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="Constant_Enum">Constant</label>
+            </div>
+        </div>
+        <div class="examples">
+            <code class="code">enum class eNUM &#123;<br /></code>
+            <code
+                class="comment">  // Naming: <span [ngClass]="{ 'valid': isChecked('ScopedEnumConstant'), 'rule-checked': isChecked('ScopedEnumConstant') }">ScopedEnumConstant</span> / <span [ngClass]="{ 'valid': !isChecked('ScopedEnumConstant') && isChecked('EnumConstant'), 'rule-checked': isChecked('EnumConstant') }">EnumConstant</span> / <span [ngClass]="{ 'valid': !isChecked('ScopedEnumConstant') && !isChecked('EnumConstant') && isChecked('Constant'), 'rule-checked': isChecked('Constant') }">Constant</span> / <span [ngClass]="{ 'valid': !isChecked('ScopedEnumConstant') && !isChecked('EnumConstant') && !isChecked('Constant') }">unchanged</span><br /></code>
+            <code class="code">  EnuM_CONST
+&#125;;
+enum eNUM &#123;<br /></code>
+            <code
+                class="comment">  // Naming: <span [ngClass]="{ 'valid': isChecked('EnumConstant'), 'rule-checked': isChecked('EnumConstant') }">EnumConstant</span> / <span [ngClass]="{ 'valid': !isChecked('EnumConstant') && isChecked('Constant'), 'rule-checked': isChecked('Constant') }">Constant</span> / <span [ngClass]="{ 'valid': !isChecked('EnumConstant') && !isChecked('Constant') }">unchanged</span><br /></code>
+            <code class="code">  EnuM_CONST
+&#125;;</code>
+        </div>
+    </div>
+</div>
+
+<div class="case">
+    <h2 class="title">
+        struct / class / union
+    </h2>
+    <div class="content">
+        <div class="checkboxes">
+            <div>
+                <input type="checkbox" id="AbstractClass" name="AbstractClass" [checked]="isChecked('AbstractClass')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="AbstractClass">AbstractClass</label>
+            </div>
+            <div>
+                <input type="checkbox" id="Struct" name="Struct" [checked]="isChecked('Struct')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="Struct">Struct</label>
+            </div>
+            <div>
+                <input type="checkbox" id="Class" name="Class" [checked]="isChecked('Class')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="Class">Class</label>
+            </div>
+            <div>
+                <input type="checkbox" id="Union" name="Union" [checked]="isChecked('Union')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="Union">Union</label>
+            </div>
+        </div>
+        <div class="examples">
+            <code
+                class="comment">// Naming: <span [ngClass]="{ 'valid': isChecked('AbstractClass'), 'rule-checked': isChecked('AbstractClass') }">AbstractClass</span> / <span [ngClass]="{ 'valid': !isChecked('AbstractClass') && isChecked('Class'), 'rule-checked': isChecked('Class') }">Class</span> / <span [ngClass]="{ 'valid': !isChecked('AbstractClass') && !isChecked('Class') && isChecked('Struct'), 'rule-checked': isChecked('Struct') }">Struct</span> / <span [ngClass]="{ 'valid': !isChecked('AbstractClass') && !isChecked('Class') && !isChecked('Struct') }">unchanged</span><br /></code>
+            <code class="code">class ABStract &#123;
+  virtual fOo() = 0;
+&#125;;<br /></code>
+            <code
+                class="comment">// Naming: <span [ngClass]="{ 'valid': isChecked('Class'), 'rule-checked': isChecked('Class') }">Class</span> / <span [ngClass]="{ 'valid': !isChecked('Class') && isChecked('Struct'), 'rule-checked': isChecked('Struct') }">Struct</span> / <span [ngClass]="{ 'valid': !isChecked('Class') && !isChecked('Struct') }">unchanged</span><br /></code>
+            <code class="code">class ClAsS &#123;&#125;;<br /></code>
+            <code
+                class="comment">// Naming: <span [ngClass]="{ 'valid': isChecked('Struct'), 'rule-checked': isChecked('Struct') }">Struct</span> / <span [ngClass]="{ 'valid': !isChecked('Struct') && isChecked('Class'), 'rule-checked': isChecked('Class') }">Class</span> / <span [ngClass]="{ 'valid': !isChecked('Struct') && !isChecked('Class') }">unchanged</span><br /></code>
+            <code class="code">struct STRuct &#123;&#125;;<br /></code>
+            <code
+                class="comment">// Naming: <span [ngClass]="{ 'valid': isChecked('Union'), 'rule-checked': isChecked('Union') }">Union</span> / <span [ngClass]="{ 'valid': !isChecked('Union') }">unchanged</span><br /></code>
+            <code class="code">union UnIon &#123;&#125;;</code>
+        </div>
+    </div>
+</div>
+
+<div class="case">
+    <h2 class="title">
+        Members
+    </h2>
+    <div class="content">
+        <div class="checkboxes">
+            <div>
+                <input type="checkbox" id="ConstantMember" name="ConstantMember" [checked]="isChecked('ConstantMember')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="ConstantMember">ConstantMember</label>
+            </div>
+            <div>
+                <input type="checkbox" id="Constant_Member" name="Constant_Member" [checked]="isChecked('Constant')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="Constant_Member">Constant</label>
+            </div>
+            <div>
+                <input type="checkbox" id="PrivateMember" name="PrivateMember" [checked]="isChecked('PrivateMember')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="PrivateMember">PrivateMember</label>
+            </div>
+            <div>
+                <input type="checkbox" id="ProtectedMember" name="ProtectedMember"
+                    [checked]="isChecked('ProtectedMember')" (change)="onCheckboxChange($event)" />
+                <label for="ProtectedMember">ProtectedMember</label>
+            </div>
+            <div>
+                <input type="checkbox" id="PublicMember" name="PublicMember" [checked]="isChecked('PublicMember')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="PublicMember">PublicMember</label>
+            </div>
+            <div>
+                <input type="checkbox" id="Member" name="Member" [checked]="isChecked('Member')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="Member">Member</label>
+            </div>
+        </div>
+        <div class="examples">
+            <code class="code">class ClAss &#123;<br /></code>
+            <code
+                class="comment">  // Naming: <span [ngClass]="{ 'valid': isChecked('ConstantMember'), 'rule-checked': isChecked('ConstantMember') }">ConstantMember</span> / <span [ngClass]="{ 'valid': !isChecked('ConstantMember') && isChecked('Constant'), 'rule-checked': isChecked('Constant') }">Constant</span> / <span [ngClass]="{ 'valid': !isChecked('ConstantMember') && !isChecked('Constant') && isChecked('PrivateMember'), 'rule-checked': isChecked('PrivateMember') }">PrivateMember</span> / <span [ngClass]="{ 'valid': !isChecked('ConstantMember') && !isChecked('Constant') && !isChecked('PrivateMember') && isChecked('Member'), 'rule-checked': isChecked('Member') }">Member</span> / <span [ngClass]="{ 'valid': !isChecked('ConstantMember') && !isChecked('Constant') && !isChecked('PrivateMember') && !isChecked('Member')}">unchanged</span><br /></code>
+            <code class="code">  const int InT;
+ private:<br /></code>
+            <code
+                class="comment">  // Naming: <span [ngClass]="{ 'valid': isChecked('PrivateMember'), 'rule-checked': isChecked('PrivateMember') }">PrivateMember</span> / <span [ngClass]="{ 'valid': !isChecked('PrivateMember') && isChecked('Member'), 'rule-checked': isChecked('Member') }">Member</span> / <span [ngClass]="{ 'valid': !isChecked('PrivateMember') && !isChecked('Member')}">unchanged</span><br /></code>
+            <code class="code">  short ShorT;
+ protected:<br /></code>
+            <code
+                class="comment">  // Naming: <span [ngClass]="{ 'valid': isChecked('ProtectedMember'), 'rule-checked': isChecked('ProtectedMember') }">ProtectedMember</span> / <span [ngClass]="{ 'valid': !isChecked('ProtectedMember') && isChecked('Member'), 'rule-checked': isChecked('Member') }">Member</span> / <span [ngClass]="{ 'valid': !isChecked('ProtectedMember') && !isChecked('Member')}">unchanged</span><br /></code>
+            <code class="code">  double DoublE;
+ public:<br /></code>
+            <code
+                class="comment">  // Naming: <span [ngClass]="{ 'valid': isChecked('PublicMember'), 'rule-checked': isChecked('PublicMember') }">PublicMember</span> / <span [ngClass]="{ 'valid': !isChecked('PublicMember') && isChecked('Member'), 'rule-checked': isChecked('Member') }">Member</span> / <span [ngClass]="{ 'valid': !isChecked('PublicMember') && !isChecked('Member')}">unchanged</span><br /></code>
+            <code class="code">  float FloaT;
+&#125;;<br /></code>
+        </div>
+    </div>
+</div>
+
+<div class="case">
+    <h2 class="title">
+        Parameters
+    </h2>
+    <div class="content">
+        <div class="checkboxes">
+            <div>
+                <input type="checkbox" id="ConstantPointerParameter" name="ConstantPointerParameter"
+                    [checked]="isChecked('ConstantPointerParameter')" (change)="onCheckboxChange($event)" />
+                <label for="ConstantPointerParameter">ConstantPointerParameter</label>
+            </div>
+            <div>
+                <input type="checkbox" id="ConstantParameter" name="ConstantParameter"
+                    [checked]="isChecked('ConstantParameter')" (change)="onCheckboxChange($event)" />
+                <label for="ConstantParameter">ConstantParameter</label>
+            </div>
+            <div>
+                <input type="checkbox" id="Constant_Parameter" name="Constant_Parameter"
+                    [checked]="isChecked('Constant')" (change)="onCheckboxChange($event)" />
+                <label for="Constant_Parameter">Constant</label>
+            </div>
+            <div>
+                <input type="checkbox" id="ParameterPack" name="ParameterPack" [checked]="isChecked('ParameterPack')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="ParameterPack">ParameterPack</label>
+            </div>
+            <div>
+                <input type="checkbox" id="PointerParameter" name="PointerParameter"
+                    [checked]="isChecked('PointerParameter')" (change)="onCheckboxChange($event)" />
+                <label for="PointerParameter">PointerParameter</label>
+            </div>
+            <div>
+                <input type="checkbox" id="Parameter" name="Parameter" [checked]="isChecked('Parameter')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="Parameter">Parameter</label>
+            </div>
+        </div>
+        <div class="examples">
+            <code class="code">template &lt;class... Types&gt;
+void fOo(<br /></code>
+            <code
+                class="comment">  // Naming: <span [ngClass]="{ 'valid': isChecked('ConstantPointerParameter'), 'rule-checked': isChecked('ConstantPointerParameter') }">ConstantPointerParameter</span> / <span [ngClass]="{ 'valid': !isChecked('ConstantPointerParameter') && isChecked('ConstantParameter'), 'rule-checked': isChecked('ConstantParameter') }">ConstantParameter</span> / <span [ngClass]="{ 'valid': !isChecked('ConstantPointerParameter') && !isChecked('ConstantParameter') && isChecked('Constant'), 'rule-checked': isChecked('Constant') }">Constant</span> / <span [ngClass]="{ 'valid': !isChecked('ConstantPointerParameter') && !isChecked('ConstantParameter') && !isChecked('Constant') && isChecked('PointerParameter'), 'rule-checked': isChecked('PointerParameter') }">PointerParameter</span> / <span [ngClass]="{ 'valid': !isChecked('ConstantPointerParameter') && !isChecked('ConstantParameter') && !isChecked('Constant') && !isChecked('PointerParameter') && isChecked('Parameter'), 'rule-checked': isChecked('Parameter') }">Parameter</span> / <span [ngClass]="{ 'valid': !isChecked('ConstantPointerParameter') && !isChecked('ConstantParameter') && !isChecked('Constant') && !isChecked('PointerParameter') && !isChecked('Parameter') }">unchanged</span><br /></code>
+            <code class="code">  const int *IiI,<br /></code>
+            <code
+                class="comment">  // Naming: <span [ngClass]="{ 'valid': isChecked('ConstantParameter'), 'rule-checked': isChecked('ConstantParameter') }">ConstantParameter</span> / <span [ngClass]="{ 'valid': !isChecked('ConstantParameter') && isChecked('Constant'), 'rule-checked': isChecked('Constant') }">Constant</span> / <span [ngClass]="{ 'valid': !isChecked('ConstantParameter') && !isChecked('Constant') && isChecked('Parameter'), 'rule-checked': isChecked('Parameter') }">Parameter</span> / <span [ngClass]="{ 'valid': !isChecked('ConstantParameter') && !isChecked('Constant') && !isChecked('Parameter') }">unchanged</span><br /></code>
+            <code class="code">  const short &ShorT,<br /></code>
+            <code
+                class="comment">  // Naming: <span [ngClass]="{ 'valid': isChecked('PointerParameter'), 'rule-checked': isChecked('PointerParameter') }">PointerParameter</span> / <span [ngClass]="{ 'valid': !isChecked('PointerParameter') && isChecked('Parameter'), 'rule-checked': isChecked('Parameter') }">Parameter</span> / <span [ngClass]="{ 'valid': !isChecked('PointerParameter') && !isChecked('Parameter') }">unchanged</span><br /></code>
+            <code class="code">  int *JjJ,<br /></code>
+            <code
+                class="comment">  // Naming: <span [ngClass]="{ 'valid': isChecked('Parameter'), 'rule-checked': isChecked('Parameter') }">Parameter</span> / <span [ngClass]="{ 'valid': !isChecked('Parameter') }">unchanged</span><br /></code>
+            <code class="code">  short SsS,<br /></code>
+            <code
+                class="comment">  // Naming: <span [ngClass]="{ 'valid': isChecked('ParameterPack'), 'rule-checked': isChecked('ParameterPack') }">ParameterPack</span> / <span [ngClass]="{ 'valid': !isChecked('ParameterPack') && isChecked('Parameter'), 'rule-checked': isChecked('Parameter') }">Parameter</span> / <span [ngClass]="{ 'valid': !isChecked('ParameterPack') && !isChecked('Parameter') }">unchanged</span><br /></code>
+            <code class="code">  Types... arGs);</code>
+        </div>
+    </div>
+</div>
+
+<div class="case">
+    <h2 class="title">
+        Local variables
+    </h2>
+    <div class="content">
+        <div class="checkboxes">
+            <div>
+                <input type="checkbox" id="ConstexprVariable_Local" name="ConstexprVariable_Local"
+                    [checked]="isChecked('ConstexprVariable')" (change)="onCheckboxChange($event)" />
+                <label for="ConstexprVariable_Local">ConstexprVariable</label>
+            </div>
+            <div>
+                <input type="checkbox" id="StaticConstant" name="StaticConstant" [checked]="isChecked('StaticConstant')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="StaticConstant">StaticConstant</label>
+            </div>
+            <div>
+                <input type="checkbox" id="LocalConstantPointer" name="LocalConstantPointer"
+                    [checked]="isChecked('LocalConstantPointer')" (change)="onCheckboxChange($event)" />
+                <label for="LocalConstantPointer">LocalConstantPointer</label>
+            </div>
+            <div>
+                <input type="checkbox" id="LocalConstant" name="LocalConstant" [checked]="isChecked('LocalConstant')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="LocalConstant">LocalConstant</label>
+            </div>
+            <div>
+                <input type="checkbox" id="Constant_Local" name="Constant_Local" [checked]="isChecked('Constant')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="Constant_Local">Constant</label>
+            </div>
+            <div>
+                <input type="checkbox" id="StaticVariable" name="StaticVariable" [checked]="isChecked('StaticVariable')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="StaticVariable">StaticVariable</label>
+            </div>
+            <div>
+                <input type="checkbox" id="LocalPointer" name="LocalPointer" [checked]="isChecked('LocalPointer')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="LocalPointer">LocalPointer</label>
+            </div>
+            <div>
+                <input type="checkbox" id="LocalVariable" name="LocalVariable" [checked]="isChecked('LocalVariable')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="LocalVariable">LocalVariable</label>
+            </div>
+            <div>
+                <input type="checkbox" id="Variable_Local" name="Variable_Local" [checked]="isChecked('Variable')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="Variable_Local">Variable</label>
+            </div>
+        </div>
+        <div class="examples">
+            <code class="code">&#123;<br /></code>
+            <code
+                class="comment">  // Naming: <span [ngClass]="{ 'valid': isChecked('ConstexprVariable'), 'rule-checked': isChecked('ConstexprVariable') }">ConstexprVariable</span> / <span [ngClass]="{ 'valid': !isChecked('ConstexprVariable') && isChecked('LocalVariable'), 'rule-checked': isChecked('LocalVariable') }">LocalVariable</span> / <span [ngClass]="{ 'valid': !isChecked('ConstexprVariable') && !isChecked('LocalVariable') && isChecked('Variable'), 'rule-checked': isChecked('Variable') }">Variable</span> / <span [ngClass]="{ 'valid': !isChecked('ConstexprVariable') && !isChecked('LocalVariable') && !isChecked('Variable') }">unchanged</span><br /></code>
+            <code class="code">  constexpr int eE = 150;<br /></code>
+            <code
+                class="comment">  // Naming: <span [ngClass]="{ 'valid': isChecked('StaticConstant'), 'rule-checked': isChecked('StaticConstant') }">StaticConstant</span> / <span [ngClass]="{ 'valid': !isChecked('StaticConstant') && isChecked('LocalConstant'), 'rule-checked': isChecked('LocalConstant') }">LocalConstant</span> / <span [ngClass]="{ 'valid': !isChecked('StaticConstant') && !isChecked('LocalConstant') && isChecked('Constant'), 'rule-checked': isChecked('Constant') }">Constant</span> / <span [ngClass]="{ 'valid': !isChecked('StaticConstant') && !isChecked('LocalConstant') && !isChecked('Constant') && isChecked('StaticVariable'), 'rule-checked': isChecked('StaticVariable') }">StaticVariable</span> / <span [ngClass]="{ 'valid': !isChecked('StaticConstant') && !isChecked('LocalConstant') && !isChecked('Constant') && !isChecked('StaticVariable') && isChecked('LocalVariable'), 'rule-checked': isChecked('LocalVariable') }">LocalVariable</span> / <span [ngClass]="{ 'valid': !isChecked('StaticConstant') && !isChecked('LocalConstant') && !isChecked('Constant') && !isChecked('StaticVariable') && !isChecked('LocalVariable') && isChecked('Variable'), 'rule-checked': isChecked('Variable') }">Variable</span> / <span [ngClass]="{ 'valid': !isChecked('StaticConstant') && !isChecked('LocalConstant') && !isChecked('Constant') && !isChecked('StaticVariable') && !isChecked('LocalVariable') && !isChecked('Variable') }">unchanged</span><br /></code>
+            <code class="code">  static const int Ee = 150;<br /></code>
+            <code
+                class="comment">  // Naming: <span [ngClass]="{ 'valid': isChecked('LocalConstantPointer'), 'rule-checked': isChecked('LocalConstantPointer') }">LocalConstantPointer</span> / <span [ngClass]="{ 'valid': !isChecked('LocalConstantPointer') && isChecked('LocalConstant'), 'rule-checked': isChecked('LocalConstant') }">LocalConstant</span> / <span [ngClass]="{ 'valid': !isChecked('LocalConstantPointer') && !isChecked('LocalConstant') && isChecked('Constant'), 'rule-checked': isChecked('Constant') }">Constant</span> / <span [ngClass]="{ 'valid': !isChecked('LocalConstantPointer') && !isChecked('LocalConstant') && !isChecked('Constant') && isChecked('LocalPointer'), 'rule-checked': isChecked('LocalPointer') }">LocalPointer</span> / <span [ngClass]="{ 'valid': !isChecked('LocalConstantPointer') && !isChecked('LocalConstant') && !isChecked('Constant') && !isChecked('LocalPointer') && isChecked('LocalVariable'), 'rule-checked': isChecked('LocalVariable') }">LocalVariable</span> / <span [ngClass]="{ 'valid': !isChecked('LocalConstantPointer') && !isChecked('LocalConstant') && !isChecked('Constant') && !isChecked('LocalPointer') && !isChecked('LocalVariable') && isChecked('Variable'), 'rule-checked': isChecked('Variable') }">Variable</span> / <span [ngClass]="{ 'valid': !isChecked('LocalConstantPointer') && !isChecked('LocalConstant') && !isChecked('Constant') && !isChecked('LocalPointer') && !isChecked('LocalVariable') && !isChecked('Variable') }">unchanged</span><br /></code>
+            <code class="code">  const int *Jj = nullptr;<br /></code>
+            <code
+                class="comment">  // Naming: <span [ngClass]="{ 'valid': isChecked('LocalConstant'), 'rule-checked': isChecked('LocalConstant') }">LocalConstant</span> / <span [ngClass]="{ 'valid': !isChecked('LocalConstant') && isChecked('Constant'), 'rule-checked': isChecked('Constant') }">Constant</span> / <span [ngClass]="{ 'valid': !isChecked('LocalConstant') && !isChecked('Constant') && isChecked('LocalVariable'), 'rule-checked': isChecked('LocalVariable') }">LocalVariable</span> / <span [ngClass]="{ 'valid': !isChecked('LocalConstant') && !isChecked('Constant') && !isChecked('LocalVariable') && isChecked('Variable'), 'rule-checked': isChecked('Variable') }">Variable</span> / <span [ngClass]="{ 'valid': !isChecked('LocalConstant') && !isChecked('Constant') && !isChecked('LocalVariable') && !isChecked('Variable') }">unchanged</span><br /></code>
+            <code class="code">  const int Jj = 150;<br /></code>
+            <code
+                class="comment">  // Naming: <span [ngClass]="{ 'valid': isChecked('StaticVariable'), 'rule-checked': isChecked('StaticVariable') }">StaticVariable</span> / <span [ngClass]="{ 'valid': !isChecked('StaticVariable') && isChecked('LocalVariable'), 'rule-checked': isChecked('LocalVariable') }">LocalVariable</span> / <span [ngClass]="{ 'valid': !isChecked('StaticVariable') && !isChecked('LocalVariable') && isChecked('Variable'), 'rule-checked': isChecked('Variable') }">Variable</span> / <span [ngClass]="{ 'valid': !isChecked('StaticVariable') && !isChecked('LocalVariable') && !isChecked('Variable') }">unchanged</span><br /></code>
+            <code class="code">  static int Ee = 150;<br /></code>
+            <code
+                class="comment">  // Naming: <span [ngClass]="{ 'valid': isChecked('LocalPointer'), 'rule-checked': isChecked('LocalPointer') }">LocalPointer</span> / <span [ngClass]="{ 'valid': !isChecked('LocalPointer') && isChecked('LocalVariable'), 'rule-checked': isChecked('LocalVariable') }">LocalVariable</span> / <span [ngClass]="{ 'valid': !isChecked('LocalPointer') && !isChecked('LocalVariable') && isChecked('Variable'), 'rule-checked': isChecked('Variable') }">Variable</span> / <span [ngClass]="{ 'valid': !isChecked('LocalPointer') && !isChecked('LocalVariable') && !isChecked('Variable') }">unchanged</span><br /></code>
+            <code class="code">  int *Jj = nullptr;<br /></code>
+            <code
+                class="comment">  // Naming: <span [ngClass]="{ 'valid': isChecked('LocalVariable'), 'rule-checked': isChecked('LocalVariable') }">LocalVariable</span> / <span [ngClass]="{ 'valid': !isChecked('LocalVariable') && isChecked('Variable'), 'rule-checked': isChecked('Variable') }">Variable</span> / <span [ngClass]="{ 'valid': !isChecked('LocalVariable') && !isChecked('Variable') }">unchanged</span><br /></code>
+            <code class="code">  int Jj = 150;
+&#125;<br /></code>
+        </div>
+    </div>
+</div>
+
+<div class="case">
+    <h2 class="title">
+        Global variables
+    </h2>
+    <div class="content">
+        <div class="checkboxes">
+            <div>
+                <input type="checkbox" id="ConstexprVariable_Global" name="ConstexprVariable_Global"
+                    [checked]="isChecked('ConstexprVariable')" (change)="onCheckboxChange($event)" />
+                <label for="ConstexprVariable_Global">ConstexprVariable</label>
+            </div>
+            <div>
+                <input type="checkbox" id="GlobalConstantPointer" name="GlobalConstantPointer"
+                    [checked]="isChecked('GlobalConstantPointer')" (change)="onCheckboxChange($event)" />
+                <label for="GlobalConstantPointer">GlobalConstantPointer</label>
+            </div>
+            <div>
+                <input type="checkbox" id="GlobalConstant" name="GlobalConstant" [checked]="isChecked('GlobalConstant')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="GlobalConstant">GlobalConstant</label>
+            </div>
+            <div>
+                <input type="checkbox" id="Constant_Global" name="Constant_Global" [checked]="isChecked('Constant')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="Constant_Global">Constant</label>
+            </div>
+            <div>
+                <input type="checkbox" id="GlobalPointer" name="GlobalPointer" [checked]="isChecked('GlobalPointer')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="GlobalPointer">GlobalPointer</label>
+            </div>
+            <div>
+                <input type="checkbox" id="GlobalVariable" name="GlobalVariable" [checked]="isChecked('GlobalVariable')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="GlobalVariable">GlobalVariable</label>
+            </div>
+            <div>
+                <input type="checkbox" id="Variable_Global" name="Variable_Global" [checked]="isChecked('Variable')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="Variable_Global">Variable</label>
+            </div>
+        </div>
+        <div class="examples">
+            <code
+                class="comment">// Naming: <span [ngClass]="{ 'valid': isChecked('ConstexprVariable'), 'rule-checked': isChecked('ConstexprVariable') }">ConstexprVariable</span> / <span [ngClass]="{ 'valid': !isChecked('ConstexprVariable') && isChecked('GlobalVariable'), 'rule-checked': isChecked('GlobalVariable') }">GlobalVariable</span> / <span [ngClass]="{ 'valid': !isChecked('ConstexprVariable') && !isChecked('GlobalVariable') && isChecked('Variable'), 'rule-checked': isChecked('Variable') }">Variable</span> / <span [ngClass]="{ 'valid': !isChecked('ConstexprVariable') && !isChecked('GlobalVariable') && !isChecked('Variable') }">unchanged</span><br /></code>
+            <code class="code">constexpr int eE = 150;<br /></code>
+            <code
+                class="comment">// Naming: <span [ngClass]="{ 'valid': isChecked('GlobalConstantPointer'), 'rule-checked': isChecked('GlobalConstantPointer') }">GlobalConstantPointer</span> / <span [ngClass]="{ 'valid': !isChecked('GlobalConstantPointer') && isChecked('GlobalConstant'), 'rule-checked': isChecked('GlobalConstant') }">GlobalConstant</span> / <span [ngClass]="{ 'valid': !isChecked('GlobalConstantPointer') && !isChecked('GlobalConstant') && isChecked('Constant'), 'rule-checked': isChecked('Constant') }">Constant</span> / <span [ngClass]="{ 'valid': !isChecked('GlobalConstantPointer') && !isChecked('GlobalConstant') && !isChecked('Constant') && isChecked('GlobalPointer'), 'rule-checked': isChecked('GlobalPointer') }">GlobalPointer</span> / <span [ngClass]="{ 'valid': !isChecked('GlobalConstantPointer') && !isChecked('GlobalConstant') && !isChecked('Constant') && !isChecked('GlobalPointer') && isChecked('GlobalVariable'), 'rule-checked': isChecked('GlobalVariable') }">GlobalVariable</span> / <span [ngClass]="{ 'valid': !isChecked('GlobalConstantPointer') && !isChecked('GlobalConstant') && !isChecked('Constant') && !isChecked('GlobalPointer') && !isChecked('GlobalVariable') && isChecked('Variable'), 'rule-checked': isChecked('Variable') }">Variable</span> / <span [ngClass]="{ 'valid': !isChecked('GlobalConstantPointer') && !isChecked('GlobalConstant') && !isChecked('Constant') && !isChecked('GlobalPointer') && !isChecked('GlobalVariable') && !isChecked('Variable') }">unchanged</span><br /></code>
+            <code class="code">const int *Jj = nullptr;<br /></code>
+            <code
+                class="comment">// Naming: <span [ngClass]="{ 'valid': isChecked('GlobalConstant'), 'rule-checked': isChecked('GlobalConstant') }">GlobalConstant</span> / <span [ngClass]="{ 'valid': !isChecked('GlobalConstant') && isChecked('Constant'), 'rule-checked': isChecked('Constant') }">Constant</span> / <span [ngClass]="{ 'valid': !isChecked('GlobalConstant') && !isChecked('Constant') && isChecked('GlobalVariable'), 'rule-checked': isChecked('GlobalVariable') }">GlobalVariable</span> / <span [ngClass]="{ 'valid': !isChecked('GlobalConstant') && !isChecked('Constant') && !isChecked('GlobalVariable') && isChecked('Variable'), 'rule-checked': isChecked('Variable') }">Variable</span> / <span [ngClass]="{ 'valid': !isChecked('GlobalConstant') && !isChecked('Constant') && !isChecked('GlobalVariable') && !isChecked('Variable') }">unchanged</span><br /></code>
+            <code class="code">const int Jj = 150;<br /></code>
+            <code
+                class="comment">// Naming: <span [ngClass]="{ 'valid': isChecked('GlobalPointer'), 'rule-checked': isChecked('GlobalPointer') }">GlobalPointer</span> / <span [ngClass]="{ 'valid': !isChecked('GlobalPointer') && isChecked('GlobalVariable'), 'rule-checked': isChecked('GlobalVariable') }">GlobalVariable</span> / <span [ngClass]="{ 'valid': !isChecked('GlobalPointer') && !isChecked('GlobalVariable') && isChecked('Variable'), 'rule-checked': isChecked('Variable') }">Variable</span> / <span [ngClass]="{ 'valid': !isChecked('GlobalPointer') && !isChecked('GlobalVariable') && !isChecked('Variable') }">unchanged</span><br /></code>
+            <code class="code">int *Jj = nullptr;<br /></code>
+            <code
+                class="comment">// Naming: <span [ngClass]="{ 'valid': isChecked('GlobalVariable'), 'rule-checked': isChecked('GlobalVariable') }">GlobalVariable</span> / <span [ngClass]="{ 'valid': !isChecked('GlobalVariable') && isChecked('Variable'), 'rule-checked': isChecked('Variable') }">Variable</span> / <span [ngClass]="{ 'valid': !isChecked('GlobalVariable') && !isChecked('Variable') }">unchanged</span><br /></code>
+            <code class="code">int Jj = 150;<br /></code>
+        </div>
+    </div>
+</div>
+
+<div class="case">
+    <h2 class="title">
+        Static member variables
+    </h2>
+    <div class="content">
+        <div class="checkboxes">
+            <div>
+                <input type="checkbox" id="ClassConstant" name="ClassConstant" [checked]="isChecked('ClassConstant')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="ClassConstant">ClassConstant</label>
+            </div>
+            <div>
+                <input type="checkbox" id="Constant_StaticMember" name="Constant_StaticMember"
+                    [checked]="isChecked('Constant')" (change)="onCheckboxChange($event)" />
+                <label for="Constant_StaticMember">Constant</label>
+            </div>
+            <div>
+                <input type="checkbox" id="ClassMember" name="ClassMember" [checked]="isChecked('ClassMember')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="ClassMember">ClassMember</label>
+            </div>
+            <div>
+                <input type="checkbox" id="Variable_Member" name="Variable_Member" [checked]="isChecked('Variable')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="Variable_Member">Variable</label>
+            </div>
+        </div>
+        <div class="examples">
+            <code class="code">class ClAss &#123;<br /></code>
+            <code
+                class="comment">  // Naming: <span [ngClass]="{ 'valid': isChecked('ClassConstant'), 'rule-checked': isChecked('ClassConstant') }">ClassConstant</span> / <span [ngClass]="{ 'valid': !isChecked('ClassConstant') && isChecked('Constant'), 'rule-checked': isChecked('Constant') }">Constant</span> / <span [ngClass]="{ 'valid': !isChecked('ClassConstant') && !isChecked('Constant') && isChecked('ClassMember'), 'rule-checked': isChecked('ClassMember') }">ClassMember</span> / <span [ngClass]="{ 'valid': !isChecked('ClassConstant') && !isChecked('Constant') && !isChecked('ClassMember') && isChecked('Variable'), 'rule-checked': isChecked('Variable') }">Variable</span> / <span [ngClass]="{ 'valid': !isChecked('ClassConstant') && !isChecked('Constant') && !isChecked('ClassMember') && !isChecked('Variable') }">unchanged</span><br /></code>
+            <code class="code">  static const int eE = 150;<br /></code>
+            <code
+                class="comment">  // Naming: <span [ngClass]="{ 'valid': isChecked('ClassMember'), 'rule-checked': isChecked('ClassMember') }">ClassMember</span> / <span [ngClass]="{ 'valid': !isChecked('ClassMember') && isChecked('Variable'), 'rule-checked': isChecked('Variable') }">Variable</span> / <span [ngClass]="{ 'valid': !isChecked('ClassMember') && !isChecked('Variable') }">unchanged</span><br /></code>
+            <code class="code">  static int Ee = 150;
+&#125;<br /></code>
+        </div>
+    </div>
+</div>
+
+<div class="case">
+    <h2 class="title">
+        Methods
+    </h2>
+    <div class="content">
+        <div class="checkboxes">
+            <div>
+                <input type="checkbox" id="ConstexprMethod" name="ConstexprMethod"
+                    [checked]="isChecked('ConstexprMethod')" (change)="onCheckboxChange($event)" />
+                <label for="ConstexprMethod">ConstexprMethod</label>
+            </div>
+            <div>
+                <input type="checkbox" id="ConstexprFunction" name="ConstexprFunction"
+                    [checked]="isChecked('ConstexprFunction')" (change)="onCheckboxChange($event)" />
+                <label for="ConstexprFunction">ConstexprFunction</label>
+            </div>
+            <div>
+                <input type="checkbox" id="ClassMethod" name="ClassMethod" [checked]="isChecked('ClassMethod')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="ClassMethod">ClassMethod</label>
+            </div>
+            <div>
+                <input type="checkbox" id="VirtualMethod" name="VirtualMethod" [checked]="isChecked('VirtualMethod')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="VirtualMethod">VirtualMethod</label>
+            </div>
+            <div>
+                <input type="checkbox" id="PrivateMethod" name="PrivateMethod" [checked]="isChecked('PrivateMethod')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="PrivateMethod">PrivateMethod</label>
+            </div>
+            <div>
+                <input type="checkbox" id="ProtectedMethod" name="ProtectedMethod"
+                    [checked]="isChecked('ProtectedMethod')" (change)="onCheckboxChange($event)" />
+                <label for="ProtectedMethod">ProtectedMethod</label>
+            </div>
+            <div>
+                <input type="checkbox" id="PublicMethod" name="PublicMethod" [checked]="isChecked('PublicMethod')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="PublicMethod">PublicMethod</label>
+            </div>
+            <div>
+                <input type="checkbox" id="Method" name="Method" [checked]="isChecked('Method')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="Method">Method</label>
+            </div>
+            <div>
+                <input type="checkbox" id="Function" name="Function" [checked]="isChecked('Function')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="Function">Function</label>
+            </div>
+        </div>
+        <div class="examples">
+            <code class="code">class A &#123;
+ public:
+  virtual void fOo()= 0;
+&#125;
+class B : public A &#123;
+ public:<br /></code>
+            <code class="comment">  // Override is skipped.<br /></code>
+            <code class="code">  void fOo() override;<br /></code>
+            <code
+                class="comment">  // Naming: <span [ngClass]="{ 'valid': isChecked('ConstexprMethod'), 'rule-checked': isChecked('ConstexprMethod') }">ConstexprMethod</span> / <span [ngClass]="{ 'valid': !isChecked('ConstexprMethod') && isChecked('ConstexprFunction'), 'rule-checked': isChecked('ConstexprFunction') }">ConstexprFunction</span> / <span [ngClass]="{ 'valid': !isChecked('ConstexprMethod') && !isChecked('ConstexprFunction') && isChecked('PublicMethod'), 'rule-checked': isChecked('PublicMethod') }">PublicMethod</span> / <span [ngClass]="{ 'valid': !isChecked('ConstexprMethod') && !isChecked('ConstexprFunction') && !isChecked('PublicMethod') && isChecked('Method'), 'rule-checked': isChecked('Method') }">Method</span> / <span [ngClass]="{ 'valid': !isChecked('ConstexprMethod') && !isChecked('ConstexprFunction') && !isChecked('PublicMethod') && !isChecked('Method') && isChecked('Function'), 'rule-checked': isChecked('Function') }">Function</span> / <span [ngClass]="{ 'valid': !isChecked('ConstexprMethod') && !isChecked('ConstexprFunction') && !isChecked('PublicMethod') && !isChecked('Method') && !isChecked('Function') }">unchanged</span><br /></code>
+            <code class="code">  constexpr int fOo2();<br /></code>
+            <code
+                class="comment">  // Naming: <span [ngClass]="{ 'valid': isChecked('ClassMethod'), 'rule-checked': isChecked('ClassMethod') }">ClassMethod</span> / <span [ngClass]="{ 'valid': !isChecked('ClassMethod') && isChecked('PublicMethod'), 'rule-checked': isChecked('PublicMethod') }">PublicMethod</span> / <span [ngClass]="{ 'valid': !isChecked('ClassMethod') && !isChecked('PublicMethod') && isChecked('Method'), 'rule-checked': isChecked('Method') }">Method</span> / <span [ngClass]="{ 'valid': !isChecked('ClassMethod') && !isChecked('PublicMethod') && !isChecked('Method') && isChecked('Function'), 'rule-checked': isChecked('Function') }">Function</span> / <span [ngClass]="{ 'valid': !isChecked('ClassMethod') && !isChecked('PublicMethod') && !isChecked('Method') && !isChecked('Function') }">unchanged</span><br /></code>
+            <code class="code">  static void fOo3();<br /></code>
+            <code
+                class="comment">  // Naming: <span [ngClass]="{ 'valid': isChecked('VirtualMethod'), 'rule-checked': isChecked('VirtualMethod') }">VirtualMethod</span> / <span [ngClass]="{ 'valid': !isChecked('VirtualMethod') && isChecked('PublicMethod'), 'rule-checked': isChecked('PublicMethod') }">PublicMethod</span> / <span [ngClass]="{ 'valid': !isChecked('VirtualMethod') && !isChecked('PublicMethod') && isChecked('Method'), 'rule-checked': isChecked('Method') }">Method</span> / <span [ngClass]="{ 'valid': !isChecked('VirtualMethod') && !isChecked('PublicMethod') && !isChecked('Method') && isChecked('Function'), 'rule-checked': isChecked('Function') }">Function</span> / <span [ngClass]="{ 'valid': !isChecked('VirtualMethod') && !isChecked('PublicMethod') && !isChecked('Method') && !isChecked('Function') }">unchanged</span><br /></code>
+            <code class="code">  virtual void fOo4();
+ private:<br /></code>
+            <code
+                class="comment">  // Naming: <span [ngClass]="{ 'valid': isChecked('PrivateMethod'), 'rule-checked': isChecked('PrivateMethod') }">PrivateMethod</span> / <span [ngClass]="{ 'valid': !isChecked('PrivateMethod') && isChecked('Method'), 'rule-checked': isChecked('Method') }">Method</span> / <span [ngClass]="{ 'valid': !isChecked('PrivateMethod') && !isChecked('Method') && isChecked('Function'), 'rule-checked': isChecked('Function') }">Function</span> / <span [ngClass]="{ 'valid': !isChecked('PrivateMethod') && !isChecked('Method') && !isChecked('Function') }">unchanged</span><br /></code>
+            <code class="code">  void fOo5();
+ protected:<br /></code>
+            <code
+                class="comment">  // Naming: <span [ngClass]="{ 'valid': isChecked('ProtectedMethod'), 'rule-checked': isChecked('ProtectedMethod') }">ProtectedMethod</span> / <span [ngClass]="{ 'valid': !isChecked('ProtectedMethod') && isChecked('Method'), 'rule-checked': isChecked('Method') }">Method</span> / <span [ngClass]="{ 'valid': !isChecked('ProtectedMethod') && !isChecked('Method') && isChecked('Function'), 'rule-checked': isChecked('Function') }">Function</span> / <span [ngClass]="{ 'valid': !isChecked('ProtectedMethod') && !isChecked('Method') && !isChecked('Function') }">unchanged</span><br /></code>
+            <code class="code">  void fOo6();
+&#125;</code>
+        </div>
+    </div>
+</div>
+
+<div class="case">
+    <h2 class="title">
+        Functions
+    </h2>
+    <div class="content">
+        <div class="checkboxes">
+            <div>
+                <input type="checkbox" id="ConstexprFunction" name="ConstexprFunction"
+                    [checked]="isChecked('ConstexprFunction')" (change)="onCheckboxChange($event)" />
+                <label for="ConstexprFunction">ConstexprFunction</label>
+            </div>
+            <div>
+                <input type="checkbox" id="GlobalFunction" name="GlobalFunction" [checked]="isChecked('GlobalFunction')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="GlobalFunction">GlobalFunction</label>
+            </div>
+            <div>
+                <input type="checkbox" id="Function" name="Function" [checked]="isChecked('Function')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="Function">Function</label>
+            </div>
+        </div>
+        <div class="examples">
+            <code
+                class="comment">// Naming: <span [ngClass]="{ 'valid': isChecked('ConstexprFunction'), 'rule-checked': isChecked('ConstexprFunction') }">ConstexprFunction</span> / <span [ngClass]="{ 'valid': !isChecked('ConstexprFunction') && isChecked('GlobalFunction'), 'rule-checked': isChecked('GlobalFunction') }">GlobalFunction</span> / <span [ngClass]="{ 'valid': !isChecked('ConstexprFunction') && !isChecked('GlobalFunction') && isChecked('Function'), 'rule-checked': isChecked('Function') }">Function</span> / <span [ngClass]="{ 'valid': !isChecked('ConstexprFunction') && !isChecked('GlobalFunction') && !isChecked('Function') }">unchanged</span><br /></code>
+            <code class="code">constexpr void b1r();<br /></code>
+            <code
+                class="comment">// Naming: <span [ngClass]="{ 'valid': isChecked('GlobalFunction'), 'rule-checked': isChecked('GlobalFunction') }">GlobalFunction</span> / <span [ngClass]="{ 'valid': !isChecked('GlobalFunction') && isChecked('Function'), 'rule-checked': isChecked('Function') }">Function</span> / <span [ngClass]="{ 'valid': !isChecked('GlobalFunction') && !isChecked('Function') }">unchanged</span><br /></code>
+            <code class="code">void bAr()<br /></code>
+        </div>
+    </div>
+</div>
+
+<div class="case">
+    <h2 class="title">
+        Templates
+    </h2>
+    <div class="content">
+        <div class="checkboxes">
+            <div>
+                <input type="checkbox" id="TypeTemplateParameter" name="TypeTemplateParameter"
+                    [checked]="isChecked('TypeTemplateParameter')" (change)="onCheckboxChange($event)" />
+                <label for="TypeTemplateParameter">TypeTemplateParameter</label>
+            </div>
+            <div>
+                <input type="checkbox" id="ValueTemplateParameter" name="ValueTemplateParameter"
+                    [checked]="isChecked('ValueTemplateParameter')" (change)="onCheckboxChange($event)" />
+                <label for="ValueTemplateParameter">ValueTemplateParameter</label>
+            </div>
+            <div>
+                <input type="checkbox" id="TemplateTemplateParameter" name="TemplateTemplateParameter"
+                    [checked]="isChecked('TemplateTemplateParameter')" (change)="onCheckboxChange($event)" />
+                <label for="TemplateTemplateParameter">TemplateTemplateParameter</label>
+            </div>
+            <div>
+                <input type="checkbox" id="TemplateParameter" name="TemplateParameter"
+                    [checked]="isChecked('TemplateParameter')" (change)="onCheckboxChange($event)" />
+                <label for="TemplateParameter">TemplateParameter</label>
+            </div>
+        </div>
+        <div class="examples">
+            <code class="code">template&lt;<br /></code>
+            <code
+                class="comment">  // Naming: <span [ngClass]="{ 'valid': isChecked('TypeTemplateParameter'), 'rule-checked': isChecked('TypeTemplateParameter') }">TypeTemplateParameter</span> / <span [ngClass]="{ 'valid': !isChecked('TypeTemplateParameter') && isChecked('TemplateParameter'), 'rule-checked': isChecked('TemplateParameter') }">TemplateParameter</span> / <span [ngClass]="{ 'valid': !isChecked('TypeTemplateParameter') && !isChecked('TemplateParameter') }">unchanged</span><br /></code>
+            <code class="code">  typename TypeName,<br /></code>
+            <code
+                class="comment">  // Naming: <span [ngClass]="{ 'valid': isChecked('ValueTemplateParameter'), 'rule-checked': isChecked('ValueTemplateParameter') }">ValueTemplateParameter</span> / <span [ngClass]="{ 'valid': !isChecked('ValueTemplateParameter') && isChecked('TemplateParameter'), 'rule-checked': isChecked('TemplateParameter') }">TemplateParameter</span> / <span [ngClass]="{ 'valid': !isChecked('ValueTemplateParameter') && !isChecked('TemplateParameter') }">unchanged</span><br /></code>
+            <code class="code">  int VaLuE,<br /></code>
+            <code
+                class="comment">  // Naming: <span [ngClass]="{ 'valid': isChecked('TemplateTemplateParameter'), 'rule-checked': isChecked('TemplateTemplateParameter') }">TemplateTemplateParameter</span> / <span [ngClass]="{ 'valid': !isChecked('TemplateTemplateParameter') && isChecked('TemplateParameter'), 'rule-checked': isChecked('TemplateParameter') }">TemplateParameter</span> / <span [ngClass]="{ 'valid': !isChecked('TemplateTemplateParameter') && !isChecked('TemplateParameter') }">unchanged</span><br /></code>
+            <code class="code">  template&lt;typename&gt; typename TypeTypeName
+&gt; void FoBa();<br /></code>
+        </div>
+    </div>
+</div>
+
+<div class="case">
+    <h2 class="title">
+        Concept
+    </h2>
+    <div class="content">
+        <div class="checkboxes">
+            <div>
+                <input type="checkbox" id="Concept" name="Concept" [checked]="isChecked('Concept')"
+                    (change)="onCheckboxChange($event)" />
+                <label for="Concept">Concept</label>
+            </div>
+        </div>
+        <div class="examples">
+            <code
+                class="comment">// Naming: <span [ngClass]="{ 'valid': isChecked('Concept'), 'rule-checked': isChecked('Concept') }">Concept</span> / <span [ngClass]="{ 'valid': !isChecked('Concept') }">unchanged</span><br /></code>
+            <code class="code">template&lt;class T, class U&gt;
+concept ConCepT = std::is_base_of&lt;U, T&gt;::value;<br /></code>
+        </div>
+    </div>
+</div>
+
+<div class="case">
+    <h2 class="title">
+        Macro
+    </h2>
+    <div class="content">
+        <div class="checkboxes">
+            <div>
+                <input type="checkbox" id="MacroDefinition" name="MacroDefinition"
+                    [checked]="isChecked('MacroDefinition')" (change)="onCheckboxChange($event)" />
+                <label for="MacroDefinition">MacroDefinition</label>
+            </div>
+        </div>
+        <div class="examples">
+            <code
+                class="comment">// Naming: <span [ngClass]="{ 'valid': isChecked('MacroDefinition'), 'rule-checked': isChecked('MacroDefinition') }">MacroDefinition</span> / <span [ngClass]="{ 'valid': !isChecked('MacroDefinition') }">unchanged</span><br /></code>
+            <code class="code">#define MaCrO<br /></code>
+        </div>
+    </div>
+</div>

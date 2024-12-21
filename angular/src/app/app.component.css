@@ -19,7 +19,7 @@
 }
 
 .github_logo {
-  position: absolute;
+  position: fixed;
   top: 0.5em;
   right: 0.5em;
   width: 2em;

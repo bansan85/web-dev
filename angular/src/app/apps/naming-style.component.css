@@ -1,0 +1,50 @@
+.code {
+    color: #1c1c1e;
+    white-space: pre-wrap;
+}
+
+@media (prefers-color-scheme: dark) {
+    .code {
+        color: #fefefe;
+    }
+}
+
+.comment {
+    color: #808080;
+    white-space: pre-wrap;
+}
+
+.rule-checked {
+    color: #FFA000;
+    font-weight: bold;
+}
+
+.valid {
+    color: #FF8080;
+    font-weight: bold;
+}
+
+.case {
+    display: flex;
+    flex-direction: column;
+}
+
+.content {
+    display: flex;
+}
+
+.checkboxes {
+    width: 20em;
+}
+
+.buttons {
+    position: fixed;
+    bottom: 0.5em;
+    right: 0.5em;
+    display: flex;
+    gap: 0.5em;
+}
+
+.action {
+    cursor: pointer;
+}

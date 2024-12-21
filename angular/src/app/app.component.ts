@@ -8,6 +8,7 @@ import {
 } from '@angular/router';
 import { LogoDemanglerInlineComponent } from './img/logo-demangler-inline.component';
 import { LogoFormatterInlineComponent } from './img/logo-formatter-inline.component';
+import { LogoNamingStyleInlineComponent } from './img/logo-naming-style-inline.component';
 import { GithubMarkInlineComponent } from './img/github-mark-inline.component';
 
 @Component({
@@ -20,6 +21,7 @@ import { GithubMarkInlineComponent } from './img/github-mark-inline.component';
     RouterLinkActive,
     LogoDemanglerInlineComponent,
     LogoFormatterInlineComponent,
+    LogoNamingStyleInlineComponent,
     GithubMarkInlineComponent,
   ],
   templateUrl: './app.component.html',
