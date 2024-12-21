@@ -3,6 +3,10 @@ app-dialog-popup textarea {
   width: 100%;
 }
 
+app-dialog-popup div[dialog-body] > dl:first-of-type {
+  margin: 0;
+}
+
 app-textarea-two h2 {
   margin: 0 0 0.5em 0;
   padding: 0em;
