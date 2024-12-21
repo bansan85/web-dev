@@ -1,1 +1,3 @@
-/build/
+/build*/
+
+/src/web-formatter-binding.cpp.inc
