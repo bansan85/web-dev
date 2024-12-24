@@ -13,7 +13,6 @@ import { GithubMarkInlineComponent } from './img/github-mark-inline.component';
 
 @Component({
   selector: 'app-root',
-  standalone: true,
   imports: [
     CommonModule,
     RouterOutlet,
@@ -25,10 +24,10 @@ import { GithubMarkInlineComponent } from './img/github-mark-inline.component';
     GithubMarkInlineComponent,
   ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css',
+  styleUrl: './app.component.css'
 })
 export class AppComponent {
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
   isHomeRoute() {
     return this.router.url === '/';

@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-naming-style',
-  standalone: true,
-  imports: [CommonModule, NgIf, LucideAngularModule],
+  imports: [CommonModule, LucideAngularModule],
   templateUrl: './naming-style.component.html',
   styleUrl: './naming-style.component.css',
   preserveWhitespaces: true

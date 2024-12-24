@@ -23,7 +23,6 @@ import {
 
 @Component({
   selector: 'app-formatter',
-  standalone: true,
   imports: [
     DialogPopupComponent,
     FormatterOptionsComponent,
@@ -35,7 +34,7 @@ import {
   ],
   templateUrl: './formatter.component.html',
   styleUrl: './formatter.component.css',
-  encapsulation: ViewEncapsulation.None,
+  encapsulation: ViewEncapsulation.None
 })
 export class AppFormatterComponent implements OnInit {
   formatter?: FormatterModule;
@@ -141,7 +140,7 @@ export class AppFormatterComponent implements OnInit {
       this.dialog.dialogRef.nativeElement.style.top =
         (window.innerHeight -
           this.dialog.dialogRef.nativeElement.offsetHeight) /
-          2 +
+        2 +
         'px';
     }
   }

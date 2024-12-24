@@ -10,10 +10,9 @@ import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
   selector: 'app-dialog-popup',
-  standalone: true,
   imports: [NgClass, LucideAngularModule],
   templateUrl: './dialog-popup.component.html',
-  styleUrl: './dialog-popup.component.css',
+  styleUrl: './dialog-popup.component.css'
 })
 export class DialogPopupComponent {
   @ViewChild('dialog') dialogRef!: ElementRef<HTMLDialogElement>;
@@ -26,7 +25,7 @@ export class DialogPopupComponent {
   mouseMoveListener?: () => void;
   mouseUpListener?: () => void;
 
-  constructor(private renderer: Renderer2, private ngZone: NgZone) {}
+  constructor(private renderer: Renderer2, private ngZone: NgZone) { }
 
   openDialog() {
     this.dialogRef.nativeElement.showModal();

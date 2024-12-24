@@ -3,10 +3,9 @@ import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-textarea-two',
-  standalone: true,
   imports: [CommonModule],
   templateUrl: './textarea-two.component.html',
-  styleUrl: './textarea-two.component.css',
+  styleUrl: './textarea-two.component.css'
 })
 export class TextareaTwoComponent {
   @ViewChild('inputElement') inputElement!: ElementRef<HTMLTextAreaElement>;

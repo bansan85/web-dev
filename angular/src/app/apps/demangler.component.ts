@@ -25,7 +25,6 @@ import {
 
 @Component({
   selector: 'app-demangler',
-  standalone: true,
   imports: [
     DialogPopupComponent,
     FormatterOptionsComponent,
@@ -37,7 +36,7 @@ import {
   ],
   templateUrl: './demangler.component.html',
   styleUrl: './demangler.component.css',
-  encapsulation: ViewEncapsulation.None,
+  encapsulation: ViewEncapsulation.None
 })
 export class AppDemanglerComponent implements OnInit {
   demangler?: DemanglerModule;
@@ -174,7 +173,7 @@ export class AppDemanglerComponent implements OnInit {
       this.dialog.dialogRef.nativeElement.style.top =
         (window.innerHeight -
           this.dialog.dialogRef.nativeElement.offsetHeight) /
-          2 +
+        2 +
         'px';
     }
   }
