@@ -124,15 +124,44 @@ if(ipo_supported)
   set_property(TARGET web_formatter PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 endif()
 
+add_executable(web_lighten)
+target_sources(web_lighten PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/web-lighten.cpp"
+                                   "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt")
+target_link_libraries(web_lighten PRIVATE embind)
+target_link_options(
+  web_lighten
+  PRIVATE
+  "SHELL:-s MODULARIZE=1"
+  "SHELL:-s EXPORT_ES6=1"
+  "SHELL:-s EXPORT_NAME=web_lighten"
+  "SHELL:-s ENVIRONMENT=web"
+  "SHELL:-s INVOKE_RUN=0"
+  "SHELL:-s MALLOC='emmalloc'"
+  "SHELL:-s ALLOW_MEMORY_GROWTH=1"
+  "SHELL:-s USE_ES6_IMPORT_META=0"
+  "$<IF:$<CONFIG:Debug>,--closure 0,--closure 1>"
+  "$<IF:$<CONFIG:Debug>,-s ASSERTIONS=1,-s ASSERTIONS=0>"
+  "$<$<CONFIG:Debug>:-s SAFE_HEAP=1>"
+  "$<$<CONFIG:Debug>:-s STACK_OVERFLOW_CHECK=2>"
+  "$<$<CONFIG:Debug>:--emit-symbol-map>"
+  "$<$<CONFIG:Debug>:-gsource-map>"
+  "$<$<CONFIG:Debug>:-gseparate-dwarf>"
+  "--emit-tsd"
+  "web_lighten.d.ts"
+  "--no-entry")
+if(ipo_supported)
+  set_property(TARGET web_lighten PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+endif()
+
 if(WITH_SANITIZE_ADDRESS)
-  foreach(target_i IN ITEMS web_demangler web_formatter)
+  foreach(target_i IN ITEMS web_demangler web_formatter web_lighten)
     target_compile_options(${target_i} PRIVATE "-fsanitize=address"
                                                "-fno-omit-frame-pointer")
     target_link_options(${target_i} PRIVATE "-fsanitize=address")
   endforeach()
 endif()
 if(WITH_SANITIZE_UNDEFINED)
-  foreach(target_i IN ITEMS web_demangler web_formatter)
+  foreach(target_i IN ITEMS web_demangler web_formatter web_lighten)
     target_compile_options(
       ${target_i} PRIVATE "-fsanitize=undefined" "-fno-sanitize-recover=all"
                           "-fno-omit-frame-pointer")
@@ -142,4 +171,5 @@ endif()
 if(CMAKE_EXPORT_COMPILE_COMMANDS)
   target_compile_options(web_demangler PRIVATE ${EMCC_FLAGS})
   target_compile_options(web_formatter PRIVATE ${EMCC_FLAGS})
+  target_compile_options(web_lighten PRIVATE ${EMCC_FLAGS})
 endif()
