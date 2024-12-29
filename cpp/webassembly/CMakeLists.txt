@@ -49,11 +49,11 @@ set(LLVM_USE_SANITIZER
 include(CheckIPOSupported)
 check_ipo_supported(RESULT ipo_supported OUTPUT error)
 
-add_subdirectory(llvm/llvm EXCLUDE_FROM_ALL)
+add_subdirectory(../third_party/llvm/llvm llvm_build EXCLUDE_FROM_ALL)
 
 add_executable(web_demangler)
 target_sources(
-  web_demangler PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src/web-demangler.cpp"
+  web_demangler PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/web-demangler.cpp"
                         "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt")
 target_link_libraries(web_demangler PRIVATE embind LLVMDemangle)
 target_include_directories(web_demangler PRIVATE SYSTEM
@@ -86,7 +86,7 @@ endif()
 
 add_executable(web_formatter)
 target_sources(
-  web_formatter PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src/web-formatter.cpp"
+  web_formatter PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/web-formatter.cpp"
                         "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt")
 target_link_libraries(web_formatter PRIVATE embind clangFormat)
 target_include_directories(
@@ -96,7 +96,7 @@ target_include_directories(
           ${LLVM_EXTERNAL_CLANG_SOURCE_DIR}/include
           ${LLVM_BINARY_DIR}/include/
           ${LLVM_BINARY_DIR}/tools/clang/include
-          "${CMAKE_CURRENT_SOURCE_DIR}/pfr/include")
+          "${CMAKE_CURRENT_SOURCE_DIR}/../third_party/pfr/include")
 target_compile_options(web_formatter PRIVATE "-fexceptions")
 target_link_options(
   web_formatter

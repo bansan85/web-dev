@@ -1,13 +1,13 @@
 [submodule "llvm"]
-	path = llvm
+	path = cpp/third_party/llvm
 	url = https://github.com/llvm/llvm-project.git
 	ignore = dirty
 [submodule "emsdk"]
-	path = emsdk
+	path = cpp/third_party/emsdk
 	url = https://github.com/emscripten-core/emsdk.git
 [submodule "pfr"]
-	path = pfr
+	path = cpp/third_party/pfr
 	url = https://github.com/boostorg/pfr.git
 [submodule "frozen"]
-	path = frozen
+	path = cpp/third_party/frozen
 	url = https://github.com/serge-sans-paille/frozen.git

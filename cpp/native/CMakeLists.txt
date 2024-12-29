@@ -36,8 +36,9 @@ foreach(lib ${CL_LIBRARIES})
 endforeach()
 
 target_include_directories(
-  clang_format_parser PRIVATE SYSTEM ${LLVM_INCLUDE_DIRS}
-                              "${CMAKE_CURRENT_SOURCE_DIR}/../frozen/include")
+  clang_format_parser
+  PRIVATE SYSTEM ${LLVM_INCLUDE_DIRS}
+          "${CMAKE_CURRENT_SOURCE_DIR}/../third_party/frozen/include")
 if(ipo_supported)
   set_property(TARGET clang_format_parser PROPERTY INTERPROCEDURAL_OPTIMIZATION
                                                    TRUE)
@@ -50,6 +51,6 @@ add_custom_command(
   POST_BUILD
   COMMAND
     $<TARGET_FILE:clang_format_parser>
-    "${CMAKE_CURRENT_SOURCE_DIR}/../llvm/clang/include/clang/Format/Format.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../third_party/llvm/clang/include/clang/Format/Format.h"
     "-I" "${LLVM_INCLUDE_DIRS}" "-I" "${GCC_INCLUDE}" "-OCPP"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../src/web-formatter-binding.cpp.inc")
+    "${CMAKE_CURRENT_SOURCE_DIR}/../webassembly/web-formatter-binding.cpp.inc")
