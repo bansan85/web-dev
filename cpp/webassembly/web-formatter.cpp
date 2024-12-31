@@ -10,7 +10,12 @@
 #include <system_error>
 #include <type_traits>
 
+#include "../native/formatter.h"
+
+namespace web_formatter {
+
 namespace {
+
 template <typename T> std::enable_if_t<std::is_aggregate_v<T>, T> initialize() {
   T obj{};
   boost::pfr::for_each_field(obj, [](auto &field) {
@@ -28,32 +33,6 @@ template <typename T> std::enable_if_t<std::is_aggregate_v<T>, T> initialize() {
 template <typename T>
 std::enable_if_t<!std::is_aggregate_v<T>, T> initialize() {
   return T{};
-}
-
-} // namespace
-
-namespace web_formatter {
-
-namespace {
-
-std::string format(const std::string &code,
-                   const clang::format::FormatStyle &format_style) {
-  const clang::tooling::Range range(0, code.size());
-
-  clang::format::FormattingAttemptStatus status;
-
-  const clang::tooling::Replacements replacements =
-      clang::format::reformat(format_style, code, {range}, "<stdin>", &status);
-
-  if (status.FormatComplete) {
-    llvm::Expected<std::string> formatted_code =
-        clang::tooling::applyAllReplacements(code, replacements);
-
-    if (formatted_code) {
-      return formatted_code.get();
-    }
-  }
-  return code;
 }
 
 void registerFormatStyle() {

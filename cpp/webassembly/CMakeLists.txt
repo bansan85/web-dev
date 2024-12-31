@@ -53,8 +53,11 @@ add_subdirectory(../third_party/llvm/llvm llvm_build EXCLUDE_FROM_ALL)
 
 add_executable(web_demangler)
 target_sources(
-  web_demangler PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/web-demangler.cpp"
-                        "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt")
+  web_demangler
+  PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/web-demangler.cpp"
+          "${CMAKE_CURRENT_SOURCE_DIR}/../native/demangler.cpp"
+          "${CMAKE_CURRENT_SOURCE_DIR}/../native/demangler.h"
+          "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt")
 target_link_libraries(web_demangler PRIVATE embind LLVMDemangle)
 target_include_directories(web_demangler PRIVATE SYSTEM
                                                  ${LLVM_SOURCE_DIR}/include)
@@ -86,8 +89,11 @@ endif()
 
 add_executable(web_formatter)
 target_sources(
-  web_formatter PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/web-formatter.cpp"
-                        "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt")
+  web_formatter
+  PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/web-formatter.cpp"
+          "${CMAKE_CURRENT_SOURCE_DIR}/../native/formatter.cpp"
+          "${CMAKE_CURRENT_SOURCE_DIR}/../native/formatter.h"
+          "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt")
 target_link_libraries(web_formatter PRIVATE embind clangFormat)
 target_include_directories(
   web_formatter
@@ -125,8 +131,12 @@ if(ipo_supported)
 endif()
 
 add_executable(web_lighten)
-target_sources(web_lighten PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/web-lighten.cpp"
-                                   "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt")
+target_sources(
+  web_lighten
+  PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/web-lighten.cpp"
+          "${CMAKE_CURRENT_SOURCE_DIR}/../native/lighten.cpp"
+          "${CMAKE_CURRENT_SOURCE_DIR}/../native/lighten.h"
+          "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt")
 target_link_libraries(web_lighten PRIVATE embind)
 target_link_options(
   web_lighten
