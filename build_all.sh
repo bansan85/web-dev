@@ -57,3 +57,8 @@ emcmake cmake -S cpp/webassembly -B build_iwyu -G "Ninja" -DCMAKE_BUILD_TYPE="Re
 cmake --build build_iwyu --parallel 8
 /usr/lib/llvm/18/bin/iwyu_tool.py -p build_iwyu src/*.cpp > iwyu_tool.log
 run-clang-tidy -p build_iwyu src/*.cpp > clang-tidy-utils.log
+
+mkdir -p cpp/tests/output-lighten-number
+cmake -S cpp/tests/ -B build_tests_debug -DCMAKE_C_COMPILER=afl-clang-fast -DCMAKE_CXX_COMPILER=afl-clang-fast++ -DWITH_SANITIZE_ADDRESS=OFF -DWITH_SANITIZE_UNDEFINED=OFF -G "Ninja" -DCMAKE_BUILD_TYPE="Debug"
+cmake --build build_tests_debug --parallel $(nproc --all)
+afl-fuzz -i cpp/tests/seeds-lighten-number -o cpp/tests/output-lighten-number -- ./build_tests_debug/test_lighten_number

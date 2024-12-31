@@ -1,9 +1,73 @@
-#include <emscripten/bind.h>
+#include <cctype>
+#include <cmath>
 #include <string>
 
 namespace web_lighten {
 
+namespace {
+std::string dec(const std::string &num);
+
+std::string inc(const std::string &num) {
+  if (num[0] == '-') {
+    std::string positive = num.substr(1);
+    return "-" + dec(positive);
+  }
+
+  std::string retval = num;
+  int more = 1;
+  for (int i = retval.size() - 1; i >= 0 && more > 0; --i) {
+    if (retval[i] == '9') {
+      retval[i] = '0';
+    } else {
+      retval[i]++;
+      more = 0;
+    }
+  }
+  if (more > 0) {
+    retval.insert(retval.begin(), '1');
+  }
+  return retval;
+}
+
+std::string dec(const std::string &num) {
+  if (num[0] == '-') {
+    std::string positive = num.substr(1);
+    return "-" + inc(positive);
+  }
+
+  std::string retval = num;
+  int less = 1;
+  for (int i = retval.size() - 1; i >= 0 && less > 0; --i) {
+    if (retval[i] == '0') {
+      retval[i] = '9';
+    } else {
+      retval[i]--;
+      less = 0;
+    }
+  }
+  if (retval[0] == '0' && retval.size() > 1) {
+    retval.erase(retval.begin());
+  }
+  return retval;
+}
+
+} // namespace
+
 std::string number(std::string num) {
+  size_t pos_null = num.find('\0');
+  if (pos_null != std::string::npos) {
+    num.resize(pos_null);
+  }
+
+  char *end = nullptr;
+  long double val = strtold(num.c_str(), &end);
+  bool valid_number = end != num.c_str() && *end == '\0' && val != HUGE_VALL &&
+                      !isspace(num[0]);
+
+  if (!valid_number) {
+    return {};
+  }
+
   // Remove decimal separator
   size_t pos = num.find('.');
   if (pos != std::string::npos) {
@@ -23,20 +87,17 @@ std::string number(std::string num) {
   if (pos9999 != std::string::npos) {
     num = num.substr(0, pos9999);
     size_t old_length = num.length();
-    long long number;
     if (old_length == 0) {
-      number = 1;
+      num = "1";
     } else if (old_length == 1 && num[0] == '-') {
-      number = -1;
+      num = "-1";
     } else {
-      number = stoll(num);
-      if (number < 0) {
-        number--;
+      if (num[0] == '-') {
+        num = dec(num);
       } else {
-        number++;
+        num = inc(num);
       }
     }
-    num = std::to_string(number);
     pos = pos - old_length + num.length();
   }
 
