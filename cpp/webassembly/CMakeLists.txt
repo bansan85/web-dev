@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 
-project(web_demangler LANGUAGES CXX)
+project(web_dev LANGUAGES CXX)
 
 if(CMAKE_EXPORT_COMPILE_COMMANDS)
   execute_process(
