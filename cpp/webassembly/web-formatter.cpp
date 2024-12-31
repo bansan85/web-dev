@@ -16,17 +16,19 @@ namespace web_formatter {
 
 namespace {
 
+template <class... Ts> struct Overload : Ts... {
+  using Ts::operator()...;
+};
+template <class... Ts> Overload(Ts...) -> Overload<Ts...>;
+
 template <typename T> std::enable_if_t<std::is_aggregate_v<T>, T> initialize() {
   T obj{};
-  boost::pfr::for_each_field(obj, [](auto &field) {
-    if constexpr (std::is_same_v<decltype(field),
-                                 clang::format::FormatStyle::LanguageKind &>) {
-      // LK_None is not allowed by YAML.
-      field = clang::format::FormatStyle::LK_Cpp;
-    } else {
-      field = {};
-    }
-  });
+  boost::pfr::for_each_field(
+      obj, Overload{[](clang::format::FormatStyle::LanguageKind &field) {
+                      // LK_None is not allowed by YAML.
+                      field = clang::format::FormatStyle::LK_Cpp;
+                    },
+                    [](auto &field) { field = {}; }});
   return obj;
 }
 
