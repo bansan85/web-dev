@@ -53,4 +53,12 @@ add_custom_command(
     $<TARGET_FILE:clang_format_parser>
     "${CMAKE_CURRENT_SOURCE_DIR}/../third_party/llvm/clang/include/clang/Format/Format.h"
     "-I" "${LLVM_INCLUDE_DIRS}" "-I" "${GCC_INCLUDE}" "-OCPP"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../webassembly/web-formatter-binding.cpp.inc")
+    "${CMAKE_CURRENT_SOURCE_DIR}/../webassembly/web-formatter-binding.cpp.inc"
+  COMMAND
+    $<TARGET_FILE:clang_format_parser>
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/19.1.6/Format.h"
+    "-I" "${LLVM_INCLUDE_DIRS}" "-I" "${GCC_INCLUDE}" "-I"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/19.1.6"
+    "-OCPP"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../webassembly/web-clang-format-options-update-v19.1.6-binding.cpp.inc"
+)
