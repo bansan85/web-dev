@@ -2382,35 +2382,6 @@ extern const char *DefaultFormatStyle;
 /// Different builds can modify the value to the preferred styles.
 extern const char *DefaultFallbackStyle;
 
-/// Construct a FormatStyle based on ``StyleName``.
-///
-/// ``StyleName`` can take several forms:
-/// * "{<key>: <value>, ...}" - Set specic style parameters.
-/// * "<style name>" - One of the style names supported by
-/// getPredefinedStyle().
-/// * "file" - Load style configuration from a file called ``.clang-format``
-/// located in one of the parent directories of ``FileName`` or the current
-/// directory if ``FileName`` is empty.
-///
-/// \param[in] StyleName Style name to interpret according to the description
-/// above.
-/// \param[in] FileName Path to start search for .clang-format if ``StyleName``
-/// == "file".
-/// \param[in] FallbackStyle The name of a predefined style used to fallback to
-/// in case \p StyleName is "file" and no file can be found.
-/// \param[in] Code The actual code to be formatted. Used to determine the
-/// language if the filename isn't sufficient.
-/// \param[in] FS The underlying file system, in which the file resides. By
-/// default, the file system is the real file system.
-///
-/// \returns FormatStyle as specified by ``StyleName``. If ``StyleName`` is
-/// "file" and no file is found, returns ``FallbackStyle``. If no style could be
-/// determined, returns an Error.
-llvm::Expected<FormatStyle> getStyle(StringRef StyleName, StringRef FileName,
-                                     StringRef FallbackStyle,
-                                     StringRef Code = "",
-                                     llvm::vfs::FileSystem *FS = nullptr);
-
 // Guesses the language from the ``FileName`` and ``Code`` to be formatted.
 // Defaults to FormatStyle::LK_Cpp.
 FormatStyle::LanguageKind guessLanguage(StringRef FileName, StringRef Code);
