@@ -41,7 +41,6 @@
 #include "llvm/Support/Debug.h"
 #include "llvm/Support/Path.h"
 #include "llvm/Support/Regex.h"
-#include "llvm/Support/VirtualFileSystem.h"
 #include "llvm/Support/YAMLTraits.h"
 #include <algorithm>
 #include <memory>
@@ -3509,18 +3508,6 @@ FormatStyle::LanguageKind guessLanguage(StringRef FileName, StringRef Code) {
 const char *DefaultFormatStyle = "file";
 
 const char *DefaultFallbackStyle = "LLVM";
-
-llvm::ErrorOr<std::unique_ptr<llvm::MemoryBuffer>>
-loadAndParseConfigFile(StringRef ConfigFile, llvm::vfs::FileSystem *FS,
-                       FormatStyle *Style, bool AllowUnknownOptions) {
-  llvm::ErrorOr<std::unique_ptr<llvm::MemoryBuffer>> Text =
-      FS->getBufferForFile(ConfigFile.str());
-  if (auto EC = Text.getError())
-    return EC;
-  if (auto EC = parseConfiguration(*Text.get(), Style, AllowUnknownOptions))
-    return EC;
-  return Text;
-}
 
 } // namespace format
 } // namespace clang

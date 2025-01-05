@@ -28,10 +28,6 @@ class Lexer;
 class SourceManager;
 class DiagnosticConsumer;
 
-namespace vfs {
-class FileSystem;
-}
-
 namespace format {
 
 enum class ParseError { Success = 0, Error, Unsuitable };

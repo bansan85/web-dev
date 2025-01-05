@@ -21,12 +21,6 @@
 #include "llvm/Support/Regex.h"
 #include <system_error>
 
-namespace llvm {
-namespace vfs {
-class FileSystem;
-}
-} // namespace llvm
-
 namespace clang {
 
 class Lexer;
