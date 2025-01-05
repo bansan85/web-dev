@@ -25,6 +25,7 @@
 #include "../native/clang-format-options-update/7.1.0/Format.h"
 #include "../native/clang-format-options-update/8.0.1/Format.h"
 #include "../native/clang-format-options-update/9.0.1/Format.h"
+#include "../native/clang-format-options-update/update.h"
 
 namespace web_clang_format_options_update {
 
@@ -918,6 +919,8 @@ EMSCRIPTEN_BINDINGS(web_clang_format_options_update) {
         return retval;
       });
 
+  emscripten::function("updateV3_5", &clang_update_v3_5::update);
+
   emscripten::function(
       "getLLVMStyleV3_4", +[] { return clang_v3_4::getLLVMStyle(); });
   emscripten::function(
@@ -938,6 +941,8 @@ EMSCRIPTEN_BINDINGS(web_clang_format_options_update) {
         }
         return retval;
       });
+
+  emscripten::function("updateV3_4", &clang_update_v3_4::update);
 
   emscripten::function(
       "getLLVMStyleV3_3", +[] { return clang_v3_3::getLLVMStyle(); });

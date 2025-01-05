@@ -242,6 +242,8 @@ target_sources(
     "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/19.1.6/IncludeStyle.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/Format.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/Format.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/update.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/update.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt")
 target_link_libraries(web_clang_format_options_update PRIVATE embind clangBasic)
 target_include_directories(
@@ -251,6 +253,7 @@ target_include_directories(
           ${LLVM_EXTERNAL_CLANG_SOURCE_DIR}/include
           ${LLVM_BINARY_DIR}/tools/clang/include
           "${CMAKE_CURRENT_SOURCE_DIR}/../third_party/pfr/include"
+          "${CMAKE_CURRENT_SOURCE_DIR}/../third_party/frozen/include"
           ${LLVM_BINARY_DIR}/include)
 target_compile_options(web_clang_format_options_update
                        PRIVATE "-fexceptions" "$<$<CONFIG:Debug>:-O1>")
