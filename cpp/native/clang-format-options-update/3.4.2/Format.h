@@ -12,20 +12,14 @@
 ///
 //===----------------------------------------------------------------------===//
 
-#ifndef LLVM_CLANG_FORMAT_FORMAT_H
-#define LLVM_CLANG_FORMAT_FORMAT_H
+#pragma once
 
-#include "clang/Frontend/FrontendAction.h"
-#include "clang/Tooling/Refactoring.h"
-#include "llvm/Support/system_error.h"
+#include "llvm/ADT/StringRef.h"
+#include "llvm/Support/YAMLTraits.h"
 
-namespace clang {
+namespace clang_v3_4 {
 
-class Lexer;
-class SourceManager;
-class DiagnosticConsumer;
-
-namespace format {
+using StringRef = llvm::StringRef;
 
 /// \brief The \c FormatStyle is used to configure the formatting to follow
 /// specific guidelines.
@@ -330,12 +324,9 @@ FormatStyle getWebKitStyle();
 bool getPredefinedStyle(StringRef Name, FormatStyle *Style);
 
 /// \brief Parse configuration from YAML-formatted text.
-llvm::error_code parseConfiguration(StringRef Text, FormatStyle *Style);
+std::error_code parseConfiguration(StringRef Text, FormatStyle *Style);
 
 /// \brief Gets configuration in a YAML string.
 std::string configurationAsText(const FormatStyle &Style);
 
-} // end namespace format
-} // end namespace clang
-
-#endif // LLVM_CLANG_FORMAT_FORMAT_H
+} // end namespace clang_v3_4

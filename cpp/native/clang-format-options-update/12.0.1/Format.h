@@ -11,23 +11,17 @@
 ///
 //===----------------------------------------------------------------------===//
 
-#ifndef LLVM_CLANG_FORMAT_FORMAT_H
-#define LLVM_CLANG_FORMAT_FORMAT_H
+#pragma once
 
-#include "clang/Basic/LangOptions.h"
-#include "clang/Tooling/Core/Replacement.h"
-#include "clang/Tooling/Inclusions/IncludeStyle.h"
-#include "llvm/ADT/ArrayRef.h"
-#include "llvm/Support/Regex.h"
+#include "IncludeStyle.h"
 #include <system_error>
+#include <optional>
+#include <vector>
+#include "llvm/ADT/StringRef.h"
 
-namespace clang {
+namespace clang_v12 {
 
-class Lexer;
-class SourceManager;
-class DiagnosticConsumer;
-
-namespace format {
+using StringRef = llvm::StringRef;
 
 enum class ParseError {
   Success = 0,
@@ -3150,7 +3144,7 @@ struct FormatStyle {
            TypenameMacros == R.TypenameMacros;
   }
 
-  llvm::Optional<FormatStyle> GetLanguageStyle(LanguageKind Language) const;
+  std::optional<FormatStyle> GetLanguageStyle(LanguageKind Language) const;
 
   // Stores per-language styles. A FormatStyle instance inside has an empty
   // StyleSet. A FormatStyle instance returned by the Get method has its
@@ -3162,7 +3156,7 @@ struct FormatStyle {
   struct FormatStyleSet {
     typedef std::map<FormatStyle::LanguageKind, FormatStyle> MapType;
 
-    llvm::Optional<FormatStyle> Get(FormatStyle::LanguageKind Language) const;
+    std::optional<FormatStyle> Get(FormatStyle::LanguageKind Language) const;
 
     // Adds \p Style to this FormatStyleSet. Style must not have an associated
     // FormatStyleSet.
@@ -3255,12 +3249,9 @@ inline std::error_code parseConfiguration(StringRef Config, FormatStyle *Style) 
 /// Gets configuration in a YAML string.
 std::string configurationAsText(const FormatStyle &Style);
 
-} // end namespace format
-} // end namespace clang
+} // end namespace clang_v12
 
 namespace std {
 template <>
-struct is_error_code_enum<clang::format::ParseError> : std::true_type {};
+struct is_error_code_enum<clang_v12::ParseError> : std::true_type {};
 } // namespace std
-
-#endif // LLVM_CLANG_FORMAT_FORMAT_H

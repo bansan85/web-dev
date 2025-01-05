@@ -9,7 +9,7 @@
 
 #include "IncludeStyle.h"
 
-using clang_v8::IncludeStyle;
+using clang_v7::IncludeStyle;
 
 namespace llvm {
 namespace yaml {

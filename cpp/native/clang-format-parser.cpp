@@ -69,7 +69,10 @@ public:
          declaration->getAccess() == AccessSpecifier::AS_public)) {
       _emscripten_file << "emscripten::class_<"
                        << declaration->getQualifiedNameAsString() << ">(\""
-                       << declaration->getNameAsString() << "\")\n"
+                       << declaration->getNameAsString()
+                       << extractClangPostfix(
+                              declaration->getQualifiedNameAsString())
+                       << "\")\n"
                        << ".constructor(+[]() {\n"
                        << "  return initialize<"
                        << declaration->getQualifiedNameAsString() << ">();"
@@ -109,7 +112,10 @@ public:
             declaration->getAccess() == AccessSpecifier::AS_public) {
       _emscripten_file << "emscripten::enum_<"
                        << declaration->getQualifiedNameAsString() << ">(\""
-                       << declaration->getNameAsString() << "\")";
+                       << declaration->getNameAsString()
+                       << extractClangPostfix(
+                              declaration->getQualifiedNameAsString())
+                       << "\")";
       for (const auto *field : declaration->enumerators()) {
         _emscripten_file << "\n.value(\"" << field->getNameAsString() << "\", "
                          << field->getQualifiedNameAsString() << ")";
@@ -122,6 +128,20 @@ public:
 private:
   ASTContext *_context;
   std::ofstream _emscripten_file;
+
+  std::string extractClangPostfix(const std::string &input) {
+    std::string prefix = "clang_v";
+    std::size_t start = input.find(prefix);
+    if (start != std::string::npos) {
+      start += prefix.size();
+      std::size_t end = input.find("::", start);
+      if (end != std::string::npos) {
+        std::string version = input.substr(start, end - start);
+        return "V" + version;
+      }
+    }
+    return "";
+  }
 };
 
 class FindNamedClassConsumer : public ASTConsumer {

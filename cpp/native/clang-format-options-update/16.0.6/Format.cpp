@@ -12,49 +12,22 @@
 ///
 //===----------------------------------------------------------------------===//
 
-#include "clang/Format/Format.h"
-#include "AffectedRangeManager.h"
-#include "BreakableToken.h"
-#include "ContinuationIndenter.h"
-#include "DefinitionBlockSeparator.h"
-#include "FormatInternal.h"
-#include "FormatToken.h"
-#include "FormatTokenLexer.h"
-#include "IntegerLiteralSeparatorFixer.h"
-#include "NamespaceEndCommentsFixer.h"
-#include "QualifierAlignmentFixer.h"
-#include "SortJavaScriptImports.h"
-#include "TokenAnalyzer.h"
-#include "TokenAnnotator.h"
-#include "UnwrappedLineFormatter.h"
-#include "UnwrappedLineParser.h"
-#include "UsingDeclarationsSorter.h"
-#include "WhitespaceManager.h"
-#include "clang/Basic/Diagnostic.h"
-#include "clang/Basic/DiagnosticOptions.h"
-#include "clang/Basic/SourceManager.h"
-#include "clang/Lex/Lexer.h"
-#include "clang/Tooling/Inclusions/HeaderIncludes.h"
-#include "llvm/ADT/STLExtras.h"
+#include "Format.h"
+#include "clang/Basic/OperatorPrecedence.h"
 #include "llvm/ADT/Sequence.h"
-#include "llvm/ADT/StringRef.h"
-#include "llvm/Support/Allocator.h"
+#include "llvm/ADT/StringSwitch.h"
 #include "llvm/Support/Debug.h"
-#include "llvm/Support/Path.h"
-#include "llvm/Support/Regex.h"
-#include "llvm/Support/YAMLTraits.h"
-#include <algorithm>
-#include <memory>
-#include <mutex>
-#include <optional>
-#include <string>
-#include <unordered_map>
+#include "../Format.h"
+#include <set>
 
 #define DEBUG_TYPE "format-formatter"
 
-using clang::format::FormatStyle;
+using clang_v16::FormatStyle;
 
-LLVM_YAML_IS_SEQUENCE_VECTOR(clang::format::FormatStyle::RawStringFormat)
+namespace prec = clang::prec;
+namespace tok = clang::tok;
+
+LLVM_YAML_IS_SEQUENCE_VECTOR(clang_v16::FormatStyle::RawStringFormat)
 
 namespace llvm {
 namespace yaml {
@@ -1120,8 +1093,7 @@ template <> struct DocumentListTraits<std::vector<FormatStyle>> {
 } // namespace yaml
 } // namespace llvm
 
-namespace clang {
-namespace format {
+namespace clang_v16 {
 
 const std::error_category &getParseCategory() {
   static const ParseErrorCategory C{};
@@ -1129,11 +1101,6 @@ const std::error_category &getParseCategory() {
 }
 std::error_code make_error_code(ParseError e) {
   return std::error_code(static_cast<int>(e), getParseCategory());
-}
-
-inline llvm::Error make_string_error(const llvm::Twine &Message) {
-  return llvm::make_error<llvm::StringError>(Message,
-                                             llvm::inconvertibleErrorCode());
 }
 
 const char *ParseErrorCategory::name() const noexcept {
@@ -1381,7 +1348,7 @@ FormatStyle getLLVMStyle(FormatStyle::LanguageKind Language) {
       {"^(<|\"(gtest|gmock|isl|json)/)", 3, 0, false},
       {".*", 1, 0, false}};
   LLVMStyle.IncludeStyle.IncludeIsMainRegex = "(Test)?$";
-  LLVMStyle.IncludeStyle.IncludeBlocks = tooling::IncludeStyle::IBS_Preserve;
+  LLVMStyle.IncludeStyle.IncludeBlocks = clang_v16::IncludeStyle::IBS_Preserve;
   LLVMStyle.IndentAccessModifiers = false;
   LLVMStyle.IndentCaseLabels = false;
   LLVMStyle.IndentCaseBlocks = false;
@@ -1515,7 +1482,7 @@ FormatStyle getGoogleStyle(FormatStyle::LanguageKind Language) {
                                                 {"^<.*", 2, 0, false},
                                                 {".*", 3, 0, false}};
   GoogleStyle.IncludeStyle.IncludeIsMainRegex = "([-_](test|unittest))?$";
-  GoogleStyle.IncludeStyle.IncludeBlocks = tooling::IncludeStyle::IBS_Regroup;
+  GoogleStyle.IncludeStyle.IncludeBlocks = clang_v16::IncludeStyle::IBS_Regroup;
   GoogleStyle.IndentCaseLabels = true;
   GoogleStyle.KeepEmptyLinesAtTheStartOfBlocks = false;
   GoogleStyle.ObjCBinPackProtocolList = FormatStyle::BPS_Never;
@@ -1621,7 +1588,7 @@ FormatStyle getGoogleStyle(FormatStyle::LanguageKind Language) {
     // relationship between ObjC standard library headers and other heades,
     // #imports, etc.)
     GoogleStyle.IncludeStyle.IncludeBlocks =
-        tooling::IncludeStyle::IBS_Preserve;
+        clang_v16::IncludeStyle::IBS_Preserve;
   } else if (Language == FormatStyle::LK_CSharp) {
     GoogleStyle.AllowShortFunctionsOnASingleLine = FormatStyle::SFS_Empty;
     GoogleStyle.AllowShortIfStatementsOnASingleLine = FormatStyle::SIS_Never;
@@ -1654,7 +1621,7 @@ FormatStyle getChromiumStyle(FormatStyle::LanguageKind Language) {
   //   "If include reordering is harmful, put things in a different block and
   //   _prepend that with a comment_ to prevent it" before changing behavior.
   ChromiumStyle.IncludeStyle.IncludeBlocks =
-      tooling::IncludeStyle::IBS_Preserve;
+      clang_v16::IncludeStyle::IBS_Preserve;
 
   if (Language == FormatStyle::LK_Java) {
     ChromiumStyle.AllowShortIfStatementsOnASingleLine =
@@ -1833,7 +1800,7 @@ ParseError validateQualifierOrder(FormatStyle *Style) {
     if (Qualifier == "type")
       continue;
     auto token =
-        LeftRightQualifierAlignmentFixer::getTokenFromQualifier(Qualifier);
+        clang_vx::getTokenFromQualifier(Qualifier);
     if (token == tok::identifier)
       return ParseError::InvalidQualifierSpecified;
   }
@@ -1963,5 +1930,4 @@ FormatStyle::GetLanguageStyle(FormatStyle::LanguageKind Language) const {
   return StyleSet.Get(Language);
 }
 
-} // namespace format
-} // namespace clang
+} // namespace clang_v16

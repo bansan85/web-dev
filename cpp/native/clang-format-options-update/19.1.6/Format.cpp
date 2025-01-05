@@ -18,6 +18,7 @@
 #include "llvm/ADT/StringSwitch.h"
 #include "llvm/Support/Debug.h"
 #include <set>
+#include "../Format.h"
 
 #define DEBUG_TYPE "format-formatter"
 
@@ -1235,20 +1236,6 @@ template <> struct DocumentListTraits<std::vector<FormatStyle>> {
 
 namespace clang_v19 {
 
-static tok::TokenKind getTokenFromQualifier(const std::string &Qualifier) {
-  // Don't let 'type' be an identifier, but steal typeof token.
-  return llvm::StringSwitch<tok::TokenKind>(Qualifier)
-      .Case("type", tok::kw_typeof)
-      .Case("const", tok::kw_const)
-      .Case("volatile", tok::kw_volatile)
-      .Case("static", tok::kw_static)
-      .Case("inline", tok::kw_inline)
-      .Case("constexpr", tok::kw_constexpr)
-      .Case("restrict", tok::kw_restrict)
-      .Case("friend", tok::kw_friend)
-      .Default(tok::identifier);
-}
-
 const std::error_category &getParseCategory() {
   static const ParseErrorCategory C{};
   return C;
@@ -1990,7 +1977,7 @@ ParseError validateQualifierOrder(FormatStyle *Style) {
   for (const auto &Qualifier : Style->QualifierOrder) {
     if (Qualifier == "type")
       continue;
-    auto token = getTokenFromQualifier(Qualifier);
+    auto token = clang_vx::getTokenFromQualifier(Qualifier);
     if (token == tok::identifier)
       return ParseError::InvalidQualifierSpecified;
   }

@@ -11,20 +11,17 @@
 ///
 //===----------------------------------------------------------------------===//
 
-#ifndef LLVM_CLANG_FORMAT_FORMAT_H
-#define LLVM_CLANG_FORMAT_FORMAT_H
+#pragma once
 
-#include "clang/Basic/LangOptions.h"
-#include "clang/Tooling/Core/Replacement.h"
-#include "clang/Tooling/Inclusions/IncludeStyle.h"
-#include "llvm/ADT/ArrayRef.h"
-#include "llvm/Support/Regex.h"
-#include "llvm/Support/SourceMgr.h"
+#include "IncludeStyle.h"
 #include <optional>
 #include <system_error>
+#include <vector>
+#include "llvm/ADT/StringRef.h"
 
-namespace clang {
-namespace format {
+namespace clang_v17 {
+
+using StringRef = llvm::StringRef;
 
 enum class ParseError {
   Success = 0,
@@ -4795,12 +4792,9 @@ inline std::error_code parseConfiguration(StringRef Config, FormatStyle *Style) 
 /// Gets configuration in a YAML string.
 std::string configurationAsText(const FormatStyle &Style);
 
-} // end namespace format
-} // end namespace clang
+} // end namespace clang_v17
 
 namespace std {
 template <>
-struct is_error_code_enum<clang::format::ParseError> : std::true_type {};
+struct is_error_code_enum<clang_v17::ParseError> : std::true_type {};
 } // namespace std
-
-#endif // LLVM_CLANG_FORMAT_FORMAT_H

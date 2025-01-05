@@ -15,24 +15,14 @@
 
 #define DEBUG_TYPE "format-formatter"
 
-#include "BreakableToken.h"
-#include "TokenAnnotator.h"
-#include "UnwrappedLineParser.h"
-#include "WhitespaceManager.h"
-#include "clang/Basic/Diagnostic.h"
+#include "Format.h"
 #include "clang/Basic/OperatorPrecedence.h"
-#include "clang/Basic/SourceManager.h"
-#include "clang/Format/Format.h"
-#include "clang/Frontend/TextDiagnosticPrinter.h"
-#include "clang/Lex/Lexer.h"
-#include "llvm/ADT/STLExtras.h"
-#include "llvm/Support/Allocator.h"
+#include "llvm/ADT/Sequence.h"
+#include "llvm/ADT/StringSwitch.h"
 #include "llvm/Support/Debug.h"
-#include <queue>
-#include <string>
+#include <set>
 
-namespace clang {
-namespace format {
+namespace clang_v3_3 {
 
 FormatStyle getLLVMStyle() {
   FormatStyle LLVMStyle;
@@ -98,28 +88,4 @@ FormatStyle getMozillaStyle() {
   return MozillaStyle;
 }
 
-// Returns the length of everything up to the first possible line break after
-// the ), ], } or > matching \c Tok.
-static unsigned getLengthToMatchingParen(const AnnotatedToken &Tok) {
-  if (Tok.MatchingParen == NULL)
-    return 0;
-  AnnotatedToken *End = Tok.MatchingParen;
-  while (!End->Children.empty() && !End->Children[0].CanBreakBefore) {
-    End = &End->Children[0];
-  }
-  return End->TotalLength - Tok.TotalLength + 1;
-}
-
-LangOptions getFormattingLangOpts() {
-  LangOptions LangOpts;
-  LangOpts.CPlusPlus = 1;
-  LangOpts.CPlusPlus11 = 1;
-  LangOpts.LineComment = 1;
-  LangOpts.Bool = 1;
-  LangOpts.ObjC1 = 1;
-  LangOpts.ObjC2 = 1;
-  return LangOpts;
-}
-
-} // namespace format
-} // namespace clang
+} // namespace clang_v3_3

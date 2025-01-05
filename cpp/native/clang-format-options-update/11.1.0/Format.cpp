@@ -12,43 +12,20 @@
 ///
 //===----------------------------------------------------------------------===//
 
-#include "clang/Format/Format.h"
-#include "AffectedRangeManager.h"
-#include "BreakableToken.h"
-#include "ContinuationIndenter.h"
-#include "FormatInternal.h"
-#include "FormatTokenLexer.h"
-#include "NamespaceEndCommentsFixer.h"
-#include "SortJavaScriptImports.h"
-#include "TokenAnalyzer.h"
-#include "TokenAnnotator.h"
-#include "UnwrappedLineFormatter.h"
-#include "UnwrappedLineParser.h"
-#include "UsingDeclarationsSorter.h"
-#include "WhitespaceManager.h"
-#include "clang/Basic/Diagnostic.h"
-#include "clang/Basic/DiagnosticOptions.h"
-#include "clang/Basic/SourceManager.h"
-#include "clang/Lex/Lexer.h"
-#include "clang/Tooling/Inclusions/HeaderIncludes.h"
-#include "llvm/ADT/STLExtras.h"
-#include "llvm/ADT/StringRef.h"
-#include "llvm/Support/Allocator.h"
+#include "Format.h"
+#include "clang/Basic/OperatorPrecedence.h"
+#include "llvm/ADT/Sequence.h"
+#include "llvm/ADT/StringSwitch.h"
 #include "llvm/Support/Debug.h"
-#include "llvm/Support/Path.h"
-#include "llvm/Support/Regex.h"
-#include "llvm/Support/YAMLTraits.h"
-#include <algorithm>
-#include <memory>
-#include <mutex>
-#include <string>
-#include <unordered_map>
+#include <set>
 
 #define DEBUG_TYPE "format-formatter"
 
-using clang::format::FormatStyle;
+using clang_v11::FormatStyle;
 
-LLVM_YAML_IS_SEQUENCE_VECTOR(clang::format::FormatStyle::RawStringFormat)
+namespace prec = clang::prec;
+
+LLVM_YAML_IS_SEQUENCE_VECTOR(clang_v11::FormatStyle::RawStringFormat)
 
 namespace llvm {
 namespace yaml {
@@ -664,8 +641,7 @@ template <> struct DocumentListTraits<std::vector<FormatStyle>> {
 } // namespace yaml
 } // namespace llvm
 
-namespace clang {
-namespace format {
+namespace clang_v11 {
 
 const std::error_category &getParseCategory() {
   static const ParseErrorCategory C{};
@@ -673,11 +649,6 @@ const std::error_category &getParseCategory() {
 }
 std::error_code make_error_code(ParseError e) {
   return std::error_code(static_cast<int>(e), getParseCategory());
-}
-
-inline llvm::Error make_string_error(const llvm::Twine &Message) {
-  return llvm::make_error<llvm::StringError>(Message,
-                                             llvm::inconvertibleErrorCode());
 }
 
 const char *ParseErrorCategory::name() const noexcept {
@@ -876,7 +847,7 @@ FormatStyle getLLVMStyle(FormatStyle::LanguageKind Language) {
       {"^(<|\"(gtest|gmock|isl|json)/)", 3, 0},
       {".*", 1, 0}};
   LLVMStyle.IncludeStyle.IncludeIsMainRegex = "(Test)?$";
-  LLVMStyle.IncludeStyle.IncludeBlocks = tooling::IncludeStyle::IBS_Preserve;
+  LLVMStyle.IncludeStyle.IncludeBlocks = clang_v11::IncludeStyle::IBS_Preserve;
   LLVMStyle.IndentCaseLabels = false;
   LLVMStyle.IndentCaseBlocks = false;
   LLVMStyle.IndentGotoLabels = true;
@@ -970,7 +941,7 @@ FormatStyle getGoogleStyle(FormatStyle::LanguageKind Language) {
                                                 {"^<.*", 2, 0},
                                                 {".*", 3, 0}};
   GoogleStyle.IncludeStyle.IncludeIsMainRegex = "([-_](test|unittest))?$";
-  GoogleStyle.IncludeStyle.IncludeBlocks = tooling::IncludeStyle::IBS_Regroup;
+  GoogleStyle.IncludeStyle.IncludeBlocks = clang_v11::IncludeStyle::IBS_Regroup;
   GoogleStyle.IndentCaseLabels = true;
   GoogleStyle.KeepEmptyLinesAtTheStartOfBlocks = false;
   GoogleStyle.ObjCBinPackProtocolList = FormatStyle::BPS_Never;
@@ -1074,7 +1045,7 @@ FormatStyle getGoogleStyle(FormatStyle::LanguageKind Language) {
     // relationship between ObjC standard library headers and other heades,
     // #imports, etc.)
     GoogleStyle.IncludeStyle.IncludeBlocks =
-        tooling::IncludeStyle::IBS_Preserve;
+        clang_v11::IncludeStyle::IBS_Preserve;
   } else if (Language == FormatStyle::LK_CSharp) {
     GoogleStyle.AllowShortFunctionsOnASingleLine = FormatStyle::SFS_Empty;
     GoogleStyle.AllowShortIfStatementsOnASingleLine = FormatStyle::SIS_Never;
@@ -1107,7 +1078,7 @@ FormatStyle getChromiumStyle(FormatStyle::LanguageKind Language) {
   //   "If include reordering is harmful, put things in a different block and
   //   _prepend that with a comment_ to prevent it" before changing behavior.
   ChromiumStyle.IncludeStyle.IncludeBlocks =
-      tooling::IncludeStyle::IBS_Preserve;
+      clang_v11::IncludeStyle::IBS_Preserve;
 
   if (Language == FormatStyle::LK_Java) {
     ChromiumStyle.AllowShortIfStatementsOnASingleLine =
@@ -1250,21 +1221,21 @@ FormatStyle getNoStyle() {
 
 bool getPredefinedStyle(StringRef Name, FormatStyle::LanguageKind Language,
                         FormatStyle *Style) {
-  if (Name.equals_lower("llvm")) {
+  if (Name.equals_insensitive("llvm")) {
     *Style = getLLVMStyle(Language);
-  } else if (Name.equals_lower("chromium")) {
+  } else if (Name.equals_insensitive("chromium")) {
     *Style = getChromiumStyle(Language);
-  } else if (Name.equals_lower("mozilla")) {
+  } else if (Name.equals_insensitive("mozilla")) {
     *Style = getMozillaStyle();
-  } else if (Name.equals_lower("google")) {
+  } else if (Name.equals_insensitive("google")) {
     *Style = getGoogleStyle(Language);
-  } else if (Name.equals_lower("webkit")) {
+  } else if (Name.equals_insensitive("webkit")) {
     *Style = getWebKitStyle();
-  } else if (Name.equals_lower("gnu")) {
+  } else if (Name.equals_insensitive("gnu")) {
     *Style = getGNUStyle();
-  } else if (Name.equals_lower("microsoft")) {
+  } else if (Name.equals_insensitive("microsoft")) {
     *Style = getMicrosoftStyle(Language);
-  } else if (Name.equals_lower("none")) {
+  } else if (Name.equals_insensitive("none")) {
     *Style = getNoStyle();
   } else {
     return false;
@@ -1344,13 +1315,13 @@ std::string configurationAsText(const FormatStyle &Style) {
   return Stream.str();
 }
 
-llvm::Optional<FormatStyle>
+std::optional<FormatStyle>
 FormatStyle::FormatStyleSet::Get(FormatStyle::LanguageKind Language) const {
   if (!Styles)
-    return None;
+    return std::nullopt;
   auto It = Styles->find(Language);
   if (It == Styles->end())
-    return None;
+    return std::nullopt;
   FormatStyle Style = It->second;
   Style.StyleSet = *this;
   return Style;
@@ -1369,10 +1340,9 @@ void FormatStyle::FormatStyleSet::Add(FormatStyle Style) {
 
 void FormatStyle::FormatStyleSet::Clear() { Styles.reset(); }
 
-llvm::Optional<FormatStyle>
+std::optional<FormatStyle>
 FormatStyle::GetLanguageStyle(FormatStyle::LanguageKind Language) const {
   return StyleSet.Get(Language);
 }
 
-} // namespace format
-} // namespace clang
+} // namespace clang_v11

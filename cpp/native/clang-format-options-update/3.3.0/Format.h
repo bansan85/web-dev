@@ -12,19 +12,9 @@
 ///
 //===----------------------------------------------------------------------===//
 
-#ifndef LLVM_CLANG_FORMAT_FORMAT_H
-#define LLVM_CLANG_FORMAT_FORMAT_H
+#pragma once
 
-#include "clang/Frontend/FrontendAction.h"
-#include "clang/Tooling/Refactoring.h"
-
-namespace clang {
-
-class Lexer;
-class SourceManager;
-class DiagnosticConsumer;
-
-namespace format {
+namespace clang_v3_3 {
 
 /// \brief The \c FormatStyle is used to configure the formatting to follow
 /// specific guidelines.
@@ -110,27 +100,4 @@ FormatStyle getChromiumStyle();
 /// https://developer.mozilla.org/en-US/docs/Developer_Guide/Coding_Style.
 FormatStyle getMozillaStyle();
 
-/// \brief Reformats the given \p Ranges in the token stream coming out of
-/// \c Lex.
-///
-/// Each range is extended on either end to its next bigger logic unit, i.e.
-/// everything that might influence its formatting or might be influenced by its
-/// formatting.
-///
-/// \param DiagClient A custom DiagnosticConsumer. Can be 0, in this case
-/// diagnostic is output to llvm::errs().
-///
-/// Returns the \c Replacements necessary to make all \p Ranges comply with
-/// \p Style.
-tooling::Replacements reformat(const FormatStyle &Style, Lexer &Lex,
-                               SourceManager &SourceMgr,
-                               std::vector<CharSourceRange> Ranges,
-                               DiagnosticConsumer *DiagClient = 0);
-
-/// \brief Returns the \c LangOpts that the formatter expects you to set.
-LangOptions getFormattingLangOpts();
-
-} // end namespace format
-} // end namespace clang
-
-#endif // LLVM_CLANG_FORMAT_FORMAT_H
+} // end namespace clang_v3_3

@@ -12,7 +12,7 @@
 #include <string>
 #include <vector>
 
-namespace clang_v11 {
+namespace clang_v10 {
 
 /// Style for sorting and grouping C++ #include directives.
 struct IncludeStyle {
@@ -140,24 +140,24 @@ struct IncludeStyle {
   std::string IncludeIsMainSourceRegex;
 };
 
-} // namespace clang_v11
+} // namespace clang_v10
 
-LLVM_YAML_IS_SEQUENCE_VECTOR(clang_v11::IncludeStyle::IncludeCategory)
+LLVM_YAML_IS_SEQUENCE_VECTOR(clang_v10::IncludeStyle::IncludeCategory)
 
 namespace llvm {
 namespace yaml {
 
 template <>
-struct MappingTraits<clang_v11::IncludeStyle::IncludeCategory> {
+struct MappingTraits<clang_v10::IncludeStyle::IncludeCategory> {
   static void mapping(IO &IO,
-                      clang_v11::IncludeStyle::IncludeCategory &Category);
+                      clang_v10::IncludeStyle::IncludeCategory &Category);
 };
 
 template <>
 struct ScalarEnumerationTraits<
-    clang_v11::IncludeStyle::IncludeBlocksStyle> {
+    clang_v10::IncludeStyle::IncludeBlocksStyle> {
   static void
-  enumeration(IO &IO, clang_v11::IncludeStyle::IncludeBlocksStyle &Value);
+  enumeration(IO &IO, clang_v10::IncludeStyle::IncludeBlocksStyle &Value);
 };
 
 } // namespace yaml

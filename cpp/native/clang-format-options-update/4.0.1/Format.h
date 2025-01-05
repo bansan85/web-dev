@@ -12,21 +12,16 @@
 ///
 //===----------------------------------------------------------------------===//
 
-#ifndef LLVM_CLANG_FORMAT_FORMAT_H
-#define LLVM_CLANG_FORMAT_FORMAT_H
+#pragma once
 
-#include "clang/Basic/LangOptions.h"
-#include "clang/Tooling/Core/Replacement.h"
-#include "llvm/ADT/ArrayRef.h"
 #include <system_error>
+#include <vector>
+#include "llvm/ADT/StringRef.h"
+#include "llvm/Support/YAMLTraits.h"
 
-namespace clang {
+namespace clang_v4 {
 
-class Lexer;
-class SourceManager;
-class DiagnosticConsumer;
-
-namespace format {
+using StringRef = llvm::StringRef;
 
 enum class ParseError { Success = 0, Error, Unsuitable };
 class ParseErrorCategory final : public std::error_category {
@@ -765,12 +760,9 @@ std::error_code parseConfiguration(StringRef Text, FormatStyle *Style);
 /// \brief Gets configuration in a YAML string.
 std::string configurationAsText(const FormatStyle &Style);
 
-} // end namespace format
-} // end namespace clang
+} // end namespace clang_v4
 
 namespace std {
 template <>
-struct is_error_code_enum<clang::format::ParseError> : std::true_type {};
+struct is_error_code_enum<clang_v4::ParseError> : std::true_type {};
 }
-
-#endif // LLVM_CLANG_FORMAT_FORMAT_H

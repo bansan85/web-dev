@@ -16,6 +16,9 @@
 #include "IncludeStyle.h"
 #include <optional>
 #include <system_error>
+#include <vector>
+#include "llvm/ADT/StringRef.h"
+#include "../Format.h"
 
 namespace clang_v19 {
 

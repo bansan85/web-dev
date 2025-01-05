@@ -13,31 +13,18 @@
 ///
 //===----------------------------------------------------------------------===//
 
-#include "clang/Format/Format.h"
-#include "ContinuationIndenter.h"
-#include "TokenAnnotator.h"
-#include "UnwrappedLineFormatter.h"
-#include "UnwrappedLineParser.h"
-#include "WhitespaceManager.h"
-#include "clang/Basic/Diagnostic.h"
-#include "clang/Basic/DiagnosticOptions.h"
-#include "clang/Basic/SourceManager.h"
-#include "clang/Lex/Lexer.h"
-#include "llvm/ADT/STLExtras.h"
-#include "llvm/Support/Allocator.h"
+#include "Format.h"
+#include "clang/Basic/OperatorPrecedence.h"
+#include "llvm/ADT/Sequence.h"
+#include "llvm/ADT/StringSwitch.h"
 #include "llvm/Support/Debug.h"
-#include "llvm/Support/Path.h"
-#include "llvm/Support/Regex.h"
-#include "llvm/Support/YAMLTraits.h"
-#include <queue>
-#include <string>
+#include <set>
 
 #define DEBUG_TYPE "format-formatter"
 
-using clang::format::FormatStyle;
+using clang_v3_8::FormatStyle;
 
-LLVM_YAML_IS_FLOW_SEQUENCE_VECTOR(std::string)
-LLVM_YAML_IS_SEQUENCE_VECTOR(clang::format::FormatStyle::IncludeCategory)
+LLVM_YAML_IS_SEQUENCE_VECTOR(clang_v3_8::FormatStyle::IncludeCategory)
 
 namespace llvm {
 namespace yaml {
@@ -386,8 +373,7 @@ template <> struct DocumentListTraits<std::vector<FormatStyle>> {
 } // namespace yaml
 } // namespace llvm
 
-namespace clang {
-namespace format {
+namespace clang_v3_8 {
 
 const std::error_category &getParseCategory() {
   static ParseErrorCategory C;
@@ -397,7 +383,7 @@ std::error_code make_error_code(ParseError e) {
   return std::error_code(static_cast<int>(e), getParseCategory());
 }
 
-const char *ParseErrorCategory::name() const LLVM_NOEXCEPT {
+const char *ParseErrorCategory::name() const noexcept {
   return "clang-format.parse_error";
 }
 
@@ -678,19 +664,19 @@ FormatStyle getNoStyle() {
 
 bool getPredefinedStyle(StringRef Name, FormatStyle::LanguageKind Language,
                         FormatStyle *Style) {
-  if (Name.equals_lower("llvm")) {
+  if (Name.equals_insensitive("llvm")) {
     *Style = getLLVMStyle();
-  } else if (Name.equals_lower("chromium")) {
+  } else if (Name.equals_insensitive("chromium")) {
     *Style = getChromiumStyle(Language);
-  } else if (Name.equals_lower("mozilla")) {
+  } else if (Name.equals_insensitive("mozilla")) {
     *Style = getMozillaStyle();
-  } else if (Name.equals_lower("google")) {
+  } else if (Name.equals_insensitive("google")) {
     *Style = getGoogleStyle(Language);
-  } else if (Name.equals_lower("webkit")) {
+  } else if (Name.equals_insensitive("webkit")) {
     *Style = getWebKitStyle();
-  } else if (Name.equals_lower("gnu")) {
+  } else if (Name.equals_insensitive("gnu")) {
     *Style = getGNUStyle();
-  } else if (Name.equals_lower("none")) {
+  } else if (Name.equals_insensitive("none")) {
     *Style = getNoStyle();
   } else {
     return false;
@@ -725,7 +711,7 @@ std::error_code parseConfiguration(StringRef Text, FormatStyle *Style) {
     // Ensure that each language is configured at most once.
     for (unsigned j = 0; j < i; ++j) {
       if (Styles[i].Language == Styles[j].Language) {
-        DEBUG(llvm::dbgs()
+        LLVM_DEBUG(llvm::dbgs()
               << "Duplicate languages in the config file on positions " << j
               << " and " << i << "\n");
         return make_error_code(ParseError::Error);
@@ -757,5 +743,4 @@ std::string configurationAsText(const FormatStyle &Style) {
   return Stream.str();
 }
 
-} // namespace format
-} // namespace clang
+} // namespace clang_v3_8
