@@ -1430,7 +1430,7 @@ struct FormatStyle {
   /// For example: STRINGIZE
   std::vector<std::string> WhitespaceSensitiveMacros;
 
-  tooling::IncludeStyle IncludeStyle;
+  clang_v11::IncludeStyle IncludeStyle;
 
   /// Indent case labels one level from the switch statement.
   ///

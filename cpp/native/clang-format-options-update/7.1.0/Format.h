@@ -1047,7 +1047,7 @@ struct FormatStyle {
   /// For example: BOOST_FOREACH.
   std::vector<std::string> ForEachMacros;
 
-  tooling::IncludeStyle IncludeStyle;
+  clang_v7::IncludeStyle IncludeStyle;
 
   /// Indent case labels one level from the switch statement.
   ///

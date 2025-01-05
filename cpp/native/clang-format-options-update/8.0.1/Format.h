@@ -1054,7 +1054,7 @@ struct FormatStyle {
   /// For example: Q_UNUSED
   std::vector<std::string> StatementMacros;
 
-  tooling::IncludeStyle IncludeStyle;
+  clang_v8::IncludeStyle IncludeStyle;
 
   /// Indent case labels one level from the switch statement.
   ///

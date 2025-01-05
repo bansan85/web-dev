@@ -7,9 +7,9 @@
 //
 //===----------------------------------------------------------------------===//
 
-#include "clang/Tooling/Inclusions/IncludeStyle.h"
+#include "IncludeStyle.h"
 
-using clang::tooling::IncludeStyle;
+using clang_v7::IncludeStyle;
 
 namespace llvm {
 namespace yaml {

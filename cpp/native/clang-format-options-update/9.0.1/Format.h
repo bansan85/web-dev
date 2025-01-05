@@ -1214,7 +1214,7 @@ struct FormatStyle {
   /// For example: TESTSUITE
   std::vector<std::string> NamespaceMacros;
 
-  tooling::IncludeStyle IncludeStyle;
+  clang_v9::IncludeStyle IncludeStyle;
 
   /// Indent case labels one level from the switch statement.
   ///

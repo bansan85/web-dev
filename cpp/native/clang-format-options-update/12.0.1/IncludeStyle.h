@@ -6,15 +6,13 @@
 //
 //===----------------------------------------------------------------------===//
 
-#ifndef LLVM_CLANG_TOOLING_INCLUSIONS_INCLUDESTYLE_H
-#define LLVM_CLANG_TOOLING_INCLUSIONS_INCLUDESTYLE_H
+#pragma once
 
 #include "llvm/Support/YAMLTraits.h"
 #include <string>
 #include <vector>
 
-namespace clang {
-namespace tooling {
+namespace clang_v12 {
 
 /// Style for sorting and grouping C++ #include directives.
 struct IncludeStyle {
@@ -149,28 +147,25 @@ struct IncludeStyle {
   std::string IncludeIsMainSourceRegex;
 };
 
-} // namespace tooling
-} // namespace clang
+} // namespace clang_v12
 
-LLVM_YAML_IS_SEQUENCE_VECTOR(clang::tooling::IncludeStyle::IncludeCategory)
+LLVM_YAML_IS_SEQUENCE_VECTOR(clang_v12::IncludeStyle::IncludeCategory)
 
 namespace llvm {
 namespace yaml {
 
 template <>
-struct MappingTraits<clang::tooling::IncludeStyle::IncludeCategory> {
+struct MappingTraits<clang_v12::IncludeStyle::IncludeCategory> {
   static void mapping(IO &IO,
-                      clang::tooling::IncludeStyle::IncludeCategory &Category);
+                      clang_v12::IncludeStyle::IncludeCategory &Category);
 };
 
 template <>
 struct ScalarEnumerationTraits<
-    clang::tooling::IncludeStyle::IncludeBlocksStyle> {
+    clang_v12::IncludeStyle::IncludeBlocksStyle> {
   static void
-  enumeration(IO &IO, clang::tooling::IncludeStyle::IncludeBlocksStyle &Value);
+  enumeration(IO &IO, clang_v12::IncludeStyle::IncludeBlocksStyle &Value);
 };
 
 } // namespace yaml
 } // namespace llvm
-
-#endif // LLVM_CLANG_TOOLING_INCLUSIONS_INCLUDESTYLE_H

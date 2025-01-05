@@ -2222,7 +2222,7 @@ struct FormatStyle {
   /// \version 11
   std::vector<std::string> WhitespaceSensitiveMacros;
 
-  tooling::IncludeStyle IncludeStyle;
+  clang_v15::IncludeStyle IncludeStyle;
 
   /// Specify whether access modifiers should have their own indentation level.
   ///

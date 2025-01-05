@@ -2185,7 +2185,7 @@ struct FormatStyle {
   /// For example: BOOST_PP_STRINGIZE
   std::vector<std::string> WhitespaceSensitiveMacros;
 
-  tooling::IncludeStyle IncludeStyle;
+  clang_v13::IncludeStyle IncludeStyle;
 
   /// Specify whether access modifiers should have their own indentation level.
   ///

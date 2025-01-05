@@ -2502,7 +2502,7 @@ struct FormatStyle {
   /// \version 3.7
   std::vector<std::string> ForEachMacros;
 
-  tooling::IncludeStyle IncludeStyle;
+  clang_v18::IncludeStyle IncludeStyle;
 
   /// A vector of macros that should be interpreted as conditionals
   /// instead of as function calls.

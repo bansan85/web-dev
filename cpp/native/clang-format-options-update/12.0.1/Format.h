@@ -2034,7 +2034,7 @@ struct FormatStyle {
   /// For example: BOOST_PP_STRINGIZE
   std::vector<std::string> WhitespaceSensitiveMacros;
 
-  tooling::IncludeStyle IncludeStyle;
+  clang_v12::IncludeStyle IncludeStyle;
 
   /// Indent case labels one level from the switch statement.
   ///
