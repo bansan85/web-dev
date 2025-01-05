@@ -467,38 +467,6 @@ std::error_code parseConfiguration(StringRef Text, FormatStyle *Style);
 /// \brief Gets configuration in a YAML string.
 std::string configurationAsText(const FormatStyle &Style);
 
-/// \brief Reformats the given \p Ranges in the token stream coming out of
-/// \c Lex.
-///
-/// Each range is extended on either end to its next bigger logic unit, i.e.
-/// everything that might influence its formatting or might be influenced by its
-/// formatting.
-///
-/// Returns the \c Replacements necessary to make all \p Ranges comply with
-/// \p Style.
-tooling::Replacements reformat(const FormatStyle &Style, Lexer &Lex,
-                               SourceManager &SourceMgr,
-                               std::vector<CharSourceRange> Ranges);
-
-/// \brief Reformats the given \p Ranges in \p Code.
-///
-/// Otherwise identical to the reformat() function consuming a \c Lexer.
-tooling::Replacements reformat(const FormatStyle &Style, StringRef Code,
-                               std::vector<tooling::Range> Ranges,
-                               StringRef FileName = "<stdin>");
-
-/// \brief Returns the \c LangOpts that the formatter expects you to set.
-///
-/// \param Standard determines lexing mode: LC_Cpp11 and LS_Auto turn on C++11
-/// lexing mode, LS_Cpp03 - C++03 mode.
-LangOptions getFormattingLangOpts(
-    FormatStyle::LanguageStandard Standard = FormatStyle::LS_Cpp11);
-
-/// \brief Description to be used for help text for a llvm::cl option for
-/// specifying format style. The description is closely related to the operation
-/// of getStyle().
-extern const char *StyleOptionHelpDescription;
-
 } // end namespace format
 } // end namespace clang
 

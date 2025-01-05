@@ -717,48 +717,6 @@ std::error_code parseConfiguration(StringRef Text, FormatStyle *Style);
 /// \brief Gets configuration in a YAML string.
 std::string configurationAsText(const FormatStyle &Style);
 
-/// \brief Returns the replacements necessary to sort all #include blocks that
-/// are affected by 'Ranges'.
-tooling::Replacements sortIncludes(const FormatStyle &Style, StringRef Code,
-                                   ArrayRef<tooling::Range> Ranges,
-                                   StringRef FileName,
-                                   unsigned *Cursor = nullptr);
-
-/// \brief Reformats the given \p Ranges in the file \p ID.
-///
-/// Each range is extended on either end to its next bigger logic unit, i.e.
-/// everything that might influence its formatting or might be influenced by its
-/// formatting.
-///
-/// Returns the \c Replacements necessary to make all \p Ranges comply with
-/// \p Style.
-///
-/// If \c IncompleteFormat is non-null, its value will be set to true if any
-/// of the affected ranges were not formatted due to a non-recoverable syntax
-/// error.
-tooling::Replacements reformat(const FormatStyle &Style,
-                               SourceManager &SourceMgr, FileID ID,
-                               ArrayRef<CharSourceRange> Ranges,
-                               bool *IncompleteFormat = nullptr);
-
-/// \brief Reformats the given \p Ranges in \p Code.
-///
-/// Otherwise identical to the reformat() function using a file ID.
-tooling::Replacements reformat(const FormatStyle &Style, StringRef Code,
-                               ArrayRef<tooling::Range> Ranges,
-                               StringRef FileName = "<stdin>",
-                               bool *IncompleteFormat = nullptr);
-
-/// \brief Returns the \c LangOpts that the formatter expects you to set.
-///
-/// \param Style determines specific settings for lexing mode.
-LangOptions getFormattingLangOpts(const FormatStyle &Style = getLLVMStyle());
-
-/// \brief Description to be used for help text for a llvm::cl option for
-/// specifying format style. The description is closely related to the operation
-/// of getStyle().
-extern const char *StyleOptionHelpDescription;
-
 } // end namespace format
 } // end namespace clang
 
