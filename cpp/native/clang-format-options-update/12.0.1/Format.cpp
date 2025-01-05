@@ -1361,8 +1361,7 @@ bool getPredefinedStyle(StringRef Name, FormatStyle::LanguageKind Language,
 }
 
 std::error_code parseConfiguration(llvm::MemoryBufferRef Config,
-                                   FormatStyle *Style,
-                                   bool AllowUnknownOptions) {
+                                   FormatStyle *Style) {
   assert(Style);
   FormatStyle::LanguageKind Language = Style->Language;
   assert(Language != FormatStyle::LK_None);
@@ -1376,7 +1375,7 @@ std::error_code parseConfiguration(llvm::MemoryBufferRef Config,
   // Mapping also uses the context to get the language to find the correct
   // base style.
   Input.setContext(Style);
-  Input.setAllowUnknownKeys(AllowUnknownOptions);
+  Input.setAllowUnknownKeys(false);
   Input >> Styles;
   if (Input.error())
     return Input.error();

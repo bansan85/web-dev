@@ -1638,9 +1638,7 @@ ParseError validateQualifierOrder(FormatStyle *Style) {
 }
 
 std::error_code parseConfiguration(llvm::MemoryBufferRef Config,
-                                   FormatStyle *Style, bool AllowUnknownOptions,
-                                   llvm::SourceMgr::DiagHandlerTy DiagHandler,
-                                   void *DiagHandlerCtxt) {
+                                   FormatStyle *Style) {
   assert(Style);
   FormatStyle::LanguageKind Language = Style->Language;
   assert(Language != FormatStyle::LK_None);
@@ -1648,14 +1646,14 @@ std::error_code parseConfiguration(llvm::MemoryBufferRef Config,
     return make_error_code(ParseError::Error);
   Style->StyleSet.Clear();
   std::vector<FormatStyle> Styles;
-  llvm::yaml::Input Input(Config, /*Ctxt=*/nullptr, DiagHandler,
-                          DiagHandlerCtxt);
+  llvm::yaml::Input Input(Config, /*Ctxt=*/nullptr, nullptr,
+                          nullptr);
   // DocumentListTraits<vector<FormatStyle>> uses the context to get default
   // values for the fields, keys for which are missing from the configuration.
   // Mapping also uses the context to get the language to find the correct
   // base style.
   Input.setContext(Style);
-  Input.setAllowUnknownKeys(AllowUnknownOptions);
+  Input.setAllowUnknownKeys(false);
   Input >> Styles;
   if (Input.error())
     return Input.error();

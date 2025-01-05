@@ -3186,8 +3186,7 @@ private:
   FormatStyleSet StyleSet;
 
   friend std::error_code parseConfiguration(llvm::MemoryBufferRef Config,
-                                            FormatStyle *Style,
-                                            bool AllowUnknownOptions);
+                                            FormatStyle *Style);
 };
 
 /// Returns a format style complying with the LLVM coding standards:
@@ -3246,14 +3245,11 @@ bool getPredefinedStyle(StringRef Name, FormatStyle::LanguageKind Language,
 /// If AllowUnknownOptions is true, no errors are emitted if unknown
 /// format options are occured.
 std::error_code parseConfiguration(llvm::MemoryBufferRef Config,
-                                   FormatStyle *Style,
-                                   bool AllowUnknownOptions = false);
+                                   FormatStyle *Style);
 
 /// Like above but accepts an unnamed buffer.
-inline std::error_code parseConfiguration(StringRef Config, FormatStyle *Style,
-                                          bool AllowUnknownOptions = false) {
-  return parseConfiguration(llvm::MemoryBufferRef(Config, "YAML"), Style,
-                            AllowUnknownOptions);
+inline std::error_code parseConfiguration(StringRef Config, FormatStyle *Style) {
+  return parseConfiguration(llvm::MemoryBufferRef(Config, "YAML"), Style);
 }
 
 /// Gets configuration in a YAML string.
