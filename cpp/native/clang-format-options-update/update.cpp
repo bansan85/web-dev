@@ -1,6 +1,23 @@
 #include "update.h"
 #include <frozen/unordered_map.h>
+#include <iostream>
 #include <stdexcept>
+
+namespace {
+template <typename T, typename U>
+void assignWithWarning(const std::string &old_field_name, T &old_field,
+                       const std::string &new_field_name, U &new_field,
+                       U new_value, const std::string &version) {
+  if (new_field != new_value) {
+    std::cout << "Warning when migrating to version " << version
+              << ". Overriding field " << new_field_name << " from value "
+              << new_field << " to " << new_value << " based on field "
+              << old_field_name << " with value " << old_field
+              << " from previous version.";
+    new_field = new_value;
+  }
+}
+} // namespace
 
 namespace clang_update_v3_4 {
 
@@ -117,15 +134,20 @@ clang_v3_5::FormatStyle update(clang_v3_4::FormatStyle &old,
   retval.PenaltyBreakFirstLessLess = old.PenaltyBreakFirstLessLess;
   retval.PenaltyBreakBeforeFirstCallParameter =
       old.PenaltyBreakBeforeFirstCallParameter;
-  // WARNING
-  retval.PointerAlignment = pointer_alignment.at(old.PointerBindsToType);
-  // WARNING
-  retval.DerivePointerAlignment = old.DerivePointerBinding;
+  assignWithWarning("PointerBindsToType", old.PointerBindsToType,
+                    "PointerAlignment", retval.PointerAlignment,
+                    pointer_alignment.at(old.PointerBindsToType), "3.5");
+  assignWithWarning("DerivePointerBinding", old.DerivePointerBinding,
+                    "DerivePointerAlignment", retval.DerivePointerAlignment,
+                    old.DerivePointerBinding, "3.5");
   retval.AccessModifierOffset = old.AccessModifierOffset;
   retval.Standard = language_standard.at(old.Standard);
   retval.IndentCaseLabels = old.IndentCaseLabels;
-  // WARNING
-  retval.IndentWrappedFunctionNames = old.IndentFunctionDeclarationAfterType;
+  assignWithWarning("IndentFunctionDeclarationAfterType",
+                    old.IndentFunctionDeclarationAfterType,
+                    "IndentWrappedFunctionNames",
+                    retval.IndentWrappedFunctionNames,
+                    old.IndentFunctionDeclarationAfterType, "3.5");
   retval.NamespaceIndentation =
       namespace_indentation_kind.at(old.NamespaceIndentation);
   retval.SpacesBeforeTrailingComments = old.SpacesBeforeTrailingComments;
@@ -161,9 +183,12 @@ clang_v3_5::FormatStyle update(clang_v3_4::FormatStyle &old,
   retval.SpacesInAngles = old.SpacesInAngles;
   retval.SpaceInEmptyParentheses = old.SpaceInEmptyParentheses;
   retval.SpacesInCStyleCastParentheses = old.SpacesInCStyleCastParentheses;
-  // WARNING
-  retval.SpaceBeforeParens =
-      space_before_parens_options.at(old.SpaceAfterControlStatementKeyword);
+  assignWithWarning(
+      "SpaceAfterControlStatementKeyword",
+      old.SpaceAfterControlStatementKeyword, "SpaceBeforeParens",
+      retval.SpaceBeforeParens,
+      space_before_parens_options.at(old.SpaceAfterControlStatementKeyword),
+      "3.5");
   retval.SpaceBeforeAssignmentOperators = old.SpaceBeforeAssignmentOperators;
   retval.ContinuationIndentWidth = old.ContinuationIndentWidth;
 
