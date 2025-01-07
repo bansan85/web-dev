@@ -3,6 +3,7 @@
 #include "3.5.2/Format.h"
 #include "3.6.2/Format.h"
 #include "3.7.1/Format.h"
+#include "3.8.1/Format.h"
 
 namespace clang_update_v3_4 {
 
@@ -31,3 +32,10 @@ clang_v3_7::FormatStyle update(clang_v3_6::FormatStyle &old,
                                const std::string &style);
 
 } // namespace clang_update_v3_7
+
+namespace clang_update_v3_8 {
+
+clang_v3_8::FormatStyle update(clang_v3_7::FormatStyle &old,
+                               const std::string &style);
+
+} // namespace clang_update_v3_8

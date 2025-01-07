@@ -16,6 +16,37 @@ std::ostream &operator<<(std::ostream &os,
   return os;
 }
 
+std::ostream &
+operator<<(std::ostream &os,
+           const std::vector<clang_v3_8::FormatStyle::IncludeCategory> &vec) {
+  os << "{";
+  for (size_t i = 0; i < vec.size(); ++i) {
+    os << "Regex: " << vec[i].Regex << ", Priority: " << vec[i].Priority;
+    if (i != vec.size() - 1)
+      os << ", ";
+  }
+  os << "}";
+  return os;
+}
+
+std::ostream &
+operator<<(std::ostream &os,
+           const clang_v3_8::FormatStyle::BraceWrappingFlags &BraceWrapping) {
+  os << "AfterClass: " << BraceWrapping.AfterClass << ", ";
+  os << "AfterControlStatement: " << BraceWrapping.AfterControlStatement
+     << ", ";
+  os << "AfterEnum: " << BraceWrapping.AfterEnum << ", ";
+  os << "AfterFunction: " << BraceWrapping.AfterFunction << ", ";
+  os << "AfterNamespace: " << BraceWrapping.AfterNamespace << ", ";
+  os << "AfterObjCDeclaration: " << BraceWrapping.AfterObjCDeclaration << ", ";
+  os << "AfterStruct: " << BraceWrapping.AfterStruct << ", ";
+  os << "AfterUnion: " << BraceWrapping.AfterUnion << ", ";
+  os << "BeforeCatch: " << BraceWrapping.BeforeCatch << ", ";
+  os << "BeforeElse: " << BraceWrapping.BeforeElse << ", ";
+  os << "IndentBraces: " << BraceWrapping.IndentBraces;
+  return os;
+}
+
 namespace {
 
 template <typename T, typename U>
@@ -676,3 +707,238 @@ clang_v3_7::FormatStyle update(clang_v3_6::FormatStyle &old,
 }
 
 } // namespace clang_update_v3_7
+
+namespace clang_update_v3_8 {
+
+constexpr frozen::unordered_map<
+    bool, clang_v3_8::FormatStyle::BracketAlignmentStyle, 2>
+    bracket_all_alignment_style{
+        {false, clang_v3_8::FormatStyle::BracketAlignmentStyle::BAS_DontAlign},
+        {true, clang_v3_8::FormatStyle::BracketAlignmentStyle::BAS_Align}};
+
+constexpr frozen::unordered_map<clang_v3_7::FormatStyle::ShortFunctionStyle,
+                                clang_v3_8::FormatStyle::ShortFunctionStyle, 4>
+    short_function_style{
+        {clang_v3_7::FormatStyle::ShortFunctionStyle::SFS_None,
+         clang_v3_8::FormatStyle::ShortFunctionStyle::SFS_None},
+        {clang_v3_7::FormatStyle::ShortFunctionStyle::SFS_Empty,
+         clang_v3_8::FormatStyle::ShortFunctionStyle::SFS_Empty},
+        {clang_v3_7::FormatStyle::ShortFunctionStyle::SFS_Inline,
+         clang_v3_8::FormatStyle::ShortFunctionStyle::SFS_Inline},
+        {clang_v3_7::FormatStyle::ShortFunctionStyle::SFS_All,
+         clang_v3_8::FormatStyle::ShortFunctionStyle::SFS_All}};
+
+constexpr frozen::unordered_map<
+    clang_v3_7::FormatStyle::DefinitionReturnTypeBreakingStyle,
+    clang_v3_8::FormatStyle::DefinitionReturnTypeBreakingStyle, 3>
+    definition_return_type_breaking_style{
+        {clang_v3_7::FormatStyle::DefinitionReturnTypeBreakingStyle::DRTBS_None,
+         clang_v3_8::FormatStyle::DefinitionReturnTypeBreakingStyle::
+             DRTBS_None},
+        {clang_v3_7::FormatStyle::DefinitionReturnTypeBreakingStyle::DRTBS_All,
+         clang_v3_8::FormatStyle::DefinitionReturnTypeBreakingStyle::DRTBS_All},
+        {clang_v3_7::FormatStyle::DefinitionReturnTypeBreakingStyle::
+             DRTBS_TopLevel,
+         clang_v3_8::FormatStyle::DefinitionReturnTypeBreakingStyle::
+             DRTBS_TopLevel}};
+
+constexpr frozen::unordered_map<clang_v3_7::FormatStyle::BinaryOperatorStyle,
+                                clang_v3_8::FormatStyle::BinaryOperatorStyle, 3>
+    binary_operator_style{
+        {clang_v3_7::FormatStyle::BinaryOperatorStyle::BOS_None,
+         clang_v3_8::FormatStyle::BinaryOperatorStyle::BOS_None},
+        {clang_v3_7::FormatStyle::BinaryOperatorStyle::BOS_NonAssignment,
+         clang_v3_8::FormatStyle::BinaryOperatorStyle::BOS_NonAssignment},
+        {clang_v3_7::FormatStyle::BinaryOperatorStyle::BOS_All,
+         clang_v3_8::FormatStyle::BinaryOperatorStyle::BOS_All}};
+
+constexpr frozen::unordered_map<clang_v3_7::FormatStyle::BraceBreakingStyle,
+                                clang_v3_8::FormatStyle::BraceBreakingStyle, 6>
+    brace_breaking_style{
+        {clang_v3_7::FormatStyle::BraceBreakingStyle::BS_Attach,
+         clang_v3_8::FormatStyle::BraceBreakingStyle::BS_Attach},
+        {clang_v3_7::FormatStyle::BraceBreakingStyle::BS_Linux,
+         clang_v3_8::FormatStyle::BraceBreakingStyle::BS_Linux},
+        {clang_v3_7::FormatStyle::BraceBreakingStyle::BS_Mozilla,
+         clang_v3_8::FormatStyle::BraceBreakingStyle::BS_Mozilla},
+        {clang_v3_7::FormatStyle::BraceBreakingStyle::BS_Stroustrup,
+         clang_v3_8::FormatStyle::BraceBreakingStyle::BS_Stroustrup},
+        {clang_v3_7::FormatStyle::BraceBreakingStyle::BS_Allman,
+         clang_v3_8::FormatStyle::BraceBreakingStyle::BS_Allman},
+        {clang_v3_7::FormatStyle::BraceBreakingStyle::BS_GNU,
+         clang_v3_8::FormatStyle::BraceBreakingStyle::BS_GNU}};
+
+constexpr frozen::unordered_map<clang_v3_7::FormatStyle::LanguageKind,
+                                clang_v3_8::FormatStyle::LanguageKind, 5>
+    language_king{{clang_v3_7::FormatStyle::LanguageKind::LK_None,
+                   clang_v3_8::FormatStyle::LanguageKind::LK_None},
+                  {clang_v3_7::FormatStyle::LanguageKind::LK_Cpp,
+                   clang_v3_8::FormatStyle::LanguageKind::LK_Cpp},
+                  {clang_v3_7::FormatStyle::LanguageKind::LK_Java,
+                   clang_v3_8::FormatStyle::LanguageKind::LK_Java},
+                  {clang_v3_7::FormatStyle::LanguageKind::LK_JavaScript,
+                   clang_v3_8::FormatStyle::LanguageKind::LK_JavaScript},
+                  {clang_v3_7::FormatStyle::LanguageKind::LK_Proto,
+                   clang_v3_8::FormatStyle::LanguageKind::LK_Proto}};
+
+constexpr frozen::unordered_map<
+    clang_v3_7::FormatStyle::NamespaceIndentationKind,
+    clang_v3_8::FormatStyle::NamespaceIndentationKind, 3>
+    namespace_indentation_kind{
+        {clang_v3_7::FormatStyle::NamespaceIndentationKind::NI_None,
+         clang_v3_8::FormatStyle::NamespaceIndentationKind::NI_None},
+        {clang_v3_7::FormatStyle::NamespaceIndentationKind::NI_Inner,
+         clang_v3_8::FormatStyle::NamespaceIndentationKind::NI_Inner},
+        {clang_v3_7::FormatStyle::NamespaceIndentationKind::NI_All,
+         clang_v3_8::FormatStyle::NamespaceIndentationKind::NI_All}};
+
+constexpr frozen::unordered_map<clang_v3_7::FormatStyle::PointerAlignmentStyle,
+                                clang_v3_8::FormatStyle::PointerAlignmentStyle,
+                                3>
+    pointer_alignment_style{
+        {clang_v3_7::FormatStyle::PointerAlignmentStyle::PAS_Left,
+         clang_v3_8::FormatStyle::PointerAlignmentStyle::PAS_Left},
+        {clang_v3_7::FormatStyle::PointerAlignmentStyle::PAS_Right,
+         clang_v3_8::FormatStyle::PointerAlignmentStyle::PAS_Right},
+        {clang_v3_7::FormatStyle::PointerAlignmentStyle::PAS_Middle,
+         clang_v3_8::FormatStyle::PointerAlignmentStyle::PAS_Middle}};
+
+constexpr frozen::unordered_map<
+    clang_v3_7::FormatStyle::SpaceBeforeParensOptions,
+    clang_v3_8::FormatStyle::SpaceBeforeParensOptions, 3>
+    space_before_parens_options{
+        {clang_v3_7::FormatStyle::SpaceBeforeParensOptions::SBPO_Never,
+         clang_v3_8::FormatStyle::SpaceBeforeParensOptions::SBPO_Never},
+        {clang_v3_7::FormatStyle::SpaceBeforeParensOptions::
+             SBPO_ControlStatements,
+         clang_v3_8::FormatStyle::SpaceBeforeParensOptions::
+             SBPO_ControlStatements},
+        {clang_v3_7::FormatStyle::SpaceBeforeParensOptions::SBPO_Always,
+         clang_v3_8::FormatStyle::SpaceBeforeParensOptions::SBPO_Always}};
+
+constexpr frozen::unordered_map<clang_v3_7::FormatStyle::LanguageStandard,
+                                clang_v3_8::FormatStyle::LanguageStandard, 3>
+    language_standard{{clang_v3_7::FormatStyle::LanguageStandard::LS_Cpp03,
+                       clang_v3_8::FormatStyle::LanguageStandard::LS_Cpp03},
+                      {clang_v3_7::FormatStyle::LanguageStandard::LS_Cpp11,
+                       clang_v3_8::FormatStyle::LanguageStandard::LS_Cpp11},
+                      {clang_v3_7::FormatStyle::LanguageStandard::LS_Auto,
+                       clang_v3_8::FormatStyle::LanguageStandard::LS_Auto}};
+
+constexpr frozen::unordered_map<clang_v3_7::FormatStyle::UseTabStyle,
+                                clang_v3_8::FormatStyle::UseTabStyle, 3>
+    use_tab_style{{clang_v3_7::FormatStyle::UseTabStyle::UT_Never,
+                   clang_v3_8::FormatStyle::UseTabStyle::UT_Never},
+                  {clang_v3_7::FormatStyle::UseTabStyle::UT_ForIndentation,
+                   clang_v3_8::FormatStyle::UseTabStyle::UT_ForIndentation},
+                  {clang_v3_7::FormatStyle::UseTabStyle::UT_Always,
+                   clang_v3_8::FormatStyle::UseTabStyle::UT_Always}};
+
+clang_v3_8::FormatStyle update(clang_v3_7::FormatStyle &old,
+                               const std::string &style) {
+  clang_v3_8::FormatStyle retval;
+  if (!clang_v3_8::getPredefinedStyle(
+          style, clang_v3_8::FormatStyle::LanguageKind::LK_Cpp, &retval)) {
+    throw std::runtime_error("Failed to load " + style + " style.");
+  }
+
+  retval.AccessModifierOffset = old.AccessModifierOffset;
+  retval.AlignAfterOpenBracket =
+      bracket_all_alignment_style.at(old.AlignAfterOpenBracket);
+  improveField("AlignAfterOpenBracket", "AlwaysBreak", "3.8");
+
+  retval.AlignConsecutiveAssignments = old.AlignConsecutiveAssignments;
+  retval.AlignEscapedNewlinesLeft = old.AlignEscapedNewlinesLeft;
+  retval.AlignOperands = old.AlignOperands;
+  retval.AlignTrailingComments = old.AlignTrailingComments;
+  retval.AllowAllParametersOfDeclarationOnNextLine =
+      old.AllowAllParametersOfDeclarationOnNextLine;
+  retval.AllowShortBlocksOnASingleLine = old.AllowShortBlocksOnASingleLine;
+  retval.AllowShortCaseLabelsOnASingleLine =
+      old.AllowShortCaseLabelsOnASingleLine;
+  retval.AllowShortFunctionsOnASingleLine =
+      short_function_style.at(old.AllowShortFunctionsOnASingleLine);
+  retval.AllowShortIfStatementsOnASingleLine =
+      old.AllowShortIfStatementsOnASingleLine;
+  retval.AllowShortLoopsOnASingleLine = old.AllowShortLoopsOnASingleLine;
+  retval.AlwaysBreakAfterDefinitionReturnType =
+      definition_return_type_breaking_style.at(
+          old.AlwaysBreakAfterDefinitionReturnType);
+  retval.AlwaysBreakBeforeMultilineStrings =
+      old.AlwaysBreakBeforeMultilineStrings;
+  retval.AlwaysBreakTemplateDeclarations = old.AlwaysBreakTemplateDeclarations;
+  retval.BinPackArguments = old.BinPackArguments;
+  retval.BinPackParameters = old.BinPackParameters;
+  retval.BreakBeforeBinaryOperators =
+      binary_operator_style.at(old.BreakBeforeBinaryOperators);
+  retval.BreakBeforeBraces = brace_breaking_style.at(old.BreakBeforeBraces);
+  improveField("BreakBeforeBraces", "WebKit", "3.8");
+  improveField("BreakBeforeBraces", "Custom", "3.8");
+  retval.BreakBeforeTernaryOperators = old.BreakBeforeTernaryOperators;
+  retval.BreakConstructorInitializersBeforeComma =
+      old.BreakConstructorInitializersBeforeComma;
+  retval.ColumnLimit = old.ColumnLimit;
+  retval.CommentPragmas = old.CommentPragmas;
+  retval.ConstructorInitializerAllOnOneLineOrOnePerLine =
+      old.ConstructorInitializerAllOnOneLineOrOnePerLine;
+  retval.ConstructorInitializerIndentWidth =
+      old.ConstructorInitializerIndentWidth;
+  retval.ContinuationIndentWidth = old.ContinuationIndentWidth;
+  retval.DerivePointerAlignment = old.DerivePointerAlignment;
+  retval.DisableFormat = old.DisableFormat;
+  retval.ExperimentalAutoDetectBinPacking =
+      old.ExperimentalAutoDetectBinPacking;
+  retval.ForEachMacros = old.ForEachMacros;
+  retval.IndentCaseLabels = old.IndentCaseLabels;
+  retval.IndentWidth = old.IndentWidth;
+  retval.IndentWrappedFunctionNames = old.IndentWrappedFunctionNames;
+  retval.KeepEmptyLinesAtTheStartOfBlocks =
+      old.KeepEmptyLinesAtTheStartOfBlocks;
+  retval.Language = language_king.at(old.Language);
+  improveField("Language", "TableGen", "3.8");
+  retval.MacroBlockBegin = old.MacroBlockBegin;
+  retval.MacroBlockEnd = old.MacroBlockEnd;
+  retval.MaxEmptyLinesToKeep = old.MaxEmptyLinesToKeep;
+  retval.NamespaceIndentation =
+      namespace_indentation_kind.at(old.NamespaceIndentation);
+  retval.ObjCBlockIndentWidth = old.ObjCBlockIndentWidth;
+  retval.ObjCSpaceAfterProperty = old.ObjCSpaceAfterProperty;
+  retval.ObjCSpaceBeforeProtocolList = old.ObjCSpaceBeforeProtocolList;
+  retval.PenaltyBreakBeforeFirstCallParameter =
+      old.PenaltyBreakBeforeFirstCallParameter;
+  retval.PenaltyBreakComment = old.PenaltyBreakComment;
+  retval.PenaltyBreakFirstLessLess = old.PenaltyBreakFirstLessLess;
+  retval.PenaltyBreakString = old.PenaltyBreakString;
+  retval.PenaltyExcessCharacter = old.PenaltyExcessCharacter;
+  retval.PenaltyReturnTypeOnItsOwnLine = old.PenaltyReturnTypeOnItsOwnLine;
+  retval.PointerAlignment = pointer_alignment_style.at(old.PointerAlignment);
+  retval.SpaceAfterCStyleCast = old.SpaceAfterCStyleCast;
+  retval.SpaceBeforeAssignmentOperators = old.SpaceBeforeAssignmentOperators;
+  retval.SpaceBeforeParens =
+      space_before_parens_options.at(old.SpaceBeforeParens);
+  retval.SpaceInEmptyParentheses = old.SpaceInEmptyParentheses;
+  retval.SpacesBeforeTrailingComments = old.SpacesBeforeTrailingComments;
+  retval.SpacesInAngles = old.SpacesInAngles;
+  retval.SpacesInContainerLiterals = old.SpacesInContainerLiterals;
+  retval.SpacesInCStyleCastParentheses = old.SpacesInCStyleCastParentheses;
+  retval.SpacesInParentheses = old.SpacesInParentheses;
+  retval.SpacesInSquareBrackets = old.SpacesInSquareBrackets;
+  retval.Standard = language_standard.at(old.Standard);
+  retval.TabWidth = old.TabWidth;
+  retval.UseTab = use_tab_style.at(old.UseTab);
+
+  newField("AlignConsecutiveDeclarations", "3.8",
+           retval.AlignConsecutiveDeclarations);
+  newField("AlwaysBreakAfterReturnType", "3.8",
+           retval.AlwaysBreakAfterReturnType);
+  newField("BraceWrapping", "3.8", retval.BraceWrapping);
+  newField("BreakAfterJavaFieldAnnotations", "3.8",
+           retval.BreakAfterJavaFieldAnnotations);
+  newField("IncludeCategories", "3.8", retval.IncludeCategories);
+  newField("ReflowComments", "3.8", retval.ReflowComments);
+  newField("SortIncludes", "3.8", retval.SortIncludes);
+
+  return retval;
+}
+
+} // namespace clang_update_v3_8
