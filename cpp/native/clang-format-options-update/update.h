@@ -6,6 +6,7 @@
 #include "3.8.1/Format.h"
 #include "3.9.1/Format.h"
 #include "4.0.1/Format.h"
+#include "5.0.2/Format.h"
 
 namespace clang_update_v3_4 {
 
@@ -55,3 +56,10 @@ clang_v4::FormatStyle update(clang_v3_9::FormatStyle &old,
                              const std::string &style);
 
 } // namespace clang_update_v4
+
+namespace clang_update_v5 {
+
+clang_v5::FormatStyle update(clang_v4::FormatStyle &old,
+                             const std::string &style);
+
+} // namespace clang_update_v5

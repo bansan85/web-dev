@@ -740,6 +740,8 @@ EMSCRIPTEN_BINDINGS(web_clang_format_options_update) {
         return retval;
       });
 
+  emscripten::function("updateV5", &clang_update_v5::update);
+
   emscripten::function(
       "getLLVMStyleV4", +[] { return clang_v4::getLLVMStyle(); });
   emscripten::function(
@@ -768,6 +770,8 @@ EMSCRIPTEN_BINDINGS(web_clang_format_options_update) {
         }
         return retval;
       });
+
+  emscripten::function("updateV4", &clang_update_v4::update);
 
   emscripten::function(
       "getLLVMStyleV3_9", +[] { return clang_v3_9::getLLVMStyle(); });
@@ -799,6 +803,8 @@ EMSCRIPTEN_BINDINGS(web_clang_format_options_update) {
         return retval;
       });
 
+  emscripten::function("updateV3_9", &clang_update_v3_9::update);
+
   emscripten::function(
       "getLLVMStyleV3_8", +[] { return clang_v3_8::getLLVMStyle(); });
   emscripten::function(
@@ -828,6 +834,8 @@ EMSCRIPTEN_BINDINGS(web_clang_format_options_update) {
         }
         return retval;
       });
+
+  emscripten::function("updateV3_8", &clang_update_v3_8::update);
 
   emscripten::function(
       "getLLVMStyleV3_7", +[] { return clang_v3_7::getLLVMStyle(); });
@@ -859,6 +867,8 @@ EMSCRIPTEN_BINDINGS(web_clang_format_options_update) {
         return retval;
       });
 
+  emscripten::function("updateV3_7", &clang_update_v3_7::update);
+
   emscripten::function(
       "getLLVMStyleV3_6", +[] { return clang_v3_6::getLLVMStyle(); });
   emscripten::function(
@@ -888,6 +898,8 @@ EMSCRIPTEN_BINDINGS(web_clang_format_options_update) {
         }
         return retval;
       });
+
+  emscripten::function("updateV3_6", &clang_update_v3_6::update);
 
   emscripten::function(
       "getLLVMStyleV3_5", +[] { return clang_v3_5::getLLVMStyle(); });
