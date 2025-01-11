@@ -18,11 +18,8 @@
 #include <system_error>
 #include <optional>
 #include <vector>
-#include "llvm/ADT/StringRef.h"
 
 namespace clang_v8 {
-
-using StringRef = llvm::StringRef;
 
 enum class ParseError { Success = 0, Error, Unsuitable };
 class ParseErrorCategory final : public std::error_category {
@@ -1833,7 +1830,7 @@ struct FormatStyle {
 private:
   FormatStyleSet StyleSet;
 
-  friend std::error_code parseConfiguration(StringRef Text, FormatStyle *Style);
+  friend std::error_code parseConfiguration(const std::string& Text, FormatStyle *Style);
 };
 
 /// Returns a format style complying with the LLVM coding standards:
@@ -1871,7 +1868,7 @@ FormatStyle getNoStyle();
 /// compared case-insensitively.
 ///
 /// Returns ``true`` if the Style has been set.
-bool getPredefinedStyle(StringRef Name, FormatStyle::LanguageKind Language,
+bool getPredefinedStyle(llvm::StringRef Name, FormatStyle::LanguageKind Language,
                         FormatStyle *Style);
 
 /// Parse configuration from YAML-formatted text.
@@ -1883,7 +1880,7 @@ bool getPredefinedStyle(StringRef Name, FormatStyle::LanguageKind Language,
 ///
 /// When ``BasedOnStyle`` is not present, options not present in the YAML
 /// document, are retained in \p Style.
-std::error_code parseConfiguration(StringRef Text, FormatStyle *Style);
+std::error_code parseConfiguration(const std::string& Text, FormatStyle *Style);
 
 /// Gets configuration in a YAML string.
 std::string configurationAsText(const FormatStyle &Style);

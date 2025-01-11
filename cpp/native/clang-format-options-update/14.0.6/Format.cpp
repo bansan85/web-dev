@@ -508,9 +508,9 @@ template <> struct MappingTraits<FormatStyle> {
     IO.mapOptional("Language", Style.Language);
 
     if (IO.outputting()) {
-      StringRef Styles[] = {"LLVM",   "Google", "Chromium", "Mozilla",
+      std::vector<std::string_view> Styles = {"LLVM",   "Google", "Chromium", "Mozilla",
                             "WebKit", "GNU",    "Microsoft"};
-      for (StringRef StyleName : Styles) {
+      for (llvm::StringRef StyleName : Styles) {
         FormatStyle PredefinedStyle;
         if (getPredefinedStyle(StyleName, Style.Language, &PredefinedStyle) &&
             Style == PredefinedStyle) {
@@ -519,7 +519,7 @@ template <> struct MappingTraits<FormatStyle> {
         }
       }
     } else {
-      StringRef BasedOnStyle;
+      std::string BasedOnStyle;
       IO.mapOptional("BasedOnStyle", BasedOnStyle);
       if (!BasedOnStyle.empty()) {
         FormatStyle::LanguageKind OldLanguage = Style.Language;
@@ -673,10 +673,10 @@ template <> struct MappingTraits<FormatStyle> {
     // for Google/Chromium or PCIS_BinPack otherwise. If the deprecated options
     // had a non-default value while PackConstructorInitializers has a default
     // value, set the latter to an equivalent non-default value if needed.
-    StringRef BasedOn;
+    std::string BasedOn;
     IO.mapOptional("BasedOnStyle", BasedOn);
-    const bool IsGoogleOrChromium = BasedOn.equals_insensitive("google") ||
-                                    BasedOn.equals_insensitive("chromium");
+    const bool IsGoogleOrChromium = BasedOn == "google" ||
+                                    BasedOn == "chromium";
     bool OnCurrentLine = IsGoogleOrChromium;
     bool OnNextLine = true;
     IO.mapOptional("ConstructorInitializerAllOnOneLineOrOnePerLine",
@@ -1548,7 +1548,7 @@ FormatStyle getNoStyle() {
   return NoStyle;
 }
 
-bool getPredefinedStyle(StringRef Name, FormatStyle::LanguageKind Language,
+bool getPredefinedStyle(llvm::StringRef Name, FormatStyle::LanguageKind Language,
                         FormatStyle *Style) {
   if (Name.equals_insensitive("llvm")) {
     *Style = getLLVMStyle(Language);

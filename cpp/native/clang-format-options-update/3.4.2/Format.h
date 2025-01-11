@@ -14,12 +14,9 @@
 
 #pragma once
 
-#include "llvm/ADT/StringRef.h"
 #include "llvm/Support/YAMLTraits.h"
 
 namespace clang_v3_4 {
-
-using StringRef = llvm::StringRef;
 
 /// \brief The \c FormatStyle is used to configure the formatting to follow
 /// specific guidelines.
@@ -321,10 +318,10 @@ FormatStyle getWebKitStyle();
 /// compared case-insensitively.
 ///
 /// Returns \c true if the Style has been set.
-bool getPredefinedStyle(StringRef Name, FormatStyle *Style);
+bool getPredefinedStyle(llvm::StringRef Name, FormatStyle *Style);
 
 /// \brief Parse configuration from YAML-formatted text.
-std::error_code parseConfiguration(StringRef Text, FormatStyle *Style);
+std::error_code parseConfiguration(const std::string& Text, FormatStyle *Style);
 
 /// \brief Gets configuration in a YAML string.
 std::string configurationAsText(const FormatStyle &Style);

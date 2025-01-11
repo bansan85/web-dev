@@ -15,13 +15,10 @@
 #pragma once
 
 #include <system_error>
-#include "llvm/ADT/StringRef.h"
 #include <vector>
 #include "llvm/Support/YAMLTraits.h"
 
 namespace clang_v3_6 {
-
-using StringRef = llvm::StringRef;
 
 enum class ParseError { Success = 0, Error, Unsuitable };
 class ParseErrorCategory final : public std::error_category {
@@ -507,7 +504,7 @@ FormatStyle getNoStyle();
 /// compared case-insensitively.
 ///
 /// Returns \c true if the Style has been set.
-bool getPredefinedStyle(StringRef Name, FormatStyle::LanguageKind Language,
+bool getPredefinedStyle(llvm::StringRef Name, FormatStyle::LanguageKind Language,
                         FormatStyle *Style);
 
 /// \brief Parse configuration from YAML-formatted text.
@@ -517,7 +514,7 @@ bool getPredefinedStyle(StringRef Name, FormatStyle::LanguageKind Language,
 ///
 /// When \c BasedOnStyle is not present, options not present in the YAML
 /// document, are retained in \p Style.
-std::error_code parseConfiguration(StringRef Text, FormatStyle *Style);
+std::error_code parseConfiguration(const std::string& Text, FormatStyle *Style);
 
 /// \brief Gets configuration in a YAML string.
 std::string configurationAsText(const FormatStyle &Style);

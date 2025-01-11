@@ -14,7 +14,6 @@
 #include <frozen/bits/hash_string.h>
 #include <frozen/unordered_map.h>
 #include <fstream>
-#include <llvm/ADT/StringRef.h>
 #include <llvm/Support/ErrorOr.h>
 #include <llvm/Support/MemoryBuffer.h>
 #include <memory>
@@ -32,7 +31,6 @@ using clang::CXXRecordDecl;
 using clang::EnumDecl;
 using clang::QualType;
 using clang::RecursiveASTVisitor;
-using llvm::StringRef;
 
 namespace frozen {
 template <> struct elsa<std::string_view> {
@@ -161,7 +159,7 @@ class FindNamedClassAction : public ASTFrontendAction {
 public:
   explicit FindNamedClassAction(std::string_view name) : _filename(name) {}
   std::unique_ptr<ASTConsumer>
-  CreateASTConsumer(CompilerInstance &compiler, StringRef /*InFile*/) override {
+  CreateASTConsumer(CompilerInstance &compiler, llvm::StringRef /*InFile*/) override {
     return std::make_unique<FindNamedClassConsumer>(&compiler.getASTContext(),
                                                     _filename);
   }

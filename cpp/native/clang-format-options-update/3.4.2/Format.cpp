@@ -75,11 +75,10 @@ struct ScalarEnumerationTraits<
 template <> struct MappingTraits<clang_v3_4::FormatStyle> {
   static void mapping(llvm::yaml::IO &IO, clang_v3_4::FormatStyle &Style) {
     if (IO.outputting()) {
-      StringRef StylesArray[] = { "LLVM",    "Google", "Chromium",
+      std::vector<std::string_view> Styles = { "LLVM",    "Google", "Chromium",
                                   "Mozilla", "WebKit" };
-      ArrayRef<StringRef> Styles(StylesArray);
       for (size_t i = 0, e = Styles.size(); i < e; ++i) {
-        StringRef StyleName(Styles[i]);
+        llvm::StringRef StyleName(Styles[i]);
         clang_v3_4::FormatStyle PredefinedStyle;
         if (clang_v3_4::getPredefinedStyle(StyleName, &PredefinedStyle) &&
             Style == PredefinedStyle) {
@@ -88,7 +87,7 @@ template <> struct MappingTraits<clang_v3_4::FormatStyle> {
         }
       }
     } else {
-      StringRef BasedOnStyle;
+      std::string BasedOnStyle;
       IO.mapOptional("BasedOnStyle", BasedOnStyle);
       if (!BasedOnStyle.empty())
         if (!clang_v3_4::getPredefinedStyle(BasedOnStyle, &Style)) {
@@ -305,7 +304,7 @@ FormatStyle getWebKitStyle() {
   return Style;
 }
 
-bool getPredefinedStyle(StringRef Name, FormatStyle *Style) {
+bool getPredefinedStyle(llvm::StringRef Name, FormatStyle *Style) {
   if (Name.equals_insensitive("llvm"))
     *Style = getLLVMStyle();
   else if (Name.equals_insensitive("chromium"))
@@ -322,9 +321,7 @@ bool getPredefinedStyle(StringRef Name, FormatStyle *Style) {
   return true;
 }
 
-std::error_code parseConfiguration(StringRef Text, FormatStyle *Style) {
-  if (Text.trim().empty())
-    return make_error_code(std::errc::invalid_argument);
+std::error_code parseConfiguration(const std::string& Text, FormatStyle *Style) {
   llvm::yaml::Input Input(Text);
   Input >> *Style;
   return Input.error();

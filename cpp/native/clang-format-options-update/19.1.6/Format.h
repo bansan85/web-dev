@@ -17,12 +17,9 @@
 #include <optional>
 #include <system_error>
 #include <vector>
-#include "llvm/ADT/StringRef.h"
 #include "../Format.h"
 
 namespace clang_v19 {
-
-using StringRef = llvm::StringRef;
 
 enum class ParseError {
   Success = 0,
@@ -5234,7 +5231,7 @@ FormatStyle getNoStyle();
 /// compared case-insensitively.
 ///
 /// Returns ``true`` if the Style has been set.
-bool getPredefinedStyle(StringRef Name, FormatStyle::LanguageKind Language,
+bool getPredefinedStyle(llvm::StringRef Name, FormatStyle::LanguageKind Language,
                         FormatStyle *Style);
 
 /// Parse configuration from YAML-formatted text.
@@ -5255,7 +5252,7 @@ std::error_code parseConfiguration(llvm::MemoryBufferRef Config,
                                    FormatStyle *Style);
 
 /// Like above but accepts an unnamed buffer.
-inline std::error_code parseConfiguration(StringRef Config,
+inline std::error_code parseConfiguration(const std::string& Config,
                                           FormatStyle *Style) {
   return parseConfiguration(llvm::MemoryBufferRef(Config, "YAML"), Style);
 }
@@ -5263,8 +5260,8 @@ inline std::error_code parseConfiguration(StringRef Config,
 /// Gets configuration in a YAML string.
 std::string configurationAsText(const FormatStyle &Style);
 
-bool isClangFormatOn(StringRef Comment);
-bool isClangFormatOff(StringRef Comment);
+bool isClangFormatOn(const std::string& Comment);
+bool isClangFormatOff(const std::string& Comment);
 
 } // namespace clang_v19
 

@@ -173,11 +173,10 @@ template <> struct MappingTraits<FormatStyle> {
     IO.mapOptional("Language", Style.Language);
 
     if (IO.outputting()) {
-      StringRef StylesArray[] = {"LLVM",    "Google", "Chromium",
+      std::vector<std::string_view> Styles = {"LLVM",    "Google", "Chromium",
                                  "Mozilla", "WebKit", "GNU"};
-      ArrayRef<StringRef> Styles(StylesArray);
       for (size_t i = 0, e = Styles.size(); i < e; ++i) {
-        StringRef StyleName(Styles[i]);
+        llvm::StringRef StyleName(Styles[i]);
         FormatStyle PredefinedStyle;
         if (getPredefinedStyle(StyleName, Style.Language, &PredefinedStyle) &&
             Style == PredefinedStyle) {
@@ -186,7 +185,7 @@ template <> struct MappingTraits<FormatStyle> {
         }
       }
     } else {
-      StringRef BasedOnStyle;
+      std::string BasedOnStyle;
       IO.mapOptional("BasedOnStyle", BasedOnStyle);
       if (!BasedOnStyle.empty()) {
         FormatStyle::LanguageKind OldLanguage = Style.Language;
@@ -662,7 +661,7 @@ FormatStyle getNoStyle() {
   return NoStyle;
 }
 
-bool getPredefinedStyle(StringRef Name, FormatStyle::LanguageKind Language,
+bool getPredefinedStyle(llvm::StringRef Name, FormatStyle::LanguageKind Language,
                         FormatStyle *Style) {
   if (Name.equals_insensitive("llvm")) {
     *Style = getLLVMStyle();
@@ -686,12 +685,10 @@ bool getPredefinedStyle(StringRef Name, FormatStyle::LanguageKind Language,
   return true;
 }
 
-std::error_code parseConfiguration(StringRef Text, FormatStyle *Style) {
+std::error_code parseConfiguration(const std::string& Text, FormatStyle *Style) {
   assert(Style);
   FormatStyle::LanguageKind Language = Style->Language;
   assert(Language != FormatStyle::LK_None);
-  if (Text.trim().empty())
-    return make_error_code(ParseError::Error);
 
   std::vector<FormatStyle> Styles;
   llvm::yaml::Input Input(Text);
