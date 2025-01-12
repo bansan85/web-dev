@@ -555,6 +555,8 @@ EMSCRIPTEN_BINDINGS(web_clang_format_options_update) {
         return retval;
       });
 
+  emscripten::function("updateV11", &clang_update_v11::update);
+
   emscripten::function(
       "getLLVMStyleV10", +[] {
         return clang_v10::getLLVMStyle(
