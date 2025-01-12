@@ -2,6 +2,7 @@
 #include "11.1.0/Format.h"
 #include "12.0.1/Format.h"
 #include "13.0.1/Format.h"
+#include "14.0.6/Format.h"
 #include "3.3.0/Format.h"
 #include "3.4.2/Format.h"
 #include "3.5.2/Format.h"
@@ -127,3 +128,10 @@ clang_v13::FormatStyle update(clang_v12::FormatStyle &old,
                               const std::string &style);
 
 } // namespace clang_update_v13
+
+namespace clang_update_v14 {
+
+clang_v14::FormatStyle update(clang_v13::FormatStyle &old,
+                              const std::string &style);
+
+} // namespace clang_update_v14

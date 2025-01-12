@@ -443,6 +443,8 @@ EMSCRIPTEN_BINDINGS(web_clang_format_options_update) {
         return retval;
       });
 
+  emscripten::function("updateV14", &clang_update_v14::update);
+
   emscripten::function(
       "getLLVMStyleV13", +[] {
         return clang_v13::getLLVMStyle(
