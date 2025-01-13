@@ -10206,6 +10206,7 @@ clang_v18::FormatStyle update(clang_v17::FormatStyle &old,
   retval.SeparateDefinitionBlocks =
       separate_definitions_style.at(old.SeparateDefinitionBlocks);
   retval.ShortNamespaceLines = old.ShortNamespaceLines;
+  newField("SkipMacroDefinitionBody", "18", retval.SkipMacroDefinitionBody);
   retval.SortIncludes = sort_includes_options.at(old.SortIncludes);
   retval.SortJavaStaticImport =
       sort_java_static_import_options.at(old.SortJavaStaticImport);
@@ -10280,3 +10281,1115 @@ clang_v18::FormatStyle update(clang_v17::FormatStyle &old,
 }
 
 } // namespace clang_update_v18
+
+namespace clang_update_v19 {
+
+constexpr frozen::unordered_map<clang_v18::FormatStyle::BracketAlignmentStyle,
+                                clang_v19::FormatStyle::BracketAlignmentStyle,
+                                4>
+    bracket_all_alignment_style{
+        {clang_v18::FormatStyle::BracketAlignmentStyle::BAS_Align,
+         clang_v19::FormatStyle::BracketAlignmentStyle::BAS_Align},
+        {clang_v18::FormatStyle::BracketAlignmentStyle::BAS_DontAlign,
+         clang_v19::FormatStyle::BracketAlignmentStyle::BAS_DontAlign},
+        {clang_v18::FormatStyle::BracketAlignmentStyle::BAS_AlwaysBreak,
+         clang_v19::FormatStyle::BracketAlignmentStyle::BAS_AlwaysBreak},
+        {clang_v18::FormatStyle::BracketAlignmentStyle::BAS_BlockIndent,
+         clang_v19::FormatStyle::BracketAlignmentStyle::BAS_BlockIndent}};
+
+constexpr frozen::unordered_map<
+    clang_v18::FormatStyle::ArrayInitializerAlignmentStyle,
+    clang_v19::FormatStyle::ArrayInitializerAlignmentStyle, 3>
+    array_initializer_alignment_style{
+        {clang_v18::FormatStyle::ArrayInitializerAlignmentStyle::AIAS_Left,
+         clang_v19::FormatStyle::ArrayInitializerAlignmentStyle::AIAS_Left},
+        {clang_v18::FormatStyle::ArrayInitializerAlignmentStyle::AIAS_Right,
+         clang_v19::FormatStyle::ArrayInitializerAlignmentStyle::AIAS_Right},
+        {clang_v18::FormatStyle::ArrayInitializerAlignmentStyle::AIAS_None,
+         clang_v19::FormatStyle::ArrayInitializerAlignmentStyle::AIAS_None}};
+
+constexpr frozen::unordered_map<
+    clang_v18::FormatStyle::EscapedNewlineAlignmentStyle,
+    clang_v19::FormatStyle::EscapedNewlineAlignmentStyle, 3>
+    escaped_new_line_alignment_style{
+        {clang_v18::FormatStyle::EscapedNewlineAlignmentStyle::ENAS_DontAlign,
+         clang_v19::FormatStyle::EscapedNewlineAlignmentStyle::ENAS_DontAlign},
+        {clang_v18::FormatStyle::EscapedNewlineAlignmentStyle::ENAS_Left,
+         clang_v19::FormatStyle::EscapedNewlineAlignmentStyle::ENAS_Left},
+        {clang_v18::FormatStyle::EscapedNewlineAlignmentStyle::ENAS_Right,
+         clang_v19::FormatStyle::EscapedNewlineAlignmentStyle::ENAS_Right}};
+
+constexpr frozen::unordered_map<clang_v18::FormatStyle::OperandAlignmentStyle,
+                                clang_v19::FormatStyle::OperandAlignmentStyle,
+                                3>
+    operand_alignment_style{
+        {clang_v18::FormatStyle::OperandAlignmentStyle::OAS_DontAlign,
+         clang_v19::FormatStyle::OperandAlignmentStyle::OAS_DontAlign},
+        {clang_v18::FormatStyle::OperandAlignmentStyle::OAS_Align,
+         clang_v19::FormatStyle::OperandAlignmentStyle::OAS_Align},
+        {clang_v18::FormatStyle::OperandAlignmentStyle::OAS_AlignAfterOperator,
+         clang_v19::FormatStyle::OperandAlignmentStyle::
+             OAS_AlignAfterOperator}};
+
+constexpr frozen::unordered_map<
+    clang_v18::FormatStyle::TrailingCommentsAlignmentKinds,
+    clang_v19::FormatStyle::TrailingCommentsAlignmentKinds, 3>
+    trailing_comments_alignment_kinds{
+        {clang_v18::FormatStyle::TrailingCommentsAlignmentKinds::TCAS_Leave,
+         clang_v19::FormatStyle::TrailingCommentsAlignmentKinds::TCAS_Leave},
+        {clang_v18::FormatStyle::TrailingCommentsAlignmentKinds::TCAS_Always,
+         clang_v19::FormatStyle::TrailingCommentsAlignmentKinds::TCAS_Always},
+        {clang_v18::FormatStyle::TrailingCommentsAlignmentKinds::TCAS_Never,
+         clang_v19::FormatStyle::TrailingCommentsAlignmentKinds::TCAS_Never}};
+
+constexpr frozen::unordered_map<
+    clang_v18::FormatStyle::BreakBeforeNoexceptSpecifierStyle,
+    clang_v19::FormatStyle::BreakBeforeNoexceptSpecifierStyle, 3>
+    break_before_noexcept_specifier_style{
+        {clang_v18::FormatStyle::BreakBeforeNoexceptSpecifierStyle::BBNSS_Never,
+         clang_v19::FormatStyle::BreakBeforeNoexceptSpecifierStyle::
+             BBNSS_Never},
+        {clang_v18::FormatStyle::BreakBeforeNoexceptSpecifierStyle::
+             BBNSS_OnlyWithParen,
+         clang_v19::FormatStyle::BreakBeforeNoexceptSpecifierStyle::
+             BBNSS_OnlyWithParen},
+        {clang_v18::FormatStyle::BreakBeforeNoexceptSpecifierStyle::
+             BBNSS_Always,
+         clang_v19::FormatStyle::BreakBeforeNoexceptSpecifierStyle::
+             BBNSS_Always}};
+
+constexpr frozen::unordered_map<clang_v18::FormatStyle::ShortBlockStyle,
+                                clang_v19::FormatStyle::ShortBlockStyle, 3>
+    short_block_style{{clang_v18::FormatStyle::ShortBlockStyle::SBS_Never,
+                       clang_v19::FormatStyle::ShortBlockStyle::SBS_Never},
+                      {clang_v18::FormatStyle::ShortBlockStyle::SBS_Empty,
+                       clang_v19::FormatStyle::ShortBlockStyle::SBS_Empty},
+                      {clang_v18::FormatStyle::ShortBlockStyle::SBS_Always,
+                       clang_v19::FormatStyle::ShortBlockStyle::SBS_Always}};
+
+constexpr frozen::unordered_map<clang_v18::FormatStyle::ShortFunctionStyle,
+                                clang_v19::FormatStyle::ShortFunctionStyle, 5>
+    short_function_style{
+        {clang_v18::FormatStyle::ShortFunctionStyle::SFS_None,
+         clang_v19::FormatStyle::ShortFunctionStyle::SFS_None},
+        {clang_v18::FormatStyle::ShortFunctionStyle::SFS_InlineOnly,
+         clang_v19::FormatStyle::ShortFunctionStyle::SFS_InlineOnly},
+        {clang_v18::FormatStyle::ShortFunctionStyle::SFS_Empty,
+         clang_v19::FormatStyle::ShortFunctionStyle::SFS_Empty},
+        {clang_v18::FormatStyle::ShortFunctionStyle::SFS_Inline,
+         clang_v19::FormatStyle::ShortFunctionStyle::SFS_Inline},
+        {clang_v18::FormatStyle::ShortFunctionStyle::SFS_All,
+         clang_v19::FormatStyle::ShortFunctionStyle::SFS_All}};
+
+constexpr frozen::unordered_map<clang_v18::FormatStyle::ShortIfStyle,
+                                clang_v19::FormatStyle::ShortIfStyle, 4>
+    short_if_style{{clang_v18::FormatStyle::ShortIfStyle::SIS_Never,
+                    clang_v19::FormatStyle::ShortIfStyle::SIS_Never},
+                   {clang_v18::FormatStyle::ShortIfStyle::SIS_WithoutElse,
+                    clang_v19::FormatStyle::ShortIfStyle::SIS_WithoutElse},
+                   {clang_v18::FormatStyle::ShortIfStyle::SIS_OnlyFirstIf,
+                    clang_v19::FormatStyle::ShortIfStyle::SIS_OnlyFirstIf},
+                   {clang_v18::FormatStyle::ShortIfStyle::SIS_AllIfsAndElse,
+                    clang_v19::FormatStyle::ShortIfStyle::SIS_AllIfsAndElse}};
+
+constexpr frozen::unordered_map<clang_v18::FormatStyle::ShortLambdaStyle,
+                                clang_v19::FormatStyle::ShortLambdaStyle, 4>
+    short_lambda_style{{clang_v18::FormatStyle::ShortLambdaStyle::SLS_None,
+                        clang_v19::FormatStyle::ShortLambdaStyle::SLS_None},
+                       {clang_v18::FormatStyle::ShortLambdaStyle::SLS_Empty,
+                        clang_v19::FormatStyle::ShortLambdaStyle::SLS_Empty},
+                       {clang_v18::FormatStyle::ShortLambdaStyle::SLS_Inline,
+                        clang_v19::FormatStyle::ShortLambdaStyle::SLS_Inline},
+                       {clang_v18::FormatStyle::ShortLambdaStyle::SLS_All,
+                        clang_v19::FormatStyle::ShortLambdaStyle::SLS_All}};
+
+constexpr frozen::unordered_map<
+    clang_v18::FormatStyle::DefinitionReturnTypeBreakingStyle,
+    clang_v19::FormatStyle::DefinitionReturnTypeBreakingStyle, 3>
+    definition_return_type_breaking_style{
+        {clang_v18::FormatStyle::DefinitionReturnTypeBreakingStyle::DRTBS_None,
+         clang_v19::FormatStyle::DefinitionReturnTypeBreakingStyle::DRTBS_None},
+        {clang_v18::FormatStyle::DefinitionReturnTypeBreakingStyle::DRTBS_All,
+         clang_v19::FormatStyle::DefinitionReturnTypeBreakingStyle::DRTBS_All},
+        {clang_v18::FormatStyle::DefinitionReturnTypeBreakingStyle::
+             DRTBS_TopLevel,
+         clang_v19::FormatStyle::DefinitionReturnTypeBreakingStyle::
+             DRTBS_TopLevel}};
+
+constexpr frozen::unordered_map<
+    clang_v18::FormatStyle::BitFieldColonSpacingStyle,
+    clang_v19::FormatStyle::BitFieldColonSpacingStyle, 4>
+    bite_field_colon_spacing_style{
+        {clang_v18::FormatStyle::BitFieldColonSpacingStyle::BFCS_Both,
+         clang_v19::FormatStyle::BitFieldColonSpacingStyle::BFCS_Both},
+        {clang_v18::FormatStyle::BitFieldColonSpacingStyle::BFCS_None,
+         clang_v19::FormatStyle::BitFieldColonSpacingStyle::BFCS_None},
+        {clang_v18::FormatStyle::BitFieldColonSpacingStyle::BFCS_Before,
+         clang_v19::FormatStyle::BitFieldColonSpacingStyle::BFCS_Before},
+        {clang_v18::FormatStyle::BitFieldColonSpacingStyle::BFCS_After,
+         clang_v19::FormatStyle::BitFieldColonSpacingStyle::BFCS_After}};
+
+constexpr frozen::unordered_map<
+    clang_v18::FormatStyle::BraceWrappingAfterControlStatementStyle,
+    clang_v19::FormatStyle::BraceWrappingAfterControlStatementStyle, 3>
+    brace_wrapping_after_control_statement_style{
+        {clang_v18::FormatStyle::BraceWrappingAfterControlStatementStyle::
+             BWACS_Never,
+         clang_v19::FormatStyle::BraceWrappingAfterControlStatementStyle::
+             BWACS_Never},
+        {clang_v18::FormatStyle::BraceWrappingAfterControlStatementStyle::
+             BWACS_MultiLine,
+         clang_v19::FormatStyle::BraceWrappingAfterControlStatementStyle::
+             BWACS_MultiLine},
+        {clang_v18::FormatStyle::BraceWrappingAfterControlStatementStyle::
+             BWACS_Always,
+         clang_v19::FormatStyle::BraceWrappingAfterControlStatementStyle::
+             BWACS_Always}};
+
+constexpr frozen::unordered_map<clang_v18::FormatStyle::AttributeBreakingStyle,
+                                clang_v19::FormatStyle::AttributeBreakingStyle,
+                                3>
+    attribute_breaking_style{
+        {clang_v18::FormatStyle::AttributeBreakingStyle::ABS_Always,
+         clang_v19::FormatStyle::AttributeBreakingStyle::ABS_Always},
+        {clang_v18::FormatStyle::AttributeBreakingStyle::ABS_Leave,
+         clang_v19::FormatStyle::AttributeBreakingStyle::ABS_Leave},
+        {clang_v18::FormatStyle::AttributeBreakingStyle::ABS_Never,
+         clang_v19::FormatStyle::AttributeBreakingStyle::ABS_Never}};
+
+constexpr frozen::unordered_map<clang_v18::FormatStyle::ReturnTypeBreakingStyle,
+                                clang_v19::FormatStyle::ReturnTypeBreakingStyle,
+                                5>
+    return_type_breaking_style{
+        {clang_v18::FormatStyle::ReturnTypeBreakingStyle::RTBS_None,
+         clang_v19::FormatStyle::ReturnTypeBreakingStyle::RTBS_None},
+        {clang_v18::FormatStyle::ReturnTypeBreakingStyle::RTBS_All,
+         clang_v19::FormatStyle::ReturnTypeBreakingStyle::RTBS_All},
+        {clang_v18::FormatStyle::ReturnTypeBreakingStyle::RTBS_TopLevel,
+         clang_v19::FormatStyle::ReturnTypeBreakingStyle::RTBS_TopLevel},
+        {clang_v18::FormatStyle::ReturnTypeBreakingStyle::RTBS_AllDefinitions,
+         clang_v19::FormatStyle::ReturnTypeBreakingStyle::RTBS_AllDefinitions},
+        {clang_v18::FormatStyle::ReturnTypeBreakingStyle::
+             RTBS_TopLevelDefinitions,
+         clang_v19::FormatStyle::ReturnTypeBreakingStyle::
+             RTBS_TopLevelDefinitions}};
+
+constexpr frozen::unordered_map<clang_v18::FormatStyle::BinaryOperatorStyle,
+                                clang_v19::FormatStyle::BinaryOperatorStyle, 3>
+    binary_operator_style{
+        {clang_v18::FormatStyle::BinaryOperatorStyle::BOS_None,
+         clang_v19::FormatStyle::BinaryOperatorStyle::BOS_None},
+        {clang_v18::FormatStyle::BinaryOperatorStyle::BOS_NonAssignment,
+         clang_v19::FormatStyle::BinaryOperatorStyle::BOS_NonAssignment},
+        {clang_v18::FormatStyle::BinaryOperatorStyle::BOS_All,
+         clang_v19::FormatStyle::BinaryOperatorStyle::BOS_All}};
+
+constexpr frozen::unordered_map<clang_v18::FormatStyle::BraceBreakingStyle,
+                                clang_v19::FormatStyle::BraceBreakingStyle, 9>
+    brace_breaking_style{
+        {clang_v18::FormatStyle::BraceBreakingStyle::BS_Attach,
+         clang_v19::FormatStyle::BraceBreakingStyle::BS_Attach},
+        {clang_v18::FormatStyle::BraceBreakingStyle::BS_Linux,
+         clang_v19::FormatStyle::BraceBreakingStyle::BS_Linux},
+        {clang_v18::FormatStyle::BraceBreakingStyle::BS_Mozilla,
+         clang_v19::FormatStyle::BraceBreakingStyle::BS_Mozilla},
+        {clang_v18::FormatStyle::BraceBreakingStyle::BS_Stroustrup,
+         clang_v19::FormatStyle::BraceBreakingStyle::BS_Stroustrup},
+        {clang_v18::FormatStyle::BraceBreakingStyle::BS_Allman,
+         clang_v19::FormatStyle::BraceBreakingStyle::BS_Allman},
+        {clang_v18::FormatStyle::BraceBreakingStyle::BS_Whitesmiths,
+         clang_v19::FormatStyle::BraceBreakingStyle::BS_Whitesmiths},
+        {clang_v18::FormatStyle::BraceBreakingStyle::BS_GNU,
+         clang_v19::FormatStyle::BraceBreakingStyle::BS_GNU},
+        {clang_v18::FormatStyle::BraceBreakingStyle::BS_WebKit,
+         clang_v19::FormatStyle::BraceBreakingStyle::BS_WebKit},
+        {clang_v18::FormatStyle::BraceBreakingStyle::BS_Custom,
+         clang_v19::FormatStyle::BraceBreakingStyle::BS_Custom}};
+
+constexpr frozen::unordered_map<
+    clang_v18::FormatStyle::BreakBeforeConceptDeclarationsStyle,
+    clang_v19::FormatStyle::BreakBeforeConceptDeclarationsStyle, 3>
+    break_before_concept_declarations_style{
+        {clang_v18::FormatStyle::BreakBeforeConceptDeclarationsStyle::
+             BBCDS_Never,
+         clang_v19::FormatStyle::BreakBeforeConceptDeclarationsStyle::
+             BBCDS_Never},
+        {clang_v18::FormatStyle::BreakBeforeConceptDeclarationsStyle::
+             BBCDS_Allowed,
+         clang_v19::FormatStyle::BreakBeforeConceptDeclarationsStyle::
+             BBCDS_Allowed},
+        {clang_v18::FormatStyle::BreakBeforeConceptDeclarationsStyle::
+             BBCDS_Always,
+         clang_v19::FormatStyle::BreakBeforeConceptDeclarationsStyle::
+             BBCDS_Always}};
+
+constexpr frozen::unordered_map<
+    clang_v18::FormatStyle::BreakBeforeInlineASMColonStyle,
+    clang_v19::FormatStyle::BreakBeforeInlineASMColonStyle, 3>
+    break_before_inline_asm_colon_style{
+        {clang_v18::FormatStyle::BreakBeforeInlineASMColonStyle::BBIAS_Never,
+         clang_v19::FormatStyle::BreakBeforeInlineASMColonStyle::BBIAS_Never},
+        {clang_v18::FormatStyle::BreakBeforeInlineASMColonStyle::
+             BBIAS_OnlyMultiline,
+         clang_v19::FormatStyle::BreakBeforeInlineASMColonStyle::
+             BBIAS_OnlyMultiline},
+        {clang_v18::FormatStyle::BreakBeforeInlineASMColonStyle::BBIAS_Always,
+         clang_v19::FormatStyle::BreakBeforeInlineASMColonStyle::BBIAS_Always}};
+
+constexpr frozen::unordered_map<
+    clang_v18::FormatStyle::BreakConstructorInitializersStyle,
+    clang_v19::FormatStyle::BreakConstructorInitializersStyle, 3>
+    break_constructor_initializers_style{
+        {clang_v18::FormatStyle::BreakConstructorInitializersStyle::
+             BCIS_BeforeColon,
+         clang_v19::FormatStyle::BreakConstructorInitializersStyle::
+             BCIS_BeforeColon},
+        {clang_v18::FormatStyle::BreakConstructorInitializersStyle::
+             BCIS_BeforeComma,
+         clang_v19::FormatStyle::BreakConstructorInitializersStyle::
+             BCIS_BeforeComma},
+        {clang_v18::FormatStyle::BreakConstructorInitializersStyle::
+             BCIS_AfterColon,
+         clang_v19::FormatStyle::BreakConstructorInitializersStyle::
+             BCIS_AfterColon}};
+
+constexpr frozen::unordered_map<
+    clang_v18::FormatStyle::BreakInheritanceListStyle,
+    clang_v19::FormatStyle::BreakInheritanceListStyle, 4>
+    break_inheritance_list_style{
+        {clang_v18::FormatStyle::BreakInheritanceListStyle::BILS_BeforeColon,
+         clang_v19::FormatStyle::BreakInheritanceListStyle::BILS_BeforeColon},
+        {clang_v18::FormatStyle::BreakInheritanceListStyle::BILS_BeforeComma,
+         clang_v19::FormatStyle::BreakInheritanceListStyle::BILS_BeforeComma},
+        {clang_v18::FormatStyle::BreakInheritanceListStyle::BILS_AfterColon,
+         clang_v19::FormatStyle::BreakInheritanceListStyle::BILS_AfterColon},
+        {clang_v18::FormatStyle::BreakInheritanceListStyle::BILS_AfterComma,
+         clang_v19::FormatStyle::BreakInheritanceListStyle::BILS_AfterComma}};
+
+constexpr frozen::unordered_map<
+    clang_v18::FormatStyle::BreakTemplateDeclarationsStyle,
+    clang_v19::FormatStyle::BreakTemplateDeclarationsStyle, 3>
+    break_template_declarations_style{
+        {clang_v18::FormatStyle::BreakTemplateDeclarationsStyle::BTDS_No,
+         clang_v19::FormatStyle::BreakTemplateDeclarationsStyle::BTDS_No},
+        {clang_v18::FormatStyle::BreakTemplateDeclarationsStyle::BTDS_MultiLine,
+         clang_v19::FormatStyle::BreakTemplateDeclarationsStyle::
+             BTDS_MultiLine},
+        {clang_v18::FormatStyle::BreakTemplateDeclarationsStyle::BTDS_Yes,
+         clang_v19::FormatStyle::BreakTemplateDeclarationsStyle::BTDS_Yes}};
+
+constexpr frozen::unordered_map<
+    clang_v18::FormatStyle::EmptyLineAfterAccessModifierStyle,
+    clang_v19::FormatStyle::EmptyLineAfterAccessModifierStyle, 3>
+    empty_line_after_access_modifier_style{
+        {clang_v18::FormatStyle::EmptyLineAfterAccessModifierStyle::
+             ELAAMS_Never,
+         clang_v19::FormatStyle::EmptyLineAfterAccessModifierStyle::
+             ELAAMS_Never},
+        {clang_v18::FormatStyle::EmptyLineAfterAccessModifierStyle::
+             ELAAMS_Leave,
+         clang_v19::FormatStyle::EmptyLineAfterAccessModifierStyle::
+             ELAAMS_Leave},
+        {clang_v18::FormatStyle::EmptyLineAfterAccessModifierStyle::
+             ELAAMS_Always,
+         clang_v19::FormatStyle::EmptyLineAfterAccessModifierStyle::
+             ELAAMS_Always}};
+
+constexpr frozen::unordered_map<
+    clang_v18::FormatStyle::EmptyLineBeforeAccessModifierStyle,
+    clang_v19::FormatStyle::EmptyLineBeforeAccessModifierStyle, 4>
+    empty_line_before_access_modifier_style{
+        {clang_v18::FormatStyle::EmptyLineBeforeAccessModifierStyle::
+             ELBAMS_Never,
+         clang_v19::FormatStyle::EmptyLineBeforeAccessModifierStyle::
+             ELBAMS_Never},
+        {clang_v18::FormatStyle::EmptyLineBeforeAccessModifierStyle::
+             ELBAMS_Leave,
+         clang_v19::FormatStyle::EmptyLineBeforeAccessModifierStyle::
+             ELBAMS_Leave},
+        {clang_v18::FormatStyle::EmptyLineBeforeAccessModifierStyle::
+             ELBAMS_LogicalBlock,
+         clang_v19::FormatStyle::EmptyLineBeforeAccessModifierStyle::
+             ELBAMS_LogicalBlock},
+        {clang_v18::FormatStyle::EmptyLineBeforeAccessModifierStyle::
+             ELBAMS_Always,
+         clang_v19::FormatStyle::EmptyLineBeforeAccessModifierStyle::
+             ELBAMS_Always}};
+
+constexpr frozen::unordered_map<clang_v18::IncludeStyle::IncludeBlocksStyle,
+                                clang_v19::IncludeStyle::IncludeBlocksStyle, 3>
+    include_blocks_style{
+        {clang_v18::IncludeStyle::IncludeBlocksStyle::IBS_Preserve,
+         clang_v19::IncludeStyle::IncludeBlocksStyle::IBS_Preserve},
+        {clang_v18::IncludeStyle::IncludeBlocksStyle::IBS_Merge,
+         clang_v19::IncludeStyle::IncludeBlocksStyle::IBS_Merge},
+        {clang_v18::IncludeStyle::IncludeBlocksStyle::IBS_Regroup,
+         clang_v19::IncludeStyle::IncludeBlocksStyle::IBS_Regroup}};
+
+void assign(std::vector<clang_v18::IncludeStyle::IncludeCategory> &lhs,
+            std::vector<clang_v19::IncludeStyle::IncludeCategory> &rhs) {
+  rhs.clear();
+  rhs.reserve(lhs.size());
+  for (const auto &item : lhs) {
+    rhs.emplace_back(clang_v19::IncludeStyle::IncludeCategory{
+        item.Regex, item.Priority, item.SortPriority, true});
+  }
+}
+
+constexpr frozen::unordered_map<clang_v18::FormatStyle::IndentExternBlockStyle,
+                                clang_v19::FormatStyle::IndentExternBlockStyle,
+                                3>
+    indent_extern_block_style{
+        {clang_v18::FormatStyle::IndentExternBlockStyle::IEBS_AfterExternBlock,
+         clang_v19::FormatStyle::IndentExternBlockStyle::IEBS_AfterExternBlock},
+        {clang_v18::FormatStyle::IndentExternBlockStyle::IEBS_NoIndent,
+         clang_v19::FormatStyle::IndentExternBlockStyle::IEBS_NoIndent},
+        {clang_v18::FormatStyle::IndentExternBlockStyle::IEBS_Indent,
+         clang_v19::FormatStyle::IndentExternBlockStyle::IEBS_Indent}};
+
+constexpr frozen::unordered_map<clang_v18::FormatStyle::PPDirectiveIndentStyle,
+                                clang_v19::FormatStyle::PPDirectiveIndentStyle,
+                                3>
+    pp_directive_indent_style{
+        {clang_v18::FormatStyle::PPDirectiveIndentStyle::PPDIS_None,
+         clang_v19::FormatStyle::PPDirectiveIndentStyle::PPDIS_None},
+        {clang_v18::FormatStyle::PPDirectiveIndentStyle::PPDIS_AfterHash,
+         clang_v19::FormatStyle::PPDirectiveIndentStyle::PPDIS_AfterHash},
+        {clang_v18::FormatStyle::PPDirectiveIndentStyle::PPDIS_BeforeHash,
+         clang_v19::FormatStyle::PPDirectiveIndentStyle::PPDIS_BeforeHash}};
+
+constexpr frozen::unordered_map<clang_v18::FormatStyle::TrailingCommaStyle,
+                                clang_v19::FormatStyle::TrailingCommaStyle, 2>
+    trailing_comma_style{
+        {clang_v18::FormatStyle::TrailingCommaStyle::TCS_None,
+         clang_v19::FormatStyle::TrailingCommaStyle::TCS_None},
+        {clang_v18::FormatStyle::TrailingCommaStyle::TCS_Wrapped,
+         clang_v19::FormatStyle::TrailingCommaStyle::TCS_Wrapped}};
+
+constexpr frozen::unordered_map<clang_v18::FormatStyle::JavaScriptQuoteStyle,
+                                clang_v19::FormatStyle::JavaScriptQuoteStyle, 3>
+    java_script_quote_style{
+        {clang_v18::FormatStyle::JavaScriptQuoteStyle::JSQS_Leave,
+         clang_v19::FormatStyle::JavaScriptQuoteStyle::JSQS_Leave},
+        {clang_v18::FormatStyle::JavaScriptQuoteStyle::JSQS_Single,
+         clang_v19::FormatStyle::JavaScriptQuoteStyle::JSQS_Single},
+        {clang_v18::FormatStyle::JavaScriptQuoteStyle::JSQS_Double,
+         clang_v19::FormatStyle::JavaScriptQuoteStyle::JSQS_Double}};
+
+constexpr frozen::unordered_map<
+    clang_v18::FormatStyle::LambdaBodyIndentationKind,
+    clang_v19::FormatStyle::LambdaBodyIndentationKind, 2>
+    lambda_body_indentation_king{
+        {clang_v18::FormatStyle::LambdaBodyIndentationKind::LBI_Signature,
+         clang_v19::FormatStyle::LambdaBodyIndentationKind::LBI_Signature},
+        {clang_v18::FormatStyle::LambdaBodyIndentationKind::LBI_OuterScope,
+         clang_v19::FormatStyle::LambdaBodyIndentationKind::LBI_OuterScope}};
+
+constexpr frozen::unordered_map<clang_v18::FormatStyle::LanguageKind,
+                                clang_v19::FormatStyle::LanguageKind, 11>
+    language_king{{clang_v18::FormatStyle::LanguageKind::LK_None,
+                   clang_v19::FormatStyle::LanguageKind::LK_None},
+                  {clang_v18::FormatStyle::LanguageKind::LK_Cpp,
+                   clang_v19::FormatStyle::LanguageKind::LK_Cpp},
+                  {clang_v18::FormatStyle::LanguageKind::LK_CSharp,
+                   clang_v19::FormatStyle::LanguageKind::LK_CSharp},
+                  {clang_v18::FormatStyle::LanguageKind::LK_Java,
+                   clang_v19::FormatStyle::LanguageKind::LK_Java},
+                  {clang_v18::FormatStyle::LanguageKind::LK_JavaScript,
+                   clang_v19::FormatStyle::LanguageKind::LK_JavaScript},
+                  {clang_v18::FormatStyle::LanguageKind::LK_Json,
+                   clang_v19::FormatStyle::LanguageKind::LK_Json},
+                  {clang_v18::FormatStyle::LanguageKind::LK_ObjC,
+                   clang_v19::FormatStyle::LanguageKind::LK_ObjC},
+                  {clang_v18::FormatStyle::LanguageKind::LK_Proto,
+                   clang_v19::FormatStyle::LanguageKind::LK_Proto},
+                  {clang_v18::FormatStyle::LanguageKind::LK_TableGen,
+                   clang_v19::FormatStyle::LanguageKind::LK_TableGen},
+                  {clang_v18::FormatStyle::LanguageKind::LK_TextProto,
+                   clang_v19::FormatStyle::LanguageKind::LK_TextProto},
+                  {clang_v18::FormatStyle::LanguageKind::LK_Verilog,
+                   clang_v19::FormatStyle::LanguageKind::LK_Verilog}};
+
+constexpr frozen::unordered_map<clang_v18::FormatStyle::LineEndingStyle,
+                                clang_v19::FormatStyle::LineEndingStyle, 4>
+    line_ending_style{{clang_v18::FormatStyle::LineEndingStyle::LE_LF,
+                       clang_v19::FormatStyle::LineEndingStyle::LE_LF},
+                      {clang_v18::FormatStyle::LineEndingStyle::LE_CRLF,
+                       clang_v19::FormatStyle::LineEndingStyle::LE_CRLF},
+                      {clang_v18::FormatStyle::LineEndingStyle::LE_DeriveLF,
+                       clang_v19::FormatStyle::LineEndingStyle::LE_DeriveLF},
+                      {clang_v18::FormatStyle::LineEndingStyle::LE_DeriveCRLF,
+                       clang_v19::FormatStyle::LineEndingStyle::LE_DeriveCRLF}};
+
+constexpr frozen::unordered_map<
+    clang_v18::FormatStyle::NamespaceIndentationKind,
+    clang_v19::FormatStyle::NamespaceIndentationKind, 3>
+    namespace_indentation_kind{
+        {clang_v18::FormatStyle::NamespaceIndentationKind::NI_None,
+         clang_v19::FormatStyle::NamespaceIndentationKind::NI_None},
+        {clang_v18::FormatStyle::NamespaceIndentationKind::NI_Inner,
+         clang_v19::FormatStyle::NamespaceIndentationKind::NI_Inner},
+        {clang_v18::FormatStyle::NamespaceIndentationKind::NI_All,
+         clang_v19::FormatStyle::NamespaceIndentationKind::NI_All}};
+
+constexpr frozen::unordered_map<clang_v18::FormatStyle::BinPackStyle,
+                                clang_v19::FormatStyle::BinPackStyle, 3>
+    bin_pack_style{{clang_v18::FormatStyle::BinPackStyle::BPS_Auto,
+                    clang_v19::FormatStyle::BinPackStyle::BPS_Auto},
+                   {clang_v18::FormatStyle::BinPackStyle::BPS_Always,
+                    clang_v19::FormatStyle::BinPackStyle::BPS_Always},
+                   {clang_v18::FormatStyle::BinPackStyle::BPS_Never,
+                    clang_v19::FormatStyle::BinPackStyle::BPS_Never}};
+
+constexpr frozen::unordered_map<
+    clang_v18::FormatStyle::PackConstructorInitializersStyle,
+    clang_v19::FormatStyle::PackConstructorInitializersStyle, 5>
+    pack_constructor_initializers_style{
+        {clang_v18::FormatStyle::PackConstructorInitializersStyle::PCIS_Never,
+         clang_v19::FormatStyle::PackConstructorInitializersStyle::PCIS_Never},
+        {clang_v18::FormatStyle::PackConstructorInitializersStyle::PCIS_BinPack,
+         clang_v19::FormatStyle::PackConstructorInitializersStyle::
+             PCIS_BinPack},
+        {clang_v18::FormatStyle::PackConstructorInitializersStyle::
+             PCIS_CurrentLine,
+         clang_v19::FormatStyle::PackConstructorInitializersStyle::
+             PCIS_CurrentLine},
+        {clang_v18::FormatStyle::PackConstructorInitializersStyle::
+             PCIS_NextLine,
+         clang_v19::FormatStyle::PackConstructorInitializersStyle::
+             PCIS_NextLine},
+        {clang_v18::FormatStyle::PackConstructorInitializersStyle::
+             PCIS_NextLineOnly,
+         clang_v19::FormatStyle::PackConstructorInitializersStyle::
+             PCIS_NextLineOnly}};
+
+constexpr frozen::unordered_map<clang_v18::FormatStyle::PointerAlignmentStyle,
+                                clang_v19::FormatStyle::PointerAlignmentStyle,
+                                3>
+    pointer_alignment_style{
+        {clang_v18::FormatStyle::PointerAlignmentStyle::PAS_Left,
+         clang_v19::FormatStyle::PointerAlignmentStyle::PAS_Left},
+        {clang_v18::FormatStyle::PointerAlignmentStyle::PAS_Right,
+         clang_v19::FormatStyle::PointerAlignmentStyle::PAS_Right},
+        {clang_v18::FormatStyle::PointerAlignmentStyle::PAS_Middle,
+         clang_v19::FormatStyle::PointerAlignmentStyle::PAS_Middle}};
+
+constexpr frozen::unordered_map<clang_v18::FormatStyle::QualifierAlignmentStyle,
+                                clang_v19::FormatStyle::QualifierAlignmentStyle,
+                                4>
+    qualifier_alignment_style{
+        {clang_v18::FormatStyle::QualifierAlignmentStyle::QAS_Leave,
+         clang_v19::FormatStyle::QualifierAlignmentStyle::QAS_Leave},
+        {clang_v18::FormatStyle::QualifierAlignmentStyle::QAS_Left,
+         clang_v19::FormatStyle::QualifierAlignmentStyle::QAS_Left},
+        {clang_v18::FormatStyle::QualifierAlignmentStyle::QAS_Right,
+         clang_v19::FormatStyle::QualifierAlignmentStyle::QAS_Right},
+        {clang_v18::FormatStyle::QualifierAlignmentStyle::QAS_Custom,
+         clang_v19::FormatStyle::QualifierAlignmentStyle::QAS_Custom}};
+
+void assign(std::vector<clang_v18::FormatStyle::RawStringFormat> &lhs,
+            std::vector<clang_v19::FormatStyle::RawStringFormat> &rhs) {
+  rhs.clear();
+  rhs.reserve(lhs.size());
+  for (const auto &item : lhs) {
+    rhs.emplace_back(clang_v19::FormatStyle::RawStringFormat{
+        language_king.at(item.Language), item.Delimiters,
+        item.EnclosingFunctions, item.CanonicalDelimiter, item.BasedOnStyle});
+  }
+}
+
+constexpr frozen::unordered_map<clang_v18::FormatStyle::ReferenceAlignmentStyle,
+                                clang_v19::FormatStyle::ReferenceAlignmentStyle,
+                                4>
+    reference_alignment_style{
+        {clang_v18::FormatStyle::ReferenceAlignmentStyle::RAS_Pointer,
+         clang_v19::FormatStyle::ReferenceAlignmentStyle::RAS_Pointer},
+        {clang_v18::FormatStyle::ReferenceAlignmentStyle::RAS_Left,
+         clang_v19::FormatStyle::ReferenceAlignmentStyle::RAS_Left},
+        {clang_v18::FormatStyle::ReferenceAlignmentStyle::RAS_Right,
+         clang_v19::FormatStyle::ReferenceAlignmentStyle::RAS_Right},
+        {clang_v18::FormatStyle::ReferenceAlignmentStyle::RAS_Middle,
+         clang_v19::FormatStyle::ReferenceAlignmentStyle::RAS_Middle}};
+
+constexpr frozen::unordered_map<clang_v18::FormatStyle::RemoveParenthesesStyle,
+                                clang_v19::FormatStyle::RemoveParenthesesStyle,
+                                3>
+    remove_parentheses_style{
+        {clang_v18::FormatStyle::RemoveParenthesesStyle::RPS_Leave,
+         clang_v19::FormatStyle::RemoveParenthesesStyle::RPS_Leave},
+        {clang_v18::FormatStyle::RemoveParenthesesStyle::
+             RPS_MultipleParentheses,
+         clang_v19::FormatStyle::RemoveParenthesesStyle::
+             RPS_MultipleParentheses},
+        {clang_v18::FormatStyle::RemoveParenthesesStyle::RPS_ReturnStatement,
+         clang_v19::FormatStyle::RemoveParenthesesStyle::RPS_ReturnStatement}};
+
+constexpr frozen::unordered_map<
+    clang_v18::FormatStyle::RequiresClausePositionStyle,
+    clang_v19::FormatStyle::RequiresClausePositionStyle, 4>
+    requires_clause_position_style{
+        {clang_v18::FormatStyle::RequiresClausePositionStyle::RCPS_OwnLine,
+         clang_v19::FormatStyle::RequiresClausePositionStyle::RCPS_OwnLine},
+        {clang_v18::FormatStyle::RequiresClausePositionStyle::
+             RCPS_WithPreceding,
+         clang_v19::FormatStyle::RequiresClausePositionStyle::
+             RCPS_WithPreceding},
+        {clang_v18::FormatStyle::RequiresClausePositionStyle::
+             RCPS_WithFollowing,
+         clang_v19::FormatStyle::RequiresClausePositionStyle::
+             RCPS_WithFollowing},
+        {clang_v18::FormatStyle::RequiresClausePositionStyle::RCPS_SingleLine,
+         clang_v19::FormatStyle::RequiresClausePositionStyle::RCPS_SingleLine}};
+
+constexpr frozen::unordered_map<
+    clang_v18::FormatStyle::RequiresExpressionIndentationKind,
+    clang_v19::FormatStyle::RequiresExpressionIndentationKind, 2>
+    requires_expression_indentation_kind{
+        {clang_v18::FormatStyle::RequiresExpressionIndentationKind::
+             REI_OuterScope,
+         clang_v19::FormatStyle::RequiresExpressionIndentationKind::
+             REI_OuterScope},
+        {clang_v18::FormatStyle::RequiresExpressionIndentationKind::REI_Keyword,
+         clang_v19::FormatStyle::RequiresExpressionIndentationKind::
+             REI_Keyword}};
+
+constexpr frozen::unordered_map<clang_v18::FormatStyle::SeparateDefinitionStyle,
+                                clang_v19::FormatStyle::SeparateDefinitionStyle,
+                                3>
+    separate_definitions_style{
+        {clang_v18::FormatStyle::SeparateDefinitionStyle::SDS_Leave,
+         clang_v19::FormatStyle::SeparateDefinitionStyle::SDS_Leave},
+        {clang_v18::FormatStyle::SeparateDefinitionStyle::SDS_Always,
+         clang_v19::FormatStyle::SeparateDefinitionStyle::SDS_Always},
+        {clang_v18::FormatStyle::SeparateDefinitionStyle::SDS_Never,
+         clang_v19::FormatStyle::SeparateDefinitionStyle::SDS_Never}};
+
+constexpr frozen::unordered_map<clang_v18::FormatStyle::SortIncludesOptions,
+                                clang_v19::FormatStyle::SortIncludesOptions, 3>
+    sort_includes_options{
+        {clang_v18::FormatStyle::SortIncludesOptions::SI_Never,
+         clang_v19::FormatStyle::SortIncludesOptions::SI_Never},
+        {clang_v18::FormatStyle::SortIncludesOptions::SI_CaseSensitive,
+         clang_v19::FormatStyle::SortIncludesOptions::SI_CaseSensitive},
+        {clang_v18::FormatStyle::SortIncludesOptions::SI_CaseInsensitive,
+         clang_v19::FormatStyle::SortIncludesOptions::SI_CaseInsensitive}};
+
+constexpr frozen::unordered_map<
+    clang_v18::FormatStyle::SortJavaStaticImportOptions,
+    clang_v19::FormatStyle::SortJavaStaticImportOptions, 2>
+    sort_java_static_import_options{
+        {clang_v18::FormatStyle::SortJavaStaticImportOptions::SJSIO_Before,
+         clang_v19::FormatStyle::SortJavaStaticImportOptions::SJSIO_Before},
+        {clang_v18::FormatStyle::SortJavaStaticImportOptions::SJSIO_After,
+         clang_v19::FormatStyle::SortJavaStaticImportOptions::SJSIO_After}};
+
+constexpr frozen::unordered_map<
+    clang_v18::FormatStyle::SortUsingDeclarationsOptions,
+    clang_v19::FormatStyle::SortUsingDeclarationsOptions, 3>
+    sort_using_declarations_options{
+        {clang_v18::FormatStyle::SortUsingDeclarationsOptions::SUD_Never,
+         clang_v19::FormatStyle::SortUsingDeclarationsOptions::SUD_Never},
+        {clang_v18::FormatStyle::SortUsingDeclarationsOptions::
+             SUD_Lexicographic,
+         clang_v19::FormatStyle::SortUsingDeclarationsOptions::
+             SUD_Lexicographic},
+        {clang_v18::FormatStyle::SortUsingDeclarationsOptions::
+             SUD_LexicographicNumeric,
+         clang_v19::FormatStyle::SortUsingDeclarationsOptions::
+             SUD_LexicographicNumeric}};
+
+constexpr frozen::unordered_map<
+    clang_v18::FormatStyle::SpaceAroundPointerQualifiersStyle,
+    clang_v19::FormatStyle::SpaceAroundPointerQualifiersStyle, 4>
+    space_around_pointer_qualifiers_style{
+        {clang_v18::FormatStyle::SpaceAroundPointerQualifiersStyle::
+             SAPQ_Default,
+         clang_v19::FormatStyle::SpaceAroundPointerQualifiersStyle::
+             SAPQ_Default},
+        {clang_v18::FormatStyle::SpaceAroundPointerQualifiersStyle::SAPQ_Before,
+         clang_v19::FormatStyle::SpaceAroundPointerQualifiersStyle::
+             SAPQ_Before},
+        {clang_v18::FormatStyle::SpaceAroundPointerQualifiersStyle::SAPQ_After,
+         clang_v19::FormatStyle::SpaceAroundPointerQualifiersStyle::SAPQ_After},
+        {clang_v18::FormatStyle::SpaceAroundPointerQualifiersStyle::SAPQ_Both,
+         clang_v19::FormatStyle::SpaceAroundPointerQualifiersStyle::SAPQ_Both}};
+
+constexpr frozen::unordered_map<clang_v18::FormatStyle::SpaceBeforeParensStyle,
+                                clang_v19::FormatStyle::SpaceBeforeParensStyle,
+                                6>
+    space_before_parens_options{
+        {clang_v18::FormatStyle::SpaceBeforeParensStyle::SBPO_Never,
+         clang_v19::FormatStyle::SpaceBeforeParensStyle::SBPO_Never},
+        {clang_v18::FormatStyle::SpaceBeforeParensStyle::SBPO_ControlStatements,
+         clang_v19::FormatStyle::SpaceBeforeParensStyle::
+             SBPO_ControlStatements},
+        {clang_v18::FormatStyle::SpaceBeforeParensStyle::
+             SBPO_ControlStatementsExceptControlMacros,
+         clang_v19::FormatStyle::SpaceBeforeParensStyle::
+             SBPO_ControlStatementsExceptControlMacros},
+        {clang_v18::FormatStyle::SpaceBeforeParensStyle::
+             SBPO_NonEmptyParentheses,
+         clang_v19::FormatStyle::SpaceBeforeParensStyle::
+             SBPO_NonEmptyParentheses},
+        {clang_v18::FormatStyle::SpaceBeforeParensStyle::SBPO_Always,
+         clang_v19::FormatStyle::SpaceBeforeParensStyle::SBPO_Always},
+        {clang_v18::FormatStyle::SpaceBeforeParensStyle::SBPO_Custom,
+         clang_v19::FormatStyle::SpaceBeforeParensStyle::SBPO_Custom}};
+
+constexpr frozen::unordered_map<clang_v18::FormatStyle::SpacesInAnglesStyle,
+                                clang_v19::FormatStyle::SpacesInAnglesStyle, 3>
+    spaces_in_angles_style{
+        {clang_v18::FormatStyle::SpacesInAnglesStyle::SIAS_Never,
+         clang_v19::FormatStyle::SpacesInAnglesStyle::SIAS_Never},
+        {clang_v18::FormatStyle::SpacesInAnglesStyle::SIAS_Always,
+         clang_v19::FormatStyle::SpacesInAnglesStyle::SIAS_Always},
+        {clang_v18::FormatStyle::SpacesInAnglesStyle::SIAS_Leave,
+         clang_v19::FormatStyle::SpacesInAnglesStyle::SIAS_Leave}};
+
+constexpr frozen::unordered_map<clang_v18::FormatStyle::SpacesInParensStyle,
+                                clang_v19::FormatStyle::SpacesInParensStyle, 2>
+    spaces_in_parens_style{
+        {clang_v18::FormatStyle::SpacesInParensStyle::SIPO_Never,
+         clang_v19::FormatStyle::SpacesInParensStyle::SIPO_Never},
+        {clang_v18::FormatStyle::SpacesInParensStyle::SIPO_Custom,
+         clang_v19::FormatStyle::SpacesInParensStyle::SIPO_Custom}};
+
+constexpr frozen::unordered_map<clang_v18::FormatStyle::LanguageStandard,
+                                clang_v19::FormatStyle::LanguageStandard, 7>
+    language_standard{{clang_v18::FormatStyle::LanguageStandard::LS_Cpp03,
+                       clang_v19::FormatStyle::LanguageStandard::LS_Cpp03},
+                      {clang_v18::FormatStyle::LanguageStandard::LS_Cpp11,
+                       clang_v19::FormatStyle::LanguageStandard::LS_Cpp11},
+                      {clang_v18::FormatStyle::LanguageStandard::LS_Cpp14,
+                       clang_v19::FormatStyle::LanguageStandard::LS_Cpp14},
+                      {clang_v18::FormatStyle::LanguageStandard::LS_Cpp17,
+                       clang_v19::FormatStyle::LanguageStandard::LS_Cpp17},
+                      {clang_v18::FormatStyle::LanguageStandard::LS_Cpp20,
+                       clang_v19::FormatStyle::LanguageStandard::LS_Cpp20},
+                      {clang_v18::FormatStyle::LanguageStandard::LS_Latest,
+                       clang_v19::FormatStyle::LanguageStandard::LS_Latest},
+                      {clang_v18::FormatStyle::LanguageStandard::LS_Auto,
+                       clang_v19::FormatStyle::LanguageStandard::LS_Auto}};
+
+constexpr frozen::unordered_map<clang_v18::FormatStyle::UseTabStyle,
+                                clang_v19::FormatStyle::UseTabStyle, 5>
+    use_tab_style{
+        {clang_v18::FormatStyle::UseTabStyle::UT_Never,
+         clang_v19::FormatStyle::UseTabStyle::UT_Never},
+        {clang_v18::FormatStyle::UseTabStyle::UT_ForIndentation,
+         clang_v19::FormatStyle::UseTabStyle::UT_ForIndentation},
+        {clang_v18::FormatStyle::UseTabStyle::UT_ForContinuationAndIndentation,
+         clang_v19::FormatStyle::UseTabStyle::UT_ForContinuationAndIndentation},
+        {clang_v18::FormatStyle::UseTabStyle::UT_AlignWithSpaces,
+         clang_v19::FormatStyle::UseTabStyle::UT_AlignWithSpaces},
+        {clang_v18::FormatStyle::UseTabStyle::UT_Always,
+         clang_v19::FormatStyle::UseTabStyle::UT_Always}};
+
+clang_v19::FormatStyle update(clang_v18::FormatStyle &old,
+                              const std::string &style) {
+  clang_v19::FormatStyle retval;
+  if (!clang_v19::getPredefinedStyle(
+          style, clang_v19::FormatStyle::LanguageKind::LK_Cpp, &retval)) {
+    throw std::runtime_error("Failed to load " + style + " style.");
+  }
+
+  retval.InheritsParentConfig = old.InheritsParentConfig;
+  retval.AccessModifierOffset = old.AccessModifierOffset;
+  retval.AlignAfterOpenBracket =
+      bracket_all_alignment_style.at(old.AlignAfterOpenBracket);
+  retval.AlignArrayOfStructures =
+      array_initializer_alignment_style.at(old.AlignArrayOfStructures);
+  retval.AlignConsecutiveMacros.Enabled = old.AlignConsecutiveMacros.Enabled;
+  retval.AlignConsecutiveMacros.AcrossEmptyLines =
+      old.AlignConsecutiveMacros.AcrossEmptyLines;
+  retval.AlignConsecutiveMacros.AcrossComments =
+      old.AlignConsecutiveMacros.AcrossComments;
+  retval.AlignConsecutiveMacros.AlignCompound =
+      old.AlignConsecutiveMacros.AlignCompound;
+  retval.AlignConsecutiveMacros.AlignFunctionPointers =
+      old.AlignConsecutiveMacros.AlignFunctionPointers;
+  retval.AlignConsecutiveMacros.PadOperators =
+      old.AlignConsecutiveMacros.PadOperators;
+  retval.AlignConsecutiveAssignments.Enabled =
+      old.AlignConsecutiveAssignments.Enabled;
+  retval.AlignConsecutiveAssignments.AcrossEmptyLines =
+      old.AlignConsecutiveAssignments.AcrossEmptyLines;
+  retval.AlignConsecutiveAssignments.AcrossComments =
+      old.AlignConsecutiveAssignments.AcrossComments;
+  retval.AlignConsecutiveAssignments.AlignCompound =
+      old.AlignConsecutiveAssignments.AlignCompound;
+  retval.AlignConsecutiveAssignments.AlignFunctionPointers =
+      old.AlignConsecutiveAssignments.AlignFunctionPointers;
+  retval.AlignConsecutiveAssignments.PadOperators =
+      old.AlignConsecutiveAssignments.PadOperators;
+  retval.AlignConsecutiveBitFields.Enabled =
+      old.AlignConsecutiveBitFields.Enabled;
+  retval.AlignConsecutiveBitFields.AcrossEmptyLines =
+      old.AlignConsecutiveBitFields.AcrossEmptyLines;
+  retval.AlignConsecutiveBitFields.AcrossComments =
+      old.AlignConsecutiveBitFields.AcrossComments;
+  retval.AlignConsecutiveBitFields.AlignCompound =
+      old.AlignConsecutiveBitFields.AlignCompound;
+  retval.AlignConsecutiveBitFields.AlignFunctionPointers =
+      old.AlignConsecutiveBitFields.AlignFunctionPointers;
+  retval.AlignConsecutiveBitFields.PadOperators =
+      old.AlignConsecutiveBitFields.PadOperators;
+  retval.AlignConsecutiveDeclarations.Enabled =
+      old.AlignConsecutiveDeclarations.Enabled;
+  retval.AlignConsecutiveDeclarations.AcrossEmptyLines =
+      old.AlignConsecutiveDeclarations.AcrossEmptyLines;
+  retval.AlignConsecutiveDeclarations.AcrossComments =
+      old.AlignConsecutiveDeclarations.AcrossComments;
+  retval.AlignConsecutiveDeclarations.AlignCompound =
+      old.AlignConsecutiveDeclarations.AlignCompound;
+  retval.AlignConsecutiveDeclarations.AlignFunctionPointers =
+      old.AlignConsecutiveDeclarations.AlignFunctionPointers;
+  retval.AlignConsecutiveDeclarations.PadOperators =
+      old.AlignConsecutiveDeclarations.PadOperators;
+  retval.AlignConsecutiveShortCaseStatements.Enabled =
+      old.AlignConsecutiveShortCaseStatements.Enabled;
+  retval.AlignConsecutiveShortCaseStatements.AcrossEmptyLines =
+      old.AlignConsecutiveShortCaseStatements.AcrossEmptyLines;
+  retval.AlignConsecutiveShortCaseStatements.AcrossComments =
+      old.AlignConsecutiveShortCaseStatements.AcrossComments;
+  newField("AlignConsecutiveShortCaseStatements.AlignCaseArrows", "19",
+           retval.AlignConsecutiveShortCaseStatements.AlignCaseArrows);
+  retval.AlignConsecutiveShortCaseStatements.AlignCaseColons =
+      old.AlignConsecutiveShortCaseStatements.AlignCaseColons;
+  newField("AlignConsecutiveTableGenBreakingDAGArgColons.Enabled", "19",
+           retval.AlignConsecutiveTableGenBreakingDAGArgColons.Enabled);
+  newField(
+      "AlignConsecutiveTableGenBreakingDAGArgColons.AcrossEmptyLines", "19",
+      retval.AlignConsecutiveTableGenBreakingDAGArgColons.AcrossEmptyLines);
+  newField("AlignConsecutiveTableGenBreakingDAGArgColons.AcrossComments", "19",
+           retval.AlignConsecutiveTableGenBreakingDAGArgColons.AcrossComments);
+  newField("AlignConsecutiveTableGenBreakingDAGArgColons.AlignCompound", "19",
+           retval.AlignConsecutiveTableGenBreakingDAGArgColons.AlignCompound);
+  newField("AlignConsecutiveTableGenBreakingDAGArgColons.AlignFunctionPointers",
+           "19",
+           retval.AlignConsecutiveTableGenBreakingDAGArgColons
+               .AlignFunctionPointers);
+  newField("AlignConsecutiveTableGenBreakingDAGArgColons.PadOperators", "19",
+           retval.AlignConsecutiveTableGenBreakingDAGArgColons.PadOperators);
+  newField("AlignConsecutiveTableGenCondOperatorColons.Enabled", "19",
+           retval.AlignConsecutiveTableGenCondOperatorColons.Enabled);
+  newField("AlignConsecutiveTableGenCondOperatorColons.AcrossEmptyLines", "19",
+           retval.AlignConsecutiveTableGenCondOperatorColons.AcrossEmptyLines);
+  newField("AlignConsecutiveTableGenCondOperatorColons.AcrossComments", "19",
+           retval.AlignConsecutiveTableGenCondOperatorColons.AcrossComments);
+  newField("AlignConsecutiveTableGenCondOperatorColons.AlignCompound", "19",
+           retval.AlignConsecutiveTableGenCondOperatorColons.AlignCompound);
+  newField(
+      "AlignConsecutiveTableGenCondOperatorColons.AlignFunctionPointers", "19",
+      retval.AlignConsecutiveTableGenCondOperatorColons.AlignFunctionPointers);
+  newField("AlignConsecutiveTableGenCondOperatorColons.PadOperators", "19",
+           retval.AlignConsecutiveTableGenCondOperatorColons.PadOperators);
+  newField("AlignConsecutiveTableGenDefinitionColons.Enabled", "19",
+           retval.AlignConsecutiveTableGenDefinitionColons.Enabled);
+  newField("AlignConsecutiveTableGenDefinitionColons.AcrossEmptyLines", "19",
+           retval.AlignConsecutiveTableGenDefinitionColons.AcrossEmptyLines);
+  newField("AlignConsecutiveTableGenDefinitionColons.AcrossComments", "19",
+           retval.AlignConsecutiveTableGenDefinitionColons.AcrossComments);
+  newField("AlignConsecutiveTableGenDefinitionColons.AlignCompound", "19",
+           retval.AlignConsecutiveTableGenDefinitionColons.AlignCompound);
+  newField(
+      "AlignConsecutiveTableGenDefinitionColons.AlignFunctionPointers", "19",
+      retval.AlignConsecutiveTableGenDefinitionColons.AlignFunctionPointers);
+  newField("AlignConsecutiveTableGenDefinitionColons.PadOperators", "19",
+           retval.AlignConsecutiveTableGenDefinitionColons.PadOperators);
+  retval.AlignEscapedNewlines =
+      escaped_new_line_alignment_style.at(old.AlignEscapedNewlines);
+  improveField("AlignEscapedNewlines", "LeftWithLastLine", "19");
+  retval.AlignOperands = operand_alignment_style.at(old.AlignOperands);
+  retval.AlignTrailingComments.Kind =
+      trailing_comments_alignment_kinds.at(old.AlignTrailingComments.Kind);
+  retval.AlignTrailingComments.OverEmptyLines =
+      old.AlignTrailingComments.OverEmptyLines;
+  retval.AllowAllArgumentsOnNextLine = old.AllowAllArgumentsOnNextLine;
+  retval.AllowAllParametersOfDeclarationOnNextLine =
+      old.AllowAllParametersOfDeclarationOnNextLine;
+  retval.AllowBreakBeforeNoexceptSpecifier =
+      break_before_noexcept_specifier_style.at(
+          old.AllowBreakBeforeNoexceptSpecifier);
+  retval.AllowShortBlocksOnASingleLine =
+      short_block_style.at(old.AllowShortBlocksOnASingleLine);
+  newField("AllowShortCaseExpressionOnASingleLine", "19",
+           retval.AllowShortCaseExpressionOnASingleLine);
+  retval.AllowShortCaseLabelsOnASingleLine =
+      old.AllowShortCaseLabelsOnASingleLine;
+  retval.AllowShortCompoundRequirementOnASingleLine =
+      old.AllowShortCompoundRequirementOnASingleLine;
+  retval.AllowShortEnumsOnASingleLine = old.AllowShortEnumsOnASingleLine;
+  retval.AllowShortFunctionsOnASingleLine =
+      short_function_style.at(old.AllowShortFunctionsOnASingleLine);
+  retval.AllowShortIfStatementsOnASingleLine =
+      short_if_style.at(old.AllowShortIfStatementsOnASingleLine);
+  retval.AllowShortLambdasOnASingleLine =
+      short_lambda_style.at(old.AllowShortLambdasOnASingleLine);
+  retval.AllowShortLoopsOnASingleLine = old.AllowShortLoopsOnASingleLine;
+  retval.AlwaysBreakAfterDefinitionReturnType =
+      definition_return_type_breaking_style.at(
+          old.AlwaysBreakAfterDefinitionReturnType);
+  retval.AlwaysBreakBeforeMultilineStrings =
+      old.AlwaysBreakBeforeMultilineStrings;
+  retval.AttributeMacros = old.AttributeMacros;
+  retval.BinPackArguments = old.BinPackArguments;
+  retval.BinPackParameters = old.BinPackParameters;
+  retval.BitFieldColonSpacing =
+      bite_field_colon_spacing_style.at(old.BitFieldColonSpacing);
+  retval.BracedInitializerIndentWidth = old.BracedInitializerIndentWidth;
+  retval.BraceWrapping.AfterCaseLabel = old.BraceWrapping.AfterCaseLabel;
+  retval.BraceWrapping.AfterClass = old.BraceWrapping.AfterClass;
+  retval.BraceWrapping.AfterControlStatement =
+      brace_wrapping_after_control_statement_style.at(
+          old.BraceWrapping.AfterControlStatement);
+  retval.BraceWrapping.AfterEnum = old.BraceWrapping.AfterEnum;
+  retval.BraceWrapping.AfterFunction = old.BraceWrapping.AfterFunction;
+  retval.BraceWrapping.AfterNamespace = old.BraceWrapping.AfterNamespace;
+  retval.BraceWrapping.AfterObjCDeclaration =
+      old.BraceWrapping.AfterObjCDeclaration;
+  retval.BraceWrapping.AfterStruct = old.BraceWrapping.AfterStruct;
+  retval.BraceWrapping.AfterUnion = old.BraceWrapping.AfterUnion;
+  retval.BraceWrapping.AfterExternBlock = old.BraceWrapping.AfterExternBlock;
+  retval.BraceWrapping.BeforeCatch = old.BraceWrapping.BeforeCatch;
+  retval.BraceWrapping.BeforeElse = old.BraceWrapping.BeforeElse;
+  retval.BraceWrapping.BeforeLambdaBody = old.BraceWrapping.BeforeLambdaBody;
+  retval.BraceWrapping.BeforeWhile = old.BraceWrapping.BeforeWhile;
+  retval.BraceWrapping.IndentBraces = old.BraceWrapping.IndentBraces;
+  retval.BraceWrapping.SplitEmptyFunction =
+      old.BraceWrapping.SplitEmptyFunction;
+  retval.BraceWrapping.SplitEmptyRecord = old.BraceWrapping.SplitEmptyRecord;
+  retval.BraceWrapping.SplitEmptyNamespace =
+      old.BraceWrapping.SplitEmptyNamespace;
+  retval.BreakAdjacentStringLiterals = old.BreakAdjacentStringLiterals;
+  retval.BreakAfterAttributes =
+      attribute_breaking_style.at(old.BreakAfterAttributes);
+  assignWithWarning(
+      "AlwaysBreakAfterReturnType", old.AlwaysBreakAfterReturnType,
+      "BreakAfterReturnType", retval.BreakAfterReturnType,
+      return_type_breaking_style.at(old.AlwaysBreakAfterReturnType), "19");
+  improveField("BreakAfterReturnType", "Automatic", "19");
+  improveField("BreakAfterReturnType", "ExceptShortType", "19");
+  retval.BreakArrays = old.BreakArrays;
+  retval.BreakBeforeBinaryOperators =
+      binary_operator_style.at(old.BreakBeforeBinaryOperators);
+  retval.BreakBeforeBraces = brace_breaking_style.at(old.BreakBeforeBraces);
+  retval.BreakBeforeConceptDeclarations =
+      break_before_concept_declarations_style.at(
+          old.BreakBeforeConceptDeclarations);
+  retval.BreakBeforeInlineASMColon =
+      break_before_inline_asm_colon_style.at(old.BreakBeforeInlineASMColon);
+  retval.BreakBeforeTernaryOperators = old.BreakBeforeTernaryOperators;
+  retval.BreakConstructorInitializers =
+      break_constructor_initializers_style.at(old.BreakConstructorInitializers);
+  newField("BreakFunctionDefinitionParameters", "19",
+           retval.BreakFunctionDefinitionParameters);
+  retval.BreakAfterJavaFieldAnnotations = old.BreakAfterJavaFieldAnnotations;
+  retval.BreakStringLiterals = old.BreakStringLiterals;
+  retval.ColumnLimit = old.ColumnLimit;
+  retval.CommentPragmas = old.CommentPragmas;
+  retval.BreakInheritanceList =
+      break_inheritance_list_style.at(old.BreakInheritanceList);
+  assignWithWarning(
+      "AlwaysBreakTemplateDeclarations", old.AlwaysBreakTemplateDeclarations,
+      "BreakTemplateDeclarations", retval.BreakTemplateDeclarations,
+      break_template_declarations_style.at(old.AlwaysBreakTemplateDeclarations),
+      "19");
+  improveField("BreakTemplateDeclarations", "Leave", "19");
+  retval.CompactNamespaces = old.CompactNamespaces;
+  retval.ConstructorInitializerIndentWidth =
+      old.ConstructorInitializerIndentWidth;
+  retval.ContinuationIndentWidth = old.ContinuationIndentWidth;
+  retval.Cpp11BracedListStyle = old.Cpp11BracedListStyle;
+  retval.DerivePointerAlignment = old.DerivePointerAlignment;
+  retval.DisableFormat = old.DisableFormat;
+  retval.EmptyLineAfterAccessModifier =
+      empty_line_after_access_modifier_style.at(
+          old.EmptyLineAfterAccessModifier);
+  retval.EmptyLineBeforeAccessModifier =
+      empty_line_before_access_modifier_style.at(
+          old.EmptyLineBeforeAccessModifier);
+  retval.ExperimentalAutoDetectBinPacking =
+      old.ExperimentalAutoDetectBinPacking;
+  retval.FixNamespaceComments = old.FixNamespaceComments;
+  retval.ForEachMacros = old.ForEachMacros;
+  retval.IncludeStyle.IncludeBlocks =
+      include_blocks_style.at(old.IncludeStyle.IncludeBlocks);
+  assign(old.IncludeStyle.IncludeCategories,
+         retval.IncludeStyle.IncludeCategories);
+  retval.IncludeStyle.IncludeIsMainRegex = old.IncludeStyle.IncludeIsMainRegex;
+  retval.IncludeStyle.IncludeIsMainSourceRegex =
+      old.IncludeStyle.IncludeIsMainSourceRegex;
+  newField("IncludeStyle.MainIncludeChar", "19",
+           retval.IncludeStyle.MainIncludeChar);
+  retval.IfMacros = old.IfMacros;
+  retval.IndentAccessModifiers = old.IndentAccessModifiers;
+  retval.IndentCaseBlocks = old.IndentCaseBlocks;
+  retval.IndentCaseLabels = old.IndentCaseLabels;
+  retval.IndentGotoLabels = old.IndentGotoLabels;
+  retval.IndentExternBlock =
+      indent_extern_block_style.at(old.IndentExternBlock);
+  retval.IndentPPDirectives =
+      pp_directive_indent_style.at(old.IndentPPDirectives);
+  retval.IndentRequiresClause = old.IndentRequiresClause;
+  retval.IndentWidth = old.IndentWidth;
+  retval.IndentWrappedFunctionNames = old.IndentWrappedFunctionNames;
+  retval.InsertBraces = old.InsertBraces;
+  retval.InsertNewlineAtEOF = old.InsertNewlineAtEOF;
+  retval.InsertTrailingCommas =
+      trailing_comma_style.at(old.InsertTrailingCommas);
+  retval.IntegerLiteralSeparator.Binary = old.IntegerLiteralSeparator.Binary;
+  retval.IntegerLiteralSeparator.BinaryMinDigits =
+      old.IntegerLiteralSeparator.BinaryMinDigits;
+  retval.IntegerLiteralSeparator.Decimal = old.IntegerLiteralSeparator.Decimal;
+  retval.IntegerLiteralSeparator.DecimalMinDigits =
+      old.IntegerLiteralSeparator.DecimalMinDigits;
+  retval.IntegerLiteralSeparator.Hex = old.IntegerLiteralSeparator.Hex;
+  retval.IntegerLiteralSeparator.HexMinDigits =
+      old.IntegerLiteralSeparator.HexMinDigits;
+  retval.JavaImportGroups = old.JavaImportGroups;
+  retval.JavaScriptQuotes = java_script_quote_style.at(old.JavaScriptQuotes);
+  retval.JavaScriptWrapImports = old.JavaScriptWrapImports;
+  assignWithWarning("KeepEmptyLinesAtEOF", old.KeepEmptyLinesAtEOF,
+                    "KeepEmptyLines.AtEndOfFile",
+                    retval.KeepEmptyLines.AtEndOfFile, old.KeepEmptyLinesAtEOF,
+                    "19");
+  assignWithWarning(
+      "KeepEmptyLinesAtTheStartOfBlocks", old.KeepEmptyLinesAtTheStartOfBlocks,
+      "KeepEmptyLines.AtStartOfBlock", retval.KeepEmptyLines.AtStartOfBlock,
+      old.KeepEmptyLinesAtTheStartOfBlocks, "19");
+  newField("KeepEmptyLines.AtStartOfFile", "19",
+           retval.KeepEmptyLines.AtStartOfFile);
+  retval.LambdaBodyIndentation =
+      lambda_body_indentation_king.at(old.LambdaBodyIndentation);
+  retval.Language = language_king.at(old.Language);
+  retval.LineEnding = line_ending_style.at(old.LineEnding);
+  retval.MacroBlockBegin = old.MacroBlockBegin;
+  retval.MacroBlockEnd = old.MacroBlockEnd;
+  retval.Macros = old.Macros;
+  retval.MaxEmptyLinesToKeep = old.MaxEmptyLinesToKeep;
+
+  retval.NamespaceIndentation =
+      namespace_indentation_kind.at(old.NamespaceIndentation);
+  retval.NamespaceMacros = old.NamespaceMacros;
+  retval.ObjCBinPackProtocolList =
+      bin_pack_style.at(old.ObjCBinPackProtocolList);
+  retval.ObjCBlockIndentWidth = old.ObjCBlockIndentWidth;
+  retval.ObjCBreakBeforeNestedBlockParam = old.ObjCBreakBeforeNestedBlockParam;
+  retval.ObjCPropertyAttributeOrder = old.ObjCPropertyAttributeOrder;
+  retval.ObjCSpaceAfterProperty = old.ObjCSpaceAfterProperty;
+  retval.ObjCSpaceBeforeProtocolList = old.ObjCSpaceBeforeProtocolList;
+  retval.PackConstructorInitializers =
+      pack_constructor_initializers_style.at(old.PackConstructorInitializers);
+  retval.PenaltyBreakAssignment = old.PenaltyBreakAssignment;
+  retval.PenaltyBreakBeforeFirstCallParameter =
+      old.PenaltyBreakBeforeFirstCallParameter;
+  retval.PenaltyBreakComment = old.PenaltyBreakComment;
+  retval.PenaltyBreakFirstLessLess = old.PenaltyBreakFirstLessLess;
+  retval.PenaltyBreakOpenParenthesis = old.PenaltyBreakOpenParenthesis;
+  retval.PenaltyBreakScopeResolution = old.PenaltyBreakScopeResolution;
+  retval.PenaltyBreakString = old.PenaltyBreakString;
+  retval.PenaltyBreakTemplateDeclaration = old.PenaltyBreakTemplateDeclaration;
+  retval.PenaltyExcessCharacter = old.PenaltyExcessCharacter;
+  retval.PenaltyIndentedWhitespace = old.PenaltyIndentedWhitespace;
+  retval.PenaltyReturnTypeOnItsOwnLine = old.PenaltyReturnTypeOnItsOwnLine;
+  retval.PointerAlignment = pointer_alignment_style.at(old.PointerAlignment);
+  retval.PPIndentWidth = old.PPIndentWidth;
+  retval.QualifierAlignment =
+      qualifier_alignment_style.at(old.QualifierAlignment);
+  retval.QualifierOrder = old.QualifierOrder;
+  assign(old.RawStringFormats, retval.RawStringFormats);
+  retval.ReferenceAlignment =
+      reference_alignment_style.at(old.ReferenceAlignment);
+  retval.ReflowComments = old.ReflowComments;
+  retval.RemoveBracesLLVM = old.RemoveBracesLLVM;
+  retval.RemoveParentheses = remove_parentheses_style.at(old.RemoveParentheses);
+  retval.RemoveSemicolon = old.RemoveSemicolon;
+  retval.RequiresClausePosition =
+      requires_clause_position_style.at(old.RequiresClausePosition);
+  retval.RequiresExpressionIndentation =
+      requires_expression_indentation_kind.at(
+          old.RequiresExpressionIndentation);
+  retval.SeparateDefinitionBlocks =
+      separate_definitions_style.at(old.SeparateDefinitionBlocks);
+  retval.ShortNamespaceLines = old.ShortNamespaceLines;
+  retval.SkipMacroDefinitionBody = old.SkipMacroDefinitionBody;
+  retval.SortIncludes = sort_includes_options.at(old.SortIncludes);
+  retval.SortJavaStaticImport =
+      sort_java_static_import_options.at(old.SortJavaStaticImport);
+  retval.SortUsingDeclarations =
+      sort_using_declarations_options.at(old.SortUsingDeclarations);
+  retval.SpaceAfterCStyleCast = old.SpaceAfterCStyleCast;
+  retval.SpaceAfterLogicalNot = old.SpaceAfterLogicalNot;
+  retval.SpaceAfterTemplateKeyword = old.SpaceAfterTemplateKeyword;
+  retval.SpaceAroundPointerQualifiers =
+      space_around_pointer_qualifiers_style.at(
+          old.SpaceAroundPointerQualifiers);
+  retval.SpaceBeforeAssignmentOperators = old.SpaceBeforeAssignmentOperators;
+  retval.SpaceBeforeCaseColon = old.SpaceBeforeCaseColon;
+  retval.SpaceBeforeCpp11BracedList = old.SpaceBeforeCpp11BracedList;
+  retval.SpaceBeforeCtorInitializerColon = old.SpaceBeforeCtorInitializerColon;
+  retval.SpaceBeforeInheritanceColon = old.SpaceBeforeInheritanceColon;
+  retval.SpaceBeforeJsonColon = old.SpaceBeforeJsonColon;
+  retval.SpaceBeforeParens =
+      space_before_parens_options.at(old.SpaceBeforeParens);
+  retval.SpaceBeforeParensOptions.AfterControlStatements =
+      old.SpaceBeforeParensOptions.AfterControlStatements;
+  retval.SpaceBeforeParensOptions.AfterForeachMacros =
+      old.SpaceBeforeParensOptions.AfterForeachMacros;
+  retval.SpaceBeforeParensOptions.AfterFunctionDeclarationName =
+      old.SpaceBeforeParensOptions.AfterFunctionDeclarationName;
+  retval.SpaceBeforeParensOptions.AfterFunctionDefinitionName =
+      old.SpaceBeforeParensOptions.AfterFunctionDefinitionName;
+  retval.SpaceBeforeParensOptions.AfterIfMacros =
+      old.SpaceBeforeParensOptions.AfterIfMacros;
+  retval.SpaceBeforeParensOptions.AfterOverloadedOperator =
+      old.SpaceBeforeParensOptions.AfterOverloadedOperator;
+  retval.SpaceBeforeParensOptions.AfterPlacementOperator =
+      old.SpaceBeforeParensOptions.AfterPlacementOperator;
+  retval.SpaceBeforeParensOptions.AfterRequiresInClause =
+      old.SpaceBeforeParensOptions.AfterRequiresInClause;
+  retval.SpaceBeforeParensOptions.AfterRequiresInExpression =
+      old.SpaceBeforeParensOptions.AfterRequiresInExpression;
+  retval.SpaceBeforeParensOptions.BeforeNonEmptyParentheses =
+      old.SpaceBeforeParensOptions.BeforeNonEmptyParentheses;
+  retval.SpaceBeforeSquareBrackets = old.SpaceBeforeSquareBrackets;
+  retval.SpaceBeforeRangeBasedForLoopColon =
+      old.SpaceBeforeRangeBasedForLoopColon;
+  retval.SpaceInEmptyBlock = old.SpaceInEmptyBlock;
+  retval.SpacesBeforeTrailingComments = old.SpacesBeforeTrailingComments;
+  retval.SpacesInAngles = spaces_in_angles_style.at(old.SpacesInAngles);
+  retval.SpacesInContainerLiterals = old.SpacesInContainerLiterals;
+  retval.SpacesInLineCommentPrefix.Minimum =
+      old.SpacesInLineCommentPrefix.Minimum;
+  retval.SpacesInLineCommentPrefix.Maximum =
+      old.SpacesInLineCommentPrefix.Maximum;
+  retval.SpacesInParens = spaces_in_parens_style.at(old.SpacesInParens);
+  newField("SpacesInParensOptions.ExceptDoubleParentheses", "19",
+           retval.SpacesInParensOptions.ExceptDoubleParentheses);
+  retval.SpacesInParensOptions.InConditionalStatements =
+      old.SpacesInParensOptions.InConditionalStatements;
+  retval.SpacesInParensOptions.InCStyleCasts =
+      old.SpacesInParensOptions.InCStyleCasts;
+  retval.SpacesInParensOptions.InEmptyParentheses =
+      old.SpacesInParensOptions.InEmptyParentheses;
+  retval.SpacesInParensOptions.Other = old.SpacesInParensOptions.Other;
+  retval.SpacesInSquareBrackets = old.SpacesInSquareBrackets;
+  retval.Standard = language_standard.at(old.Standard);
+  retval.StatementAttributeLikeMacros = old.StatementAttributeLikeMacros;
+  retval.StatementMacros = old.StatementMacros;
+  newField("TableGenBreakingDAGArgOperators", "19",
+           retval.TableGenBreakingDAGArgOperators);
+  newField("TableGenBreakInsideDAGArg", "19", retval.TableGenBreakInsideDAGArg);
+  retval.TabWidth = old.TabWidth;
+  retval.TypeNames = old.TypeNames;
+  retval.TypenameMacros = old.TypenameMacros;
+  retval.UseTab = use_tab_style.at(old.UseTab);
+  retval.VerilogBreakBetweenInstancePorts =
+      old.VerilogBreakBetweenInstancePorts;
+  retval.WhitespaceSensitiveMacros = old.WhitespaceSensitiveMacros;
+
+  return retval;
+}
+
+} // namespace clang_update_v19
