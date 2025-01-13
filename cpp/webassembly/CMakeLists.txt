@@ -46,10 +46,10 @@ set(LLVM_USE_SANITIZER
     "${LIST_SANITIZER}"
     CACHE STRING "Define the sanitizer used to build binaries and tests.")
 
+add_subdirectory(../third_party/llvm/llvm llvm_build EXCLUDE_FROM_ALL)
+
 include(CheckIPOSupported)
 check_ipo_supported(RESULT ipo_supported OUTPUT error)
-
-add_subdirectory(../third_party/llvm/llvm llvm_build EXCLUDE_FROM_ALL)
 
 add_executable(web_demangler)
 target_sources(

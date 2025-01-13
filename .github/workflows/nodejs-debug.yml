@@ -21,14 +21,14 @@ jobs:
       - name: ccache
         uses: hendrikmuhs/ccache-action@v1.2
         with:
-          max-size: "1000M"
+          max-size: "1500M"
           key: ${{ github.job }}-Debug
       - name: Install dependencies
         run: |
           wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | sudo tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc
           sudo apt-add-repository -y 'deb https://apt.llvm.org/jammy/ llvm-toolchain-jammy-19 main'
           sudo apt-get remove --purge -y '*clang*' '*llvm*'
-          sudo apt-get install -y ninja-build clang-19 libclang-19-dev llvm-19-dev
+          sudo apt-get install -y ninja-build clang-19 libclang-19-dev llvm-19-dev lld-19
       - name: Generate Format.h wrapper
         run: |
           cmake -S cpp/native -B build_utils -G Ninja -DCMAKE_BUILD_TYPE=Debug
@@ -60,6 +60,12 @@ jobs:
           ng test --browsers=ChromeHeadless --watch=false
           ng build --configuration development
           cd ..
+      - name: Run tests
+        run: |
+          cmake -S cpp/tests/ -B build_tests_debug -DWITH_SANITIZE_ADDRESS=ON -DWITH_SANITIZE_UNDEFINED=ON -G "Ninja" -DCMAKE_BUILD_TYPE="Debug" -DCMAKE_C_COMPILER=/usr/bin/clang-19 -DCMAKE_CXX_COMPILER=/usr/bin/clang++-19 -DCMAKE_AR=/usr/bin/llvm-ar-19 -DCMAKE_AS=/usr/bin/llvm-as-19 -DCMAKE_RANLIB=/usr/bin/llvm-ranlib-19 -DCMAKE_LINKER_TYPE=LLD -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+          cmake --build build_tests_debug --parallel $(nproc --all)
+          cd build_tests_debug
+          ctest
       - name: Register website in known_hosts
         run: |
           mkdir /home/runner/.ssh
