@@ -872,3 +872,20 @@ TEST_CASE("getCompatibleVersion", "[clang-format-options-update]") {
     }
   }
 }
+
+TEST_CASE("updateEnum", "[clang-format-options-update]") {
+  {
+    clang_v3_3::FormatStyle style3_3_old = clang_v3_3::getGoogleStyle();
+    clang_v3_4::FormatStyle style3_4_new;
+    clang_update_v3_4::update<clang_vx::Update::UPGRADE>(
+        style3_3_old, style3_4_new, "google");
+
+    clang_v3_4::FormatStyle style3_4_old = clang_v3_4::getGoogleStyle();
+    clang_v3_3::FormatStyle style3_3_new;
+    clang_update_v3_4::update<clang_vx::Update::DOWNGRADE>(
+        style3_3_new, style3_4_old, "google");
+
+    REQUIRE(style3_3_old == style3_3_new);
+    REQUIRE(style3_4_old == style3_4_new);
+  }
+}

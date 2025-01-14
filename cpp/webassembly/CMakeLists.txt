@@ -254,6 +254,7 @@ target_include_directories(
           ${LLVM_BINARY_DIR}/tools/clang/include
           "${CMAKE_CURRENT_SOURCE_DIR}/../third_party/pfr/include"
           "${CMAKE_CURRENT_SOURCE_DIR}/../third_party/frozen/include"
+          "${CMAKE_CURRENT_SOURCE_DIR}/../third_party/magic_enum/include"
           ${LLVM_BINARY_DIR}/include)
 target_compile_options(web_clang_format_options_update
                        PRIVATE "-fexceptions" "$<$<CONFIG:Debug>:-O1>")

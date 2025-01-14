@@ -22,10 +22,15 @@
 #include "8.0.1/Format.h"
 #include "9.0.1/Format.h"
 
+namespace clang_vx {
+enum class Update { DOWNGRADE, UPGRADE };
+}
+
 namespace clang_update_v3_4 {
 
-clang_v3_4::FormatStyle update(clang_v3_3::FormatStyle &old,
-                               const std::string &style);
+template <clang_vx::Update Upgrade>
+void update(clang_v3_3::FormatStyle &prev, clang_v3_4::FormatStyle &next,
+            const std::string &style);
 
 } // namespace clang_update_v3_4
 

@@ -1,8 +1,12 @@
 #include "update.h"
 #include <frozen/unordered_map.h>
 #include <iostream>
+#include <magic_enum/magic_enum.hpp>
 #include <stdexcept>
 #include <string_view>
+
+#define XSTR(S) STR(S)
+#define STR(S) #S
 
 std::ostream &operator<<(std::ostream &os,
                          const std::vector<std::string> &vec) {
@@ -76,19 +80,39 @@ void assignWithWarning(std::string_view old_field_name, T &old_field,
   }
 }
 
-template <typename T>
+template <clang_vx::Update Upgrade = clang_vx::Update::UPGRADE, typename T>
 void newField(std::string_view field_name, std::string_view version,
               const T &field_value) {
-  std::cout << "Info when migrating to version " << version
-            << ". New field: " << field_name << " with value " << field_value
+  if constexpr (Upgrade == clang_vx::Update::UPGRADE) {
+    std::cout << "Info when upgrading to";
+  } else {
+    std::cout << "Warning when downgrading from";
+  }
+  std::cout << " version " << version << ". ";
+  if constexpr (Upgrade == clang_vx::Update::UPGRADE) {
+    std::cout << "New";
+  } else {
+    std::cout << "Removed";
+  }
+  std::cout << " field " << field_name << " with value " << field_value
             << ".\n";
 }
 
-template <typename T>
+template <clang_vx::Update Upgrade = clang_vx::Update::UPGRADE, typename T>
 void newField(std::string_view field_name, std::string_view version,
               const std::optional<T> &field_value) {
-  std::cout << "Info when migrating to version " << version
-            << ". New field: " << field_name << " with value ";
+  if constexpr (Upgrade == clang_vx::Update::UPGRADE) {
+    std::cout << "Info when upgrading to";
+  } else {
+    std::cout << "Warning when downgrading from";
+  }
+  std::cout << " version " << version << ". ";
+  if constexpr (Upgrade == clang_vx::Update::UPGRADE) {
+    std::cout << "New";
+  } else {
+    std::cout << "Removed";
+  }
+  std::cout << " field " << field_name << " with value ";
   if (!field_value) {
     std::cout << "undefined";
   } else {
@@ -103,7 +127,81 @@ void improveField(std::string_view field_name, std::string_view new_option,
             << field_name << " has new feature " << new_option << ".\n";
 }
 
+template <clang_vx::Update Upgrade = clang_vx::Update::UPGRADE, typename T,
+          typename U>
+void assignSameField(T &old_field, U &new_field) {
+  static_assert(std::is_same_v<T, U>);
+  static_assert(!std::is_enum_v<T>);
+  if constexpr (Upgrade == clang_vx::Update::UPGRADE) {
+    new_field = old_field;
+  } else {
+    old_field = new_field;
+  }
+}
+
+template <clang_vx::Update Upgrade = clang_vx::Update::UPGRADE, typename T,
+          typename U>
+void assignSameEnum(T &old_field, U &new_field, std::string_view version) {
+  if constexpr (Upgrade == clang_vx::Update::UPGRADE) {
+    for (auto ls1 : magic_enum::enum_values<T>()) {
+      if (!magic_enum::enum_cast<U>(magic_enum::enum_name(ls1)).has_value()) {
+        if (old_field == ls1) {
+          std::cout << "Error when upgrading to version " << version
+                    << ". Enum " << magic_enum::enum_type_name<T>()
+                    << "::" << magic_enum::enum_name(ls1)
+                    << " is removed and was used.\n";
+        } else {
+          std::cout << "Info when upgrading to version " << version << ". Enum "
+                    << magic_enum::enum_type_name<T>()
+                    << "::" << magic_enum::enum_name(ls1)
+                    << " is removed but was not used.\n";
+        }
+      }
+    }
+    for (auto ls2 : magic_enum::enum_values<U>()) {
+      if (!magic_enum::enum_cast<T>(magic_enum::enum_name(ls2)).has_value()) {
+        std::cout << "Info when upgrading to version " << version << ". Enum "
+                  << magic_enum::enum_type_name<U>() << " have a new value "
+                  << magic_enum::enum_name(ls2) << ".\n";
+      }
+    }
+    new_field =
+        magic_enum::enum_cast<U>(magic_enum::enum_name(old_field)).value();
+  } else {
+    for (auto ls1 : magic_enum::enum_values<U>()) {
+      if (!magic_enum::enum_cast<T>(magic_enum::enum_name(ls1)).has_value()) {
+        if (new_field == ls1) {
+          std::cout << "Error when downgrading from version " << version
+                    << ". Enum " << magic_enum::enum_type_name<U>()
+                    << "::" << magic_enum::enum_name(ls1)
+                    << " is removed and was used.\n";
+        } else {
+          std::cout << "Info when downgrading from version " << version
+                    << ". Enum " << magic_enum::enum_type_name<U>()
+                    << "::" << magic_enum::enum_name(ls1)
+                    << " is removed but was not used.\n";
+        }
+      }
+    }
+    for (auto ls2 : magic_enum::enum_values<T>()) {
+      if (!magic_enum::enum_cast<U>(magic_enum::enum_name(ls2)).has_value()) {
+        std::cout << "Info when downgrading to version " << version << ". Enum "
+                  << magic_enum::enum_type_name<T>() << " had an old value "
+                  << magic_enum::enum_name(ls2) << ".\n";
+      }
+    }
+    old_field =
+        magic_enum::enum_cast<T>(magic_enum::enum_name(new_field)).value();
+  }
+}
+
 } // namespace
+
+#define ASSIGN_SAME_FIELD(FIELD)                                               \
+  assignSameField<Upgrade>(prev.FIELD, next.FIELD)
+#define ASSIGN_SAME_ENUM(FIELD)                                                \
+  assignSameEnum<Upgrade>(prev.FIELD, next.FIELD, next_version)
+#define NEW_FIELD(FIELD) newField<Upgrade>(STR(FIELD), next_version, next.FIELD)
 
 namespace clang_update_v3_4 {
 
@@ -116,76 +214,69 @@ constexpr frozen::unordered_map<clang_v3_3::FormatStyle::LanguageStandard,
                       {clang_v3_3::FormatStyle::LanguageStandard::LS_Auto,
                        clang_v3_4::FormatStyle::LanguageStandard::LS_Auto}};
 
-clang_v3_4::FormatStyle update(clang_v3_3::FormatStyle &old,
-                               const std::string &style) {
-  clang_v3_4::FormatStyle retval;
-  if (!clang_v3_4::getPredefinedStyle(style, &retval)) {
-    throw std::runtime_error("Failed to load " + style + " style.");
+template <clang_vx::Update Upgrade>
+void update(clang_v3_3::FormatStyle &prev, clang_v3_4::FormatStyle &next,
+            const std::string &style) {
+  if constexpr (Upgrade == clang_vx::Update::UPGRADE) {
+    if (!clang_v3_4::getPredefinedStyle(style, &next)) {
+      throw std::runtime_error("Failed to load " + style + " style.");
+    }
   }
 
-  retval.ColumnLimit = old.ColumnLimit;
-  retval.PenaltyExcessCharacter = old.PenaltyExcessCharacter;
-  retval.MaxEmptyLinesToKeep = old.MaxEmptyLinesToKeep;
-  newField("PenaltyBreakComment", "3.4", retval.PenaltyBreakComment);
-  newField("PenaltyBreakString", "3.4", retval.PenaltyBreakString);
-  newField("PenaltyBreakFirstLessLess", "3.4",
-           retval.PenaltyBreakFirstLessLess);
-  newField("PenaltyBreakBeforeFirstCallParameter", "3.4",
-           retval.PenaltyBreakBeforeFirstCallParameter);
-  retval.PointerBindsToType = old.PointerBindsToType;
-  retval.DerivePointerBinding = old.DerivePointerBinding;
-  retval.AccessModifierOffset = old.AccessModifierOffset;
-  retval.Standard = language_standard.at(old.Standard);
-  retval.IndentCaseLabels = old.IndentCaseLabels;
-  newField("NamespaceIndentation", "3.4", retval.NamespaceIndentation);
-  retval.SpacesBeforeTrailingComments = old.SpacesBeforeTrailingComments;
-  retval.BinPackParameters = old.BinPackParameters;
-  newField("ExperimentalAutoDetectBinPacking", "3.4",
-           retval.ExperimentalAutoDetectBinPacking);
-  retval.AllowAllParametersOfDeclarationOnNextLine =
-      old.AllowAllParametersOfDeclarationOnNextLine;
-  retval.PenaltyReturnTypeOnItsOwnLine = old.PenaltyReturnTypeOnItsOwnLine;
-  retval.ConstructorInitializerAllOnOneLineOrOnePerLine =
-      old.ConstructorInitializerAllOnOneLineOrOnePerLine;
-  newField("BreakConstructorInitializersBeforeComma", "3.4",
-           retval.BreakConstructorInitializersBeforeComma);
-  retval.AllowShortIfStatementsOnASingleLine =
-      old.AllowShortIfStatementsOnASingleLine;
-  newField("AllowShortLoopsOnASingleLine", "3.4",
-           retval.AllowShortLoopsOnASingleLine);
-  retval.ObjCSpaceBeforeProtocolList = old.ObjCSpaceBeforeProtocolList;
-  newField("AlignTrailingComments", "3.4", retval.AlignTrailingComments);
-  retval.AlignEscapedNewlinesLeft = old.AlignEscapedNewlinesLeft;
-  newField("IndentWidth", "3.4", retval.IndentWidth);
-  newField("TabWidth", "3.4", retval.TabWidth);
-  newField("ConstructorInitializerIndentWidth", "3.4",
-           retval.ConstructorInitializerIndentWidth);
-  newField("AlwaysBreakTemplateDeclarations", "3.4",
-           retval.AlwaysBreakTemplateDeclarations);
-  newField("AlwaysBreakBeforeMultilineStrings", "3.4",
-           retval.AlwaysBreakBeforeMultilineStrings);
-  newField("UseTab", "3.4", retval.UseTab);
-  newField("BreakBeforeBinaryOperators", "3.4",
-           retval.BreakBeforeBinaryOperators);
-  newField("BreakBeforeTernaryOperators", "3.4",
-           retval.BreakBeforeTernaryOperators);
-  newField("BreakBeforeBraces", "3.4", retval.BreakBeforeBraces);
-  newField("Cpp11BracedListStyle", "3.4", retval.Cpp11BracedListStyle);
-  newField("IndentFunctionDeclarationAfterType", "3.4",
-           retval.IndentFunctionDeclarationAfterType);
-  newField("SpacesInParentheses", "3.4", retval.SpacesInParentheses);
-  newField("SpacesInAngles", "3.4", retval.SpacesInAngles);
-  newField("SpaceInEmptyParentheses", "3.4", retval.SpaceInEmptyParentheses);
-  newField("SpacesInCStyleCastParentheses", "3.4",
-           retval.SpacesInCStyleCastParentheses);
-  newField("SpaceAfterControlStatementKeyword", "3.4",
-           retval.SpaceAfterControlStatementKeyword);
-  newField("SpaceBeforeAssignmentOperators", "3.4",
-           retval.SpaceBeforeAssignmentOperators);
-  newField("ContinuationIndentWidth", "3.4", retval.ContinuationIndentWidth);
+  std::string_view prev_version = "3.3";
+  std::string_view next_version = "3.4";
 
-  return retval;
+  ASSIGN_SAME_FIELD(ColumnLimit);
+  ASSIGN_SAME_FIELD(MaxEmptyLinesToKeep);
+  NEW_FIELD(PenaltyBreakComment);
+  NEW_FIELD(PenaltyBreakString);
+  ASSIGN_SAME_FIELD(PenaltyExcessCharacter);
+  NEW_FIELD(PenaltyBreakFirstLessLess);
+  NEW_FIELD(PenaltyBreakBeforeFirstCallParameter);
+  ASSIGN_SAME_FIELD(PointerBindsToType);
+  ASSIGN_SAME_FIELD(DerivePointerBinding);
+  ASSIGN_SAME_FIELD(AccessModifierOffset);
+  ASSIGN_SAME_ENUM(Standard);
+  ASSIGN_SAME_FIELD(IndentCaseLabels);
+  NEW_FIELD(NamespaceIndentation);
+  ASSIGN_SAME_FIELD(SpacesBeforeTrailingComments);
+  ASSIGN_SAME_FIELD(BinPackParameters);
+  NEW_FIELD(ExperimentalAutoDetectBinPacking);
+  ASSIGN_SAME_FIELD(AllowAllParametersOfDeclarationOnNextLine);
+  ASSIGN_SAME_FIELD(PenaltyReturnTypeOnItsOwnLine);
+  ASSIGN_SAME_FIELD(ConstructorInitializerAllOnOneLineOrOnePerLine);
+  NEW_FIELD(BreakConstructorInitializersBeforeComma);
+  ASSIGN_SAME_FIELD(AllowShortIfStatementsOnASingleLine);
+  NEW_FIELD(AllowShortLoopsOnASingleLine);
+  ASSIGN_SAME_FIELD(ObjCSpaceBeforeProtocolList);
+  NEW_FIELD(AlignTrailingComments);
+  ASSIGN_SAME_FIELD(AlignEscapedNewlinesLeft);
+  NEW_FIELD(IndentWidth);
+  NEW_FIELD(TabWidth);
+  NEW_FIELD(ConstructorInitializerIndentWidth);
+  NEW_FIELD(AlwaysBreakTemplateDeclarations);
+  NEW_FIELD(AlwaysBreakBeforeMultilineStrings);
+  NEW_FIELD(UseTab);
+  NEW_FIELD(BreakBeforeBinaryOperators);
+  NEW_FIELD(BreakBeforeTernaryOperators);
+  NEW_FIELD(BreakBeforeBraces);
+  NEW_FIELD(Cpp11BracedListStyle);
+  NEW_FIELD(IndentFunctionDeclarationAfterType);
+  NEW_FIELD(SpacesInParentheses);
+  NEW_FIELD(SpacesInAngles);
+  NEW_FIELD(SpaceInEmptyParentheses);
+  NEW_FIELD(SpacesInCStyleCastParentheses);
+  NEW_FIELD(SpaceAfterControlStatementKeyword);
+  NEW_FIELD(SpaceBeforeAssignmentOperators);
+  NEW_FIELD(ContinuationIndentWidth);
 }
+
+template void update<clang_vx::Update::UPGRADE>(clang_v3_3::FormatStyle &prev,
+                                                clang_v3_4::FormatStyle &next,
+                                                const std::string &style);
+template void update<clang_vx::Update::DOWNGRADE>(clang_v3_3::FormatStyle &prev,
+                                                  clang_v3_4::FormatStyle &next,
+                                                  const std::string &style);
 
 } // namespace clang_update_v3_4
 

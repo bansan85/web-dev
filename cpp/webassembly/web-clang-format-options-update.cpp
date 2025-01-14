@@ -982,7 +982,10 @@ EMSCRIPTEN_BINDINGS(web_clang_format_options_update) {
         return retval;
       });
 
-  emscripten::function("updateV3_4", &clang_update_v3_4::update);
+  emscripten::function("upgradeV3_4",
+                       &clang_update_v3_4::update<clang_vx::Update::UPGRADE>);
+  emscripten::function("downgradeV3_4",
+                       &clang_update_v3_4::update<clang_vx::Update::DOWNGRADE>);
 
   emscripten::function(
       "getLLVMStyleV3_3", +[] { return clang_v3_3::getLLVMStyle(); });
