@@ -915,4 +915,21 @@ TEST_CASE("updateEnum", "[clang-format-options-update]") {
     REQUIRE(style3_4_old == style3_4_new);
     REQUIRE(style3_5_old == style3_5_new);
   }
+
+  {
+    clang_v3_5::FormatStyle style3_5_old = clang_v3_5::getGoogleStyle(
+        clang_v3_5::FormatStyle::LanguageKind::LK_Cpp);
+    clang_v3_6::FormatStyle style3_6_new;
+    clang_update_v3_6::update<clang_vx::Update::UPGRADE>(
+        style3_5_old, style3_6_new, "google");
+
+    clang_v3_6::FormatStyle style3_6_old = clang_v3_6::getGoogleStyle(
+        clang_v3_6::FormatStyle::LanguageKind::LK_Cpp);
+    clang_v3_5::FormatStyle style3_5_new;
+    clang_update_v3_6::update<clang_vx::Update::DOWNGRADE>(
+        style3_5_new, style3_6_old, "google");
+
+    REQUIRE(style3_5_old == style3_5_new);
+    REQUIRE(style3_6_old == style3_6_new);
+  }
 }
