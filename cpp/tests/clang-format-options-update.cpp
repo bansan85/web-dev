@@ -888,4 +888,31 @@ TEST_CASE("updateEnum", "[clang-format-options-update]") {
     REQUIRE(style3_3_old == style3_3_new);
     REQUIRE(style3_4_old == style3_4_new);
   }
+
+  {
+    clang_v3_4::FormatStyle style3_4_old = clang_v3_4::getGoogleStyle();
+    clang_v3_5::FormatStyle style3_5_new;
+    clang_update_v3_5::update<clang_vx::Update::UPGRADE>(
+        style3_4_old, style3_5_new, "google");
+
+    clang_v3_5::FormatStyle style3_5_old = clang_v3_5::getGoogleStyle(
+        clang_v3_5::FormatStyle::LanguageKind::LK_Cpp);
+    clang_v3_4::FormatStyle style3_4_new;
+    clang_update_v3_5::update<clang_vx::Update::DOWNGRADE>(
+        style3_4_new, style3_5_old, "google");
+
+    // Default value changed for PenaltyBreakComment.
+    style3_4_old.PenaltyBreakComment = 150;
+    style3_4_new.PenaltyBreakComment = 150;
+    style3_5_old.PenaltyBreakComment = 150;
+    style3_5_new.PenaltyBreakComment = 150;
+    // and for IndentFunctionDeclarationAfterType
+    style3_4_old.IndentFunctionDeclarationAfterType = true;
+    style3_4_new.IndentFunctionDeclarationAfterType = true;
+    style3_5_old.IndentWrappedFunctionNames = true;
+    style3_5_new.IndentWrappedFunctionNames = true;
+
+    REQUIRE(style3_4_old == style3_4_new);
+    REQUIRE(style3_5_old == style3_5_new);
+  }
 }

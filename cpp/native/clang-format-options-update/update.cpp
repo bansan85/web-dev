@@ -8,6 +8,17 @@
 #define XSTR(S) STR(S)
 #define STR(S) #S
 
+template <typename K, typename V, size_t SIZE>
+std::optional<K> getKeyFromValue(const frozen::unordered_map<K, V, SIZE> &myMap,
+                                 const V &valueToFind) {
+  for (const auto &pair : myMap) {
+    if (pair.second == valueToFind) {
+      return pair.first;
+    }
+  }
+  return std::nullopt;
+}
+
 std::ostream &operator<<(std::ostream &os,
                          const std::vector<std::string> &vec) {
   os << "{";
@@ -80,6 +91,75 @@ void assignWithWarning(std::string_view old_field_name, T &old_field,
   }
 }
 
+template <clang_vx::Update Upgrade = clang_vx::Update::DOWNGRADE, typename T,
+          typename U>
+void renameField(std::string_view old_field_name, T &old_field,
+                 std::string_view new_field_name, U &new_field,
+                 std::string_view version) {
+  if constexpr (Upgrade == clang_vx::Update::UPGRADE) {
+    std::cout << "Info when upgrading to version " << version << ". Old field "
+              << old_field_name << " has been renamed to " << new_field_name
+              << ".";
+    new_field = old_field;
+  } else {
+    std::cout << "Info when downgrading to version " << version
+              << ". New field " << new_field_name << " has been renamed to "
+              << old_field_name << ".\n";
+    old_field = new_field;
+  }
+}
+
+template <typename T, typename U, size_t SIZE>
+void renameAndSwitchToEnumUpgrade(std::string_view old_field_name, T &old_field,
+                                  std::string_view new_field_name, U &new_field,
+                                  const frozen::unordered_map<T, U, SIZE> &map,
+                                  std::string_view version) {
+  std::cout << "Info when upgrading to version " << version << ". Old field "
+            << old_field_name << " has been renamed to " << new_field_name
+            << ".";
+  for (auto ls1 : magic_enum::enum_values<U>()) {
+    if (!getKeyFromValue(map, ls1)) {
+      std::cout << "\nRenamed field " << new_field_name << " has a new value "
+                << magic_enum::enum_name(ls1) << ".";
+    }
+  }
+
+  new_field = map.at(old_field);
+  std::cout << "\n";
+}
+
+template <typename T, typename U, size_t SIZE>
+void renameAndSwitchToEnumDowngrade(
+    std::string_view old_field_name, T &old_field,
+    std::string_view new_field_name, U &new_field,
+    const frozen::unordered_map<T, U, SIZE> &map, std::string_view version) {
+  std::optional<T> old_value = getKeyFromValue(map, new_field);
+  if (!old_value) {
+    std::cout << "Error when downgrading from version " << version
+              << ". New field " << new_field_name << " has been renamed to "
+              << old_field_name << ". Can't find a match of the new value "
+              << new_field << " to old field. Default old value " << old_field
+              << " has been kept.\n";
+  } else if (old_field != *old_value) {
+    std::cout << "Info when downgrading from version " << version
+              << ". New field " << new_field_name << " has been renamed to "
+              << old_field_name << ". Overriding old field from value "
+              << old_field << " to " << *old_value << " based on new value "
+              << new_field << ".\n";
+    old_field = *old_value;
+  } else {
+    std::cout << "Info when downgrading to version " << version
+              << ". New field " << new_field_name << " has been renamed to "
+              << old_field_name << ".\n";
+  }
+  for (auto ls1 : magic_enum::enum_values<U>()) {
+    if (!getKeyFromValue(map, ls1)) {
+      std::cout << "Old field " << old_field_name << " has dropped value "
+                << magic_enum::enum_name(ls1) << ".\n";
+    }
+  }
+}
+
 template <clang_vx::Update Upgrade = clang_vx::Update::UPGRADE, typename T>
 void newField(std::string_view field_name, std::string_view version,
               const T &field_value) {
@@ -141,7 +221,7 @@ void assignSameField(T &old_field, U &new_field) {
 
 template <clang_vx::Update Upgrade = clang_vx::Update::UPGRADE, typename T,
           typename U>
-void assignSameEnum(T &old_field, U &new_field, std::string_view version) {
+void assignMagicEnum(T &old_field, U &new_field, std::string_view version) {
   if constexpr (Upgrade == clang_vx::Update::UPGRADE) {
     for (auto ls1 : magic_enum::enum_values<T>()) {
       if (!magic_enum::enum_cast<U>(magic_enum::enum_name(ls1)).has_value()) {
@@ -199,20 +279,25 @@ void assignSameEnum(T &old_field, U &new_field, std::string_view version) {
 
 #define ASSIGN_SAME_FIELD(FIELD)                                               \
   assignSameField<Upgrade>(prev.FIELD, next.FIELD)
-#define ASSIGN_SAME_ENUM(FIELD)                                                \
-  assignSameEnum<Upgrade>(prev.FIELD, next.FIELD, next_version)
+#define ASSIGN_MAGIC_ENUM(FIELD)                                               \
+  assignMagicEnum<Upgrade>(prev.FIELD, next.FIELD, next_version)
 #define NEW_FIELD(FIELD) newField<Upgrade>(STR(FIELD), next_version, next.FIELD)
+#define RENAME_AND_SWITCH_TO_ENUM(OLD_FIELD, NEW_FIELD, MAP)                   \
+  if constexpr (Upgrade == clang_vx::Update::UPGRADE) {                        \
+    renameAndSwitchToEnumUpgrade(STR(OLD_FIELD), prev.OLD_FIELD,               \
+                                 STR(NEW_FIELD), next.NEW_FIELD, MAP,          \
+                                 next_version);                                \
+  } else {                                                                     \
+    renameAndSwitchToEnumDowngrade(STR(OLD_FIELD), prev.OLD_FIELD,             \
+                                   STR(NEW_FIELD), next.NEW_FIELD, MAP,        \
+                                   next_version);                              \
+  }                                                                            \
+  static_assert(true)
+#define RENAME_FIELD(OLD_FIELD, NEW_FIELD)                                     \
+  renameField<Upgrade>(STR(OLD_FIELD), prev.OLD_FIELD, STR(NEW_FIELD),         \
+                       next.NEW_FIELD, next_version)
 
 namespace clang_update_v3_4 {
-
-constexpr frozen::unordered_map<clang_v3_3::FormatStyle::LanguageStandard,
-                                clang_v3_4::FormatStyle::LanguageStandard, 3>
-    language_standard{{clang_v3_3::FormatStyle::LanguageStandard::LS_Cpp03,
-                       clang_v3_4::FormatStyle::LanguageStandard::LS_Cpp03},
-                      {clang_v3_3::FormatStyle::LanguageStandard::LS_Cpp11,
-                       clang_v3_4::FormatStyle::LanguageStandard::LS_Cpp11},
-                      {clang_v3_3::FormatStyle::LanguageStandard::LS_Auto,
-                       clang_v3_4::FormatStyle::LanguageStandard::LS_Auto}};
 
 template <clang_vx::Update Upgrade>
 void update(clang_v3_3::FormatStyle &prev, clang_v3_4::FormatStyle &next,
@@ -236,7 +321,7 @@ void update(clang_v3_3::FormatStyle &prev, clang_v3_4::FormatStyle &next,
   ASSIGN_SAME_FIELD(PointerBindsToType);
   ASSIGN_SAME_FIELD(DerivePointerBinding);
   ASSIGN_SAME_FIELD(AccessModifierOffset);
-  ASSIGN_SAME_ENUM(Standard);
+  ASSIGN_MAGIC_ENUM(Standard);
   ASSIGN_SAME_FIELD(IndentCaseLabels);
   NEW_FIELD(NamespaceIndentation);
   ASSIGN_SAME_FIELD(SpacesBeforeTrailingComments);
@@ -282,47 +367,6 @@ template void update<clang_vx::Update::DOWNGRADE>(clang_v3_3::FormatStyle &prev,
 
 namespace clang_update_v3_5 {
 
-constexpr frozen::unordered_map<clang_v3_4::FormatStyle::LanguageStandard,
-                                clang_v3_5::FormatStyle::LanguageStandard, 3>
-    language_standard{{clang_v3_4::FormatStyle::LanguageStandard::LS_Cpp03,
-                       clang_v3_5::FormatStyle::LanguageStandard::LS_Cpp03},
-                      {clang_v3_4::FormatStyle::LanguageStandard::LS_Cpp11,
-                       clang_v3_5::FormatStyle::LanguageStandard::LS_Cpp11},
-                      {clang_v3_4::FormatStyle::LanguageStandard::LS_Auto,
-                       clang_v3_5::FormatStyle::LanguageStandard::LS_Auto}};
-
-constexpr frozen::unordered_map<
-    clang_v3_4::FormatStyle::NamespaceIndentationKind,
-    clang_v3_5::FormatStyle::NamespaceIndentationKind, 3>
-    namespace_indentation_kind{
-        {clang_v3_4::FormatStyle::NamespaceIndentationKind::NI_None,
-         clang_v3_5::FormatStyle::NamespaceIndentationKind::NI_None},
-        {clang_v3_4::FormatStyle::NamespaceIndentationKind::NI_Inner,
-         clang_v3_5::FormatStyle::NamespaceIndentationKind::NI_Inner},
-        {clang_v3_4::FormatStyle::NamespaceIndentationKind::NI_All,
-         clang_v3_5::FormatStyle::NamespaceIndentationKind::NI_All}};
-
-constexpr frozen::unordered_map<clang_v3_4::FormatStyle::UseTabStyle,
-                                clang_v3_5::FormatStyle::UseTabStyle, 3>
-    use_tab_style{{clang_v3_4::FormatStyle::UseTabStyle::UT_Never,
-                   clang_v3_5::FormatStyle::UseTabStyle::UT_Never},
-                  {clang_v3_4::FormatStyle::UseTabStyle::UT_ForIndentation,
-                   clang_v3_5::FormatStyle::UseTabStyle::UT_ForIndentation},
-                  {clang_v3_4::FormatStyle::UseTabStyle::UT_Always,
-                   clang_v3_5::FormatStyle::UseTabStyle::UT_Always}};
-
-constexpr frozen::unordered_map<clang_v3_4::FormatStyle::BraceBreakingStyle,
-                                clang_v3_5::FormatStyle::BraceBreakingStyle, 4>
-    brace_breaking_style{
-        {clang_v3_4::FormatStyle::BraceBreakingStyle::BS_Attach,
-         clang_v3_5::FormatStyle::BraceBreakingStyle::BS_Attach},
-        {clang_v3_4::FormatStyle::BraceBreakingStyle::BS_Linux,
-         clang_v3_5::FormatStyle::BraceBreakingStyle::BS_Linux},
-        {clang_v3_4::FormatStyle::BraceBreakingStyle::BS_Stroustrup,
-         clang_v3_5::FormatStyle::BraceBreakingStyle::BS_Stroustrup},
-        {clang_v3_4::FormatStyle::BraceBreakingStyle::BS_Allman,
-         clang_v3_5::FormatStyle::BraceBreakingStyle::BS_Allman}};
-
 constexpr frozen::unordered_map<
     bool, clang_v3_5::FormatStyle::PointerAlignmentStyle, 2>
     pointer_alignment{
@@ -336,98 +380,85 @@ constexpr frozen::unordered_map<
         {true, clang_v3_5::FormatStyle::SpaceBeforeParensOptions::
                    SBPO_ControlStatements}};
 
-clang_v3_5::FormatStyle update(clang_v3_4::FormatStyle &old,
-                               const std::string &style) {
-  clang_v3_5::FormatStyle retval;
-  if (!clang_v3_5::getPredefinedStyle(
-          style, clang_v3_5::FormatStyle::LanguageKind::LK_Cpp, &retval)) {
-    throw std::runtime_error("Failed to load " + style + " style.");
+template <clang_vx::Update Upgrade>
+void update(clang_v3_4::FormatStyle &prev, clang_v3_5::FormatStyle &next,
+            const std::string &style) {
+  if constexpr (Upgrade == clang_vx::Update::UPGRADE) {
+    if (!clang_v3_5::getPredefinedStyle(
+            style, clang_v3_5::FormatStyle::LanguageKind::LK_Cpp, &next)) {
+      throw std::runtime_error("Failed to load " + style + " style.");
+    }
+  } else {
+    if (!clang_v3_4::getPredefinedStyle(style, &prev)) {
+      throw std::runtime_error("Failed to load " + style + " style.");
+    }
   }
 
-  newField("Language", "3.5", retval.Language);
-  retval.ColumnLimit = old.ColumnLimit;
-  retval.MaxEmptyLinesToKeep = old.MaxEmptyLinesToKeep;
-  newField("KeepEmptyLinesAtTheStartOfBlocks", "3.5",
-           retval.KeepEmptyLinesAtTheStartOfBlocks);
-  retval.PenaltyBreakComment = old.PenaltyBreakComment;
-  retval.PenaltyBreakString = old.PenaltyBreakString;
-  retval.PenaltyExcessCharacter = old.PenaltyExcessCharacter;
-  retval.PenaltyBreakFirstLessLess = old.PenaltyBreakFirstLessLess;
-  retval.PenaltyBreakBeforeFirstCallParameter =
-      old.PenaltyBreakBeforeFirstCallParameter;
-  improveField("PointerAlignment", "Middle", "3.5");
-  assignWithWarning("PointerBindsToType", old.PointerBindsToType,
-                    "PointerAlignment", retval.PointerAlignment,
-                    pointer_alignment.at(old.PointerBindsToType), "3.5");
-  assignWithWarning("DerivePointerBinding", old.DerivePointerBinding,
-                    "DerivePointerAlignment", retval.DerivePointerAlignment,
-                    old.DerivePointerBinding, "3.5");
-  retval.AccessModifierOffset = old.AccessModifierOffset;
-  retval.Standard = language_standard.at(old.Standard);
-  retval.IndentCaseLabels = old.IndentCaseLabels;
-  assignWithWarning("IndentFunctionDeclarationAfterType",
-                    old.IndentFunctionDeclarationAfterType,
-                    "IndentWrappedFunctionNames",
-                    retval.IndentWrappedFunctionNames,
-                    old.IndentFunctionDeclarationAfterType, "3.5");
-  retval.NamespaceIndentation =
-      namespace_indentation_kind.at(old.NamespaceIndentation);
-  retval.SpacesBeforeTrailingComments = old.SpacesBeforeTrailingComments;
-  retval.BinPackParameters = old.BinPackParameters;
-  retval.ExperimentalAutoDetectBinPacking =
-      old.ExperimentalAutoDetectBinPacking;
-  retval.AllowAllParametersOfDeclarationOnNextLine =
-      old.AllowAllParametersOfDeclarationOnNextLine;
-  retval.PenaltyReturnTypeOnItsOwnLine = old.PenaltyReturnTypeOnItsOwnLine;
-  retval.ConstructorInitializerAllOnOneLineOrOnePerLine =
-      old.ConstructorInitializerAllOnOneLineOrOnePerLine;
-  retval.BreakConstructorInitializersBeforeComma =
-      old.BreakConstructorInitializersBeforeComma;
-  newField("AllowShortBlocksOnASingleLine", "3.5",
-           retval.AllowShortBlocksOnASingleLine);
-  retval.AllowShortIfStatementsOnASingleLine =
-      old.AllowShortIfStatementsOnASingleLine;
-  retval.AllowShortLoopsOnASingleLine = old.AllowShortLoopsOnASingleLine;
-  newField("AllowShortFunctionsOnASingleLine", "3.5",
-           retval.AllowShortFunctionsOnASingleLine);
-  newField("ObjCSpaceAfterProperty", "3.5", retval.ObjCSpaceAfterProperty);
-  retval.ObjCSpaceBeforeProtocolList = old.ObjCSpaceBeforeProtocolList;
-  retval.AlignTrailingComments = old.AlignTrailingComments;
-  retval.AlignEscapedNewlinesLeft = old.AlignEscapedNewlinesLeft;
-  retval.IndentWidth = old.IndentWidth;
-  retval.TabWidth = old.TabWidth;
-  retval.ConstructorInitializerIndentWidth =
-      old.ConstructorInitializerIndentWidth;
-  retval.AlwaysBreakTemplateDeclarations = old.AlwaysBreakTemplateDeclarations;
-  retval.AlwaysBreakBeforeMultilineStrings =
-      old.AlwaysBreakBeforeMultilineStrings;
-  retval.UseTab = use_tab_style.at(old.UseTab);
-  retval.BreakBeforeBinaryOperators = old.BreakBeforeBinaryOperators;
-  retval.BreakBeforeTernaryOperators = old.BreakBeforeTernaryOperators;
-  improveField("BreakBeforeBraces", "GNU", "3.5");
-  retval.BreakBeforeBraces = brace_breaking_style.at(old.BreakBeforeBraces);
-  retval.Cpp11BracedListStyle = old.Cpp11BracedListStyle;
-  retval.SpacesInParentheses = old.SpacesInParentheses;
-  retval.SpacesInAngles = old.SpacesInAngles;
-  retval.SpaceInEmptyParentheses = old.SpaceInEmptyParentheses;
-  newField("SpacesInContainerLiterals", "3.5",
-           retval.SpacesInContainerLiterals);
-  retval.SpacesInCStyleCastParentheses = old.SpacesInCStyleCastParentheses;
-  improveField("SpaceBeforeParens", "Always", "3.5");
-  assignWithWarning(
-      "SpaceAfterControlStatementKeyword",
-      old.SpaceAfterControlStatementKeyword, "SpaceBeforeParens",
-      retval.SpaceBeforeParens,
-      space_before_parens_options.at(old.SpaceAfterControlStatementKeyword),
-      "3.5");
-  retval.SpaceBeforeAssignmentOperators = old.SpaceBeforeAssignmentOperators;
-  retval.ContinuationIndentWidth = old.ContinuationIndentWidth;
-  newField("CommentPragmas", "3.5", retval.CommentPragmas);
-  newField("DisableFormat", "3.5", retval.DisableFormat);
-  newField("ForEachMacros", "3.5", retval.ForEachMacros);
+  std::string_view prev_version = "3.4";
+  std::string_view next_version = "3.5";
 
-  return retval;
+  NEW_FIELD(Language);
+  ASSIGN_SAME_FIELD(ColumnLimit);
+  ASSIGN_SAME_FIELD(MaxEmptyLinesToKeep);
+  NEW_FIELD(KeepEmptyLinesAtTheStartOfBlocks);
+  ASSIGN_SAME_FIELD(PenaltyBreakComment);
+  ASSIGN_SAME_FIELD(PenaltyBreakString);
+  ASSIGN_SAME_FIELD(PenaltyExcessCharacter);
+  ASSIGN_SAME_FIELD(PenaltyBreakFirstLessLess);
+  ASSIGN_SAME_FIELD(PenaltyBreakBeforeFirstCallParameter);
+  RENAME_AND_SWITCH_TO_ENUM(PointerBindsToType, PointerAlignment,
+                            pointer_alignment);
+  RENAME_FIELD(DerivePointerBinding, DerivePointerAlignment);
+  ASSIGN_SAME_FIELD(AccessModifierOffset);
+  ASSIGN_MAGIC_ENUM(Standard);
+  ASSIGN_SAME_FIELD(IndentCaseLabels);
+  RENAME_FIELD(IndentFunctionDeclarationAfterType, IndentWrappedFunctionNames);
+  ASSIGN_MAGIC_ENUM(NamespaceIndentation);
+  ASSIGN_SAME_FIELD(SpacesBeforeTrailingComments);
+  ASSIGN_SAME_FIELD(BinPackParameters);
+  ASSIGN_SAME_FIELD(ExperimentalAutoDetectBinPacking);
+  ASSIGN_SAME_FIELD(AllowAllParametersOfDeclarationOnNextLine);
+  ASSIGN_SAME_FIELD(PenaltyReturnTypeOnItsOwnLine);
+  ASSIGN_SAME_FIELD(ConstructorInitializerAllOnOneLineOrOnePerLine);
+  ASSIGN_SAME_FIELD(BreakConstructorInitializersBeforeComma);
+  NEW_FIELD(AllowShortBlocksOnASingleLine);
+  ASSIGN_SAME_FIELD(AllowShortIfStatementsOnASingleLine);
+  ASSIGN_SAME_FIELD(AllowShortLoopsOnASingleLine);
+  NEW_FIELD(AllowShortFunctionsOnASingleLine);
+  NEW_FIELD(ObjCSpaceAfterProperty);
+  ASSIGN_SAME_FIELD(ObjCSpaceBeforeProtocolList);
+  ASSIGN_SAME_FIELD(AlignTrailingComments);
+  ASSIGN_SAME_FIELD(AlignEscapedNewlinesLeft);
+  ASSIGN_SAME_FIELD(IndentWidth);
+  ASSIGN_SAME_FIELD(TabWidth);
+  ASSIGN_SAME_FIELD(ConstructorInitializerIndentWidth);
+  ASSIGN_SAME_FIELD(AlwaysBreakTemplateDeclarations);
+  ASSIGN_SAME_FIELD(AlwaysBreakBeforeMultilineStrings);
+  ASSIGN_MAGIC_ENUM(UseTab);
+  ASSIGN_SAME_FIELD(BreakBeforeBinaryOperators);
+  ASSIGN_SAME_FIELD(BreakBeforeTernaryOperators);
+  ASSIGN_MAGIC_ENUM(BreakBeforeBraces);
+  ASSIGN_SAME_FIELD(Cpp11BracedListStyle);
+  ASSIGN_SAME_FIELD(SpacesInParentheses);
+  ASSIGN_SAME_FIELD(SpacesInAngles);
+  ASSIGN_SAME_FIELD(SpaceInEmptyParentheses);
+  NEW_FIELD(SpacesInContainerLiterals);
+  ASSIGN_SAME_FIELD(SpacesInCStyleCastParentheses);
+  RENAME_AND_SWITCH_TO_ENUM(SpaceAfterControlStatementKeyword,
+                            SpaceBeforeParens, space_before_parens_options);
+  ASSIGN_SAME_FIELD(SpaceBeforeAssignmentOperators);
+  ASSIGN_SAME_FIELD(ContinuationIndentWidth);
+  NEW_FIELD(CommentPragmas);
+  NEW_FIELD(DisableFormat);
+  NEW_FIELD(ForEachMacros);
 }
+
+template void update<clang_vx::Update::UPGRADE>(clang_v3_4::FormatStyle &prev,
+                                                clang_v3_5::FormatStyle &next,
+                                                const std::string &style);
+template void update<clang_vx::Update::DOWNGRADE>(clang_v3_4::FormatStyle &prev,
+                                                  clang_v3_5::FormatStyle &next,
+                                                  const std::string &style);
 
 } // namespace clang_update_v3_5
 
