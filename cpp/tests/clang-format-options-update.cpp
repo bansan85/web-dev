@@ -874,62 +874,101 @@ TEST_CASE("getCompatibleVersion", "[clang-format-options-update]") {
 }
 
 TEST_CASE("updateEnum", "[clang-format-options-update]") {
-  {
-    clang_v3_3::FormatStyle style3_3_old = clang_v3_3::getGoogleStyle();
-    clang_v3_4::FormatStyle style3_4_new;
-    clang_update_v3_4::update<clang_vx::Update::UPGRADE>(
-        style3_3_old, style3_4_new, "google");
+  for (const std::string_view &style_sv : styles) {
+    std::string style{style_sv};
+    if (clang_v3_3::FormatStyle style3_3_old;
+        clang_v3_3::getPredefinedStyle(style, &style3_3_old)) {
+      clang_v3_4::FormatStyle style3_4_new;
+      clang_update_v3_4::update<clang_vx::Update::UPGRADE>(style3_3_old,
+                                                           style3_4_new, style);
 
-    clang_v3_4::FormatStyle style3_4_old = clang_v3_4::getGoogleStyle();
-    clang_v3_3::FormatStyle style3_3_new;
-    clang_update_v3_4::update<clang_vx::Update::DOWNGRADE>(
-        style3_3_new, style3_4_old, "google");
+      clang_v3_4::FormatStyle style3_4_old;
+      clang_v3_4::getPredefinedStyle(style, &style3_4_old);
+      clang_v3_3::FormatStyle style3_3_new;
+      clang_update_v3_4::update<clang_vx::Update::DOWNGRADE>(
+          style3_3_new, style3_4_old, style);
 
-    REQUIRE(style3_3_old == style3_3_new);
-    REQUIRE(style3_4_old == style3_4_new);
-  }
+      if (style == "llvm") {
+        style3_3_old.PenaltyReturnTypeOnItsOwnLine = 10;
+        style3_3_new.PenaltyReturnTypeOnItsOwnLine = 10;
+        style3_4_old.PenaltyReturnTypeOnItsOwnLine = 10;
+        style3_4_new.PenaltyReturnTypeOnItsOwnLine = 10;
+      }
 
-  {
-    clang_v3_4::FormatStyle style3_4_old = clang_v3_4::getGoogleStyle();
-    clang_v3_5::FormatStyle style3_5_new;
-    clang_update_v3_5::update<clang_vx::Update::UPGRADE>(
-        style3_4_old, style3_5_new, "google");
+      REQUIRE(style3_3_old == style3_3_new);
+      REQUIRE(style3_4_old == style3_4_new);
+    }
 
-    clang_v3_5::FormatStyle style3_5_old = clang_v3_5::getGoogleStyle(
-        clang_v3_5::FormatStyle::LanguageKind::LK_Cpp);
-    clang_v3_4::FormatStyle style3_4_new;
-    clang_update_v3_5::update<clang_vx::Update::DOWNGRADE>(
-        style3_4_new, style3_5_old, "google");
+    if (clang_v3_4::FormatStyle style3_4_old;
+        clang_v3_4::getPredefinedStyle(style, &style3_4_old)) {
+      clang_v3_5::FormatStyle style3_5_new;
+      clang_update_v3_5::update<clang_vx::Update::UPGRADE>(style3_4_old,
+                                                           style3_5_new, style);
 
-    // Default value changed for PenaltyBreakComment.
-    style3_4_old.PenaltyBreakComment = 150;
-    style3_4_new.PenaltyBreakComment = 150;
-    style3_5_old.PenaltyBreakComment = 150;
-    style3_5_new.PenaltyBreakComment = 150;
-    // and for IndentFunctionDeclarationAfterType
-    style3_4_old.IndentFunctionDeclarationAfterType = true;
-    style3_4_new.IndentFunctionDeclarationAfterType = true;
-    style3_5_old.IndentWrappedFunctionNames = true;
-    style3_5_new.IndentWrappedFunctionNames = true;
+      clang_v3_5::FormatStyle style3_5_old;
+      clang_v3_5::getPredefinedStyle(
+          style, clang_v3_5::FormatStyle::LanguageKind::LK_Cpp, &style3_5_old);
+      clang_v3_4::FormatStyle style3_4_new;
+      clang_update_v3_5::update<clang_vx::Update::DOWNGRADE>(
+          style3_4_new, style3_5_old, style);
 
-    REQUIRE(style3_4_old == style3_4_new);
-    REQUIRE(style3_5_old == style3_5_new);
-  }
+      // Default value changed for PenaltyBreakComment.
+      style3_4_old.PenaltyBreakComment = 150;
+      style3_4_new.PenaltyBreakComment = 150;
+      style3_5_old.PenaltyBreakComment = 150;
+      style3_5_new.PenaltyBreakComment = 150;
+      // and for IndentFunctionDeclarationAfterType
+      style3_4_old.IndentFunctionDeclarationAfterType = true;
+      style3_4_new.IndentFunctionDeclarationAfterType = true;
+      style3_5_old.IndentWrappedFunctionNames = true;
+      style3_5_new.IndentWrappedFunctionNames = true;
 
-  {
-    clang_v3_5::FormatStyle style3_5_old = clang_v3_5::getGoogleStyle(
-        clang_v3_5::FormatStyle::LanguageKind::LK_Cpp);
-    clang_v3_6::FormatStyle style3_6_new;
-    clang_update_v3_6::update<clang_vx::Update::UPGRADE>(
-        style3_5_old, style3_6_new, "google");
+      if (style == "llvm") {
+        style3_4_old.Standard =
+            clang_v3_4::FormatStyle::LanguageStandard::LS_Auto;
+        style3_4_new.Standard =
+            clang_v3_4::FormatStyle::LanguageStandard::LS_Auto;
+        style3_5_old.Standard =
+            clang_v3_5::FormatStyle::LanguageStandard::LS_Auto;
+        style3_5_new.Standard =
+            clang_v3_5::FormatStyle::LanguageStandard::LS_Auto;
+        style3_4_old.Cpp11BracedListStyle = true;
+        style3_4_new.Cpp11BracedListStyle = true;
+        style3_5_old.Cpp11BracedListStyle = true;
+        style3_5_new.Cpp11BracedListStyle = true;
+      }
 
-    clang_v3_6::FormatStyle style3_6_old = clang_v3_6::getGoogleStyle(
-        clang_v3_6::FormatStyle::LanguageKind::LK_Cpp);
-    clang_v3_5::FormatStyle style3_5_new;
-    clang_update_v3_6::update<clang_vx::Update::DOWNGRADE>(
-        style3_5_new, style3_6_old, "google");
+      REQUIRE(style3_4_old == style3_4_new);
+      REQUIRE(style3_5_old == style3_5_new);
+    }
 
-    REQUIRE(style3_5_old == style3_5_new);
-    REQUIRE(style3_6_old == style3_6_new);
+    if (clang_v3_5::FormatStyle style3_5_old; clang_v3_5::getPredefinedStyle(
+            style, clang_v3_5::FormatStyle::LanguageKind::LK_Cpp,
+            &style3_5_old)) {
+      clang_v3_6::FormatStyle style3_6_new;
+      clang_update_v3_6::update<clang_vx::Update::UPGRADE>(style3_5_old,
+                                                           style3_6_new, style);
+
+      clang_v3_6::FormatStyle style3_6_old;
+      clang_v3_6::getPredefinedStyle(
+          style, clang_v3_6::FormatStyle::LanguageKind::LK_Cpp, &style3_6_old);
+      clang_v3_5::FormatStyle style3_5_new;
+      clang_update_v3_6::update<clang_vx::Update::DOWNGRADE>(
+          style3_5_new, style3_6_old, style);
+
+      if (style == "chromium") {
+        style3_5_old.Standard =
+            clang_v3_5::FormatStyle::LanguageStandard::LS_Auto;
+        style3_5_new.Standard =
+            clang_v3_5::FormatStyle::LanguageStandard::LS_Auto;
+        style3_6_old.Standard =
+            clang_v3_6::FormatStyle::LanguageStandard::LS_Auto;
+        style3_6_new.Standard =
+            clang_v3_6::FormatStyle::LanguageStandard::LS_Auto;
+      }
+
+      REQUIRE(style3_5_old == style3_5_new);
+      REQUIRE(style3_6_old == style3_6_new);
+    }
   }
 }

@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include "llvm/Support/YAMLTraits.h"
+
 namespace clang_v3_3 {
 
 /// \brief The \c FormatStyle is used to configure the formatting to follow
@@ -120,5 +122,6 @@ FormatStyle getChromiumStyle();
 /// \brief Returns a format style complying with Mozilla's style guide:
 /// https://developer.mozilla.org/en-US/docs/Developer_Guide/Coding_Style.
 FormatStyle getMozillaStyle();
+bool getPredefinedStyle(llvm::StringRef Name, FormatStyle *Style);
 
 } // end namespace clang_v3_3

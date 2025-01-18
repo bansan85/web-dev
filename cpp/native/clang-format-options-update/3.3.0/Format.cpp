@@ -88,4 +88,19 @@ FormatStyle getMozillaStyle() {
   return MozillaStyle;
 }
 
+bool getPredefinedStyle(llvm::StringRef Name, FormatStyle *Style) {
+  if (Name.equals_insensitive("llvm"))
+    *Style = getLLVMStyle();
+  else if (Name.equals_insensitive("chromium"))
+    *Style = getChromiumStyle();
+  else if (Name.equals_insensitive("mozilla"))
+    *Style = getMozillaStyle();
+  else if (Name.equals_insensitive("google"))
+    *Style = getGoogleStyle();
+  else
+    return false;
+
+  return true;
+}
+
 } // namespace clang_v3_3
