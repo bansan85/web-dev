@@ -970,5 +970,80 @@ TEST_CASE("updateEnum", "[clang-format-options-update]") {
       REQUIRE(style3_5_old == style3_5_new);
       REQUIRE(style3_6_old == style3_6_new);
     }
+
+    if (clang_v3_6::FormatStyle style3_6_old; clang_v3_6::getPredefinedStyle(
+            style, clang_v3_6::FormatStyle::LanguageKind::LK_Cpp,
+            &style3_6_old)) {
+      clang_v3_7::FormatStyle style3_7_new;
+      clang_update_v3_7::update<clang_vx::Update::UPGRADE>(style3_6_old,
+                                                           style3_7_new, style);
+
+      clang_v3_7::FormatStyle style3_7_old;
+      clang_v3_7::getPredefinedStyle(
+          style, clang_v3_7::FormatStyle::LanguageKind::LK_Cpp, &style3_7_old);
+      clang_v3_6::FormatStyle style3_6_new;
+      clang_update_v3_7::update<clang_vx::Update::DOWNGRADE>(
+          style3_6_new, style3_7_old, style);
+
+      if (style == "mozilla") {
+        style3_6_old.DerivePointerAlignment = true;
+        style3_6_new.DerivePointerAlignment = true;
+        style3_7_old.DerivePointerAlignment = true;
+        style3_7_new.DerivePointerAlignment = true;
+        style3_6_old.Standard =
+            clang_v3_6::FormatStyle::LanguageStandard::LS_Auto;
+        style3_6_new.Standard =
+            clang_v3_6::FormatStyle::LanguageStandard::LS_Auto;
+        style3_7_old.Standard =
+            clang_v3_7::FormatStyle::LanguageStandard::LS_Auto;
+        style3_7_new.Standard =
+            clang_v3_7::FormatStyle::LanguageStandard::LS_Auto;
+        style3_6_old.ConstructorInitializerAllOnOneLineOrOnePerLine = true;
+        style3_6_new.ConstructorInitializerAllOnOneLineOrOnePerLine = true;
+        style3_7_old.ConstructorInitializerAllOnOneLineOrOnePerLine = true;
+        style3_7_new.ConstructorInitializerAllOnOneLineOrOnePerLine = true;
+        style3_6_old.BreakConstructorInitializersBeforeComma = true;
+        style3_6_new.BreakConstructorInitializersBeforeComma = true;
+        style3_7_old.BreakConstructorInitializersBeforeComma = true;
+        style3_7_new.BreakConstructorInitializersBeforeComma = true;
+        style3_6_old.AllowShortFunctionsOnASingleLine =
+            clang_v3_6::FormatStyle::ShortFunctionStyle::SFS_Empty;
+        style3_6_new.AllowShortFunctionsOnASingleLine =
+            clang_v3_6::FormatStyle::ShortFunctionStyle::SFS_Empty;
+        style3_7_old.AllowShortFunctionsOnASingleLine =
+            clang_v3_7::FormatStyle::ShortFunctionStyle::SFS_Empty;
+        style3_7_new.AllowShortFunctionsOnASingleLine =
+            clang_v3_7::FormatStyle::ShortFunctionStyle::SFS_Empty;
+        style3_6_old.ConstructorInitializerIndentWidth = 3;
+        style3_6_new.ConstructorInitializerIndentWidth = 3;
+        style3_7_old.ConstructorInitializerIndentWidth = 3;
+        style3_7_new.ConstructorInitializerIndentWidth = 3;
+        style3_6_old.AlwaysBreakTemplateDeclarations = true;
+        style3_6_new.AlwaysBreakTemplateDeclarations = true;
+        style3_7_old.AlwaysBreakTemplateDeclarations = true;
+        style3_7_new.AlwaysBreakTemplateDeclarations = true;
+        style3_6_old.ContinuationIndentWidth = 3;
+        style3_6_new.ContinuationIndentWidth = 3;
+        style3_7_old.ContinuationIndentWidth = 3;
+        style3_7_new.ContinuationIndentWidth = 3;
+        style3_6_old.AlwaysBreakAfterDefinitionReturnType = false;
+        style3_6_new.AlwaysBreakAfterDefinitionReturnType = false;
+        style3_7_old.AlwaysBreakAfterDefinitionReturnType = clang_v3_7::
+            FormatStyle::DefinitionReturnTypeBreakingStyle::DRTBS_None;
+        style3_7_new.AlwaysBreakAfterDefinitionReturnType = clang_v3_7::
+            FormatStyle::DefinitionReturnTypeBreakingStyle::DRTBS_None;
+        style3_6_old.BreakBeforeBraces =
+            clang_v3_6::FormatStyle::BraceBreakingStyle::BS_Attach;
+        style3_6_new.BreakBeforeBraces =
+            clang_v3_6::FormatStyle::BraceBreakingStyle::BS_Attach;
+        style3_7_old.BreakBeforeBraces =
+            clang_v3_7::FormatStyle::BraceBreakingStyle::BS_Attach;
+        style3_7_new.BreakBeforeBraces =
+            clang_v3_7::FormatStyle::BraceBreakingStyle::BS_Attach;
+      }
+
+      REQUIRE(style3_6_old == style3_6_new);
+      REQUIRE(style3_7_old == style3_7_new);
+    }
   }
 }
