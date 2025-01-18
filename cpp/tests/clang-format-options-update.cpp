@@ -1102,5 +1102,51 @@ TEST_CASE("updateEnum", "[clang-format-options-update]") {
       REQUIRE(style3_8_old == style3_8_new);
       REQUIRE(style3_9_old == style3_9_new);
     }
+
+    if (clang_v3_9::FormatStyle style3_9_old; clang_v3_9::getPredefinedStyle(
+            style, clang_v3_9::FormatStyle::LanguageKind::LK_Cpp,
+            &style3_9_old)) {
+      clang_v4::FormatStyle style4_new;
+      clang_update_v4::update<clang_vx::Update::UPGRADE>(style3_9_old,
+                                                         style4_new, style);
+
+      clang_v4::FormatStyle style4_old;
+      clang_v4::getPredefinedStyle(
+          style, clang_v4::FormatStyle::LanguageKind::LK_Cpp, &style4_old);
+      clang_v3_9::FormatStyle style3_9_new;
+      clang_update_v4::update<clang_vx::Update::DOWNGRADE>(style3_9_new,
+                                                           style4_old, style);
+
+      if (style == "mozilla") {
+        style3_9_old.AlwaysBreakAfterReturnType = clang_v3_9::FormatStyle::
+            ReturnTypeBreakingStyle::RTBS_TopLevelDefinitions;
+        style3_9_new.AlwaysBreakAfterReturnType = clang_v3_9::FormatStyle::
+            ReturnTypeBreakingStyle::RTBS_TopLevelDefinitions;
+        style4_old.AlwaysBreakAfterReturnType = clang_v4::FormatStyle::
+            ReturnTypeBreakingStyle::RTBS_TopLevelDefinitions;
+        style4_new.AlwaysBreakAfterReturnType = clang_v4::FormatStyle::
+            ReturnTypeBreakingStyle::RTBS_TopLevelDefinitions;
+        style3_9_old.BinPackParameters = true;
+        style3_9_new.BinPackParameters = true;
+        style4_old.BinPackParameters = true;
+        style4_new.BinPackParameters = true;
+        style3_9_old.BinPackArguments = true;
+        style3_9_new.BinPackArguments = true;
+        style4_old.BinPackArguments = true;
+        style4_new.BinPackArguments = true;
+      }
+
+      if (style == "webkit") {
+        style3_9_old.Standard =
+            clang_v3_9::FormatStyle::LanguageStandard::LS_Auto;
+        style3_9_new.Standard =
+            clang_v3_9::FormatStyle::LanguageStandard::LS_Auto;
+        style4_old.Standard = clang_v4::FormatStyle::LanguageStandard::LS_Auto;
+        style4_new.Standard = clang_v4::FormatStyle::LanguageStandard::LS_Auto;
+      }
+
+      REQUIRE(style3_9_old == style3_9_new);
+      REQUIRE(style4_old == style4_new);
+    }
   }
 }
