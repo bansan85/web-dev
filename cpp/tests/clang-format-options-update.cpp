@@ -1045,5 +1045,44 @@ TEST_CASE("updateEnum", "[clang-format-options-update]") {
       REQUIRE(style3_6_old == style3_6_new);
       REQUIRE(style3_7_old == style3_7_new);
     }
+
+    if (clang_v3_7::FormatStyle style3_7_old; clang_v3_7::getPredefinedStyle(
+            style, clang_v3_7::FormatStyle::LanguageKind::LK_Cpp,
+            &style3_7_old)) {
+      clang_v3_8::FormatStyle style3_8_new;
+      clang_update_v3_8::update<clang_vx::Update::UPGRADE>(style3_7_old,
+                                                           style3_8_new, style);
+
+      clang_v3_8::FormatStyle style3_8_old;
+      clang_v3_8::getPredefinedStyle(
+          style, clang_v3_8::FormatStyle::LanguageKind::LK_Cpp, &style3_8_old);
+      clang_v3_7::FormatStyle style3_7_new;
+      clang_update_v3_8::update<clang_vx::Update::DOWNGRADE>(
+          style3_7_new, style3_8_old, style);
+
+      if (style == "chromium") {
+        style3_7_old.MacroBlockBegin = "";
+        style3_7_new.MacroBlockBegin = "";
+        style3_8_old.MacroBlockBegin = "";
+        style3_8_new.MacroBlockBegin = "";
+        style3_7_old.MacroBlockEnd = "";
+        style3_7_new.MacroBlockEnd = "";
+        style3_8_old.MacroBlockEnd = "";
+        style3_8_new.MacroBlockEnd = "";
+      }
+      if (style == "webkit") {
+        style3_7_old.BreakBeforeBraces =
+            clang_v3_7::FormatStyle::BraceBreakingStyle::BS_Attach;
+        style3_7_new.BreakBeforeBraces =
+            clang_v3_7::FormatStyle::BraceBreakingStyle::BS_Attach;
+        style3_8_old.BreakBeforeBraces =
+            clang_v3_8::FormatStyle::BraceBreakingStyle::BS_Attach;
+        style3_8_new.BreakBeforeBraces =
+            clang_v3_8::FormatStyle::BraceBreakingStyle::BS_Attach;
+      }
+
+      REQUIRE(style3_7_old == style3_7_new);
+      REQUIRE(style3_8_old == style3_8_new);
+    }
   }
 }
