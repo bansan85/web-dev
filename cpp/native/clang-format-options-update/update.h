@@ -84,8 +84,9 @@ void update(clang_v3_9::FormatStyle &prev, clang_v4::FormatStyle &next,
 
 namespace clang_update_v5 {
 
-clang_v5::FormatStyle update(clang_v4::FormatStyle &old,
-                             const std::string &style);
+template <clang_vx::Update Upgrade>
+void update(clang_v4::FormatStyle &prev, clang_v5::FormatStyle &next,
+            const std::string &style);
 
 } // namespace clang_update_v5
 

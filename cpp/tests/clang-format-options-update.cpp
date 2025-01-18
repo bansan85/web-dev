@@ -1148,5 +1148,41 @@ TEST_CASE("updateEnum", "[clang-format-options-update]") {
       REQUIRE(style3_9_old == style3_9_new);
       REQUIRE(style4_old == style4_new);
     }
+
+    if (clang_v4::FormatStyle style4_old; clang_v4::getPredefinedStyle(
+            style, clang_v4::FormatStyle::LanguageKind::LK_Cpp, &style4_old)) {
+      clang_v5::FormatStyle style5_new;
+      clang_update_v5::update<clang_vx::Update::UPGRADE>(style4_old, style5_new,
+                                                         style);
+
+      clang_v5::FormatStyle style5_old;
+      clang_v5::getPredefinedStyle(
+          style, clang_v5::FormatStyle::LanguageKind::LK_Cpp, &style5_old);
+      clang_v4::FormatStyle style4_new;
+      clang_update_v5::update<clang_vx::Update::DOWNGRADE>(style4_new,
+                                                           style5_old, style);
+
+      style4_old.BreakConstructorInitializersBeforeComma = true;
+      style4_new.BreakConstructorInitializersBeforeComma = true;
+      style5_old.BreakConstructorInitializers = clang_v5::FormatStyle::
+          BreakConstructorInitializersStyle::BCIS_BeforeComma;
+      style5_new.BreakConstructorInitializers = clang_v5::FormatStyle::
+          BreakConstructorInitializersStyle::BCIS_BeforeComma;
+      if (style == "chromium") {
+        style4_old.SortIncludes = true;
+        style4_new.SortIncludes = true;
+        style5_old.SortIncludes = true;
+        style5_new.SortIncludes = true;
+      }
+      if (style == "gnu") {
+        style4_old.IncludeIsMainRegex = "$";
+        style4_new.IncludeIsMainRegex = "$";
+        style5_old.IncludeIsMainRegex = "$";
+        style5_new.IncludeIsMainRegex = "$";
+      }
+
+      REQUIRE(style4_old == style4_new);
+      REQUIRE(style5_old == style5_new);
+    }
   }
 }
