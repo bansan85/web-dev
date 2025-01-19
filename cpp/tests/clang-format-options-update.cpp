@@ -1243,5 +1243,32 @@ TEST_CASE("updateEnum", "[clang-format-options-update]") {
       REQUIRE(style8_old == style8_new);
     }
 
+    if (clang_v8::FormatStyle style8_old; clang_v8::getPredefinedStyle(
+            style, clang_v8::FormatStyle::LanguageKind::LK_Cpp, &style8_old)) {
+      clang_v9::FormatStyle style9_new;
+      clang_update_v9::update<clang_vx::Update::UPGRADE>(style8_old, style9_new,
+                                                         style);
+
+      clang_v9::FormatStyle style9_old;
+      clang_v9::getPredefinedStyle(
+          style, clang_v9::FormatStyle::LanguageKind::LK_Cpp, &style9_old);
+      clang_v8::FormatStyle style8_new;
+      clang_update_v9::update<clang_vx::Update::DOWNGRADE>(style8_new,
+                                                           style9_old, style);
+
+      if (style == "chromium" || style == "google") {
+        style8_old.IncludeStyle.IncludeBlocks =
+            clang_v8::IncludeStyle::IBS_Preserve;
+        style8_new.IncludeStyle.IncludeBlocks =
+            clang_v8::IncludeStyle::IBS_Preserve;
+        style9_old.IncludeStyle.IncludeBlocks =
+            clang_v9::IncludeStyle::IBS_Preserve;
+        style9_new.IncludeStyle.IncludeBlocks =
+            clang_v9::IncludeStyle::IBS_Preserve;
+      }
+
+      REQUIRE(style8_old == style8_new);
+      REQUIRE(style9_old == style9_new);
+    }
   }
 }
