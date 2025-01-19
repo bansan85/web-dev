@@ -1351,5 +1351,28 @@ TEST_CASE("updateEnum", "[clang-format-options-update]") {
       REQUIRE(style10_old == style10_new);
       REQUIRE(style11_old == style11_new);
     }
+
+    if (clang_v11::FormatStyle style11_old; clang_v11::getPredefinedStyle(
+            style, clang_v11::FormatStyle::LanguageKind::LK_Cpp,
+            &style11_old)) {
+      clang_v12::FormatStyle style12_new;
+      clang_update_v12::update<clang_vx::Update::UPGRADE>(style11_old,
+                                                          style12_new, style);
+
+      clang_v12::FormatStyle style12_old;
+      clang_v12::getPredefinedStyle(
+          style, clang_v12::FormatStyle::LanguageKind::LK_Cpp, &style12_old);
+      clang_v11::FormatStyle style11_new;
+      clang_update_v12::update<clang_vx::Update::DOWNGRADE>(style11_new,
+                                                            style12_old, style);
+
+      style11_old.WhitespaceSensitiveMacros.clear();
+      style11_new.WhitespaceSensitiveMacros.clear();
+      style12_old.WhitespaceSensitiveMacros.clear();
+      style12_new.WhitespaceSensitiveMacros.clear();
+
+      REQUIRE(style11_old == style11_new);
+      REQUIRE(style12_old == style12_new);
+    }
   }
 }
