@@ -156,8 +156,9 @@ void update(clang_v12::FormatStyle &prev, clang_v13::FormatStyle &next,
 
 namespace clang_update_v14 {
 
-clang_v14::FormatStyle update(clang_v13::FormatStyle &old,
-                              const std::string &style);
+template <clang_vx::Update Upgrade>
+void update(clang_v13::FormatStyle &prev, clang_v14::FormatStyle &next,
+            const std::string &style);
 
 } // namespace clang_update_v14
 

@@ -1405,5 +1405,32 @@ TEST_CASE("updateEnum", "[clang-format-options-update]") {
       REQUIRE(style12_old == style12_new);
       REQUIRE(style13_old == style13_new);
     }
+
+    if (clang_v13::FormatStyle style13_old; clang_v13::getPredefinedStyle(
+            style, clang_v13::FormatStyle::LanguageKind::LK_Cpp,
+            &style13_old)) {
+      clang_v14::FormatStyle style14_new;
+      clang_update_v14::update<clang_vx::Update::UPGRADE>(style13_old,
+                                                          style14_new, style);
+
+      clang_v14::FormatStyle style14_old;
+      clang_v14::getPredefinedStyle(
+          style, clang_v14::FormatStyle::LanguageKind::LK_Cpp, &style14_old);
+      clang_v13::FormatStyle style13_new;
+      clang_update_v14::update<clang_vx::Update::DOWNGRADE>(style13_new,
+                                                            style14_old, style);
+
+      style13_old.ConstructorInitializerAllOnOneLineOrOnePerLine = false;
+      style13_new.ConstructorInitializerAllOnOneLineOrOnePerLine = false;
+      style14_old.ConstructorInitializerAllOnOneLineOrOnePerLine = false;
+      style14_new.ConstructorInitializerAllOnOneLineOrOnePerLine = false;
+      style13_old.AllowAllConstructorInitializersOnNextLine = false;
+      style13_new.AllowAllConstructorInitializersOnNextLine = false;
+      style14_old.AllowAllConstructorInitializersOnNextLine = false;
+      style14_new.AllowAllConstructorInitializersOnNextLine = false;
+
+      REQUIRE(style13_old == style13_new);
+      REQUIRE(style14_old == style14_new);
+    }
   }
 }
