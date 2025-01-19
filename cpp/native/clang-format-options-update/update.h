@@ -100,8 +100,9 @@ void update(clang_v5::FormatStyle &prev, clang_v6::FormatStyle &next,
 
 namespace clang_update_v7 {
 
-clang_v7::FormatStyle update(clang_v6::FormatStyle &old,
-                             const std::string &style);
+template <clang_vx::Update Upgrade>
+void update(clang_v6::FormatStyle &prev, clang_v7::FormatStyle &next,
+            const std::string &style);
 
 } // namespace clang_update_v7
 

@@ -706,7 +706,10 @@ EMSCRIPTEN_BINDINGS(web_clang_format_options_update) {
         return retval;
       });
 
-  emscripten::function("updateV7", &clang_update_v7::update);
+  emscripten::function("upgradeV7",
+                       &clang_update_v7::update<clang_vx::Update::UPGRADE>);
+  emscripten::function("downgradeV7",
+                       &clang_update_v7::update<clang_vx::Update::DOWNGRADE>);
 
   emscripten::function(
       "getLLVMStyleV6", +[] { return clang_v6::getLLVMStyle(); });
