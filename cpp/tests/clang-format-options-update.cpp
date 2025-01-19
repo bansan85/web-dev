@@ -1287,5 +1287,44 @@ TEST_CASE("updateEnum", "[clang-format-options-update]") {
       REQUIRE(style8_old == style8_new);
       REQUIRE(style9_old == style9_new);
     }
+
+    if (clang_v9::FormatStyle style9_old; clang_v9::getPredefinedStyle(
+            style, clang_v9::FormatStyle::LanguageKind::LK_Cpp, &style9_old)) {
+      clang_v10::FormatStyle style10_new;
+      clang_update_v10::update<clang_vx::Update::UPGRADE>(style9_old,
+                                                          style10_new, style);
+
+      clang_v10::FormatStyle style10_old;
+      clang_v10::getPredefinedStyle(
+          style, clang_v10::FormatStyle::LanguageKind::LK_Cpp, &style10_old);
+      clang_v9::FormatStyle style9_new;
+      clang_update_v10::update<clang_vx::Update::DOWNGRADE>(style9_new,
+                                                            style10_old, style);
+
+      style9_old.IncludeStyle.IncludeBlocks =
+          clang_v9::IncludeStyle::IBS_Preserve;
+      style9_new.IncludeStyle.IncludeBlocks =
+          clang_v9::IncludeStyle::IBS_Preserve;
+      style10_old.IncludeStyle.IncludeBlocks =
+          clang_v10::IncludeStyle::IBS_Preserve;
+      style10_new.IncludeStyle.IncludeBlocks =
+          clang_v10::IncludeStyle::IBS_Preserve;
+      style9_old.Standard = clang_v9::FormatStyle::LanguageStandard::LS_Auto;
+      style9_new.Standard = clang_v9::FormatStyle::LanguageStandard::LS_Auto;
+      style10_old.Standard = clang_v10::FormatStyle::LanguageStandard::LS_Auto;
+      style10_new.Standard = clang_v10::FormatStyle::LanguageStandard::LS_Auto;
+
+      if (style == "webkit") {
+        style9_old.AllowShortBlocksOnASingleLine = false;
+        style9_new.AllowShortBlocksOnASingleLine = false;
+        style10_old.AllowShortBlocksOnASingleLine =
+            clang_v10::FormatStyle::ShortBlockStyle::SBS_Never;
+        style10_new.AllowShortBlocksOnASingleLine =
+            clang_v10::FormatStyle::ShortBlockStyle::SBS_Never;
+      }
+
+      REQUIRE(style9_old == style9_new);
+      REQUIRE(style10_old == style10_new);
+    }
   }
 }
