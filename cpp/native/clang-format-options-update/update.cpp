@@ -281,6 +281,24 @@ void assignMagicEnum(T &old_field, U &new_field, std::string_view version) {
   }
 }
 
+template <clang_vx::Update Upgrade = clang_vx::Update::UPGRADE, typename T,
+          typename U>
+void assignIncludeCategory(std::vector<T> &old_field,
+                           std::vector<U> &new_field) {
+  if constexpr (Upgrade == clang_vx::Update::UPGRADE) {
+    new_field.clear();
+    new_field.reserve(old_field.size());
+    for (const auto &item : old_field) {
+      new_field.emplace_back(U{item.Regex, item.Priority});
+    }
+  } else {
+    old_field.clear();
+    old_field.reserve(new_field.size());
+    for (const auto &item : new_field) {
+      old_field.emplace_back(T{item.Regex, item.Priority});
+    }
+  }
+
 } // namespace
 
 #define ASSIGN_SAME_FIELD(FIELD)                                               \
@@ -313,6 +331,10 @@ void assignMagicEnum(T &old_field, U &new_field, std::string_view version) {
 #define RENAME_FIELD(OLD_FIELD, NEW_FIELD)                                     \
   renameField<Upgrade>(STR(OLD_FIELD), prev.OLD_FIELD, STR(NEW_FIELD),         \
                        next.NEW_FIELD, next_version)
+#define ASSIGN_INCLUDE_CATEGORY(FIELD)                                         \
+  assignIncludeCategory<Upgrade>(prev.FIELD, next.FIELD)
+#define ASSIGN_INCLUDE_CATEGORY_RENAME(OLD_FIELD, NEW_FIELD)                   \
+  assignIncludeCategory<Upgrade>(prev.OLD_FIELD, next.NEW_FIELD)
 
 namespace clang_update_v3_4 {
 
@@ -798,16 +820,6 @@ template void update<clang_vx::Update::DOWNGRADE>(clang_v3_7::FormatStyle &prev,
 
 namespace clang_update_v3_9 {
 
-void assign(std::vector<clang_v3_8::FormatStyle::IncludeCategory> &lhs,
-            std::vector<clang_v3_9::FormatStyle::IncludeCategory> &rhs) {
-  rhs.clear();
-  rhs.reserve(lhs.size());
-  for (const auto &item : lhs) {
-    rhs.emplace_back(
-        clang_v3_9::FormatStyle::IncludeCategory{item.Regex, item.Priority});
-  }
-}
-
 template <clang_vx::Update Upgrade>
 void update(clang_v3_8::FormatStyle &prev, clang_v3_9::FormatStyle &next,
             const std::string &style) {
@@ -872,7 +884,7 @@ void update(clang_v3_8::FormatStyle &prev, clang_v3_9::FormatStyle &next,
   ASSIGN_SAME_FIELD(DisableFormat);
   ASSIGN_SAME_FIELD(ExperimentalAutoDetectBinPacking);
   ASSIGN_SAME_FIELD(ForEachMacros);
-  assign(prev.IncludeCategories, next.IncludeCategories);
+  ASSIGN_INCLUDE_CATEGORY(IncludeCategories);
   NEW_FIELD(IncludeIsMainRegex);
   ASSIGN_SAME_FIELD(IndentCaseLabels);
   ASSIGN_SAME_FIELD(IndentWidth);
@@ -922,16 +934,6 @@ template void update<clang_vx::Update::DOWNGRADE>(clang_v3_8::FormatStyle &prev,
 } // namespace clang_update_v3_9
 
 namespace clang_update_v4 {
-
-void assign(std::vector<clang_v3_9::FormatStyle::IncludeCategory> &lhs,
-            std::vector<clang_v4::FormatStyle::IncludeCategory> &rhs) {
-  rhs.clear();
-  rhs.reserve(lhs.size());
-  for (const auto &item : lhs) {
-    rhs.emplace_back(
-        clang_v4::FormatStyle::IncludeCategory{item.Regex, item.Priority});
-  }
-}
 
 template <clang_vx::Update Upgrade>
 void update(clang_v3_9::FormatStyle &prev, clang_v4::FormatStyle &next,
@@ -997,7 +999,7 @@ void update(clang_v3_9::FormatStyle &prev, clang_v4::FormatStyle &next,
   ASSIGN_SAME_FIELD(DisableFormat);
   ASSIGN_SAME_FIELD(ExperimentalAutoDetectBinPacking);
   ASSIGN_SAME_FIELD(ForEachMacros);
-  assign(prev.IncludeCategories, next.IncludeCategories);
+  ASSIGN_INCLUDE_CATEGORY(IncludeCategories);
   ASSIGN_SAME_FIELD(IncludeIsMainRegex);
   ASSIGN_SAME_FIELD(IndentCaseLabels);
   ASSIGN_SAME_FIELD(IndentWidth);
@@ -1063,16 +1065,6 @@ constexpr frozen::unordered_map<
                     BCIS_AfterColon},
         {true, clang_v5::FormatStyle::BreakConstructorInitializersStyle::
                    BCIS_BeforeComma}};
-
-void assign(std::vector<clang_v4::FormatStyle::IncludeCategory> &lhs,
-            std::vector<clang_v5::FormatStyle::IncludeCategory> &rhs) {
-  rhs.clear();
-  rhs.reserve(lhs.size());
-  for (const auto &item : lhs) {
-    rhs.emplace_back(
-        clang_v5::FormatStyle::IncludeCategory{item.Regex, item.Priority});
-  }
-}
 
 template <clang_vx::Update Upgrade>
 void update(clang_v4::FormatStyle &prev, clang_v5::FormatStyle &next,
@@ -1147,7 +1139,7 @@ void update(clang_v4::FormatStyle &prev, clang_v5::FormatStyle &next,
   ASSIGN_SAME_FIELD(ExperimentalAutoDetectBinPacking);
   NEW_FIELD(FixNamespaceComments);
   ASSIGN_SAME_FIELD(ForEachMacros);
-  assign(prev.IncludeCategories, next.IncludeCategories);
+  ASSIGN_INCLUDE_CATEGORY(IncludeCategories);
   ASSIGN_SAME_FIELD(IncludeIsMainRegex);
   ASSIGN_SAME_FIELD(IndentCaseLabels);
   ASSIGN_SAME_FIELD(IndentWidth);
@@ -1200,16 +1192,6 @@ template void update<clang_vx::Update::DOWNGRADE>(clang_v4::FormatStyle &prev,
 } // namespace clang_update_v5
 
 namespace clang_update_v6 {
-
-void assign(std::vector<clang_v5::FormatStyle::IncludeCategory> &lhs,
-            std::vector<clang_v6::FormatStyle::IncludeCategory> &rhs) {
-  rhs.clear();
-  rhs.reserve(lhs.size());
-  for (const auto &item : lhs) {
-    rhs.emplace_back(
-        clang_v6::FormatStyle::IncludeCategory{item.Regex, item.Priority});
-  }
-}
 
 template <clang_vx::Update Upgrade>
 void update(clang_v5::FormatStyle &prev, clang_v6::FormatStyle &next,
@@ -1283,7 +1265,7 @@ void update(clang_v5::FormatStyle &prev, clang_v6::FormatStyle &next,
   ASSIGN_SAME_FIELD(FixNamespaceComments);
   ASSIGN_SAME_FIELD(ForEachMacros);
   NEW_FIELD(IncludeBlocks);
-  assign(prev.IncludeCategories, next.IncludeCategories);
+  ASSIGN_INCLUDE_CATEGORY(IncludeCategories);
   ASSIGN_SAME_FIELD(IncludeIsMainRegex);
   ASSIGN_SAME_FIELD(IndentCaseLabels);
   NEW_FIELD(IndentPPDirectives);
@@ -1354,16 +1336,6 @@ constexpr frozen::unordered_map<
          clang_v7::FormatStyle::BreakInheritanceListStyle::BILS_BeforeColon},
         {true,
          clang_v7::FormatStyle::BreakInheritanceListStyle::BILS_BeforeComma}};
-
-void assign(std::vector<clang_v6::FormatStyle::IncludeCategory> &lhs,
-            std::vector<clang_v7::IncludeStyle::IncludeCategory> &rhs) {
-  rhs.clear();
-  rhs.reserve(lhs.size());
-  for (const auto &item : lhs) {
-    rhs.emplace_back(
-        clang_v7::IncludeStyle::IncludeCategory{item.Regex, item.Priority});
-  }
-}
 
 void assign(std::vector<clang_v6::FormatStyle::RawStringFormat> &lhs,
             std::vector<clang_v7::FormatStyle::RawStringFormat> &rhs) {
@@ -1454,7 +1426,8 @@ void update(clang_v6::FormatStyle &prev, clang_v7::FormatStyle &next,
   ASSIGN_SAME_FIELD(ExperimentalAutoDetectBinPacking);
   ASSIGN_SAME_FIELD(FixNamespaceComments);
   ASSIGN_SAME_FIELD(ForEachMacros);
-  assign(prev.IncludeCategories, next.IncludeStyle.IncludeCategories);
+  ASSIGN_INCLUDE_CATEGORY_RENAME(IncludeCategories,
+                                 IncludeStyle.IncludeCategories);
   RENAME_MAGIC_ENUM(IncludeBlocks, IncludeStyle.IncludeBlocks);
   RENAME_FIELD(IncludeIsMainRegex, IncludeStyle.IncludeIsMainRegex);
   ASSIGN_SAME_FIELD(IndentCaseLabels);
@@ -1516,16 +1489,6 @@ template void update<clang_vx::Update::DOWNGRADE>(clang_v6::FormatStyle &prev,
 } // namespace clang_update_v7
 
 namespace clang_update_v8 {
-
-void assign(std::vector<clang_v7::IncludeStyle::IncludeCategory> &lhs,
-            std::vector<clang_v8::IncludeStyle::IncludeCategory> &rhs) {
-  rhs.clear();
-  rhs.reserve(lhs.size());
-  for (const auto &item : lhs) {
-    rhs.emplace_back(
-        clang_v8::IncludeStyle::IncludeCategory{item.Regex, item.Priority});
-  }
-}
 
 void assign(std::vector<clang_v7::FormatStyle::RawStringFormat> &lhs,
             std::vector<clang_v8::FormatStyle::RawStringFormat> &rhs) {
@@ -1614,8 +1577,8 @@ void update(clang_v7::FormatStyle &prev, clang_v8::FormatStyle &next,
   ASSIGN_SAME_FIELD(ForEachMacros);
   NEW_FIELD(StatementMacros);
   ASSIGN_MAGIC_ENUM(IncludeStyle.IncludeBlocks);
-  assign(prev.IncludeStyle.IncludeCategories,
-         next.IncludeStyle.IncludeCategories);
+  ASSIGN_INCLUDE_CATEGORY(IncludeStyle.IncludeCategories,
+                          IncludeStyle.IncludeCategories);
   ASSIGN_SAME_FIELD(IncludeStyle.IncludeIsMainRegex);
   ASSIGN_SAME_FIELD(IndentCaseLabels);
   ASSIGN_MAGIC_ENUM(IndentPPDirectives);
@@ -1682,16 +1645,6 @@ constexpr frozen::unordered_map<bool, clang_v9::FormatStyle::ShortIfStyle, 2>
     short_if_style{
         {false, clang_v9::FormatStyle::ShortIfStyle::SIS_Never},
         {true, clang_v9::FormatStyle::ShortIfStyle::SIS_WithoutElse}};
-
-void assign(std::vector<clang_v8::IncludeStyle::IncludeCategory> &lhs,
-            std::vector<clang_v9::IncludeStyle::IncludeCategory> &rhs) {
-  rhs.clear();
-  rhs.reserve(lhs.size());
-  for (const auto &item : lhs) {
-    rhs.emplace_back(
-        clang_v9::IncludeStyle::IncludeCategory{item.Regex, item.Priority});
-  }
-}
 
 void assign(std::vector<clang_v8::FormatStyle::RawStringFormat> &lhs,
             std::vector<clang_v9::FormatStyle::RawStringFormat> &rhs) {
@@ -1787,8 +1740,8 @@ void update(clang_v8::FormatStyle &prev, clang_v9::FormatStyle &next,
   ASSIGN_SAME_FIELD(StatementMacros);
   NEW_FIELD(NamespaceMacros);
   ASSIGN_MAGIC_ENUM(IncludeStyle.IncludeBlocks);
-  assign(prev.IncludeStyle.IncludeCategories,
-         next.IncludeStyle.IncludeCategories);
+  ASSIGN_INCLUDE_CATEGORY(IncludeStyle.IncludeCategories,
+                          IncludeStyle.IncludeCategories);
   ASSIGN_SAME_FIELD(IncludeStyle.IncludeIsMainRegex);
   ASSIGN_SAME_FIELD(IndentCaseLabels);
   ASSIGN_MAGIC_ENUM(IndentPPDirectives);
