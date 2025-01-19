@@ -73,8 +73,7 @@ void assignWithWarning(std::string_view old_field_name, T &old_field,
   }
 }
 
-template <clang_vx::Update Upgrade = clang_vx::Update::DOWNGRADE, typename T,
-          typename U>
+template <clang_vx::Update Upgrade, typename T, typename U>
 void renameField(std::string_view old_field_name, T &old_field,
                  std::string_view new_field_name, U &new_field,
                  std::string_view version) {
@@ -220,8 +219,7 @@ void assignSameField(T &old_field, U &new_field) {
   }
 }
 
-template <clang_vx::Update Upgrade = clang_vx::Update::UPGRADE, typename T,
-          typename U>
+template <clang_vx::Update Upgrade, typename T, typename U>
 void assignMagicEnum(T &old_field, U &new_field, std::string_view version) {
   if constexpr (Upgrade == clang_vx::Update::UPGRADE) {
     for (auto ls1 : magic_enum::enum_values<T>()) {
@@ -281,8 +279,7 @@ void assignMagicEnum(T &old_field, U &new_field, std::string_view version) {
   }
 }
 
-template <clang_vx::Update Upgrade = clang_vx::Update::UPGRADE, typename T,
-          typename U>
+template <clang_vx::Update Upgrade, typename T, typename U>
 void assignIncludeCategory(std::vector<T> &old_field,
                            std::vector<U> &new_field) {
   if constexpr (Upgrade == clang_vx::Update::UPGRADE) {
@@ -298,6 +295,36 @@ void assignIncludeCategory(std::vector<T> &old_field,
       old_field.emplace_back(T{item.Regex, item.Priority});
     }
   }
+}
+
+template <clang_vx::Update Upgrade, typename T, typename U>
+void assignRawStringFormat(
+    std::vector<typename T::RawStringFormat> &old_field,
+    std::vector<typename U::RawStringFormat> &new_field) {
+  if constexpr (Upgrade == clang_vx::Update::UPGRADE) {
+    new_field.clear();
+    new_field.reserve(old_field.size());
+    for (const auto &item : old_field) {
+      new_field.emplace_back(typename U::RawStringFormat{
+          magic_enum::enum_cast<typename U::LanguageKind>(
+              magic_enum::enum_name(item.Language))
+              .value(),
+          item.Delimiters, item.EnclosingFunctions, item.CanonicalDelimiter,
+          item.BasedOnStyle});
+    }
+  } else {
+    old_field.clear();
+    old_field.reserve(new_field.size());
+    for (const auto &item : new_field) {
+      old_field.emplace_back(typename T::RawStringFormat{
+          magic_enum::enum_cast<typename T::LanguageKind>(
+              magic_enum::enum_name(item.Language))
+              .value(),
+          item.Delimiters, item.EnclosingFunctions, item.CanonicalDelimiter,
+          item.BasedOnStyle});
+    }
+  }
+}
 
 } // namespace
 
@@ -335,6 +362,10 @@ void assignIncludeCategory(std::vector<T> &old_field,
   assignIncludeCategory<Upgrade>(prev.FIELD, next.FIELD)
 #define ASSIGN_INCLUDE_CATEGORY_RENAME(OLD_FIELD, NEW_FIELD)                   \
   assignIncludeCategory<Upgrade>(prev.OLD_FIELD, next.NEW_FIELD)
+#define ASSIGN_RAW_STRING_FORMAT(FIELD, OLD_VERSION, NEW_VERSION)              \
+  assignRawStringFormat<Upgrade, clang_v##OLD_VERSION::FormatStyle,            \
+                        clang_v##NEW_VERSION::FormatStyle>(prev.FIELD,         \
+                                                           next.FIELD)
 
 namespace clang_update_v3_4 {
 
@@ -1337,19 +1368,45 @@ constexpr frozen::unordered_map<
         {true,
          clang_v7::FormatStyle::BreakInheritanceListStyle::BILS_BeforeComma}};
 
-void assign(std::vector<clang_v6::FormatStyle::RawStringFormat> &lhs,
-            std::vector<clang_v7::FormatStyle::RawStringFormat> &rhs) {
-  rhs.clear();
-  rhs.reserve(lhs.size());
-  for (const auto &item : lhs) {
-    rhs.emplace_back(clang_v7::FormatStyle::RawStringFormat{
-        magic_enum::enum_cast<clang_v7::FormatStyle::LanguageKind>(
-            magic_enum::enum_name(item.Language))
-            .value(),
-        {item.Delimiter},
-        {},
-        {},
-        item.BasedOnStyle});
+template <clang_vx::Update Upgrade>
+void assign(std::vector<clang_v6::FormatStyle::RawStringFormat> &old_field,
+            std::vector<clang_v7::FormatStyle::RawStringFormat> &new_field) {
+  if constexpr (Upgrade == clang_vx::Update::UPGRADE) {
+    new_field.clear();
+    new_field.reserve(old_field.size());
+    for (const auto &item : old_field) {
+      new_field.emplace_back(clang_v7::FormatStyle::RawStringFormat{
+          magic_enum::enum_cast<clang_v7::FormatStyle::LanguageKind>(
+              magic_enum::enum_name(item.Language))
+              .value(),
+          {item.Delimiter},
+          {},
+          {},
+          item.BasedOnStyle});
+    }
+  } else {
+    old_field.clear();
+    old_field.reserve(new_field.size());
+    for (const auto &item : new_field) {
+      old_field.emplace_back(clang_v6::FormatStyle::RawStringFormat{
+          item.Delimiters.empty() ? "" : item.Delimiters.front(),
+          magic_enum::enum_cast<clang_v6::FormatStyle::LanguageKind>(
+              magic_enum::enum_name(item.Language))
+              .value(),
+          item.BasedOnStyle});
+      std::cout << "Warning when downgrading from version 7, fields "
+                   "RawStringFormats.EnclosingFunctions ("
+                << item.EnclosingFunctions
+                << "), RawStringFormats.CanonicalDelimiter ("
+                << item.CanonicalDelimiter << ") has been dropped.";
+      if (item.Delimiters.size() > 1) {
+        std::vector<std::string> delimiters_truncated = item.Delimiters;
+        delimiters_truncated.erase(delimiters_truncated.begin());
+        std::cout << " Values from RawStringFormats.Delimiters ("
+                  << delimiters_truncated << ") is also dropped.";
+      }
+      std::cout << "\n";
+    }
   }
 }
 
@@ -1455,7 +1512,7 @@ void update(clang_v6::FormatStyle &prev, clang_v7::FormatStyle &next,
   ASSIGN_SAME_FIELD(PenaltyExcessCharacter);
   ASSIGN_SAME_FIELD(PenaltyReturnTypeOnItsOwnLine);
   ASSIGN_MAGIC_ENUM(PointerAlignment);
-  assign(prev.RawStringFormats, next.RawStringFormats);
+  assign<Upgrade>(prev.RawStringFormats, next.RawStringFormats);
   ASSIGN_SAME_FIELD(ReflowComments);
   ASSIGN_SAME_FIELD(SortIncludes);
   ASSIGN_SAME_FIELD(SortUsingDeclarations);
@@ -1489,20 +1546,6 @@ template void update<clang_vx::Update::DOWNGRADE>(clang_v6::FormatStyle &prev,
 } // namespace clang_update_v7
 
 namespace clang_update_v8 {
-
-void assign(std::vector<clang_v7::FormatStyle::RawStringFormat> &lhs,
-            std::vector<clang_v8::FormatStyle::RawStringFormat> &rhs) {
-  rhs.clear();
-  rhs.reserve(lhs.size());
-  for (const auto &item : lhs) {
-    rhs.emplace_back(clang_v8::FormatStyle::RawStringFormat{
-        magic_enum::enum_cast<clang_v8::FormatStyle::LanguageKind>(
-            magic_enum::enum_name(item.Language))
-            .value(),
-        item.Delimiters, item.EnclosingFunctions, item.CanonicalDelimiter,
-        item.BasedOnStyle});
-  }
-}
 
 template <clang_vx::Update Upgrade>
 void update(clang_v7::FormatStyle &prev, clang_v8::FormatStyle &next,
@@ -1577,8 +1620,7 @@ void update(clang_v7::FormatStyle &prev, clang_v8::FormatStyle &next,
   ASSIGN_SAME_FIELD(ForEachMacros);
   NEW_FIELD(StatementMacros);
   ASSIGN_MAGIC_ENUM(IncludeStyle.IncludeBlocks);
-  ASSIGN_INCLUDE_CATEGORY(IncludeStyle.IncludeCategories,
-                          IncludeStyle.IncludeCategories);
+  ASSIGN_INCLUDE_CATEGORY(IncludeStyle.IncludeCategories);
   ASSIGN_SAME_FIELD(IncludeStyle.IncludeIsMainRegex);
   ASSIGN_SAME_FIELD(IndentCaseLabels);
   ASSIGN_MAGIC_ENUM(IndentPPDirectives);
@@ -1606,7 +1648,7 @@ void update(clang_v7::FormatStyle &prev, clang_v8::FormatStyle &next,
   ASSIGN_SAME_FIELD(PenaltyExcessCharacter);
   ASSIGN_SAME_FIELD(PenaltyReturnTypeOnItsOwnLine);
   ASSIGN_MAGIC_ENUM(PointerAlignment);
-  assign(prev.RawStringFormats, next.RawStringFormats);
+  ASSIGN_RAW_STRING_FORMAT(RawStringFormats, 7, 8);
   ASSIGN_SAME_FIELD(ReflowComments);
   ASSIGN_SAME_FIELD(SortIncludes);
   ASSIGN_SAME_FIELD(SortUsingDeclarations);
@@ -1645,20 +1687,6 @@ constexpr frozen::unordered_map<bool, clang_v9::FormatStyle::ShortIfStyle, 2>
     short_if_style{
         {false, clang_v9::FormatStyle::ShortIfStyle::SIS_Never},
         {true, clang_v9::FormatStyle::ShortIfStyle::SIS_WithoutElse}};
-
-void assign(std::vector<clang_v8::FormatStyle::RawStringFormat> &lhs,
-            std::vector<clang_v9::FormatStyle::RawStringFormat> &rhs) {
-  rhs.clear();
-  rhs.reserve(lhs.size());
-  for (const auto &item : lhs) {
-    rhs.emplace_back(clang_v9::FormatStyle::RawStringFormat{
-        magic_enum::enum_cast<clang_v9::FormatStyle::LanguageKind>(
-            magic_enum::enum_name(item.Language))
-            .value(),
-        item.Delimiters, item.EnclosingFunctions, item.CanonicalDelimiter,
-        item.BasedOnStyle});
-  }
-}
 
 template <clang_vx::Update Upgrade>
 void update(clang_v8::FormatStyle &prev, clang_v9::FormatStyle &next,
@@ -1740,8 +1768,7 @@ void update(clang_v8::FormatStyle &prev, clang_v9::FormatStyle &next,
   ASSIGN_SAME_FIELD(StatementMacros);
   NEW_FIELD(NamespaceMacros);
   ASSIGN_MAGIC_ENUM(IncludeStyle.IncludeBlocks);
-  ASSIGN_INCLUDE_CATEGORY(IncludeStyle.IncludeCategories,
-                          IncludeStyle.IncludeCategories);
+  ASSIGN_INCLUDE_CATEGORY(IncludeStyle.IncludeCategories);
   ASSIGN_SAME_FIELD(IncludeStyle.IncludeIsMainRegex);
   ASSIGN_SAME_FIELD(IndentCaseLabels);
   ASSIGN_MAGIC_ENUM(IndentPPDirectives);
@@ -1769,7 +1796,7 @@ void update(clang_v8::FormatStyle &prev, clang_v9::FormatStyle &next,
   ASSIGN_SAME_FIELD(PenaltyExcessCharacter);
   ASSIGN_SAME_FIELD(PenaltyReturnTypeOnItsOwnLine);
   ASSIGN_MAGIC_ENUM(PointerAlignment);
-  assign(prev.RawStringFormats, next.RawStringFormats);
+  ASSIGN_RAW_STRING_FORMAT(RawStringFormats, 8, 9);
   ASSIGN_SAME_FIELD(ReflowComments);
   ASSIGN_SAME_FIELD(SortIncludes);
   ASSIGN_SAME_FIELD(SortUsingDeclarations);

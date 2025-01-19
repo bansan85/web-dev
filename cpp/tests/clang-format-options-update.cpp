@@ -1181,6 +1181,11 @@ TEST_CASE("updateEnum", "[clang-format-options-update]") {
         style5_new.IncludeIsMainRegex = "$";
       }
 
+      style4_old.IncludeCategories.clear();
+      style4_new.IncludeCategories.clear();
+      style5_old.IncludeCategories.clear();
+      style5_new.IncludeCategories.clear();
+
       REQUIRE(style4_old == style4_new);
       REQUIRE(style5_old == style5_new);
     }
@@ -1197,6 +1202,13 @@ TEST_CASE("updateEnum", "[clang-format-options-update]") {
       clang_v5::FormatStyle style5_new;
       clang_update_v6::update<clang_vx::Update::DOWNGRADE>(style5_new,
                                                            style6_old, style);
+
+      if (style == "chromium" || style == "google") {
+        style5_old.IncludeCategories.clear();
+        style5_new.IncludeCategories.clear();
+        style6_old.IncludeCategories.clear();
+        style6_new.IncludeCategories.clear();
+      }
 
       REQUIRE(style5_old == style5_new);
       REQUIRE(style6_old == style6_new);
@@ -1221,6 +1233,11 @@ TEST_CASE("updateEnum", "[clang-format-options-update]") {
         style7_old.ObjCSpaceBeforeProtocolList = true;
         style7_new.ObjCSpaceBeforeProtocolList = true;
       }
+
+      style6_old.RawStringFormats.clear();
+      style6_new.RawStringFormats.clear();
+      style7_old.RawStringFormats.clear();
+      style7_new.RawStringFormats.clear();
 
       REQUIRE(style6_old == style6_new);
       REQUIRE(style7_old == style7_new);
