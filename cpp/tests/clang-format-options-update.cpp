@@ -1374,5 +1374,36 @@ TEST_CASE("updateEnum", "[clang-format-options-update]") {
       REQUIRE(style11_old == style11_new);
       REQUIRE(style12_old == style12_new);
     }
+
+    if (clang_v12::FormatStyle style12_old; clang_v12::getPredefinedStyle(
+            style, clang_v12::FormatStyle::LanguageKind::LK_Cpp,
+            &style12_old)) {
+      clang_v13::FormatStyle style13_new;
+      clang_update_v13::update<clang_vx::Update::UPGRADE>(style12_old,
+                                                          style13_new, style);
+
+      clang_v13::FormatStyle style13_old;
+      clang_v13::getPredefinedStyle(
+          style, clang_v13::FormatStyle::LanguageKind::LK_Cpp, &style13_old);
+      clang_v12::FormatStyle style12_new;
+      clang_update_v13::update<clang_vx::Update::DOWNGRADE>(style12_new,
+                                                            style13_old, style);
+
+      if (style == "chromium" || style == "google") {
+        style12_old.RawStringFormats.clear();
+        style12_new.RawStringFormats.clear();
+        style13_old.RawStringFormats.clear();
+        style13_new.RawStringFormats.clear();
+      }
+      style12_old.SortIncludes = false;
+      style12_new.SortIncludes = false;
+      style13_old.SortIncludes =
+          clang_v13::FormatStyle::SortIncludesOptions::SI_Never;
+      style13_new.SortIncludes =
+          clang_v13::FormatStyle::SortIncludesOptions::SI_Never;
+
+      REQUIRE(style12_old == style12_new);
+      REQUIRE(style13_old == style13_new);
+    }
   }
 }
