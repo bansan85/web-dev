@@ -1432,5 +1432,53 @@ TEST_CASE("updateEnum", "[clang-format-options-update]") {
       REQUIRE(style13_old == style13_new);
       REQUIRE(style14_old == style14_new);
     }
+
+    if (clang_v14::FormatStyle style14_old; clang_v14::getPredefinedStyle(
+            style, clang_v14::FormatStyle::LanguageKind::LK_Cpp,
+            &style14_old)) {
+      clang_v15::FormatStyle style15_new;
+      clang_update_v15::update<clang_vx::Update::UPGRADE>(style14_old,
+                                                          style15_new, style);
+
+      clang_v15::FormatStyle style15_old;
+      clang_v15::getPredefinedStyle(
+          style, clang_v15::FormatStyle::LanguageKind::LK_Cpp, &style15_old);
+      clang_v14::FormatStyle style14_new;
+      clang_update_v15::update<clang_vx::Update::DOWNGRADE>(style14_new,
+                                                            style15_old, style);
+
+      style14_old.IndentRequires = false;
+      style14_new.IndentRequires = false;
+      style15_old.IndentRequiresClause = false;
+      style15_new.IndentRequiresClause = false;
+
+      style14_old.AlignConsecutiveMacros =
+          clang_v14::FormatStyle::AlignConsecutiveStyle::ACS_None;
+      style14_old.AlignConsecutiveAssignments =
+          clang_v14::FormatStyle::AlignConsecutiveStyle::ACS_None;
+      style14_old.AlignConsecutiveBitFields =
+          clang_v14::FormatStyle::AlignConsecutiveStyle::ACS_None;
+      style14_old.AlignConsecutiveDeclarations =
+          clang_v14::FormatStyle::AlignConsecutiveStyle::ACS_None;
+      style14_new.AlignConsecutiveMacros =
+          clang_v14::FormatStyle::AlignConsecutiveStyle::ACS_None;
+      style14_new.AlignConsecutiveAssignments =
+          clang_v14::FormatStyle::AlignConsecutiveStyle::ACS_None;
+      style14_new.AlignConsecutiveBitFields =
+          clang_v14::FormatStyle::AlignConsecutiveStyle::ACS_None;
+      style14_new.AlignConsecutiveDeclarations =
+          clang_v14::FormatStyle::AlignConsecutiveStyle::ACS_None;
+      style15_old.AlignConsecutiveMacros = {};
+      style15_old.AlignConsecutiveAssignments = {};
+      style15_old.AlignConsecutiveBitFields = {};
+      style15_old.AlignConsecutiveDeclarations = {};
+      style15_new.AlignConsecutiveMacros = {};
+      style15_new.AlignConsecutiveAssignments = {};
+      style15_new.AlignConsecutiveBitFields = {};
+      style15_new.AlignConsecutiveDeclarations = {};
+
+      REQUIRE(style14_old == style14_new);
+      REQUIRE(style15_old == style15_new);
+    }
   }
 }
