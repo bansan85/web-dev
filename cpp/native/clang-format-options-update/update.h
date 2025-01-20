@@ -180,8 +180,9 @@ void update(clang_v15::FormatStyle &prev, clang_v16::FormatStyle &next,
 
 namespace clang_update_v17 {
 
-clang_v17::FormatStyle update(clang_v16::FormatStyle &old,
-                              const std::string &style);
+template <clang_vx::Update Upgrade>
+void update(clang_v16::FormatStyle &prev, clang_v17::FormatStyle &next,
+            const std::string &style);
 
 } // namespace clang_update_v17
 
