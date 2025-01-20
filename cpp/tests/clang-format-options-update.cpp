@@ -1521,5 +1521,32 @@ TEST_CASE("updateEnum", "[clang-format-options-update]") {
       REQUIRE(style16_old == style16_new);
       REQUIRE(style17_old == style17_new);
     }
+
+    if (clang_v17::FormatStyle style17_old; clang_v17::getPredefinedStyle(
+            style, clang_v17::FormatStyle::LanguageKind::LK_Cpp,
+            &style17_old)) {
+      clang_v18::FormatStyle style18_new;
+      clang_update_v18::update<clang_vx::Update::UPGRADE>(style17_old,
+                                                          style18_new, style);
+
+      clang_v18::FormatStyle style18_old;
+      clang_v18::getPredefinedStyle(
+          style, clang_v18::FormatStyle::LanguageKind::LK_Cpp, &style18_old);
+      clang_v17::FormatStyle style17_new;
+      clang_update_v18::update<clang_vx::Update::DOWNGRADE>(style17_new,
+                                                            style18_old, style);
+
+      style17_old.BreakAfterAttributes =
+          clang_v17::FormatStyle::AttributeBreakingStyle::ABS_Leave;
+      style17_new.BreakAfterAttributes =
+          clang_v17::FormatStyle::AttributeBreakingStyle::ABS_Leave;
+      style18_old.BreakAfterAttributes =
+          clang_v18::FormatStyle::AttributeBreakingStyle::ABS_Leave;
+      style18_new.BreakAfterAttributes =
+          clang_v18::FormatStyle::AttributeBreakingStyle::ABS_Leave;
+
+      REQUIRE(style17_old == style17_new);
+      REQUIRE(style18_old == style18_new);
+    }
   }
 }
