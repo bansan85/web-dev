@@ -1548,5 +1548,38 @@ TEST_CASE("updateEnum", "[clang-format-options-update]") {
       REQUIRE(style17_old == style17_new);
       REQUIRE(style18_old == style18_new);
     }
+
+    if (clang_v18::FormatStyle style18_old; clang_v18::getPredefinedStyle(
+            style, clang_v18::FormatStyle::LanguageKind::LK_Cpp,
+            &style18_old)) {
+      clang_v19::FormatStyle style19_new;
+      clang_update_v19::update<clang_vx::Update::UPGRADE>(style18_old,
+                                                          style19_new, style);
+
+      clang_v19::FormatStyle style19_old;
+      clang_v19::getPredefinedStyle(
+          style, clang_v19::FormatStyle::LanguageKind::LK_Cpp, &style19_old);
+      clang_v18::FormatStyle style18_new;
+      clang_update_v19::update<clang_vx::Update::DOWNGRADE>(style18_new,
+                                                            style19_old, style);
+
+      if (style == "clang-format") {
+        style18_old.IntegerLiteralSeparator.Decimal=0;
+        style18_new.IntegerLiteralSeparator.Decimal=0;
+        style19_old.IntegerLiteralSeparator.Decimal=0;
+        style19_new.IntegerLiteralSeparator.Decimal=0;
+        style18_old.IntegerLiteralSeparator.DecimalMinDigits=0;
+        style18_new.IntegerLiteralSeparator.DecimalMinDigits=0;
+        style19_old.IntegerLiteralSeparator.DecimalMinDigits=0;
+        style19_new.IntegerLiteralSeparator.DecimalMinDigits=0;
+        style18_old.RemoveSemicolon=true;
+        style18_new.RemoveSemicolon=true;
+        style19_old.RemoveSemicolon=true;
+        style19_new.RemoveSemicolon=true;
+      }
+
+      REQUIRE(style18_old == style18_new);
+      REQUIRE(style19_old == style19_new);
+    }
   }
 }
