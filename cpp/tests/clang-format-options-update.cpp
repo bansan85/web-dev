@@ -1564,18 +1564,18 @@ TEST_CASE("updateEnum", "[clang-format-options-update]") {
                                                             style19_old, style);
 
       if (style == "clang-format") {
-        style18_old.IntegerLiteralSeparator.Decimal=0;
-        style18_new.IntegerLiteralSeparator.Decimal=0;
-        style19_old.IntegerLiteralSeparator.Decimal=0;
-        style19_new.IntegerLiteralSeparator.Decimal=0;
-        style18_old.IntegerLiteralSeparator.DecimalMinDigits=0;
-        style18_new.IntegerLiteralSeparator.DecimalMinDigits=0;
-        style19_old.IntegerLiteralSeparator.DecimalMinDigits=0;
-        style19_new.IntegerLiteralSeparator.DecimalMinDigits=0;
-        style18_old.RemoveSemicolon=true;
-        style18_new.RemoveSemicolon=true;
-        style19_old.RemoveSemicolon=true;
-        style19_new.RemoveSemicolon=true;
+        style18_old.IntegerLiteralSeparator.Decimal = 0;
+        style18_new.IntegerLiteralSeparator.Decimal = 0;
+        style19_old.IntegerLiteralSeparator.Decimal = 0;
+        style19_new.IntegerLiteralSeparator.Decimal = 0;
+        style18_old.IntegerLiteralSeparator.DecimalMinDigits = 0;
+        style18_new.IntegerLiteralSeparator.DecimalMinDigits = 0;
+        style19_old.IntegerLiteralSeparator.DecimalMinDigits = 0;
+        style19_new.IntegerLiteralSeparator.DecimalMinDigits = 0;
+        style18_old.RemoveSemicolon = true;
+        style18_new.RemoveSemicolon = true;
+        style19_old.RemoveSemicolon = true;
+        style19_new.RemoveSemicolon = true;
       }
 
       REQUIRE(style18_old == style18_new);
