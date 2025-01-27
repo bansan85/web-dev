@@ -39,11 +39,17 @@ cp build_webassembly_debug/web* angular/src/assets/
 
 if [ -f /usr/lib/llvm/19/bin/clang ]; then
     cmake -S cpp/tests/ -B build_tests_debug -DWITH_SANITIZE_ADDRESS=ON -DWITH_SANITIZE_UNDEFINED=ON -G "Ninja" -DCMAKE_BUILD_TYPE="Debug" -DCMAKE_C_COMPILER=/usr/lib/llvm/19/bin/clang -DCMAKE_CXX_COMPILER=/usr/lib/llvm/19/bin/clang++ -DCMAKE_AR=/usr/lib/llvm/19/bin/llvm-ar -DCMAKE_AS=/usr/lib/llvm/19/bin/llvm-as -DCMAKE_RANLIB=/usr/lib/llvm/19/bin/llvm-ranlib -DCMAKE_LINKER_TYPE=LLD
+    cmake -S cpp/tests/ -B build_tests_release -DWITH_SANITIZE_ADDRESS=OFF -DWITH_SANITIZE_UNDEFINED=OFF -G "Ninja" -DCMAKE_BUILD_TYPE="Release" -DCMAKE_C_COMPILER=/usr/lib/llvm/19/bin/clang -DCMAKE_CXX_COMPILER=/usr/lib/llvm/19/bin/clang++ -DCMAKE_AR=/usr/lib/llvm/19/bin/llvm-ar -DCMAKE_AS=/usr/lib/llvm/19/bin/llvm-as -DCMAKE_RANLIB=/usr/lib/llvm/19/bin/llvm-ranlib -DCMAKE_LINKER_TYPE=LLD
 else
     cmake -S cpp/tests/ -B build_tests_debug -DWITH_SANITIZE_ADDRESS=ON -DWITH_SANITIZE_UNDEFINED=ON -G "Ninja" -DCMAKE_BUILD_TYPE="Debug" -DCMAKE_C_COMPILER=/usr/bin/clang-19 -DCMAKE_CXX_COMPILER=/usr/bin/clang++-19 -DCMAKE_AR=/usr/bin/llvm-ar-19 -DCMAKE_AS=/usr/bin/llvm-as-19 -DCMAKE_RANLIB=/usr/bin/llvm-ranlib-19 -DCMAKE_LINKER_TYPE=LLD
+    cmake -S cpp/tests/ -B build_tests_release -DWITH_SANITIZE_ADDRESS=OFF -DWITH_SANITIZE_UNDEFINED=ODD -G "Ninja" -DCMAKE_BUILD_TYPE="Release" -DCMAKE_C_COMPILER=/usr/bin/clang-19 -DCMAKE_CXX_COMPILER=/usr/bin/clang++-19 -DCMAKE_AR=/usr/bin/llvm-ar-19 -DCMAKE_AS=/usr/bin/llvm-as-19 -DCMAKE_RANLIB=/usr/bin/llvm-ranlib-19 -DCMAKE_LINKER_TYPE=LLD
 fi
 cmake --build build_tests_debug --parallel $(nproc --all)
+cmake --build build_tests_release --parallel $(nproc --all)
 cd build_tests_debug
+ctest
+cd ..
+cd build_tests_release
 ctest
 cd ..
 
