@@ -24,7 +24,9 @@
 
 namespace clang_vx {
 enum class Update { DOWNGRADE, UPGRADE };
-}
+
+std::string updateTo(Version vstart, Version vend, const std::string &data);
+} // namespace clang_vx
 
 namespace clang_update_v3_4 {
 
