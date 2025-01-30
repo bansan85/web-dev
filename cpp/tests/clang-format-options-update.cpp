@@ -1583,3 +1583,47 @@ TEST_CASE("updateEnum", "[clang-format-options-update]") {
     }
   }
 }
+
+TEST_CASE("showMigration", "[clang-format-options-update]") {
+  auto max_value =
+      *std::max_element(magic_enum::enum_values<clang_vx::Version>().begin(),
+                        magic_enum::enum_values<clang_vx::Version>().end());
+  for (std::string_view style : styles) {
+    bool skip_first = true;
+    for (clang_vx::Version version :
+         magic_enum::enum_values<clang_vx::Version>()) {
+      std::string filename =
+          std::string{style} + "-" +
+          std::string{magic_enum::enum_name(version).substr(1)} + ".cfg";
+      if (std::filesystem::exists(filename)) {
+        std::ifstream myfile;
+        myfile.open(filename);
+        std::string myline;
+        std::stringstream ss;
+        REQUIRE(myfile.is_open());
+        while (myfile) {
+          std::getline(myfile, myline);
+          ss << myline << '\n';
+        }
+
+        if (version != max_value) {
+          std::cout << "Update: " << filename << "\n"
+                    << updateTo(version,
+                                static_cast<clang_vx::Version>(
+                                    static_cast<size_t>(version) + 1),
+                                ss.str())
+                    << "\n";
+        }
+        if (!skip_first) {
+          std::cout << "Downgrade: " << filename << "\n"
+                    << downgradeTo(version,
+                                   static_cast<clang_vx::Version>(
+                                       static_cast<size_t>(version) - 1),
+                                   ss.str())
+                    << "\n";
+        }
+        skip_first = false;
+      }
+    }
+  }
+}

@@ -563,6 +563,7 @@ void update(clang_v3_4::FormatStyle &prev, clang_v3_5::FormatStyle &next,
   std::string_view next_version = "3.5";
 
   NEW_FIELD(Language);
+  next.Language = clang_v3_5::FormatStyle::LanguageKind::LK_Cpp;
   ASSIGN_SAME_FIELD(ColumnLimit);
   ASSIGN_SAME_FIELD(MaxEmptyLinesToKeep);
   NEW_FIELD(KeepEmptyLinesAtTheStartOfBlocks);
@@ -4205,6 +4206,7 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   }
   case clang_vx::Version::V3_5: {
     clang_v3_5::FormatStyle fs3_5;
+    fs3_5.Language = clang_v3_5::FormatStyle::LanguageKind::LK_Cpp;
     std::error_code ec = clang_v3_5::parseConfiguration(data, &fs3_5);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v3_5.\n" +
@@ -4214,6 +4216,7 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   }
   case clang_vx::Version::V3_6: {
     clang_v3_6::FormatStyle fs3_6;
+    fs3_6.Language = clang_v3_6::FormatStyle::LanguageKind::LK_Cpp;
     std::error_code ec = clang_v3_6::parseConfiguration(data, &fs3_6);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v3_6.\n" +
@@ -4223,6 +4226,7 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   }
   case clang_vx::Version::V3_7: {
     clang_v3_7::FormatStyle fs3_7;
+    fs3_7.Language = clang_v3_7::FormatStyle::LanguageKind::LK_Cpp;
     std::error_code ec = clang_v3_7::parseConfiguration(data, &fs3_7);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v3_7.\n" +
@@ -4232,6 +4236,7 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   }
   case clang_vx::Version::V3_8: {
     clang_v3_8::FormatStyle fs3_8;
+    fs3_8.Language = clang_v3_8::FormatStyle::LanguageKind::LK_Cpp;
     std::error_code ec = clang_v3_8::parseConfiguration(data, &fs3_8);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v3_8.\n" +
@@ -4241,6 +4246,7 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   }
   case clang_vx::Version::V3_9: {
     clang_v3_9::FormatStyle fs3_9;
+    fs3_9.Language = clang_v3_9::FormatStyle::LanguageKind::LK_Cpp;
     std::error_code ec = clang_v3_9::parseConfiguration(data, &fs3_9);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v3_9.\n" +
@@ -4250,6 +4256,7 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   }
   case clang_vx::Version::V4: {
     clang_v4::FormatStyle fs4;
+    fs4.Language = clang_v4::FormatStyle::LanguageKind::LK_Cpp;
     std::error_code ec = clang_v4::parseConfiguration(data, &fs4);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v4.\n" +
@@ -4259,6 +4266,7 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   }
   case clang_vx::Version::V5: {
     clang_v5::FormatStyle fs5;
+    fs5.Language = clang_v5::FormatStyle::LanguageKind::LK_Cpp;
     std::error_code ec = clang_v5::parseConfiguration(data, &fs5);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v5.\n" +
@@ -4268,6 +4276,7 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   }
   case clang_vx::Version::V6: {
     clang_v6::FormatStyle fs6;
+    fs6.Language = clang_v6::FormatStyle::LanguageKind::LK_Cpp;
     std::error_code ec = clang_v6::parseConfiguration(data, &fs6);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v6.\n" +
@@ -4277,6 +4286,7 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   }
   case clang_vx::Version::V7: {
     clang_v7::FormatStyle fs7;
+    fs7.Language = clang_v7::FormatStyle::LanguageKind::LK_Cpp;
     std::error_code ec = clang_v7::parseConfiguration(data, &fs7);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v7.\n" +
@@ -4286,6 +4296,7 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   }
   case clang_vx::Version::V8: {
     clang_v8::FormatStyle fs8;
+    fs8.Language = clang_v8::FormatStyle::LanguageKind::LK_Cpp;
     std::error_code ec = clang_v8::parseConfiguration(data, &fs8);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v8.\n" +
@@ -4295,6 +4306,7 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   }
   case clang_vx::Version::V9: {
     clang_v9::FormatStyle fs9;
+    fs9.Language = clang_v9::FormatStyle::LanguageKind::LK_Cpp;
     std::error_code ec = clang_v9::parseConfiguration(data, &fs9);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v9.\n" +
@@ -4304,6 +4316,7 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   }
   case clang_vx::Version::V10: {
     clang_v10::FormatStyle fs10;
+    fs10.Language = clang_v10::FormatStyle::LanguageKind::LK_Cpp;
     std::error_code ec = clang_v10::parseConfiguration(data, &fs10);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v10.\n" +
@@ -4313,6 +4326,7 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   }
   case clang_vx::Version::V11: {
     clang_v11::FormatStyle fs11;
+    fs11.Language = clang_v11::FormatStyle::LanguageKind::LK_Cpp;
     std::error_code ec = clang_v11::parseConfiguration(data, &fs11);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v11.\n" +
@@ -4322,6 +4336,7 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   }
   case clang_vx::Version::V12: {
     clang_v12::FormatStyle fs12;
+    fs12.Language = clang_v12::FormatStyle::LanguageKind::LK_Cpp;
     std::error_code ec = clang_v12::parseConfiguration(data, &fs12);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v12.\n" +
@@ -4331,6 +4346,7 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   }
   case clang_vx::Version::V13: {
     clang_v13::FormatStyle fs13;
+    fs13.Language = clang_v13::FormatStyle::LanguageKind::LK_Cpp;
     std::error_code ec = clang_v13::parseConfiguration(data, &fs13);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v13.\n" +
@@ -4340,6 +4356,7 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   }
   case clang_vx::Version::V14: {
     clang_v14::FormatStyle fs14;
+    fs14.Language = clang_v14::FormatStyle::LanguageKind::LK_Cpp;
     std::error_code ec = clang_v14::parseConfiguration(data, &fs14);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v14.\n" +
@@ -4349,6 +4366,7 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   }
   case clang_vx::Version::V15: {
     clang_v15::FormatStyle fs15;
+    fs15.Language = clang_v15::FormatStyle::LanguageKind::LK_Cpp;
     std::error_code ec = clang_v15::parseConfiguration(data, &fs15);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v15.\n" +
@@ -4358,6 +4376,7 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   }
   case clang_vx::Version::V16: {
     clang_v16::FormatStyle fs16;
+    fs16.Language = clang_v16::FormatStyle::LanguageKind::LK_Cpp;
     std::error_code ec = clang_v16::parseConfiguration(data, &fs16);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v16.\n" +
@@ -4367,6 +4386,7 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   }
   case clang_vx::Version::V17: {
     clang_v17::FormatStyle fs17;
+    fs17.Language = clang_v17::FormatStyle::LanguageKind::LK_Cpp;
     std::error_code ec = clang_v17::parseConfiguration(data, &fs17);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v17.\n" +
@@ -4376,6 +4396,7 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   }
   case clang_vx::Version::V18: {
     clang_v18::FormatStyle fs18;
+    fs18.Language = clang_v18::FormatStyle::LanguageKind::LK_Cpp;
     std::error_code ec = clang_v18::parseConfiguration(data, &fs18);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v18.\n" +
@@ -4385,6 +4406,7 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   }
   case clang_vx::Version::V19: {
     clang_v19::FormatStyle fs19;
+    fs19.Language = clang_v19::FormatStyle::LanguageKind::LK_Cpp;
     std::error_code ec = clang_v19::parseConfiguration(data, &fs19);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v19.\n" +
@@ -4664,6 +4686,197 @@ std::string updateTo(Version vstart, Version vend, const std::string &data) {
   }
 
   return formatStyleToVersion(before);
-  ;
 }
+
+std::string downgradeTo(Version vstart, Version vend, const std::string &data) {
+  AllFormatStyle before = versionToFormatStyle(vstart, data);
+  if (vstart == vend) {
+    return formatStyleToVersion(before);
+  }
+  AllFormatStyle after;
+
+  std::string based_on_style;
+  size_t pos = data.find("BasedOnStyle:");
+  if (pos != std::string::npos) {
+    pos += 13;
+    while (pos < data.size() && data[pos] == ' ')
+      ++pos; // Ignorer les espaces
+    size_t end = data.find('\n', pos);
+    based_on_style = data.substr(pos, end - pos);
+    std::cout << "BasedOnStyle: " << based_on_style << std::endl;
+  }
+
+  if (based_on_style.empty()) {
+    throw std::runtime_error("BasedOnStyle is missing");
+  }
+
+  for (size_t vi = static_cast<size_t>(vstart); vi > static_cast<size_t>(vend);
+       vi--) {
+    Version v_i = static_cast<Version>(vi);
+    switch (v_i) {
+    case Version::V3_4: {
+      after = clang_v3_3::FormatStyle{};
+      clang_update_v3_4::update<Update::DOWNGRADE>(
+          std::get<clang_v3_3::FormatStyle>(after),
+          std::get<clang_v3_4::FormatStyle>(before), based_on_style);
+      break;
+    }
+    case Version::V3_5: {
+      after = clang_v3_4::FormatStyle{};
+      clang_update_v3_5::update<Update::DOWNGRADE>(
+          std::get<clang_v3_4::FormatStyle>(after),
+          std::get<clang_v3_5::FormatStyle>(before), based_on_style);
+      break;
+    }
+    case Version::V3_6: {
+      after = clang_v3_5::FormatStyle{};
+      clang_update_v3_6::update<Update::DOWNGRADE>(
+          std::get<clang_v3_5::FormatStyle>(after),
+          std::get<clang_v3_6::FormatStyle>(before), based_on_style);
+      break;
+    }
+    case Version::V3_7: {
+      after = clang_v3_6::FormatStyle{};
+      clang_update_v3_7::update<Update::DOWNGRADE>(
+          std::get<clang_v3_6::FormatStyle>(after),
+          std::get<clang_v3_7::FormatStyle>(before), based_on_style);
+      break;
+    }
+    case Version::V3_8: {
+      after = clang_v3_7::FormatStyle{};
+      clang_update_v3_8::update<Update::DOWNGRADE>(
+          std::get<clang_v3_7::FormatStyle>(after),
+          std::get<clang_v3_8::FormatStyle>(before), based_on_style);
+      break;
+    }
+    case Version::V3_9: {
+      after = clang_v3_8::FormatStyle{};
+      clang_update_v3_9::update<Update::DOWNGRADE>(
+          std::get<clang_v3_8::FormatStyle>(after),
+          std::get<clang_v3_9::FormatStyle>(before), based_on_style);
+      break;
+    }
+    case Version::V4: {
+      after = clang_v3_9::FormatStyle{};
+      clang_update_v4::update<Update::DOWNGRADE>(
+          std::get<clang_v3_9::FormatStyle>(after),
+          std::get<clang_v4::FormatStyle>(before), based_on_style);
+      break;
+    }
+    case Version::V5: {
+      after = clang_v4::FormatStyle{};
+      clang_update_v5::update<Update::DOWNGRADE>(
+          std::get<clang_v4::FormatStyle>(after),
+          std::get<clang_v5::FormatStyle>(before), based_on_style);
+      break;
+    }
+    case Version::V6: {
+      after = clang_v5::FormatStyle{};
+      clang_update_v6::update<Update::DOWNGRADE>(
+          std::get<clang_v5::FormatStyle>(after),
+          std::get<clang_v6::FormatStyle>(before), based_on_style);
+      break;
+    }
+    case Version::V7: {
+      after = clang_v6::FormatStyle{};
+      clang_update_v7::update<Update::DOWNGRADE>(
+          std::get<clang_v6::FormatStyle>(after),
+          std::get<clang_v7::FormatStyle>(before), based_on_style);
+      break;
+    }
+    case Version::V8: {
+      after = clang_v7::FormatStyle{};
+      clang_update_v8::update<Update::DOWNGRADE>(
+          std::get<clang_v7::FormatStyle>(after),
+          std::get<clang_v8::FormatStyle>(before), based_on_style);
+      break;
+    }
+    case Version::V9: {
+      after = clang_v8::FormatStyle{};
+      clang_update_v9::update<Update::DOWNGRADE>(
+          std::get<clang_v8::FormatStyle>(after),
+          std::get<clang_v9::FormatStyle>(before), based_on_style);
+      break;
+    }
+    case Version::V10: {
+      after = clang_v9::FormatStyle{};
+      clang_update_v10::update<Update::DOWNGRADE>(
+          std::get<clang_v9::FormatStyle>(after),
+          std::get<clang_v10::FormatStyle>(before), based_on_style);
+      break;
+    }
+    case Version::V11: {
+      after = clang_v10::FormatStyle{};
+      clang_update_v11::update<Update::DOWNGRADE>(
+          std::get<clang_v10::FormatStyle>(after),
+          std::get<clang_v11::FormatStyle>(before), based_on_style);
+      break;
+    }
+    case Version::V12: {
+      after = clang_v11::FormatStyle{};
+      clang_update_v12::update<Update::DOWNGRADE>(
+          std::get<clang_v11::FormatStyle>(after),
+          std::get<clang_v12::FormatStyle>(before), based_on_style);
+      break;
+    }
+    case Version::V13: {
+      after = clang_v12::FormatStyle{};
+      clang_update_v13::update<Update::DOWNGRADE>(
+          std::get<clang_v12::FormatStyle>(after),
+          std::get<clang_v13::FormatStyle>(before), based_on_style);
+      break;
+    }
+    case Version::V14: {
+      after = clang_v13::FormatStyle{};
+      clang_update_v14::update<Update::DOWNGRADE>(
+          std::get<clang_v13::FormatStyle>(after),
+          std::get<clang_v14::FormatStyle>(before), based_on_style);
+      break;
+    }
+    case Version::V15: {
+      after = clang_v14::FormatStyle{};
+      clang_update_v15::update<Update::DOWNGRADE>(
+          std::get<clang_v14::FormatStyle>(after),
+          std::get<clang_v15::FormatStyle>(before), based_on_style);
+      break;
+    }
+    case Version::V16: {
+      after = clang_v15::FormatStyle{};
+      clang_update_v16::update<Update::DOWNGRADE>(
+          std::get<clang_v15::FormatStyle>(after),
+          std::get<clang_v16::FormatStyle>(before), based_on_style);
+      break;
+    }
+    case Version::V17: {
+      after = clang_v16::FormatStyle{};
+      clang_update_v17::update<Update::DOWNGRADE>(
+          std::get<clang_v16::FormatStyle>(after),
+          std::get<clang_v17::FormatStyle>(before), based_on_style);
+      break;
+    }
+    case Version::V18: {
+      after = clang_v17::FormatStyle{};
+      clang_update_v18::update<Update::DOWNGRADE>(
+          std::get<clang_v17::FormatStyle>(after),
+          std::get<clang_v18::FormatStyle>(before), based_on_style);
+      break;
+    }
+    case Version::V19: {
+      after = clang_v18::FormatStyle{};
+      clang_update_v19::update<Update::DOWNGRADE>(
+          std::get<clang_v18::FormatStyle>(after),
+          std::get<clang_v19::FormatStyle>(before), based_on_style);
+      break;
+    }
+    default: {
+      throw std::runtime_error("Unsupported version while upgrading.");
+      break;
+    }
+    }
+    std::swap(before, after);
+  }
+
+  return formatStyleToVersion(before);
+}
+
 } // namespace clang_vx
