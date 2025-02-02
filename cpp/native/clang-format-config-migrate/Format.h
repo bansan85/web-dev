@@ -42,6 +42,6 @@ enum class Version {
 
 std::vector<Version> getCompatibleVersion(const std::string &config);
 
-std::vector<std::string> getStyleNames();
+std::vector<std::string> getStyleNames(clang_vx::Version version);
 
 } // namespace clang_vx

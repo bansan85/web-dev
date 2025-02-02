@@ -1,6 +1,11 @@
+#include "../native/clang-format-config-migrate/Format.h"
 #include <boost/pfr/core.hpp>
 #include <emscripten/bind.h>
 #include <string>
+
+#undef BUILD_UNUSED
+
+#ifdef BUILD_UNUSED
 
 #include "../native/clang-format-config-migrate/10.0.1/Format.h"
 #include "../native/clang-format-config-migrate/11.1.0/Format.h"
@@ -142,8 +147,14 @@ void registerFormatStyle() {
 
 } // namespace web_clang_format_config_migrate
 
+#endif
+
 EMSCRIPTEN_BINDINGS(web_clang_format_config_migrate) {
+
   emscripten::register_vector<std::string>("StringList");
+
+#ifdef BUILD_UNUSED
+
   emscripten::register_optional<unsigned int>();
 
   emscripten::register_vector<clang_v3_8::FormatStyle::IncludeCategory>(
@@ -386,7 +397,6 @@ EMSCRIPTEN_BINDINGS(web_clang_format_config_migrate) {
                        &clang_update_v16::update<clang_vx::Update::UPGRADE>);
   emscripten::function("downgradeV16",
                        &clang_update_v16::update<clang_vx::Update::DOWNGRADE>);
-
 
   emscripten::function(
       "getLLVMStyleV15", +[] {
@@ -1060,4 +1070,42 @@ EMSCRIPTEN_BINDINGS(web_clang_format_config_migrate) {
   emscripten::function("getMozillaStyleV3_3", &clang_v3_3::getMozillaStyle);
 
   web_clang_format_config_migrate::registerFormatStyle();
+
+#endif
+
+  emscripten::enum_<clang_vx::Version>("Version")
+      .value("V3_3", clang_vx::Version::V3_3)
+      .value("V3_4", clang_vx::Version::V3_4)
+      .value("V3_5", clang_vx::Version::V3_5)
+      .value("V3_6", clang_vx::Version::V3_6)
+      .value("V3_7", clang_vx::Version::V3_7)
+      .value("V3_8", clang_vx::Version::V3_8)
+      .value("V3_9", clang_vx::Version::V3_9)
+      .value("V4", clang_vx::Version::V4)
+      .value("V5", clang_vx::Version::V5)
+      .value("V6", clang_vx::Version::V6)
+      .value("V7", clang_vx::Version::V7)
+      .value("V8", clang_vx::Version::V8)
+      .value("V9", clang_vx::Version::V9)
+      .value("V10", clang_vx::Version::V10)
+      .value("V11", clang_vx::Version::V11)
+      .value("V12", clang_vx::Version::V12)
+      .value("V13", clang_vx::Version::V13)
+      .value("V14", clang_vx::Version::V14)
+      .value("V15", clang_vx::Version::V15)
+      .value("V16", clang_vx::Version::V16)
+      .value("V17", clang_vx::Version::V17)
+      .value("V18", clang_vx::Version::V18)
+      .value("V19", clang_vx::Version::V19);
+
+  emscripten::register_vector<clang_vx::Version>("VersionList");
+
+  emscripten::function(
+      "getCompatibleVersion", +[](const std::string &yaml) {
+        return clang_vx::getCompatibleVersion(yaml);
+      });
+  emscripten::function(
+      "getStyleNames", +[](clang_vx::Version version) {
+        return clang_vx::getStyleNames(version);
+      });
 }

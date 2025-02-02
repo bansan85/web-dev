@@ -1,0 +1,64 @@
+<app-dialog-popup #dialog>
+  <div dialog-header>
+    <span>clang-format config migrate options</span>
+  </div>
+  <div dialog-body>
+    <dl>
+      <dt>Initial version:</dt>
+      <dd>
+        <select #oldVersion>
+          <option value="min">Lowest compatible</option>
+          <option value="max">Newest compatible</option>
+          <option *ngFor="let version of compatibleVersion() | async" [value]="version.id">{{ version.name }}
+          </option>
+        </select>
+      </dd>
+      <dt>Final version:</dt>
+      <dd>
+        <select #newVersion>
+          <option value="3.3">3.3</option>
+          <option value="3.4">3.4</option>
+          <option value="3.5">3.5</option>
+          <option value="3.6">3.6</option>
+          <option value="3.7">3.7</option>
+          <option value="3.8">3.8</option>
+          <option value="3.9">3.9</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+          <option value="11">11</option>
+          <option value="12">12</option>
+          <option value="13">13</option>
+          <option value="14">14</option>
+          <option value="15">15</option>
+          <option value="16">16</option>
+          <option value="17">17</option>
+          <option value="18">18</option>
+          <option value="19">19</option>
+        </select>
+      </dd>
+      <dt>Based on style (if missing or anavailable):</dt>
+      <dd>
+        <select #defaultStyle>
+        </select>
+      </dd>
+    </dl>
+  </div>
+</app-dialog-popup>
+
+<app-textarea-two [inputChange]="migrate">
+  <div header-input>
+    <h2>Initial style</h2>
+  </div>
+  <div header-output>
+    <h2>Migrated style<lucide-icon name="settings" (click)="dialog.openDialog()"></lucide-icon></h2>
+  </div>
+</app-textarea-two>
+
+<ng-container *ngIf="isLoading()">
+  <app-spinner-loading [size]="spinnerSize" [title]="titleLoading"></app-spinner-loading>
+</ng-container>

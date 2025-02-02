@@ -71,6 +71,7 @@ target_link_options(
   "SHELL:-s ENVIRONMENT=web"
   "SHELL:-s INVOKE_RUN=0"
   "SHELL:-s MALLOC='emmalloc'"
+  "SHELL:-s ALLOW_MEMORY_GROWTH=1"
   "SHELL:-s USE_ES6_IMPORT_META=0"
   "$<IF:$<CONFIG:Debug>,--closure 0,--closure 1>"
   "$<IF:$<CONFIG:Debug>,-s ASSERTIONS=1,-s ASSERTIONS=0>"
@@ -82,7 +83,7 @@ target_link_options(
   "--emit-tsd"
   "web_demangler.d.ts"
   "-fexceptions"
-  --no-entry)
+  "--no-entry")
 if(ipo_supported)
   set_property(TARGET web_demangler PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 endif()
@@ -125,7 +126,7 @@ target_link_options(
   "--emit-tsd"
   "web_formatter.d.ts"
   "-fexceptions"
-  --no-entry)
+  "--no-entry")
 if(ipo_supported)
   set_property(TARGET web_formatter PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 endif()
@@ -158,6 +159,7 @@ target_link_options(
   "$<$<CONFIG:Debug>:-gseparate-dwarf>"
   "--emit-tsd"
   "web_lighten.d.ts"
+  "-fexceptions"
   "--no-entry")
 if(ipo_supported)
   set_property(TARGET web_lighten PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
@@ -267,6 +269,7 @@ target_link_options(
   "SHELL:-s ENVIRONMENT=web"
   "SHELL:-s INVOKE_RUN=0"
   "SHELL:-s MALLOC='emmalloc'"
+  "SHELL:-s ALLOW_MEMORY_GROWTH=1"
   "SHELL:-s USE_ES6_IMPORT_META=0"
   "$<IF:$<CONFIG:Debug>,--closure 0,--closure 1>"
   "$<IF:$<CONFIG:Debug>,-s ASSERTIONS=1,-s ASSERTIONS=0>"
@@ -278,7 +281,7 @@ target_link_options(
   "--emit-tsd"
   "web_clang_format_config_migrate.d.ts"
   "-fexceptions"
-  --no-entry)
+  "--no-entry")
 if(ipo_supported)
   set_property(TARGET web_clang_format_config_migrate
                PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)

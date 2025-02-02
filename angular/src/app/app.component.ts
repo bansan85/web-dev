@@ -11,6 +11,7 @@ import { LogoFormatterInlineComponent } from './img/logo-formatter-inline.compon
 import { LogoNamingStyleInlineComponent } from './img/logo-naming-style-inline.component';
 import { LogoLightenInlineComponent } from './img/logo-lighten-inline.component';
 import { GithubMarkInlineComponent } from './img/github-mark-inline.component';
+import { LogoClangFormatConfigMigrateInlineComponent } from './img/logo-clang-format-config-migrate-inline.component'
 
 @Component({
   selector: 'app-root',
@@ -24,6 +25,7 @@ import { GithubMarkInlineComponent } from './img/github-mark-inline.component';
     LogoNamingStyleInlineComponent,
     LogoLightenInlineComponent,
     GithubMarkInlineComponent,
+    LogoClangFormatConfigMigrateInlineComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
