@@ -53,92 +53,92 @@ target_sources(
           "${CMAKE_CURRENT_SOURCE_DIR}/../native/lighten.h"
           "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt")
 
-add_executable(test_clang_format_options_update)
+add_executable(test_clang_format_config_migrate)
 target_sources(
-  test_clang_format_options_update
+  test_clang_format_config_migrate
   PRIVATE
-    "${CMAKE_CURRENT_SOURCE_DIR}/clang-format-options-update.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/3.3.0/Format.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/3.3.0/Format.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/3.4.2/Format.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/3.4.2/Format.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/3.5.2/Format.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/3.5.2/Format.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/3.6.2/Format.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/3.6.2/Format.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/3.7.1/Format.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/3.7.1/Format.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/3.8.1/Format.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/3.8.1/Format.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/3.9.1/Format.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/3.9.1/Format.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/4.0.1/Format.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/4.0.1/Format.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/5.0.2/Format.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/5.0.2/Format.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/6.0.1/Format.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/6.0.1/Format.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/7.1.0/Format.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/7.1.0/Format.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/7.1.0/IncludeStyle.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/7.1.0/IncludeStyle.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/8.0.1/Format.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/8.0.1/Format.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/8.0.1/IncludeStyle.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/8.0.1/IncludeStyle.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/9.0.1/Format.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/9.0.1/Format.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/9.0.1/IncludeStyle.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/9.0.1/IncludeStyle.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/10.0.1/Format.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/10.0.1/Format.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/10.0.1/IncludeStyle.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/10.0.1/IncludeStyle.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/11.1.0/Format.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/11.1.0/Format.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/11.1.0/IncludeStyle.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/11.1.0/IncludeStyle.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/12.0.1/Format.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/12.0.1/Format.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/12.0.1/IncludeStyle.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/12.0.1/IncludeStyle.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/13.0.1/Format.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/13.0.1/Format.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/13.0.1/IncludeStyle.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/13.0.1/IncludeStyle.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/14.0.6/Format.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/14.0.6/Format.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/14.0.6/IncludeStyle.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/14.0.6/IncludeStyle.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/15.0.7/Format.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/15.0.7/Format.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/15.0.7/IncludeStyle.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/15.0.7/IncludeStyle.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/16.0.6/Format.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/16.0.6/Format.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/16.0.6/IncludeStyle.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/16.0.6/IncludeStyle.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/17.0.6/Format.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/17.0.6/Format.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/17.0.6/IncludeStyle.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/17.0.6/IncludeStyle.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/18.1.8/Format.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/18.1.8/Format.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/18.1.8/IncludeStyle.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/18.1.8/IncludeStyle.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/19.1.6/Format.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/19.1.6/Format.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/19.1.6/IncludeStyle.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/19.1.6/IncludeStyle.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/Format.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/Format.h"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/update.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-options-update/update.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/clang-format-config-migrate.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/3.3.0/Format.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/3.3.0/Format.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/3.4.2/Format.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/3.4.2/Format.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/3.5.2/Format.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/3.5.2/Format.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/3.6.2/Format.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/3.6.2/Format.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/3.7.1/Format.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/3.7.1/Format.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/3.8.1/Format.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/3.8.1/Format.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/3.9.1/Format.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/3.9.1/Format.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/4.0.1/Format.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/4.0.1/Format.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/5.0.2/Format.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/5.0.2/Format.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/6.0.1/Format.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/6.0.1/Format.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/7.1.0/Format.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/7.1.0/Format.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/7.1.0/IncludeStyle.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/7.1.0/IncludeStyle.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/8.0.1/Format.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/8.0.1/Format.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/8.0.1/IncludeStyle.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/8.0.1/IncludeStyle.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/9.0.1/Format.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/9.0.1/Format.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/9.0.1/IncludeStyle.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/9.0.1/IncludeStyle.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/10.0.1/Format.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/10.0.1/Format.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/10.0.1/IncludeStyle.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/10.0.1/IncludeStyle.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/11.1.0/Format.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/11.1.0/Format.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/11.1.0/IncludeStyle.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/11.1.0/IncludeStyle.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/12.0.1/Format.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/12.0.1/Format.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/12.0.1/IncludeStyle.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/12.0.1/IncludeStyle.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/13.0.1/Format.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/13.0.1/Format.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/13.0.1/IncludeStyle.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/13.0.1/IncludeStyle.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/14.0.6/Format.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/14.0.6/Format.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/14.0.6/IncludeStyle.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/14.0.6/IncludeStyle.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/15.0.7/Format.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/15.0.7/Format.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/15.0.7/IncludeStyle.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/15.0.7/IncludeStyle.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/16.0.6/Format.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/16.0.6/Format.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/16.0.6/IncludeStyle.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/16.0.6/IncludeStyle.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/17.0.6/Format.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/17.0.6/Format.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/17.0.6/IncludeStyle.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/17.0.6/IncludeStyle.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/18.1.8/Format.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/18.1.8/Format.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/18.1.8/IncludeStyle.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/18.1.8/IncludeStyle.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/19.1.6/Format.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/19.1.6/Format.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/19.1.6/IncludeStyle.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/19.1.6/IncludeStyle.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/Format.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/Format.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/update.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/update.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt")
-target_link_libraries(test_clang_format_options_update
+target_link_libraries(test_clang_format_config_migrate
                       PRIVATE clangBasic Catch2::Catch2WithMain)
 target_include_directories(
-  test_clang_format_options_update
+  test_clang_format_config_migrate
   PRIVATE SYSTEM
           ${LLVM_SOURCE_DIR}/include
           ${LLVM_EXTERNAL_CLANG_SOURCE_DIR}/include
@@ -148,18 +148,18 @@ target_include_directories(
           "${CMAKE_CURRENT_SOURCE_DIR}/../third_party/magic_enum/include"
           ${LLVM_BINARY_DIR}/include)
 add_custom_command(
-  TARGET test_clang_format_options_update
+  TARGET test_clang_format_config_migrate
   POST_BUILD
   COMMAND
     ${CMAKE_COMMAND} -E copy_directory
     ${CMAKE_CURRENT_SOURCE_DIR}/data/config-file
-    $<TARGET_FILE_DIR:test_clang_format_options_update>)
+    $<TARGET_FILE_DIR:test_clang_format_config_migrate>)
 
-catch_discover_tests(test_clang_format_options_update)
+catch_discover_tests(test_clang_format_config_migrate)
 
 if(WITH_SANITIZE_ADDRESS)
   foreach(target_i IN ITEMS test_lighten_number
-                            test_clang_format_options_update)
+                            test_clang_format_config_migrate)
     target_compile_options(${target_i} PRIVATE "-fsanitize=address"
                                                "-fno-omit-frame-pointer")
     target_link_options(${target_i} PRIVATE "-fsanitize=address")
@@ -167,7 +167,7 @@ if(WITH_SANITIZE_ADDRESS)
 endif()
 if(WITH_SANITIZE_UNDEFINED)
   foreach(target_i IN ITEMS test_lighten_number
-                            test_clang_format_options_update)
+                            test_clang_format_config_migrate)
     target_compile_options(
       ${target_i} PRIVATE "-fsanitize=undefined" "-fno-sanitize-recover=all"
                           "-fno-omit-frame-pointer")

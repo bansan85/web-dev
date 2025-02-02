@@ -1,5 +1,5 @@
-#include "../native/clang-format-options-update/Format.h"
-#include "../native/clang-format-options-update/update.h"
+#include "../native/clang-format-config-migrate/Format.h"
+#include "../native/clang-format-config-migrate/update.h"
 #include <catch2/catch_test_macros.hpp>
 #include <filesystem>
 #include <frozen/bits/hash_string.h>
@@ -846,7 +846,7 @@ std::map<std::string_view, std::vector<clang_vx::Version>> compatibilities{
 
 } // namespace
 
-TEST_CASE("getCompatibleVersion", "[clang-format-options-update]") {
+TEST_CASE("getCompatibleVersion", "[clang-format-config-migrate]") {
   for (std::string_view style : styles) {
     for (clang_vx::Version version :
          magic_enum::enum_values<clang_vx::Version>()) {
@@ -873,7 +873,7 @@ TEST_CASE("getCompatibleVersion", "[clang-format-options-update]") {
   }
 }
 
-TEST_CASE("updateEnum", "[clang-format-options-update]") {
+TEST_CASE("updateEnum", "[clang-format-config-migrate]") {
   for (const std::string_view &style_sv : styles) {
     std::string style{style_sv};
     if (clang_v3_3::FormatStyle style3_3_old;
@@ -1584,7 +1584,7 @@ TEST_CASE("updateEnum", "[clang-format-options-update]") {
   }
 }
 
-TEST_CASE("showMigration", "[clang-format-options-update]") {
+TEST_CASE("showMigration", "[clang-format-config-migrate]") {
   auto max_value =
       *std::max_element(magic_enum::enum_values<clang_vx::Version>().begin(),
                         magic_enum::enum_values<clang_vx::Version>().end());
