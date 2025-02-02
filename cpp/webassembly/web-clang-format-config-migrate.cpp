@@ -2,32 +2,32 @@
 #include <emscripten/bind.h>
 #include <string>
 
-#include "../native/clang-format-options-update/10.0.1/Format.h"
-#include "../native/clang-format-options-update/11.1.0/Format.h"
-#include "../native/clang-format-options-update/12.0.1/Format.h"
-#include "../native/clang-format-options-update/13.0.1/Format.h"
-#include "../native/clang-format-options-update/14.0.6/Format.h"
-#include "../native/clang-format-options-update/15.0.7/Format.h"
-#include "../native/clang-format-options-update/16.0.6/Format.h"
-#include "../native/clang-format-options-update/17.0.6/Format.h"
-#include "../native/clang-format-options-update/18.1.8/Format.h"
-#include "../native/clang-format-options-update/19.1.6/Format.h"
-#include "../native/clang-format-options-update/3.3.0/Format.h"
-#include "../native/clang-format-options-update/3.4.2/Format.h"
-#include "../native/clang-format-options-update/3.5.2/Format.h"
-#include "../native/clang-format-options-update/3.6.2/Format.h"
-#include "../native/clang-format-options-update/3.7.1/Format.h"
-#include "../native/clang-format-options-update/3.8.1/Format.h"
-#include "../native/clang-format-options-update/3.9.1/Format.h"
-#include "../native/clang-format-options-update/4.0.1/Format.h"
-#include "../native/clang-format-options-update/5.0.2/Format.h"
-#include "../native/clang-format-options-update/6.0.1/Format.h"
-#include "../native/clang-format-options-update/7.1.0/Format.h"
-#include "../native/clang-format-options-update/8.0.1/Format.h"
-#include "../native/clang-format-options-update/9.0.1/Format.h"
-#include "../native/clang-format-options-update/update.h"
+#include "../native/clang-format-config-migrate/10.0.1/Format.h"
+#include "../native/clang-format-config-migrate/11.1.0/Format.h"
+#include "../native/clang-format-config-migrate/12.0.1/Format.h"
+#include "../native/clang-format-config-migrate/13.0.1/Format.h"
+#include "../native/clang-format-config-migrate/14.0.6/Format.h"
+#include "../native/clang-format-config-migrate/15.0.7/Format.h"
+#include "../native/clang-format-config-migrate/16.0.6/Format.h"
+#include "../native/clang-format-config-migrate/17.0.6/Format.h"
+#include "../native/clang-format-config-migrate/18.1.8/Format.h"
+#include "../native/clang-format-config-migrate/19.1.6/Format.h"
+#include "../native/clang-format-config-migrate/3.3.0/Format.h"
+#include "../native/clang-format-config-migrate/3.4.2/Format.h"
+#include "../native/clang-format-config-migrate/3.5.2/Format.h"
+#include "../native/clang-format-config-migrate/3.6.2/Format.h"
+#include "../native/clang-format-config-migrate/3.7.1/Format.h"
+#include "../native/clang-format-config-migrate/3.8.1/Format.h"
+#include "../native/clang-format-config-migrate/3.9.1/Format.h"
+#include "../native/clang-format-config-migrate/4.0.1/Format.h"
+#include "../native/clang-format-config-migrate/5.0.2/Format.h"
+#include "../native/clang-format-config-migrate/6.0.1/Format.h"
+#include "../native/clang-format-config-migrate/7.1.0/Format.h"
+#include "../native/clang-format-config-migrate/8.0.1/Format.h"
+#include "../native/clang-format-config-migrate/9.0.1/Format.h"
+#include "../native/clang-format-config-migrate/update.h"
 
-namespace web_clang_format_options_update {
+namespace web_clang_format_config_migrate {
 
 namespace {
 
@@ -113,36 +113,36 @@ std::enable_if_t<!std::is_aggregate_v<T>, T> initialize() {
 }
 
 void registerFormatStyle() {
-#include "web-clang-format-options-update-v10.0.1-binding.cpp.inc" // IWYU pragma: keep
-#include "web-clang-format-options-update-v11.1.0-binding.cpp.inc" // IWYU pragma: keep
-#include "web-clang-format-options-update-v12.0.1-binding.cpp.inc" // IWYU pragma: keep
-#include "web-clang-format-options-update-v13.0.1-binding.cpp.inc" // IWYU pragma: keep
-#include "web-clang-format-options-update-v14.0.6-binding.cpp.inc" // IWYU pragma: keep
-#include "web-clang-format-options-update-v15.0.7-binding.cpp.inc" // IWYU pragma: keep
-#include "web-clang-format-options-update-v16.0.6-binding.cpp.inc" // IWYU pragma: keep
-#include "web-clang-format-options-update-v17.0.6-binding.cpp.inc" // IWYU pragma: keep
-#include "web-clang-format-options-update-v18.1.8-binding.cpp.inc" // IWYU pragma: keep
-#include "web-clang-format-options-update-v19.1.6-binding.cpp.inc" // IWYU pragma: keep
-#include "web-clang-format-options-update-v3.3.0-binding.cpp.inc" // IWYU pragma: keep
-#include "web-clang-format-options-update-v3.4.2-binding.cpp.inc" // IWYU pragma: keep
-#include "web-clang-format-options-update-v3.5.2-binding.cpp.inc" // IWYU pragma: keep
-#include "web-clang-format-options-update-v3.6.2-binding.cpp.inc" // IWYU pragma: keep
-#include "web-clang-format-options-update-v3.7.1-binding.cpp.inc" // IWYU pragma: keep
-#include "web-clang-format-options-update-v3.8.1-binding.cpp.inc" // IWYU pragma: keep
-#include "web-clang-format-options-update-v3.9.1-binding.cpp.inc" // IWYU pragma: keep
-#include "web-clang-format-options-update-v4.0.1-binding.cpp.inc" // IWYU pragma: keep
-#include "web-clang-format-options-update-v5.0.2-binding.cpp.inc" // IWYU pragma: keep
-#include "web-clang-format-options-update-v6.0.1-binding.cpp.inc" // IWYU pragma: keep
-#include "web-clang-format-options-update-v7.1.0-binding.cpp.inc" // IWYU pragma: keep
-#include "web-clang-format-options-update-v8.0.1-binding.cpp.inc" // IWYU pragma: keep
-#include "web-clang-format-options-update-v9.0.1-binding.cpp.inc" // IWYU pragma: keep
+#include "web-clang-format-config-migrate-v10.0.1-binding.cpp.inc" // IWYU pragma: keep
+#include "web-clang-format-config-migrate-v11.1.0-binding.cpp.inc" // IWYU pragma: keep
+#include "web-clang-format-config-migrate-v12.0.1-binding.cpp.inc" // IWYU pragma: keep
+#include "web-clang-format-config-migrate-v13.0.1-binding.cpp.inc" // IWYU pragma: keep
+#include "web-clang-format-config-migrate-v14.0.6-binding.cpp.inc" // IWYU pragma: keep
+#include "web-clang-format-config-migrate-v15.0.7-binding.cpp.inc" // IWYU pragma: keep
+#include "web-clang-format-config-migrate-v16.0.6-binding.cpp.inc" // IWYU pragma: keep
+#include "web-clang-format-config-migrate-v17.0.6-binding.cpp.inc" // IWYU pragma: keep
+#include "web-clang-format-config-migrate-v18.1.8-binding.cpp.inc" // IWYU pragma: keep
+#include "web-clang-format-config-migrate-v19.1.6-binding.cpp.inc" // IWYU pragma: keep
+#include "web-clang-format-config-migrate-v3.3.0-binding.cpp.inc" // IWYU pragma: keep
+#include "web-clang-format-config-migrate-v3.4.2-binding.cpp.inc" // IWYU pragma: keep
+#include "web-clang-format-config-migrate-v3.5.2-binding.cpp.inc" // IWYU pragma: keep
+#include "web-clang-format-config-migrate-v3.6.2-binding.cpp.inc" // IWYU pragma: keep
+#include "web-clang-format-config-migrate-v3.7.1-binding.cpp.inc" // IWYU pragma: keep
+#include "web-clang-format-config-migrate-v3.8.1-binding.cpp.inc" // IWYU pragma: keep
+#include "web-clang-format-config-migrate-v3.9.1-binding.cpp.inc" // IWYU pragma: keep
+#include "web-clang-format-config-migrate-v4.0.1-binding.cpp.inc" // IWYU pragma: keep
+#include "web-clang-format-config-migrate-v5.0.2-binding.cpp.inc" // IWYU pragma: keep
+#include "web-clang-format-config-migrate-v6.0.1-binding.cpp.inc" // IWYU pragma: keep
+#include "web-clang-format-config-migrate-v7.1.0-binding.cpp.inc" // IWYU pragma: keep
+#include "web-clang-format-config-migrate-v8.0.1-binding.cpp.inc" // IWYU pragma: keep
+#include "web-clang-format-config-migrate-v9.0.1-binding.cpp.inc" // IWYU pragma: keep
 }
 
 } // namespace
 
-} // namespace web_clang_format_options_update
+} // namespace web_clang_format_config_migrate
 
-EMSCRIPTEN_BINDINGS(web_clang_format_options_update) {
+EMSCRIPTEN_BINDINGS(web_clang_format_config_migrate) {
   emscripten::register_vector<std::string>("StringList");
   emscripten::register_optional<unsigned int>();
 
@@ -1059,5 +1059,5 @@ EMSCRIPTEN_BINDINGS(web_clang_format_options_update) {
       "getChromiumStyleV3_3", +[] { return clang_v3_3::getChromiumStyle(); });
   emscripten::function("getMozillaStyleV3_3", &clang_v3_3::getMozillaStyle);
 
-  web_clang_format_options_update::registerFormatStyle();
+  web_clang_format_config_migrate::registerFormatStyle();
 }
