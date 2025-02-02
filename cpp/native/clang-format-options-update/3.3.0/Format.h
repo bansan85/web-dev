@@ -124,4 +124,6 @@ FormatStyle getChromiumStyle();
 FormatStyle getMozillaStyle();
 bool getPredefinedStyle(llvm::StringRef Name, FormatStyle *Style);
 
+std::vector<std::string> getStyleNames();
+
 } // end namespace clang_v3_3

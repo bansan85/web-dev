@@ -1916,6 +1916,10 @@ bool getPredefinedStyle(llvm::StringRef Name, FormatStyle::LanguageKind Language
   return true;
 }
 
+std::vector<std::string> getStyleNames() {
+  return {"chromium", "clang-format", "gnu", "google", "llvm", "microsoft", "mozilla", "none", "webkit"};
+}
+
 ParseError validateQualifierOrder(FormatStyle *Style) {
   // If its empty then it means don't do anything.
   if (Style->QualifierOrder.empty())

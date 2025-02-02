@@ -94,4 +94,81 @@ std::vector<Version> getCompatibleVersion(const std::string &config) {
   return retval;
 }
 
+std::vector<std::string> getStyleNames(clang_vx::Version version) {
+  switch (version) {
+  case clang_vx::Version::V3_3: {
+    return clang_v3_3::getStyleNames();
+  }
+  case clang_vx::Version::V3_4: {
+    return clang_v3_4::getStyleNames();
+  }
+  case clang_vx::Version::V3_5: {
+    return clang_v3_5::getStyleNames();
+  }
+  case clang_vx::Version::V3_6: {
+    return clang_v3_6::getStyleNames();
+  }
+  case clang_vx::Version::V3_7: {
+    return clang_v3_7::getStyleNames();
+  }
+  case clang_vx::Version::V3_8: {
+    return clang_v3_8::getStyleNames();
+  }
+  case clang_vx::Version::V3_9: {
+    return clang_v3_9::getStyleNames();
+  }
+  case clang_vx::Version::V4: {
+    return clang_v4::getStyleNames();
+  }
+  case clang_vx::Version::V5: {
+    return clang_v5::getStyleNames();
+  }
+  case clang_vx::Version::V6: {
+    return clang_v6::getStyleNames();
+  }
+  case clang_vx::Version::V7: {
+    return clang_v7::getStyleNames();
+  }
+  case clang_vx::Version::V8: {
+    return clang_v8::getStyleNames();
+  }
+  case clang_vx::Version::V9: {
+    return clang_v9::getStyleNames();
+  }
+  case clang_vx::Version::V10: {
+    return clang_v10::getStyleNames();
+  }
+  case clang_vx::Version::V11: {
+    return clang_v11::getStyleNames();
+  }
+  case clang_vx::Version::V12: {
+    return clang_v12::getStyleNames();
+  }
+  case clang_vx::Version::V13: {
+    return clang_v13::getStyleNames();
+  }
+  case clang_vx::Version::V14: {
+    return clang_v14::getStyleNames();
+  }
+  case clang_vx::Version::V15: {
+    return clang_v15::getStyleNames();
+  }
+  case clang_vx::Version::V16: {
+    return clang_v16::getStyleNames();
+  }
+  case clang_vx::Version::V17: {
+    return clang_v17::getStyleNames();
+  }
+  case clang_vx::Version::V18: {
+    return clang_v18::getStyleNames();
+  }
+  case clang_vx::Version::V19: {
+    return clang_v19::getStyleNames();
+  }
+  default: {
+    return {};
+  }
+  }
+}
+
 } // namespace clang_vx

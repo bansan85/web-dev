@@ -2069,6 +2069,8 @@ FormatStyle getNoStyle();
 bool getPredefinedStyle(llvm::StringRef Name, FormatStyle::LanguageKind Language,
                         FormatStyle *Style);
 
+std::vector<std::string> getStyleNames();
+
 /// Parse configuration from YAML-formatted text.
 ///
 /// Style->Language is used to get the base style, if the ``BasedOnStyle``

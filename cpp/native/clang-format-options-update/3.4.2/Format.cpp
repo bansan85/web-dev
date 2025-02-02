@@ -321,6 +321,10 @@ bool getPredefinedStyle(llvm::StringRef Name, FormatStyle *Style) {
   return true;
 }
 
+std::vector<std::string> getStyleNames() {
+  return {"chromium", "google", "llvm", "mozilla", "webkit"};
+}
+
 std::error_code parseConfiguration(const std::string& Text, FormatStyle *Style) {
   llvm::yaml::Input Input(Text);
   Input >> *Style;

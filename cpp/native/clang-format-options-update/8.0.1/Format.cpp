@@ -942,6 +942,10 @@ bool getPredefinedStyle(llvm::StringRef Name, FormatStyle::LanguageKind Language
   return true;
 }
 
+std::vector<std::string> getStyleNames() {
+  return {"chromium", "gnu", "google", "llvm", "mozilla", "none", "webkit"};
+}
+
 std::error_code parseConfiguration(const std::string& Text, FormatStyle *Style) {
   assert(Style);
   FormatStyle::LanguageKind Language = Style->Language;

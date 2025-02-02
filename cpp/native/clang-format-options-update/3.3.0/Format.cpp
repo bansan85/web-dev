@@ -103,4 +103,8 @@ bool getPredefinedStyle(llvm::StringRef Name, FormatStyle *Style) {
   return true;
 }
 
+std::vector<std::string> getStyleNames() {
+  return {"chromium", "google", "llvm", "mozilla"};
+}
+
 } // namespace clang_v3_3

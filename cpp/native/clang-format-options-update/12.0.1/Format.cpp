@@ -1330,6 +1330,10 @@ bool getPredefinedStyle(llvm::StringRef Name, FormatStyle::LanguageKind Language
   return true;
 }
 
+std::vector<std::string> getStyleNames() {
+  return {"chromium", "gnu", "google", "llvm", "microsoft", "mozilla", "none", "webkit"};
+}
+
 std::error_code parseConfiguration(llvm::MemoryBufferRef Config,
                                    FormatStyle *Style) {
   assert(Style);

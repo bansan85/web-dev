@@ -320,6 +320,8 @@ FormatStyle getWebKitStyle();
 /// Returns \c true if the Style has been set.
 bool getPredefinedStyle(llvm::StringRef Name, FormatStyle *Style);
 
+std::vector<std::string> getStyleNames();
+
 /// \brief Parse configuration from YAML-formatted text.
 std::error_code parseConfiguration(const std::string& Text, FormatStyle *Style);
 
