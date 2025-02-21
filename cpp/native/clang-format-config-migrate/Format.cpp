@@ -23,7 +23,9 @@
 #include "8.0.1/Format.h"
 #include "9.0.1/Format.h"
 #include <iostream>
+#include <magic_enum/magic_enum.hpp>
 #include <sstream>
+#include <string_view>
 
 namespace clang_vx {
 
@@ -92,6 +94,11 @@ std::vector<Version> getCompatibleVersion(const std::string &config) {
   PARSE_CONFIG(19);
 
   return retval;
+}
+
+std::string versionEnumToString(clang_vx::Version version) {
+  std::string_view sv = magic_enum::enum_name(version);
+  return std::string{sv.begin(), sv.end()};
 }
 
 std::vector<std::string> getStyleNames(clang_vx::Version version) {

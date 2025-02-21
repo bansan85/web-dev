@@ -1105,6 +1105,10 @@ EMSCRIPTEN_BINDINGS(web_clang_format_config_migrate) {
         return clang_vx::getCompatibleVersion(yaml);
       });
   emscripten::function(
+      "versionEnumToString", +[](clang_vx::Version version) {
+        return clang_vx::versionEnumToString(version);
+      });
+  emscripten::function(
       "getStyleNames", +[](clang_vx::Version version) {
         return clang_vx::getStyleNames(version);
       });
