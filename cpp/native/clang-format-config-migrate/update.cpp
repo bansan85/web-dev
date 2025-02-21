@@ -4879,4 +4879,12 @@ std::string downgradeTo(Version vstart, Version vend, const std::string &data) {
   return formatStyleToVersion(before);
 }
 
+std::string migrateTo(Version vstart, Version vend, const std::string &data) {
+  if (static_cast<size_t>(vstart) < static_cast<size_t>(vend)) {
+    return updateTo(vstart, vend, data);
+  }
+
+  return downgradeTo(vstart, vend, data);
+}
+
 } // namespace clang_vx

@@ -1,4 +1,6 @@
 #include "../native/clang-format-config-migrate/Format.h"
+#include "../native/clang-format-config-migrate/update.h"
+
 #include <boost/pfr/core.hpp>
 #include <emscripten/bind.h>
 #include <string>
@@ -1105,7 +1107,25 @@ EMSCRIPTEN_BINDINGS(web_clang_format_config_migrate) {
         return clang_vx::getCompatibleVersion(yaml);
       });
   emscripten::function(
+      "versionEnumToString", +[](clang_vx::Version version) {
+        return clang_vx::versionEnumToString(version);
+      });
+  emscripten::function(
+      "versionStringToEnum", +[](const std::string &version) {
+        return clang_vx::versionStringToEnum(version);
+      });
+  emscripten::function(
       "getStyleNames", +[](clang_vx::Version version) {
         return clang_vx::getStyleNames(version);
+      });
+  emscripten::function(
+      "getStyleNamesRange",
+      +[](clang_vx::Version vstart, clang_vx::Version vend) {
+        return clang_vx::getStyleNamesRange(vstart, vend);
+      });
+  emscripten::function(
+      "migrateTo", +[](clang_vx::Version vstart, clang_vx::Version vend,
+                       const std::string &data) {
+        return clang_vx::migrateTo(vstart, vend, data);
       });
 }

@@ -1,15 +1,25 @@
-import { Component, OnInit, HostListener, ViewChild, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  HostListener,
+  ViewChild,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgIf, NgFor, CommonModule } from '@angular/common';
 import { TextareaTwoComponent } from '../templates/textarea-two.component';
 import { SpinnerLoadingComponent } from '../templates/spinner-loading.component';
 import { WasmLoaderClangFormatConfigMigrateService } from '../wasm-loader-clang-format-config-migrate.service';
-import { EmbindModule as ClangFormatConfigMigrateModule, VersionList, Version } from '../../assets/web_clang_format_config_migrate.js';
+import {
+  EmbindModule as ClangFormatConfigMigrateModule,
+  VersionList,
+  Version,
+} from '../../assets/web_clang_format_config_migrate.js';
 import { DialogPopupComponent } from '../templates/dialog-popup.component';
 import { LucideAngularModule } from 'lucide-angular';
 
 interface SelectItem {
-  id: string;
+  id: Version;
   name: string;
 }
 
@@ -27,7 +37,6 @@ interface SelectItem {
   ],
   templateUrl: './clang-format-config-migrate.component.html',
   styleUrl: './clang-format-config-migrate.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ClangFormatConfigMigrateComponent implements OnInit {
   clangFormatConfigMigrate?: ClangFormatConfigMigrateModule;
@@ -35,11 +44,17 @@ export class ClangFormatConfigMigrateComponent implements OnInit {
 
   titleLoading = '';
 
+  compatibleVersions: SelectItem[] = [];
+
+  compatibleStyles?: string[] = [];
+
   @ViewChild(TextareaTwoComponent) textareaTwo!: TextareaTwoComponent;
 
   constructor(
     private wasmLoaderClangFormatConfigMigrate: WasmLoaderClangFormatConfigMigrateService
-  ) { }
+  ) {
+    this.migrate = this.migrate.bind(this);
+  }
 
   async ngOnInit() {
     this.updateIconSize();
@@ -72,24 +87,37 @@ export class ClangFormatConfigMigrateComponent implements OnInit {
     this.spinnerSize = Math.min(window.innerWidth / 4, window.innerHeight / 2);
   }
 
-  async compatibleVersion(): Promise<SelectItem[]> {
+  async migrate() {
     await this.loadWasmLoaderClangFormatConfigMigrate();
 
-    const versions: VersionList = this.clangFormatConfigMigrate!.getCompatibleVersion(this.textareaTwo.inputElement.nativeElement!.value);
-    let retval: SelectItem[] = [];
+    const versions: VersionList =
+      this.clangFormatConfigMigrate!.getCompatibleVersion(
+        this.textareaTwo.inputElement.nativeElement!.value
+      );
+    this.compatibleVersions = [];
 
     for (let index = 0; index < versions.size(); index++) {
       const version = versions.get(index)!;
-      const element: SelectItem = { id: JSON.stringify(version), name: JSON.stringify(version) };
-      retval.push(element);
+      const element: SelectItem = {
+        id: version,
+        name: this.clangFormatConfigMigrate!.versionEnumToString(version),
+      };
+      this.compatibleVersions.push(element);
     }
 
-    console.log(retval);
+    this.compatibleStyles = [];
+    if (this.compatibleVersions.length != 0) {
+      const compatibleStylesCpp =
+        this.clangFormatConfigMigrate!.getStyleNamesRange(
+          this.compatibleVersions[0].id,
+          this.compatibleVersions[this.compatibleVersions.length - 1].id
+        );
+      const sizeStyles = compatibleStylesCpp.size();
+      for (let i = 0; i < sizeStyles; i++) {
+        this.compatibleStyles.push(compatibleStylesCpp.get(i)!.toString());
+      }
+    }
 
-    return retval;
-  }
-
-  async migrate() {
-    return "";
+    return '';
   }
 }

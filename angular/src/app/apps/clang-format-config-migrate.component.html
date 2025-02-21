@@ -9,7 +9,7 @@
         <select #oldVersion>
           <option value="min">Lowest compatible</option>
           <option value="max">Newest compatible</option>
-          <option *ngFor="let version of compatibleVersion() | async" [value]="version.id">{{ version.name }}
+          <option *ngFor="let version of compatibleVersions" [value]="version.id">{{ version.name }}
           </option>
         </select>
       </dd>
@@ -41,9 +41,11 @@
           <option value="19">19</option>
         </select>
       </dd>
-      <dt>Based on style (if missing or anavailable):</dt>
+      <dt>Based on style (if missing or unavailable):</dt>
       <dd>
         <select #defaultStyle>
+          <option *ngFor="let style of compatibleStyles" [value]="style">{{ style }}
+          </option>
         </select>
       </dd>
     </dl>
