@@ -2,6 +2,7 @@
 #include <frozen/unordered_map.h>
 #include <iostream>
 #include <magic_enum/magic_enum.hpp>
+#include <sstream>
 #include <stdexcept>
 #include <string_view>
 #include <variant>
@@ -73,11 +74,6 @@ operator<<(std::ostream &os,
   os << "}";
   return os;
 }
-bool Enabled;
-bool AcrossEmptyLines;
-bool AcrossComments;
-bool AlignCompound;
-bool PadOperators;
 
 std::ostream &
 operator<<(std::ostream &os,
@@ -415,6 +411,15 @@ void assignRawStringFormat(
           item.BasedOnStyle});
     }
   }
+}
+
+bool containsIgnoreCase(const std::vector<std::string> &vec,
+                        const std::string &str) {
+  return std::any_of(vec.begin(), vec.end(), [&str](const std::string &s) {
+    return std::equal(
+        s.begin(), s.end(), str.begin(), str.end(),
+        [](char a, char b) { return std::tolower(a) == std::tolower(b); });
+  });
 }
 
 } // namespace
@@ -4497,7 +4502,8 @@ std::string formatStyleToVersion(const AllFormatStyle &data) {
 } // namespace
 
 namespace clang_vx {
-std::string updateTo(Version vstart, Version vend, const std::string &data) {
+std::string updateTo(Version vstart, Version vend, const std::string &data,
+                     const std::string &default_style) {
   AllFormatStyle before = versionToFormatStyle(vstart, data);
   if (vstart == vend) {
     return formatStyleToVersion(before);
@@ -4515,166 +4521,193 @@ std::string updateTo(Version vstart, Version vend, const std::string &data) {
     std::cout << "BasedOnStyle: " << based_on_style << std::endl;
   }
 
-  if (based_on_style.empty()) {
-    throw std::runtime_error("BasedOnStyle is missing");
-  }
-
   for (size_t vi = static_cast<size_t>(vstart); vi < static_cast<size_t>(vend);
        vi++) {
     Version v_i = static_cast<Version>(vi);
+    Version vnext_i = static_cast<Version>(vi + 1);
+
+    std::vector<std::string> compatible_styles = getStyleNames(vnext_i);
+
+    std::string style_i;
+
+    if (!based_on_style.empty() &&
+        containsIgnoreCase(compatible_styles, based_on_style)) {
+      style_i = based_on_style;
+    } else if (!default_style.empty() &&
+               containsIgnoreCase(compatible_styles, default_style)) {
+      style_i = default_style;
+    } else {
+      std::ostringstream ss;
+      if (based_on_style.empty()) {
+        ss << "No BasedOnStyle found in yaml config.\n";
+      } else {
+        ss << based_on_style << " is not compatible with version "
+           << magic_enum::enum_name(vnext_i) << " (" << compatible_styles
+           << ").\n";
+      }
+      if (default_style.empty()) {
+        ss << "No fallback style is set.\n";
+      } else {
+        ss << default_style << " is not compatible with version "
+           << magic_enum::enum_name(vnext_i) << " (" << compatible_styles
+           << ").\n";
+      }
+      throw std::runtime_error(ss.str());
+    }
+
     switch (v_i) {
     case Version::V3_3: {
       after = clang_v3_4::FormatStyle{};
       clang_update_v3_4::update<Update::UPGRADE>(
           std::get<clang_v3_3::FormatStyle>(before),
-          std::get<clang_v3_4::FormatStyle>(after), based_on_style);
+          std::get<clang_v3_4::FormatStyle>(after), style_i);
       break;
     }
     case Version::V3_4: {
       after = clang_v3_5::FormatStyle{};
       clang_update_v3_5::update<Update::UPGRADE>(
           std::get<clang_v3_4::FormatStyle>(before),
-          std::get<clang_v3_5::FormatStyle>(after), based_on_style);
+          std::get<clang_v3_5::FormatStyle>(after), style_i);
       break;
     }
     case Version::V3_5: {
       after = clang_v3_6::FormatStyle{};
       clang_update_v3_6::update<Update::UPGRADE>(
           std::get<clang_v3_5::FormatStyle>(before),
-          std::get<clang_v3_6::FormatStyle>(after), based_on_style);
+          std::get<clang_v3_6::FormatStyle>(after), style_i);
       break;
     }
     case Version::V3_6: {
       after = clang_v3_7::FormatStyle{};
       clang_update_v3_7::update<Update::UPGRADE>(
           std::get<clang_v3_6::FormatStyle>(before),
-          std::get<clang_v3_7::FormatStyle>(after), based_on_style);
+          std::get<clang_v3_7::FormatStyle>(after), style_i);
       break;
     }
     case Version::V3_7: {
       after = clang_v3_8::FormatStyle{};
       clang_update_v3_8::update<Update::UPGRADE>(
           std::get<clang_v3_7::FormatStyle>(before),
-          std::get<clang_v3_8::FormatStyle>(after), based_on_style);
+          std::get<clang_v3_8::FormatStyle>(after), style_i);
       break;
     }
     case Version::V3_8: {
       after = clang_v3_9::FormatStyle{};
       clang_update_v3_9::update<Update::UPGRADE>(
           std::get<clang_v3_8::FormatStyle>(before),
-          std::get<clang_v3_9::FormatStyle>(after), based_on_style);
+          std::get<clang_v3_9::FormatStyle>(after), style_i);
       break;
     }
     case Version::V3_9: {
       after = clang_v4::FormatStyle{};
       clang_update_v4::update<Update::UPGRADE>(
           std::get<clang_v3_9::FormatStyle>(before),
-          std::get<clang_v4::FormatStyle>(after), based_on_style);
+          std::get<clang_v4::FormatStyle>(after), style_i);
       break;
     }
     case Version::V4: {
       after = clang_v5::FormatStyle{};
       clang_update_v5::update<Update::UPGRADE>(
           std::get<clang_v4::FormatStyle>(before),
-          std::get<clang_v5::FormatStyle>(after), based_on_style);
+          std::get<clang_v5::FormatStyle>(after), style_i);
       break;
     }
     case Version::V5: {
       after = clang_v6::FormatStyle{};
       clang_update_v6::update<Update::UPGRADE>(
           std::get<clang_v5::FormatStyle>(before),
-          std::get<clang_v6::FormatStyle>(after), based_on_style);
+          std::get<clang_v6::FormatStyle>(after), style_i);
       break;
     }
     case Version::V6: {
       after = clang_v7::FormatStyle{};
       clang_update_v7::update<Update::UPGRADE>(
           std::get<clang_v6::FormatStyle>(before),
-          std::get<clang_v7::FormatStyle>(after), based_on_style);
+          std::get<clang_v7::FormatStyle>(after), style_i);
       break;
     }
     case Version::V7: {
       after = clang_v8::FormatStyle{};
       clang_update_v8::update<Update::UPGRADE>(
           std::get<clang_v7::FormatStyle>(before),
-          std::get<clang_v8::FormatStyle>(after), based_on_style);
+          std::get<clang_v8::FormatStyle>(after), style_i);
       break;
     }
     case Version::V8: {
       after = clang_v9::FormatStyle{};
       clang_update_v9::update<Update::UPGRADE>(
           std::get<clang_v8::FormatStyle>(before),
-          std::get<clang_v9::FormatStyle>(after), based_on_style);
+          std::get<clang_v9::FormatStyle>(after), style_i);
       break;
     }
     case Version::V9: {
       after = clang_v10::FormatStyle{};
       clang_update_v10::update<Update::UPGRADE>(
           std::get<clang_v9::FormatStyle>(before),
-          std::get<clang_v10::FormatStyle>(after), based_on_style);
+          std::get<clang_v10::FormatStyle>(after), style_i);
       break;
     }
     case Version::V10: {
       after = clang_v11::FormatStyle{};
       clang_update_v11::update<Update::UPGRADE>(
           std::get<clang_v10::FormatStyle>(before),
-          std::get<clang_v11::FormatStyle>(after), based_on_style);
+          std::get<clang_v11::FormatStyle>(after), style_i);
       break;
     }
     case Version::V11: {
       after = clang_v12::FormatStyle{};
       clang_update_v12::update<Update::UPGRADE>(
           std::get<clang_v11::FormatStyle>(before),
-          std::get<clang_v12::FormatStyle>(after), based_on_style);
+          std::get<clang_v12::FormatStyle>(after), style_i);
       break;
     }
     case Version::V12: {
       after = clang_v13::FormatStyle{};
       clang_update_v13::update<Update::UPGRADE>(
           std::get<clang_v12::FormatStyle>(before),
-          std::get<clang_v13::FormatStyle>(after), based_on_style);
+          std::get<clang_v13::FormatStyle>(after), style_i);
       break;
     }
     case Version::V13: {
       after = clang_v14::FormatStyle{};
       clang_update_v14::update<Update::UPGRADE>(
           std::get<clang_v13::FormatStyle>(before),
-          std::get<clang_v14::FormatStyle>(after), based_on_style);
+          std::get<clang_v14::FormatStyle>(after), style_i);
       break;
     }
     case Version::V14: {
       after = clang_v15::FormatStyle{};
       clang_update_v15::update<Update::UPGRADE>(
           std::get<clang_v14::FormatStyle>(before),
-          std::get<clang_v15::FormatStyle>(after), based_on_style);
+          std::get<clang_v15::FormatStyle>(after), style_i);
       break;
     }
     case Version::V15: {
       after = clang_v16::FormatStyle{};
       clang_update_v16::update<Update::UPGRADE>(
           std::get<clang_v15::FormatStyle>(before),
-          std::get<clang_v16::FormatStyle>(after), based_on_style);
+          std::get<clang_v16::FormatStyle>(after), style_i);
       break;
     }
     case Version::V16: {
       after = clang_v17::FormatStyle{};
       clang_update_v17::update<Update::UPGRADE>(
           std::get<clang_v16::FormatStyle>(before),
-          std::get<clang_v17::FormatStyle>(after), based_on_style);
+          std::get<clang_v17::FormatStyle>(after), style_i);
       break;
     }
     case Version::V17: {
       after = clang_v18::FormatStyle{};
       clang_update_v18::update<Update::UPGRADE>(
           std::get<clang_v17::FormatStyle>(before),
-          std::get<clang_v18::FormatStyle>(after), based_on_style);
+          std::get<clang_v18::FormatStyle>(after), style_i);
       break;
     }
     case Version::V18: {
       after = clang_v19::FormatStyle{};
       clang_update_v19::update<Update::UPGRADE>(
           std::get<clang_v18::FormatStyle>(before),
-          std::get<clang_v19::FormatStyle>(after), based_on_style);
+          std::get<clang_v19::FormatStyle>(after), style_i);
       break;
     }
     default: {
@@ -4688,7 +4721,8 @@ std::string updateTo(Version vstart, Version vend, const std::string &data) {
   return formatStyleToVersion(before);
 }
 
-std::string downgradeTo(Version vstart, Version vend, const std::string &data) {
+std::string downgradeTo(Version vstart, Version vend, const std::string &data,
+                        const std::string &default_style) {
   AllFormatStyle before = versionToFormatStyle(vstart, data);
   if (vstart == vend) {
     return formatStyleToVersion(before);
@@ -4706,166 +4740,193 @@ std::string downgradeTo(Version vstart, Version vend, const std::string &data) {
     std::cout << "BasedOnStyle: " << based_on_style << std::endl;
   }
 
-  if (based_on_style.empty()) {
-    throw std::runtime_error("BasedOnStyle is missing");
-  }
-
   for (size_t vi = static_cast<size_t>(vstart); vi > static_cast<size_t>(vend);
        vi--) {
     Version v_i = static_cast<Version>(vi);
+    Version vnext_i = static_cast<Version>(vi - 1);
+
+    std::vector<std::string> compatible_styles = getStyleNames(vnext_i);
+
+    std::string style_i;
+
+    if (!based_on_style.empty() &&
+        containsIgnoreCase(compatible_styles, based_on_style)) {
+      style_i = based_on_style;
+    } else if (!default_style.empty() &&
+               containsIgnoreCase(compatible_styles, default_style)) {
+      style_i = default_style;
+    } else {
+      std::ostringstream ss;
+      if (based_on_style.empty()) {
+        ss << "No BasedOnStyle found in yaml config.\n";
+      } else {
+        ss << based_on_style << " is not compatible with version "
+           << magic_enum::enum_name(vnext_i) << " (" << compatible_styles
+           << ").\n";
+      }
+      if (default_style.empty()) {
+        ss << "No fallback style is set.\n";
+      } else {
+        ss << default_style << " is not compatible with version "
+           << magic_enum::enum_name(vnext_i) << " (" << compatible_styles
+           << ").\n";
+      }
+      throw std::runtime_error(ss.str());
+    }
+
     switch (v_i) {
     case Version::V3_4: {
       after = clang_v3_3::FormatStyle{};
       clang_update_v3_4::update<Update::DOWNGRADE>(
           std::get<clang_v3_3::FormatStyle>(after),
-          std::get<clang_v3_4::FormatStyle>(before), based_on_style);
+          std::get<clang_v3_4::FormatStyle>(before), style_i);
       break;
     }
     case Version::V3_5: {
       after = clang_v3_4::FormatStyle{};
       clang_update_v3_5::update<Update::DOWNGRADE>(
           std::get<clang_v3_4::FormatStyle>(after),
-          std::get<clang_v3_5::FormatStyle>(before), based_on_style);
+          std::get<clang_v3_5::FormatStyle>(before), style_i);
       break;
     }
     case Version::V3_6: {
       after = clang_v3_5::FormatStyle{};
       clang_update_v3_6::update<Update::DOWNGRADE>(
           std::get<clang_v3_5::FormatStyle>(after),
-          std::get<clang_v3_6::FormatStyle>(before), based_on_style);
+          std::get<clang_v3_6::FormatStyle>(before), style_i);
       break;
     }
     case Version::V3_7: {
       after = clang_v3_6::FormatStyle{};
       clang_update_v3_7::update<Update::DOWNGRADE>(
           std::get<clang_v3_6::FormatStyle>(after),
-          std::get<clang_v3_7::FormatStyle>(before), based_on_style);
+          std::get<clang_v3_7::FormatStyle>(before), style_i);
       break;
     }
     case Version::V3_8: {
       after = clang_v3_7::FormatStyle{};
       clang_update_v3_8::update<Update::DOWNGRADE>(
           std::get<clang_v3_7::FormatStyle>(after),
-          std::get<clang_v3_8::FormatStyle>(before), based_on_style);
+          std::get<clang_v3_8::FormatStyle>(before), style_i);
       break;
     }
     case Version::V3_9: {
       after = clang_v3_8::FormatStyle{};
       clang_update_v3_9::update<Update::DOWNGRADE>(
           std::get<clang_v3_8::FormatStyle>(after),
-          std::get<clang_v3_9::FormatStyle>(before), based_on_style);
+          std::get<clang_v3_9::FormatStyle>(before), style_i);
       break;
     }
     case Version::V4: {
       after = clang_v3_9::FormatStyle{};
       clang_update_v4::update<Update::DOWNGRADE>(
           std::get<clang_v3_9::FormatStyle>(after),
-          std::get<clang_v4::FormatStyle>(before), based_on_style);
+          std::get<clang_v4::FormatStyle>(before), style_i);
       break;
     }
     case Version::V5: {
       after = clang_v4::FormatStyle{};
       clang_update_v5::update<Update::DOWNGRADE>(
           std::get<clang_v4::FormatStyle>(after),
-          std::get<clang_v5::FormatStyle>(before), based_on_style);
+          std::get<clang_v5::FormatStyle>(before), style_i);
       break;
     }
     case Version::V6: {
       after = clang_v5::FormatStyle{};
       clang_update_v6::update<Update::DOWNGRADE>(
           std::get<clang_v5::FormatStyle>(after),
-          std::get<clang_v6::FormatStyle>(before), based_on_style);
+          std::get<clang_v6::FormatStyle>(before), style_i);
       break;
     }
     case Version::V7: {
       after = clang_v6::FormatStyle{};
       clang_update_v7::update<Update::DOWNGRADE>(
           std::get<clang_v6::FormatStyle>(after),
-          std::get<clang_v7::FormatStyle>(before), based_on_style);
+          std::get<clang_v7::FormatStyle>(before), style_i);
       break;
     }
     case Version::V8: {
       after = clang_v7::FormatStyle{};
       clang_update_v8::update<Update::DOWNGRADE>(
           std::get<clang_v7::FormatStyle>(after),
-          std::get<clang_v8::FormatStyle>(before), based_on_style);
+          std::get<clang_v8::FormatStyle>(before), style_i);
       break;
     }
     case Version::V9: {
       after = clang_v8::FormatStyle{};
       clang_update_v9::update<Update::DOWNGRADE>(
           std::get<clang_v8::FormatStyle>(after),
-          std::get<clang_v9::FormatStyle>(before), based_on_style);
+          std::get<clang_v9::FormatStyle>(before), style_i);
       break;
     }
     case Version::V10: {
       after = clang_v9::FormatStyle{};
       clang_update_v10::update<Update::DOWNGRADE>(
           std::get<clang_v9::FormatStyle>(after),
-          std::get<clang_v10::FormatStyle>(before), based_on_style);
+          std::get<clang_v10::FormatStyle>(before), style_i);
       break;
     }
     case Version::V11: {
       after = clang_v10::FormatStyle{};
       clang_update_v11::update<Update::DOWNGRADE>(
           std::get<clang_v10::FormatStyle>(after),
-          std::get<clang_v11::FormatStyle>(before), based_on_style);
+          std::get<clang_v11::FormatStyle>(before), style_i);
       break;
     }
     case Version::V12: {
       after = clang_v11::FormatStyle{};
       clang_update_v12::update<Update::DOWNGRADE>(
           std::get<clang_v11::FormatStyle>(after),
-          std::get<clang_v12::FormatStyle>(before), based_on_style);
+          std::get<clang_v12::FormatStyle>(before), style_i);
       break;
     }
     case Version::V13: {
       after = clang_v12::FormatStyle{};
       clang_update_v13::update<Update::DOWNGRADE>(
           std::get<clang_v12::FormatStyle>(after),
-          std::get<clang_v13::FormatStyle>(before), based_on_style);
+          std::get<clang_v13::FormatStyle>(before), style_i);
       break;
     }
     case Version::V14: {
       after = clang_v13::FormatStyle{};
       clang_update_v14::update<Update::DOWNGRADE>(
           std::get<clang_v13::FormatStyle>(after),
-          std::get<clang_v14::FormatStyle>(before), based_on_style);
+          std::get<clang_v14::FormatStyle>(before), style_i);
       break;
     }
     case Version::V15: {
       after = clang_v14::FormatStyle{};
       clang_update_v15::update<Update::DOWNGRADE>(
           std::get<clang_v14::FormatStyle>(after),
-          std::get<clang_v15::FormatStyle>(before), based_on_style);
+          std::get<clang_v15::FormatStyle>(before), style_i);
       break;
     }
     case Version::V16: {
       after = clang_v15::FormatStyle{};
       clang_update_v16::update<Update::DOWNGRADE>(
           std::get<clang_v15::FormatStyle>(after),
-          std::get<clang_v16::FormatStyle>(before), based_on_style);
+          std::get<clang_v16::FormatStyle>(before), style_i);
       break;
     }
     case Version::V17: {
       after = clang_v16::FormatStyle{};
       clang_update_v17::update<Update::DOWNGRADE>(
           std::get<clang_v16::FormatStyle>(after),
-          std::get<clang_v17::FormatStyle>(before), based_on_style);
+          std::get<clang_v17::FormatStyle>(before), style_i);
       break;
     }
     case Version::V18: {
       after = clang_v17::FormatStyle{};
       clang_update_v18::update<Update::DOWNGRADE>(
           std::get<clang_v17::FormatStyle>(after),
-          std::get<clang_v18::FormatStyle>(before), based_on_style);
+          std::get<clang_v18::FormatStyle>(before), style_i);
       break;
     }
     case Version::V19: {
       after = clang_v18::FormatStyle{};
       clang_update_v19::update<Update::DOWNGRADE>(
           std::get<clang_v18::FormatStyle>(after),
-          std::get<clang_v19::FormatStyle>(before), based_on_style);
+          std::get<clang_v19::FormatStyle>(before), style_i);
       break;
     }
     default: {
@@ -4879,12 +4940,13 @@ std::string downgradeTo(Version vstart, Version vend, const std::string &data) {
   return formatStyleToVersion(before);
 }
 
-std::string migrateTo(Version vstart, Version vend, const std::string &data) {
+std::string migrateTo(Version vstart, Version vend, const std::string &data,
+                      const std::string &default_style) {
   if (static_cast<size_t>(vstart) < static_cast<size_t>(vend)) {
-    return updateTo(vstart, vend, data);
+    return updateTo(vstart, vend, data, default_style);
   }
 
-  return downgradeTo(vstart, vend, data);
+  return downgradeTo(vstart, vend, data, default_style);
 }
 
 } // namespace clang_vx

@@ -4,6 +4,7 @@ import {
   HostListener,
   ViewChild,
   ChangeDetectionStrategy,
+  viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgIf, NgFor, CommonModule } from '@angular/common';
@@ -49,6 +50,9 @@ export class ClangFormatConfigMigrateComponent implements OnInit {
   compatibleStyles?: string[] = [];
 
   @ViewChild(TextareaTwoComponent) textareaTwo!: TextareaTwoComponent;
+  oldVersion = '';
+  newVersion = '';
+  defaultStyle = '';
 
   constructor(
     private wasmLoaderClangFormatConfigMigrate: WasmLoaderClangFormatConfigMigrateService
@@ -87,7 +91,7 @@ export class ClangFormatConfigMigrateComponent implements OnInit {
     this.spinnerSize = Math.min(window.innerWidth / 4, window.innerHeight / 2);
   }
 
-  async migrate() {
+  async updateCompatibleVersions() {
     await this.loadWasmLoaderClangFormatConfigMigrate();
 
     const versions: VersionList =
@@ -104,20 +108,74 @@ export class ClangFormatConfigMigrateComponent implements OnInit {
       };
       this.compatibleVersions.push(element);
     }
+  }
+
+  async updateCompatibleStyles() {
+    await this.loadWasmLoaderClangFormatConfigMigrate();
 
     this.compatibleStyles = [];
+
+    let oldVersion = this.getOldVersion();
+    if (oldVersion === undefined) {
+      return;
+    }
+
     if (this.compatibleVersions.length != 0) {
       const compatibleStylesCpp =
         this.clangFormatConfigMigrate!.getStyleNamesRange(
-          this.compatibleVersions[0].id,
-          this.compatibleVersions[this.compatibleVersions.length - 1].id
+          oldVersion,
+          this.clangFormatConfigMigrate!.versionStringToEnum(this.newVersion)
         );
       const sizeStyles = compatibleStylesCpp.size();
       for (let i = 0; i < sizeStyles; i++) {
         this.compatibleStyles.push(compatibleStylesCpp.get(i)!.toString());
       }
     }
+  }
 
-    return '';
+  getOldVersion(): Version | undefined {
+    let retval: Version;
+
+    if (this.compatibleVersions.length == 0) {
+      return undefined;
+    }
+
+    if (this.oldVersion == 'min') {
+      retval = this.compatibleVersions[0].id;
+    } else if (this.oldVersion == 'max') {
+      retval = this.compatibleVersions[this.compatibleVersions.length - 1].id;
+    } else {
+      retval = this.clangFormatConfigMigrate!.versionStringToEnum(
+        this.oldVersion
+      );
+    }
+
+    return retval;
+  }
+
+  async migrate(config: string): Promise<string> {
+    await this.loadWasmLoaderClangFormatConfigMigrate();
+
+    await this.updateCompatibleVersions();
+
+    await this.updateCompatibleStyles();
+
+    const realOldVersion = this.getOldVersion();
+
+    if (realOldVersion === undefined) {
+      return '';
+    }
+
+    return this.clangFormatConfigMigrate!.migrateTo(
+      realOldVersion,
+      this.clangFormatConfigMigrate!.versionStringToEnum(this.newVersion),
+      config,
+      this.defaultStyle
+    );
+  }
+
+  forceMigrate() {
+    const event = new Event('input', { bubbles: true });
+    this.textareaTwo.inputElement.nativeElement.dispatchEvent(event);
   }
 }

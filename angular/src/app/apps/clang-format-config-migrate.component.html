@@ -6,44 +6,44 @@
     <dl>
       <dt>Initial version:</dt>
       <dd>
-        <select #oldVersion>
+        <select [(ngModel)]="oldVersion" (change)="forceMigrate()">
           <option value="min">Lowest compatible</option>
           <option value="max">Newest compatible</option>
-          <option *ngFor="let version of compatibleVersions" [value]="version.id">{{ version.name }}
+          <option *ngFor="let version of compatibleVersions" [value]="version.name">{{ version.name }}
           </option>
         </select>
       </dd>
       <dt>Final version:</dt>
       <dd>
-        <select #newVersion>
-          <option value="3.3">3.3</option>
-          <option value="3.4">3.4</option>
-          <option value="3.5">3.5</option>
-          <option value="3.6">3.6</option>
-          <option value="3.7">3.7</option>
-          <option value="3.8">3.8</option>
-          <option value="3.9">3.9</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          <option value="6">6</option>
-          <option value="7">7</option>
-          <option value="8">8</option>
-          <option value="9">9</option>
-          <option value="10">10</option>
-          <option value="11">11</option>
-          <option value="12">12</option>
-          <option value="13">13</option>
-          <option value="14">14</option>
-          <option value="15">15</option>
-          <option value="16">16</option>
-          <option value="17">17</option>
-          <option value="18">18</option>
-          <option value="19">19</option>
+        <select [(ngModel)]="newVersion" (change)="updateCompatibleStyles(); forceMigrate()">
+          <option value="V3_3">V3.3</option>
+          <option value="V3_4">V3.4</option>
+          <option value="V3_5">V3.5</option>
+          <option value="V3_6">V3.6</option>
+          <option value="V3_7">V3.7</option>
+          <option value="V3_8">V3.8</option>
+          <option value="V3_9">V3.9</option>
+          <option value="V4">V4</option>
+          <option value="V5">V5</option>
+          <option value="V6">V6</option>
+          <option value="V7">V7</option>
+          <option value="V8">V8</option>
+          <option value="V9">V9</option>
+          <option value="V10">V10</option>
+          <option value="V11">V11</option>
+          <option value="V12">V12</option>
+          <option value="V13">V13</option>
+          <option value="V14">V14</option>
+          <option value="V15">V15</option>
+          <option value="V16">V16</option>
+          <option value="V17">V17</option>
+          <option value="V18">V18</option>
+          <option value="V19">V19</option>
         </select>
       </dd>
       <dt>Based on style (if missing or unavailable):</dt>
       <dd>
-        <select #defaultStyle>
+        <select [(ngModel)]="defaultStyle" (change)="forceMigrate()">
           <option *ngFor="let style of compatibleStyles" [value]="style">{{ style }}
           </option>
         </select>
