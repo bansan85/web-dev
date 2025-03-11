@@ -14,9 +14,9 @@
 
 #pragma once
 
+#include "llvm/Support/YAMLTraits.h"
 #include <system_error>
 #include <vector>
-#include "llvm/Support/YAMLTraits.h"
 
 namespace clang_v3_7 {
 
@@ -462,8 +462,7 @@ struct FormatStyle {
            BreakBeforeTernaryOperators == R.BreakBeforeTernaryOperators &&
            BreakConstructorInitializersBeforeComma ==
                R.BreakConstructorInitializersBeforeComma &&
-           ColumnLimit == R.ColumnLimit &&
-           CommentPragmas == R.CommentPragmas &&
+           ColumnLimit == R.ColumnLimit && CommentPragmas == R.CommentPragmas &&
            ConstructorInitializerAllOnOneLineOrOnePerLine ==
                R.ConstructorInitializerAllOnOneLineOrOnePerLine &&
            ConstructorInitializerIndentWidth ==
@@ -505,8 +504,7 @@ struct FormatStyle {
            SpacesInCStyleCastParentheses == R.SpacesInCStyleCastParentheses &&
            SpacesInParentheses == R.SpacesInParentheses &&
            SpacesInSquareBrackets == R.SpacesInSquareBrackets &&
-           Standard == R.Standard &&
-           TabWidth == R.TabWidth &&
+           Standard == R.Standard && TabWidth == R.TabWidth &&
            UseTab == R.UseTab;
   }
 };
@@ -546,8 +544,8 @@ FormatStyle getNoStyle();
 /// compared case-insensitively.
 ///
 /// Returns \c true if the Style has been set.
-bool getPredefinedStyle(llvm::StringRef Name, FormatStyle::LanguageKind Language,
-                        FormatStyle *Style);
+bool getPredefinedStyle(llvm::StringRef Name,
+                        FormatStyle::LanguageKind Language, FormatStyle *Style);
 
 std::vector<std::string> getStyleNames();
 
@@ -558,14 +556,16 @@ std::vector<std::string> getStyleNames();
 ///
 /// When \c BasedOnStyle is not present, options not present in the YAML
 /// document, are retained in \p Style.
-std::error_code parseConfiguration(const std::string& Text, FormatStyle *Style);
+std::error_code parseConfiguration(const std::string &Text, FormatStyle *Style);
 
 /// \brief Gets configuration in a YAML string.
-std::string configurationAsText(const FormatStyle &Style);
+std::string configurationAsText(const FormatStyle &Style,
+                                const std::string &DefaultStyleName,
+                                bool SkipSameValue);
 
 } // end namespace clang_v3_7
 
 namespace std {
 template <>
 struct is_error_code_enum<clang_v3_7::ParseError> : std::true_type {};
-}
+} // namespace std

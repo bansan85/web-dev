@@ -1611,7 +1611,7 @@ TEST_CASE("showMigration", "[clang-format-config-migrate]") {
                     << updateTo(version,
                                 static_cast<clang_vx::Version>(
                                     static_cast<size_t>(version) + 1),
-                                ss.str(), "")
+                                ss.str(), std::string{style}, false)
                     << "\n";
         }
         if (!skip_first) {
@@ -1619,7 +1619,7 @@ TEST_CASE("showMigration", "[clang-format-config-migrate]") {
                     << downgradeTo(version,
                                    static_cast<clang_vx::Version>(
                                        static_cast<size_t>(version) - 1),
-                                   ss.str(), "")
+                                   ss.str(), std::string{style}, true)
                     << "\n";
         }
         skip_first = false;

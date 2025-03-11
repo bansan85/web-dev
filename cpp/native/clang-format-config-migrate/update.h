@@ -21,16 +21,17 @@
 #include "7.1.0/Format.h"
 #include "8.0.1/Format.h"
 #include "9.0.1/Format.h"
+#include "Format.h"
 
 namespace clang_vx {
 enum class Update { DOWNGRADE, UPGRADE };
 
 std::string updateTo(Version vstart, Version vend, const std::string &data,
-                     const std::string &default_style);
+                     const std::string &default_style, bool skip_same_value);
 std::string downgradeTo(Version vstart, Version vend, const std::string &data,
-                        const std::string &default_style);
+                        const std::string &default_style, bool skip_same_value);
 std::string migrateTo(Version vstart, Version vend, const std::string &data,
-                      const std::string &default_style);
+                      const std::string &default_style, bool skip_same_value);
 
 } // namespace clang_vx
 

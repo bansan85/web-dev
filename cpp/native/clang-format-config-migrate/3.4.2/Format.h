@@ -323,9 +323,11 @@ bool getPredefinedStyle(llvm::StringRef Name, FormatStyle *Style);
 std::vector<std::string> getStyleNames();
 
 /// \brief Parse configuration from YAML-formatted text.
-std::error_code parseConfiguration(const std::string& Text, FormatStyle *Style);
+std::error_code parseConfiguration(const std::string &Text, FormatStyle *Style);
 
 /// \brief Gets configuration in a YAML string.
-std::string configurationAsText(const FormatStyle &Style);
+std::string configurationAsText(const FormatStyle &Style,
+                                const std::string &DefaultStyleName,
+                                bool SkipSameValue);
 
 } // end namespace clang_v3_4

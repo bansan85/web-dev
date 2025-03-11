@@ -4425,88 +4425,113 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   }
 }
 
-std::string formatStyleToVersion(const AllFormatStyle &data) {
-  return std::visit(overload{[](const clang_v3_3::FormatStyle &fs) {
-                               throw std::runtime_error(
-                                   "V3.3 doesn't support serialization.");
-                               return std::string{};
-                             },
-                             [](const clang_v3_4::FormatStyle &fs) {
-                               return clang_v3_4::configurationAsText(fs);
-                             },
-                             [](const clang_v3_5::FormatStyle &fs) {
-                               return clang_v3_5::configurationAsText(fs);
-                             },
-                             [](const clang_v3_6::FormatStyle &fs) {
-                               return clang_v3_6::configurationAsText(fs);
-                             },
-                             [](const clang_v3_7::FormatStyle &fs) {
-                               return clang_v3_7::configurationAsText(fs);
-                             },
-                             [](const clang_v3_8::FormatStyle &fs) {
-                               return clang_v3_8::configurationAsText(fs);
-                             },
-                             [](const clang_v3_9::FormatStyle &fs) {
-                               return clang_v3_9::configurationAsText(fs);
-                             },
-                             [](const clang_v4::FormatStyle &fs) {
-                               return clang_v4::configurationAsText(fs);
-                             },
-                             [](const clang_v5::FormatStyle &fs) {
-                               return clang_v5::configurationAsText(fs);
-                             },
-                             [](const clang_v6::FormatStyle &fs) {
-                               return clang_v6::configurationAsText(fs);
-                             },
-                             [](const clang_v7::FormatStyle &fs) {
-                               return clang_v7::configurationAsText(fs);
-                             },
-                             [](const clang_v8::FormatStyle &fs) {
-                               return clang_v8::configurationAsText(fs);
-                             },
-                             [](const clang_v9::FormatStyle &fs) {
-                               return clang_v9::configurationAsText(fs);
-                             },
-                             [](const clang_v10::FormatStyle &fs) {
-                               return clang_v10::configurationAsText(fs);
-                             },
-                             [](const clang_v11::FormatStyle &fs) {
-                               return clang_v11::configurationAsText(fs);
-                             },
-                             [](const clang_v12::FormatStyle &fs) {
-                               return clang_v12::configurationAsText(fs);
-                             },
-                             [](const clang_v13::FormatStyle &fs) {
-                               return clang_v13::configurationAsText(fs);
-                             },
-                             [](const clang_v14::FormatStyle &fs) {
-                               return clang_v14::configurationAsText(fs);
-                             },
-                             [](const clang_v15::FormatStyle &fs) {
-                               return clang_v15::configurationAsText(fs);
-                             },
-                             [](const clang_v16::FormatStyle &fs) {
-                               return clang_v16::configurationAsText(fs);
-                             },
-                             [](const clang_v17::FormatStyle &fs) {
-                               return clang_v17::configurationAsText(fs);
-                             },
-                             [](const clang_v18::FormatStyle &fs) {
-                               return clang_v18::configurationAsText(fs);
-                             },
-                             [](const clang_v19::FormatStyle &fs) {
-                               return clang_v19::configurationAsText(fs);
-                             }},
-                    data);
+std::string formatStyleToVersion(const AllFormatStyle &data,
+                                 const std::string &default_style,
+                                 bool skip_same_value) {
+  return std::visit(
+      overload{
+          [](const clang_v3_3::FormatStyle &fs) {
+            throw std::runtime_error("V3.3 doesn't support serialization.");
+            return std::string{};
+          },
+          [&default_style, skip_same_value](const clang_v3_4::FormatStyle &fs) {
+            return clang_v3_4::configurationAsText(fs, default_style,
+                                                   skip_same_value);
+          },
+          [&default_style, skip_same_value](const clang_v3_5::FormatStyle &fs) {
+            return clang_v3_5::configurationAsText(fs, default_style,
+                                                   skip_same_value);
+          },
+          [&default_style, skip_same_value](const clang_v3_6::FormatStyle &fs) {
+            return clang_v3_6::configurationAsText(fs, default_style,
+                                                   skip_same_value);
+          },
+          [&default_style, skip_same_value](const clang_v3_7::FormatStyle &fs) {
+            return clang_v3_7::configurationAsText(fs, default_style,
+                                                   skip_same_value);
+          },
+          [&default_style, skip_same_value](const clang_v3_8::FormatStyle &fs) {
+            return clang_v3_8::configurationAsText(fs, default_style,
+                                                   skip_same_value);
+          },
+          [&default_style, skip_same_value](const clang_v3_9::FormatStyle &fs) {
+            return clang_v3_9::configurationAsText(fs, default_style,
+                                                   skip_same_value);
+          },
+          [&default_style, skip_same_value](const clang_v4::FormatStyle &fs) {
+            return clang_v4::configurationAsText(fs, default_style,
+                                                 skip_same_value);
+          },
+          [&default_style, skip_same_value](const clang_v5::FormatStyle &fs) {
+            return clang_v5::configurationAsText(fs, default_style,
+                                                 skip_same_value);
+          },
+          [&default_style, skip_same_value](const clang_v6::FormatStyle &fs) {
+            return clang_v6::configurationAsText(fs, default_style,
+                                                 skip_same_value);
+          },
+          [&default_style, skip_same_value](const clang_v7::FormatStyle &fs) {
+            return clang_v7::configurationAsText(fs, default_style,
+                                                 skip_same_value);
+          },
+          [&default_style, skip_same_value](const clang_v8::FormatStyle &fs) {
+            return clang_v8::configurationAsText(fs, default_style,
+                                                 skip_same_value);
+          },
+          [&default_style, skip_same_value](const clang_v9::FormatStyle &fs) {
+            return clang_v9::configurationAsText(fs, default_style,
+                                                 skip_same_value);
+          },
+          [&default_style, skip_same_value](const clang_v10::FormatStyle &fs) {
+            return clang_v10::configurationAsText(fs, default_style,
+                                                  skip_same_value);
+          },
+          [&default_style, skip_same_value](const clang_v11::FormatStyle &fs) {
+            return clang_v11::configurationAsText(fs, default_style,
+                                                  skip_same_value);
+          },
+          [&default_style, skip_same_value](const clang_v12::FormatStyle &fs) {
+            return clang_v12::configurationAsText(fs, default_style,
+                                                  skip_same_value);
+          },
+          [&default_style, skip_same_value](const clang_v13::FormatStyle &fs) {
+            return clang_v13::configurationAsText(fs, default_style,
+                                                  skip_same_value);
+          },
+          [&default_style, skip_same_value](const clang_v14::FormatStyle &fs) {
+            return clang_v14::configurationAsText(fs, default_style,
+                                                  skip_same_value);
+          },
+          [&default_style, skip_same_value](const clang_v15::FormatStyle &fs) {
+            return clang_v15::configurationAsText(fs, default_style,
+                                                  skip_same_value);
+          },
+          [&default_style, skip_same_value](const clang_v16::FormatStyle &fs) {
+            return clang_v16::configurationAsText(fs, default_style,
+                                                  skip_same_value);
+          },
+          [&default_style, skip_same_value](const clang_v17::FormatStyle &fs) {
+            return clang_v17::configurationAsText(fs, default_style,
+                                                  skip_same_value);
+          },
+          [&default_style, skip_same_value](const clang_v18::FormatStyle &fs) {
+            return clang_v18::configurationAsText(fs, default_style,
+                                                  skip_same_value);
+          },
+          [&default_style, skip_same_value](const clang_v19::FormatStyle &fs) {
+            return clang_v19::configurationAsText(fs, default_style,
+                                                  skip_same_value);
+          }},
+      data);
 }
 } // namespace
 
 namespace clang_vx {
 std::string updateTo(Version vstart, Version vend, const std::string &data,
-                     const std::string &default_style) {
+                     const std::string &default_style, bool skip_same_value) {
   AllFormatStyle before = versionToFormatStyle(vstart, data);
   if (vstart == vend) {
-    return formatStyleToVersion(before);
+    return formatStyleToVersion(before, default_style, skip_same_value);
   }
   AllFormatStyle after;
 
@@ -4718,14 +4743,15 @@ std::string updateTo(Version vstart, Version vend, const std::string &data,
     std::swap(before, after);
   }
 
-  return formatStyleToVersion(before);
+  return formatStyleToVersion(before, default_style, skip_same_value);
 }
 
 std::string downgradeTo(Version vstart, Version vend, const std::string &data,
-                        const std::string &default_style) {
+                        const std::string &default_style,
+                        bool skip_same_value) {
   AllFormatStyle before = versionToFormatStyle(vstart, data);
   if (vstart == vend) {
-    return formatStyleToVersion(before);
+    return formatStyleToVersion(before, default_style, skip_same_value);
   }
   AllFormatStyle after;
 
@@ -4937,16 +4963,16 @@ std::string downgradeTo(Version vstart, Version vend, const std::string &data,
     std::swap(before, after);
   }
 
-  return formatStyleToVersion(before);
+  return formatStyleToVersion(before, default_style, skip_same_value);
 }
 
 std::string migrateTo(Version vstart, Version vend, const std::string &data,
-                      const std::string &default_style) {
+                      const std::string &default_style, bool skip_same_value) {
   if (static_cast<size_t>(vstart) < static_cast<size_t>(vend)) {
-    return updateTo(vstart, vend, data, default_style);
+    return updateTo(vstart, vend, data, default_style, skip_same_value);
   }
 
-  return downgradeTo(vstart, vend, data, default_style);
+  return downgradeTo(vstart, vend, data, default_style, skip_same_value);
 }
 
 } // namespace clang_vx

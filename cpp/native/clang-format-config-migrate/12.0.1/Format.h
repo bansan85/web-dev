@@ -14,8 +14,8 @@
 #pragma once
 
 #include "IncludeStyle.h"
-#include <system_error>
 #include <optional>
+#include <system_error>
 #include <vector>
 
 namespace clang_v12 {
@@ -3220,8 +3220,8 @@ FormatStyle getNoStyle();
 /// compared case-insensitively.
 ///
 /// Returns ``true`` if the Style has been set.
-bool getPredefinedStyle(llvm::StringRef Name, FormatStyle::LanguageKind Language,
-                        FormatStyle *Style);
+bool getPredefinedStyle(llvm::StringRef Name,
+                        FormatStyle::LanguageKind Language, FormatStyle *Style);
 
 std::vector<std::string> getStyleNames();
 
@@ -3241,12 +3241,15 @@ std::error_code parseConfiguration(llvm::MemoryBufferRef Config,
                                    FormatStyle *Style);
 
 /// Like above but accepts an unnamed buffer.
-inline std::error_code parseConfiguration(const std::string& Config, FormatStyle *Style) {
+inline std::error_code parseConfiguration(const std::string &Config,
+                                          FormatStyle *Style) {
   return parseConfiguration(llvm::MemoryBufferRef(Config, "YAML"), Style);
 }
 
 /// Gets configuration in a YAML string.
-std::string configurationAsText(const FormatStyle &Style);
+std::string configurationAsText(const FormatStyle &Style,
+                                const std::string &DefaultStyleName,
+                                bool SkipSameValue);
 
 } // end namespace clang_v12
 

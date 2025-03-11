@@ -14,9 +14,9 @@
 
 #pragma once
 
+#include "llvm/Support/YAMLTraits.h"
 #include <system_error>
 #include <vector>
-#include "llvm/Support/YAMLTraits.h"
 
 namespace clang_v6 {
 
@@ -341,8 +341,8 @@ struct FormatStyle {
   /// declaration.
   /// \code
   ///    true:                                  false:
-  ///    template <typename T>          vs.     template <typename T> class C {};
-  ///    class C {};
+  ///    template <typename T>          vs.     template <typename T> class C
+  ///    {}; class C {};
   /// \endcode
   bool AlwaysBreakTemplateDeclarations;
 
@@ -840,7 +840,8 @@ struct FormatStyle {
   /// break before ``:`` and ``,`` if there is multiple inheritance.
   /// \code
   ///    true:                                  false:
-  ///    class MyClass                  vs.     class MyClass : public X, public Y {
+  ///    class MyClass                  vs.     class MyClass : public X, public
+  ///    Y {
   ///        : public X                         };
   ///        , public Y {
   ///    };
@@ -875,7 +876,8 @@ struct FormatStyle {
   /// \code
   ///   true:
   ///   SomeClass::Constructor()
-  ///       : aaaaaaaa(aaaaaaaa), aaaaaaaa(aaaaaaaa), aaaaaaaa(aaaaaaaaaaaaaaaaaaaaaaaaa) {
+  ///       : aaaaaaaa(aaaaaaaa), aaaaaaaa(aaaaaaaa),
+  ///       aaaaaaaa(aaaaaaaaaaaaaaaaaaaaaaaaa) {
   ///     return 0;
   ///   }
   ///
@@ -1061,8 +1063,9 @@ struct FormatStyle {
 
   /// \brief Indent case labels one level from the switch statement.
   ///
-  /// When ``false``, use the same indentation level as for the switch statement.
-  /// Switch statement body is always indented one level more than case labels.
+  /// When ``false``, use the same indentation level as for the switch
+  /// statement. Switch statement body is always indented one level more than
+  /// case labels.
   /// \code
   ///    false:                                 true:
   ///    switch (fool) {                vs.     switch (fool) {
@@ -1162,7 +1165,8 @@ struct FormatStyle {
   ///    } from 'some/module.js'
   ///
   ///    false:
-  ///    import {VeryLongImportsAreAnnoying, VeryLongImportsAreAnnoying, VeryLongImportsAreAnnoying,} from "some/module.js"
+  ///    import {VeryLongImportsAreAnnoying, VeryLongImportsAreAnnoying,
+  ///    VeryLongImportsAreAnnoying,} from "some/module.js"
   /// \endcode
   bool JavaScriptWrapImports;
 
@@ -1387,13 +1391,17 @@ struct FormatStyle {
   /// \brief If ``true``, clang-format will attempt to re-flow comments.
   /// \code
   ///    false:
-  ///    // veryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryLongComment with plenty of information
-  ///    /* second veryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryLongComment with plenty of information */
+  ///    // veryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryLongComment with plenty
+  ///    of information
+  ///    /* second veryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryLongComment with
+  ///    plenty of information */
   ///
   ///    true:
-  ///    // veryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryLongComment with plenty of
+  ///    // veryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryLongComment with plenty
+  ///    of
   ///    // information
-  ///    /* second veryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryLongComment with plenty of
+  ///    /* second veryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryLongComment with
+  ///    plenty of
   ///     * information */
   /// \endcode
   bool ReflowComments;
@@ -1648,8 +1656,7 @@ struct FormatStyle {
            ObjCBlockIndentWidth == R.ObjCBlockIndentWidth &&
            ObjCSpaceAfterProperty == R.ObjCSpaceAfterProperty &&
            ObjCSpaceBeforeProtocolList == R.ObjCSpaceBeforeProtocolList &&
-           PenaltyBreakAssignment ==
-               R.PenaltyBreakAssignment &&
+           PenaltyBreakAssignment == R.PenaltyBreakAssignment &&
            PenaltyBreakBeforeFirstCallParameter ==
                R.PenaltyBreakBeforeFirstCallParameter &&
            PenaltyBreakComment == R.PenaltyBreakComment &&
@@ -1710,8 +1717,8 @@ FormatStyle getNoStyle();
 /// compared case-insensitively.
 ///
 /// Returns ``true`` if the Style has been set.
-bool getPredefinedStyle(llvm::StringRef Name, FormatStyle::LanguageKind Language,
-                        FormatStyle *Style);
+bool getPredefinedStyle(llvm::StringRef Name,
+                        FormatStyle::LanguageKind Language, FormatStyle *Style);
 
 std::vector<std::string> getStyleNames();
 
@@ -1722,14 +1729,15 @@ std::vector<std::string> getStyleNames();
 ///
 /// When ``BasedOnStyle`` is not present, options not present in the YAML
 /// document, are retained in \p Style.
-std::error_code parseConfiguration(const std::string& Text, FormatStyle *Style);
+std::error_code parseConfiguration(const std::string &Text, FormatStyle *Style);
 
 /// \brief Gets configuration in a YAML string.
-std::string configurationAsText(const FormatStyle &Style);
+std::string configurationAsText(const FormatStyle &Style,
+                                const std::string &DefaultStyleName,
+                                bool SkipSameValue);
 
 } // end namespace clang_v6
 
 namespace std {
-template <>
-struct is_error_code_enum<clang_v6::ParseError> : std::true_type {};
-}
+template <> struct is_error_code_enum<clang_v6::ParseError> : std::true_type {};
+} // namespace std

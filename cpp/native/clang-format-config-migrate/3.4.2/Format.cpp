@@ -16,6 +16,7 @@
 #define DEBUG_TYPE "format-formatter"
 
 #include "Format.h"
+#include "../Format.h"
 #include "clang/Basic/OperatorPrecedence.h"
 #include "llvm/ADT/Sequence.h"
 #include "llvm/ADT/StringSwitch.h"
@@ -38,8 +39,7 @@ struct ScalarEnumerationTraits<clang_v3_4::FormatStyle::LanguageStandard> {
 
 template <>
 struct ScalarEnumerationTraits<clang_v3_4::FormatStyle::UseTabStyle> {
-  static void enumeration(IO &IO,
-                          clang_v3_4::FormatStyle::UseTabStyle &Value) {
+  static void enumeration(IO &IO, clang_v3_4::FormatStyle::UseTabStyle &Value) {
     IO.enumCase(Value, "Never", clang_v3_4::FormatStyle::UT_Never);
     IO.enumCase(Value, "false", clang_v3_4::FormatStyle::UT_Never);
     IO.enumCase(Value, "Always", clang_v3_4::FormatStyle::UT_Always);
@@ -51,8 +51,8 @@ struct ScalarEnumerationTraits<clang_v3_4::FormatStyle::UseTabStyle> {
 
 template <>
 struct ScalarEnumerationTraits<clang_v3_4::FormatStyle::BraceBreakingStyle> {
-  static void
-  enumeration(IO &IO, clang_v3_4::FormatStyle::BraceBreakingStyle &Value) {
+  static void enumeration(IO &IO,
+                          clang_v3_4::FormatStyle::BraceBreakingStyle &Value) {
     IO.enumCase(Value, "Attach", clang_v3_4::FormatStyle::BS_Attach);
     IO.enumCase(Value, "Linux", clang_v3_4::FormatStyle::BS_Linux);
     IO.enumCase(Value, "Stroustrup", clang_v3_4::FormatStyle::BS_Stroustrup);
@@ -75,8 +75,8 @@ struct ScalarEnumerationTraits<
 template <> struct MappingTraits<clang_v3_4::FormatStyle> {
   static void mapping(llvm::yaml::IO &IO, clang_v3_4::FormatStyle &Style) {
     if (IO.outputting()) {
-      std::vector<std::string_view> Styles = { "LLVM",    "Google", "Chromium",
-                                  "Mozilla", "WebKit" };
+      std::vector<std::string_view> Styles = {"LLVM", "Google", "Chromium",
+                                              "Mozilla", "WebKit"};
       for (size_t i = 0, e = Styles.size(); i < e; ++i) {
         llvm::StringRef StyleName(Styles[i]);
         clang_v3_4::FormatStyle PredefinedStyle;
@@ -96,73 +96,110 @@ template <> struct MappingTraits<clang_v3_4::FormatStyle> {
         }
     }
 
-    IO.mapOptional("AccessModifierOffset", Style.AccessModifierOffset);
-    IO.mapOptional("ConstructorInitializerIndentWidth",
-                   Style.ConstructorInitializerIndentWidth);
-    IO.mapOptional("AlignEscapedNewlinesLeft", Style.AlignEscapedNewlinesLeft);
-    IO.mapOptional("AlignTrailingComments", Style.AlignTrailingComments);
-    IO.mapOptional("AllowAllParametersOfDeclarationOnNextLine",
-                   Style.AllowAllParametersOfDeclarationOnNextLine);
-    IO.mapOptional("AllowShortIfStatementsOnASingleLine",
-                   Style.AllowShortIfStatementsOnASingleLine);
-    IO.mapOptional("AllowShortLoopsOnASingleLine",
-                   Style.AllowShortLoopsOnASingleLine);
-    IO.mapOptional("AlwaysBreakTemplateDeclarations",
-                   Style.AlwaysBreakTemplateDeclarations);
-    IO.mapOptional("AlwaysBreakBeforeMultilineStrings",
-                   Style.AlwaysBreakBeforeMultilineStrings);
-    IO.mapOptional("BreakBeforeBinaryOperators",
-                   Style.BreakBeforeBinaryOperators);
-    IO.mapOptional("BreakBeforeTernaryOperators",
-                   Style.BreakBeforeTernaryOperators);
-    IO.mapOptional("BreakConstructorInitializersBeforeComma",
-                   Style.BreakConstructorInitializersBeforeComma);
-    IO.mapOptional("BinPackParameters", Style.BinPackParameters);
-    IO.mapOptional("ColumnLimit", Style.ColumnLimit);
-    IO.mapOptional("ConstructorInitializerAllOnOneLineOrOnePerLine",
-                   Style.ConstructorInitializerAllOnOneLineOrOnePerLine);
-    IO.mapOptional("DerivePointerBinding", Style.DerivePointerBinding);
-    IO.mapOptional("ExperimentalAutoDetectBinPacking",
-                   Style.ExperimentalAutoDetectBinPacking);
-    IO.mapOptional("IndentCaseLabels", Style.IndentCaseLabels);
-    IO.mapOptional("MaxEmptyLinesToKeep", Style.MaxEmptyLinesToKeep);
-    IO.mapOptional("NamespaceIndentation", Style.NamespaceIndentation);
-    IO.mapOptional("ObjCSpaceBeforeProtocolList",
-                   Style.ObjCSpaceBeforeProtocolList);
-    IO.mapOptional("PenaltyBreakBeforeFirstCallParameter",
-                   Style.PenaltyBreakBeforeFirstCallParameter);
-    IO.mapOptional("PenaltyBreakComment", Style.PenaltyBreakComment);
-    IO.mapOptional("PenaltyBreakString", Style.PenaltyBreakString);
-    IO.mapOptional("PenaltyBreakFirstLessLess",
-                   Style.PenaltyBreakFirstLessLess);
-    IO.mapOptional("PenaltyExcessCharacter", Style.PenaltyExcessCharacter);
-    IO.mapOptional("PenaltyReturnTypeOnItsOwnLine",
-                   Style.PenaltyReturnTypeOnItsOwnLine);
-    IO.mapOptional("PointerBindsToType", Style.PointerBindsToType);
-    IO.mapOptional("SpacesBeforeTrailingComments",
-                   Style.SpacesBeforeTrailingComments);
-    IO.mapOptional("Cpp11BracedListStyle", Style.Cpp11BracedListStyle);
-    IO.mapOptional("Standard", Style.Standard);
-    IO.mapOptional("IndentWidth", Style.IndentWidth);
-    IO.mapOptional("TabWidth", Style.TabWidth);
-    IO.mapOptional("UseTab", Style.UseTab);
-    IO.mapOptional("BreakBeforeBraces", Style.BreakBeforeBraces);
-    IO.mapOptional("IndentFunctionDeclarationAfterType",
-                   Style.IndentFunctionDeclarationAfterType);
-    IO.mapOptional("SpacesInParentheses", Style.SpacesInParentheses);
-    IO.mapOptional("SpacesInAngles", Style.SpacesInAngles);
-    IO.mapOptional("SpaceInEmptyParentheses", Style.SpaceInEmptyParentheses);
-    IO.mapOptional("SpacesInCStyleCastParentheses",
-                   Style.SpacesInCStyleCastParentheses);
-    IO.mapOptional("SpaceAfterControlStatementKeyword",
-                   Style.SpaceAfterControlStatementKeyword);
-    IO.mapOptional("SpaceBeforeAssignmentOperators",
-                   Style.SpaceBeforeAssignmentOperators);
-    IO.mapOptional("ContinuationIndentWidth", Style.ContinuationIndentWidth);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(
+        IO, "AccessModifierOffset", Style.AccessModifierOffset);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(
+        IO, "ConstructorInitializerIndentWidth",
+        Style.ConstructorInitializerIndentWidth);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(
+        IO, "AlignEscapedNewlinesLeft", Style.AlignEscapedNewlinesLeft);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(
+        IO, "AlignTrailingComments", Style.AlignTrailingComments);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(
+        IO, "AllowAllParametersOfDeclarationOnNextLine",
+        Style.AllowAllParametersOfDeclarationOnNextLine);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(
+        IO, "AllowShortIfStatementsOnASingleLine",
+        Style.AllowShortIfStatementsOnASingleLine);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(
+        IO, "AllowShortLoopsOnASingleLine", Style.AllowShortLoopsOnASingleLine);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(
+        IO, "AlwaysBreakTemplateDeclarations",
+        Style.AlwaysBreakTemplateDeclarations);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(
+        IO, "AlwaysBreakBeforeMultilineStrings",
+        Style.AlwaysBreakBeforeMultilineStrings);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(
+        IO, "BreakBeforeBinaryOperators", Style.BreakBeforeBinaryOperators);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(
+        IO, "BreakBeforeTernaryOperators", Style.BreakBeforeTernaryOperators);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(
+        IO, "BreakConstructorInitializersBeforeComma",
+        Style.BreakConstructorInitializersBeforeComma);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(IO, "BinPackParameters",
+                                                     Style.BinPackParameters);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(IO, "ColumnLimit",
+                                                     Style.ColumnLimit);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(
+        IO, "ConstructorInitializerAllOnOneLineOrOnePerLine",
+        Style.ConstructorInitializerAllOnOneLineOrOnePerLine);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(
+        IO, "DerivePointerBinding", Style.DerivePointerBinding);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(
+        IO, "ExperimentalAutoDetectBinPacking",
+        Style.ExperimentalAutoDetectBinPacking);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(IO, "IndentCaseLabels",
+                                                     Style.IndentCaseLabels);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(IO, "MaxEmptyLinesToKeep",
+                                                     Style.MaxEmptyLinesToKeep);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(
+        IO, "NamespaceIndentation", Style.NamespaceIndentation);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(
+        IO, "ObjCSpaceBeforeProtocolList", Style.ObjCSpaceBeforeProtocolList);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(
+        IO, "PenaltyBreakBeforeFirstCallParameter",
+        Style.PenaltyBreakBeforeFirstCallParameter);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(IO, "PenaltyBreakComment",
+                                                     Style.PenaltyBreakComment);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(IO, "PenaltyBreakString",
+                                                     Style.PenaltyBreakString);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(
+        IO, "PenaltyBreakFirstLessLess", Style.PenaltyBreakFirstLessLess);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(
+        IO, "PenaltyExcessCharacter", Style.PenaltyExcessCharacter);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(
+        IO, "PenaltyReturnTypeOnItsOwnLine",
+        Style.PenaltyReturnTypeOnItsOwnLine);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(IO, "PointerBindsToType",
+                                                     Style.PointerBindsToType);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(
+        IO, "SpacesBeforeTrailingComments", Style.SpacesBeforeTrailingComments);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(
+        IO, "Cpp11BracedListStyle", Style.Cpp11BracedListStyle);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(IO, "Standard",
+                                                     Style.Standard);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(IO, "IndentWidth",
+                                                     Style.IndentWidth);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(IO, "TabWidth",
+                                                     Style.TabWidth);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(IO, "UseTab",
+                                                     Style.UseTab);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(IO, "BreakBeforeBraces",
+                                                     Style.BreakBeforeBraces);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(
+        IO, "IndentFunctionDeclarationAfterType",
+        Style.IndentFunctionDeclarationAfterType);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(IO, "SpacesInParentheses",
+                                                     Style.SpacesInParentheses);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(IO, "SpacesInAngles",
+                                                     Style.SpacesInAngles);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(
+        IO, "SpaceInEmptyParentheses", Style.SpaceInEmptyParentheses);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(
+        IO, "SpacesInCStyleCastParentheses",
+        Style.SpacesInCStyleCastParentheses);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(
+        IO, "SpaceAfterControlStatementKeyword",
+        Style.SpaceAfterControlStatementKeyword);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(
+        IO, "SpaceBeforeAssignmentOperators",
+        Style.SpaceBeforeAssignmentOperators);
+    clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(
+        IO, "ContinuationIndentWidth", Style.ContinuationIndentWidth);
   }
 };
-}
-}
+} // namespace yaml
+} // namespace llvm
 
 namespace clang_v3_4 {
 
@@ -325,20 +362,31 @@ std::vector<std::string> getStyleNames() {
   return {"chromium", "google", "llvm", "mozilla", "webkit"};
 }
 
-std::error_code parseConfiguration(const std::string& Text, FormatStyle *Style) {
+std::error_code parseConfiguration(const std::string &Text,
+                                   FormatStyle *Style) {
   llvm::yaml::Input Input(Text);
   Input >> *Style;
   return Input.error();
 }
 
-std::string configurationAsText(const FormatStyle &Style) {
+std::string configurationAsText(const FormatStyle &Style,
+                                const std::string &DefaultStyleName,
+                                bool SkipSameValue) {
   std::string Text;
   llvm::raw_string_ostream Stream(Text);
-  llvm::yaml::Output Output(Stream);
-  // We use the same mapping method for input and output, so we need a non-const
-  // reference here.
+  FormatStyle DefaultStyle;
+  // We use the same mapping method for input and output, so we need a
+  // non-const reference here.
   FormatStyle NonConstStyle = Style;
-  Output << NonConstStyle;
+  if (!SkipSameValue || !getPredefinedStyle(DefaultStyleName, &DefaultStyle)) {
+    clang_vx::OutputDiffOnly<FormatStyle> Output(nullptr, NonConstStyle, false,
+                                                 Stream);
+    Output << NonConstStyle;
+  } else {
+    clang_vx::OutputDiffOnly<FormatStyle> Output(&DefaultStyle, NonConstStyle,
+                                                 SkipSameValue, Stream);
+    Output << NonConstStyle;
+  }
   return Stream.str();
 }
 

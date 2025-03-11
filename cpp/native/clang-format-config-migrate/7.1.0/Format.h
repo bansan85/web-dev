@@ -15,8 +15,8 @@
 #pragma once
 
 #include "IncludeStyle.h"
-#include <system_error>
 #include <optional>
+#include <system_error>
 #include <vector>
 
 namespace clang_v7 {
@@ -340,38 +340,38 @@ struct FormatStyle {
 
   /// Different ways to break after the template declaration.
   enum BreakTemplateDeclarationsStyle {
-      /// Do not force break before declaration.
-      /// ``PenaltyBreakTemplateDeclaration`` is taken into account.
-      /// \code
-      ///    template <typename T> T foo() {
-      ///    }
-      ///    template <typename T> T foo(int aaaaaaaaaaaaaaaaaaaaa,
-      ///                                int bbbbbbbbbbbbbbbbbbbbb) {
-      ///    }
-      /// \endcode
-      BTDS_No,
-      /// Force break after template declaration only when the following
-      /// declaration spans multiple lines.
-      /// \code
-      ///    template <typename T> T foo() {
-      ///    }
-      ///    template <typename T>
-      ///    T foo(int aaaaaaaaaaaaaaaaaaaaa,
-      ///          int bbbbbbbbbbbbbbbbbbbbb) {
-      ///    }
-      /// \endcode
-      BTDS_MultiLine,
-      /// Always break after template declaration.
-      /// \code
-      ///    template <typename T>
-      ///    T foo() {
-      ///    }
-      ///    template <typename T>
-      ///    T foo(int aaaaaaaaaaaaaaaaaaaaa,
-      ///          int bbbbbbbbbbbbbbbbbbbbb) {
-      ///    }
-      /// \endcode
-      BTDS_Yes
+    /// Do not force break before declaration.
+    /// ``PenaltyBreakTemplateDeclaration`` is taken into account.
+    /// \code
+    ///    template <typename T> T foo() {
+    ///    }
+    ///    template <typename T> T foo(int aaaaaaaaaaaaaaaaaaaaa,
+    ///                                int bbbbbbbbbbbbbbbbbbbbb) {
+    ///    }
+    /// \endcode
+    BTDS_No,
+    /// Force break after template declaration only when the following
+    /// declaration spans multiple lines.
+    /// \code
+    ///    template <typename T> T foo() {
+    ///    }
+    ///    template <typename T>
+    ///    T foo(int aaaaaaaaaaaaaaaaaaaaa,
+    ///          int bbbbbbbbbbbbbbbbbbbbb) {
+    ///    }
+    /// \endcode
+    BTDS_MultiLine,
+    /// Always break after template declaration.
+    /// \code
+    ///    template <typename T>
+    ///    T foo() {
+    ///    }
+    ///    template <typename T>
+    ///    T foo(int aaaaaaaaaaaaaaaaaaaaa,
+    ///          int bbbbbbbbbbbbbbbbbbbbb) {
+    ///    }
+    /// \endcode
+    BTDS_Yes
   };
 
   /// The template declaration breaking style to use.
@@ -940,7 +940,8 @@ struct FormatStyle {
   /// \code
   ///   true:
   ///   SomeClass::Constructor()
-  ///       : aaaaaaaa(aaaaaaaa), aaaaaaaa(aaaaaaaa), aaaaaaaa(aaaaaaaaaaaaaaaaaaaaaaaaa) {
+  ///       : aaaaaaaa(aaaaaaaa), aaaaaaaa(aaaaaaaa),
+  ///       aaaaaaaa(aaaaaaaaaaaaaaaaaaaaaaaaa) {
   ///     return 0;
   ///   }
   ///
@@ -1042,8 +1043,9 @@ struct FormatStyle {
 
   /// Indent case labels one level from the switch statement.
   ///
-  /// When ``false``, use the same indentation level as for the switch statement.
-  /// Switch statement body is always indented one level more than case labels.
+  /// When ``false``, use the same indentation level as for the switch
+  /// statement. Switch statement body is always indented one level more than
+  /// case labels.
   /// \code
   ///    false:                                 true:
   ///    switch (fool) {                vs.     switch (fool) {
@@ -1143,7 +1145,8 @@ struct FormatStyle {
   ///    } from 'some/module.js'
   ///
   ///    false:
-  ///    import {VeryLongImportsAreAnnoying, VeryLongImportsAreAnnoying, VeryLongImportsAreAnnoying,} from "some/module.js"
+  ///    import {VeryLongImportsAreAnnoying, VeryLongImportsAreAnnoying,
+  ///    VeryLongImportsAreAnnoying,} from "some/module.js"
   /// \endcode
   bool JavaScriptWrapImports;
 
@@ -1427,13 +1430,17 @@ struct FormatStyle {
   /// If ``true``, clang-format will attempt to re-flow comments.
   /// \code
   ///    false:
-  ///    // veryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryLongComment with plenty of information
-  ///    /* second veryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryLongComment with plenty of information */
+  ///    // veryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryLongComment with plenty
+  ///    of information
+  ///    /* second veryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryLongComment with
+  ///    plenty of information */
   ///
   ///    true:
-  ///    // veryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryLongComment with plenty of
+  ///    // veryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryLongComment with plenty
+  ///    of
   ///    // information
-  ///    /* second veryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryLongComment with plenty of
+  ///    /* second veryVeryVeryVeryVeryVeryVeryVeryVeryVeryVeryLongComment with
+  ///    plenty of
   ///     * information */
   /// \endcode
   bool ReflowComments;
@@ -1791,7 +1798,8 @@ struct FormatStyle {
 private:
   FormatStyleSet StyleSet;
 
-  friend std::error_code parseConfiguration(const std::string& Text, FormatStyle *Style);
+  friend std::error_code parseConfiguration(const std::string &Text,
+                                            FormatStyle *Style);
 };
 
 /// Returns a format style complying with the LLVM coding standards:
@@ -1829,8 +1837,8 @@ FormatStyle getNoStyle();
 /// compared case-insensitively.
 ///
 /// Returns ``true`` if the Style has been set.
-bool getPredefinedStyle(llvm::StringRef Name, FormatStyle::LanguageKind Language,
-                        FormatStyle *Style);
+bool getPredefinedStyle(llvm::StringRef Name,
+                        FormatStyle::LanguageKind Language, FormatStyle *Style);
 
 std::vector<std::string> getStyleNames();
 
@@ -1843,14 +1851,15 @@ std::vector<std::string> getStyleNames();
 ///
 /// When ``BasedOnStyle`` is not present, options not present in the YAML
 /// document, are retained in \p Style.
-std::error_code parseConfiguration(const std::string& Text, FormatStyle *Style);
+std::error_code parseConfiguration(const std::string &Text, FormatStyle *Style);
 
 /// Gets configuration in a YAML string.
-std::string configurationAsText(const FormatStyle &Style);
+std::string configurationAsText(const FormatStyle &Style,
+                                const std::string &DefaultStyleName,
+                                bool SkipSameValue);
 
 } // end namespace clang_v7
 
 namespace std {
-template <>
-struct is_error_code_enum<clang_v7::ParseError> : std::true_type {};
-}
+template <> struct is_error_code_enum<clang_v7::ParseError> : std::true_type {};
+} // namespace std

@@ -32,9 +32,7 @@ set(LLVM_ENABLE_PROJECTS
       "Semicolon-separated list of projects to build (${LLVM_KNOWN_PROJECTS}), or \"all\"."
 )
 
-if(WITH_SANITIZE_UNDEFINED)
-  set(LLVM_ENABLE_RTTI ON)
-endif()
+set(LLVM_ENABLE_RTTI ON)
 set(LIST_SANITIZER "")
 if(WITH_SANITIZE_ADDRESS)
   set(LIST_SANITIZER ${LIST_SANITIZER} "Address")

@@ -53,6 +53,7 @@ export class ClangFormatConfigMigrateComponent implements OnInit {
   oldVersion = '';
   newVersion = '';
   defaultStyle = '';
+  exportOnlyChangedValue = true;
 
   constructor(
     private wasmLoaderClangFormatConfigMigrate: WasmLoaderClangFormatConfigMigrateService
@@ -170,7 +171,8 @@ export class ClangFormatConfigMigrateComponent implements OnInit {
       realOldVersion,
       this.clangFormatConfigMigrate!.versionStringToEnum(this.newVersion),
       config,
-      this.defaultStyle
+      this.defaultStyle,
+      this.exportOnlyChangedValue
     );
   }
 

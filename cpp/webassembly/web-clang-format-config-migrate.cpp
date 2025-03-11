@@ -58,9 +58,10 @@ EMSCRIPTEN_BINDINGS(web_clang_format_config_migrate) {
         return clang_vx::getStyleNamesRange(vstart, vend);
       });
   emscripten::function(
-      "migrateTo",
-      +[](clang_vx::Version vstart, clang_vx::Version vend,
-          const std::string &data, const std::string &default_style) {
-        return clang_vx::migrateTo(vstart, vend, data, default_style);
+      "migrateTo", +[](clang_vx::Version vstart, clang_vx::Version vend,
+                       const std::string &data,
+                       const std::string &default_style, bool skip_same_value) {
+        return clang_vx::migrateTo(vstart, vend, data, default_style,
+                                   skip_same_value);
       });
 }

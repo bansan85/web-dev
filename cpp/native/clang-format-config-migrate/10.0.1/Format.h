@@ -14,8 +14,8 @@
 #pragma once
 
 #include "IncludeStyle.h"
-#include <system_error>
 #include <optional>
+#include <system_error>
 #include <vector>
 
 namespace clang_v10 {
@@ -2195,7 +2195,8 @@ struct FormatStyle {
 private:
   FormatStyleSet StyleSet;
 
-  friend std::error_code parseConfiguration(const std::string& Text, FormatStyle *Style);
+  friend std::error_code parseConfiguration(const std::string &Text,
+                                            FormatStyle *Style);
 };
 
 /// Returns a format style complying with the LLVM coding standards:
@@ -2238,8 +2239,8 @@ FormatStyle getNoStyle();
 /// compared case-insensitively.
 ///
 /// Returns ``true`` if the Style has been set.
-bool getPredefinedStyle(llvm::StringRef Name, FormatStyle::LanguageKind Language,
-                        FormatStyle *Style);
+bool getPredefinedStyle(llvm::StringRef Name,
+                        FormatStyle::LanguageKind Language, FormatStyle *Style);
 
 std::vector<std::string> getStyleNames();
 
@@ -2252,10 +2253,12 @@ std::vector<std::string> getStyleNames();
 ///
 /// When ``BasedOnStyle`` is not present, options not present in the YAML
 /// document, are retained in \p Style.
-std::error_code parseConfiguration(const std::string& Text, FormatStyle *Style);
+std::error_code parseConfiguration(const std::string &Text, FormatStyle *Style);
 
 /// Gets configuration in a YAML string.
-std::string configurationAsText(const FormatStyle &Style);
+std::string configurationAsText(const FormatStyle &Style,
+                                const std::string &DefaultStyleName,
+                                bool SkipSameValue);
 
 } // end namespace clang_v10
 

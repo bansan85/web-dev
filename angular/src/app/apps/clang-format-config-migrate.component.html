@@ -48,6 +48,11 @@
           </option>
         </select>
       </dd>
+      <dt>Export only changed value:</dt>
+      <dd>
+        <input type="checkbox" name="exportOnlyChangedValue" [(ngModel)]="exportOnlyChangedValue"
+          (change)="forceMigrate()"><br />
+      </dd>
     </dl>
   </div>
 </app-dialog-popup>
