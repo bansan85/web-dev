@@ -50,6 +50,11 @@ tok::TokenKind getTokenFromQualifier(const std::string &Qualifier) {
   {                                                                            \
     clang_v##VERSION::FormatStyle format;                                      \
     format.Language = clang_v##VERSION::FormatStyle::LanguageKind::LK_Cpp;     \
+    if (!clang_v##VERSION::getPredefinedStyle(                                 \
+            clang_v##VERSION::getStyleNames()[0], format.Language, &format)) { \
+      throw std::runtime_error("Unknown style " +                              \
+                               clang_v##VERSION::getStyleNames()[0] + ";");    \
+    }                                                                          \
     std::error_code ec =                                                       \
         clang_v##VERSION::parseConfiguration(config, &format);                 \
     std::cout << ec << "\n";                                                   \
@@ -66,6 +71,11 @@ std::vector<Version> getCompatibleVersion(const std::string &config) {
 
   {
     clang_v3_4::FormatStyle format;
+    if (!clang_v3_4::getPredefinedStyle(clang_v3_4::getStyleNames()[0],
+                                        &format)) {
+      throw std::runtime_error("Unknown style " +
+                               clang_v3_4::getStyleNames()[0] + ";");
+    }
     std::error_code ec = clang_v3_4::parseConfiguration(config, &format);
     if (ec.value() == 0) {
       retval.push_back(Version::V3_4);

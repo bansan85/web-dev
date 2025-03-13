@@ -861,28 +861,30 @@ template <> struct MappingTraits<FormatStyle> {
 
     std::string BasedOnStyle;
     if (IO.outputting()) {
-      std::vector<std::string_view> Styles = {
-          "LLVM",   "Google", "Chromium",  "Mozilla",
-          "WebKit", "GNU",    "Microsoft", "clang-format"};
-      for (llvm::StringRef StyleName : Styles) {
-        FormatStyle PredefinedStyle;
-        if (getPredefinedStyle(StyleName, Style.Language, &PredefinedStyle) &&
+      clang_vx::OutputDiffOnly<clang_v19::FormatStyle> &out =
+          static_cast<clang_vx::OutputDiffOnly<clang_v19::FormatStyle> &>(IO);
+      if (out.getDefaultStyle()) {
+        for (const std::string &StyleName : clang_v19::getStyleNames()) {
+          clang_v19::FormatStyle PredefinedStyle;
+          if (clang_v19::getPredefinedStyle(StyleName, Style.Language,
+                                            &PredefinedStyle) &&
+              *out.getDefaultStyle() == PredefinedStyle) {
+            BasedOnStyle = StyleName;
+            break;
+          }
+        }
+        IO.mapOptional("BasedOnStyle", BasedOnStyle);
+      }
+    } else {
+      IO.mapOptional("BasedOnStyle", BasedOnStyle);
+      for (const std::string &StyleName : clang_v19::getStyleNames()) {
+        clang_v19::FormatStyle PredefinedStyle;
+        if (clang_v19::getPredefinedStyle(StyleName, Style.Language,
+                                          &PredefinedStyle) &&
             Style == PredefinedStyle) {
           BasedOnStyle = StyleName;
           break;
         }
-      }
-    } else {
-      IO.mapOptional("BasedOnStyle", BasedOnStyle);
-      if (!BasedOnStyle.empty()) {
-        FormatStyle::LanguageKind OldLanguage = Style.Language;
-        FormatStyle::LanguageKind Language =
-            ((FormatStyle *)IO.getContext())->Language;
-        if (!getPredefinedStyle(BasedOnStyle, Language, &Style)) {
-          throw std::runtime_error("Unknown value for BasedOnStyle: " +
-                                   BasedOnStyle);
-        }
-        Style.Language = OldLanguage;
       }
     }
 

@@ -4195,13 +4195,17 @@ template void update<clang_vx::Update::DOWNGRADE>(clang_v18::FormatStyle &prev,
 namespace {
 
 AllFormatStyle versionToFormatStyle(clang_vx::Version version,
-                                    const std::string &data) {
+                                    const std::string &data,
+                                    const std::string &default_style) {
   switch (version) {
   case clang_vx::Version::V3_3: {
     throw std::runtime_error("V3.3 doesn't support serialization.");
   }
   case clang_vx::Version::V3_4: {
     clang_v3_4::FormatStyle fs3_4;
+    if (!clang_v3_4::getPredefinedStyle(default_style, &fs3_4)) {
+      throw std::runtime_error("Unknown style " + default_style + ";");
+    }
     std::error_code ec = clang_v3_4::parseConfiguration(data, &fs3_4);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v3_4.\n" +
@@ -4212,6 +4216,11 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   case clang_vx::Version::V3_5: {
     clang_v3_5::FormatStyle fs3_5;
     fs3_5.Language = clang_v3_5::FormatStyle::LanguageKind::LK_Cpp;
+    if (!clang_v3_5::getPredefinedStyle(
+            default_style, clang_v3_5::FormatStyle::LanguageKind::LK_Cpp,
+            &fs3_5)) {
+      throw std::runtime_error("Unknown style " + default_style + ";");
+    }
     std::error_code ec = clang_v3_5::parseConfiguration(data, &fs3_5);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v3_5.\n" +
@@ -4222,6 +4231,11 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   case clang_vx::Version::V3_6: {
     clang_v3_6::FormatStyle fs3_6;
     fs3_6.Language = clang_v3_6::FormatStyle::LanguageKind::LK_Cpp;
+    if (!clang_v3_6::getPredefinedStyle(
+            default_style, clang_v3_6::FormatStyle::LanguageKind::LK_Cpp,
+            &fs3_6)) {
+      throw std::runtime_error("Unknown style " + default_style + ";");
+    }
     std::error_code ec = clang_v3_6::parseConfiguration(data, &fs3_6);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v3_6.\n" +
@@ -4232,6 +4246,11 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   case clang_vx::Version::V3_7: {
     clang_v3_7::FormatStyle fs3_7;
     fs3_7.Language = clang_v3_7::FormatStyle::LanguageKind::LK_Cpp;
+    if (!clang_v3_7::getPredefinedStyle(
+            default_style, clang_v3_7::FormatStyle::LanguageKind::LK_Cpp,
+            &fs3_7)) {
+      throw std::runtime_error("Unknown style " + default_style + ";");
+    }
     std::error_code ec = clang_v3_7::parseConfiguration(data, &fs3_7);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v3_7.\n" +
@@ -4242,6 +4261,11 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   case clang_vx::Version::V3_8: {
     clang_v3_8::FormatStyle fs3_8;
     fs3_8.Language = clang_v3_8::FormatStyle::LanguageKind::LK_Cpp;
+    if (!clang_v3_8::getPredefinedStyle(
+            default_style, clang_v3_8::FormatStyle::LanguageKind::LK_Cpp,
+            &fs3_8)) {
+      throw std::runtime_error("Unknown style " + default_style + ";");
+    }
     std::error_code ec = clang_v3_8::parseConfiguration(data, &fs3_8);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v3_8.\n" +
@@ -4252,6 +4276,11 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   case clang_vx::Version::V3_9: {
     clang_v3_9::FormatStyle fs3_9;
     fs3_9.Language = clang_v3_9::FormatStyle::LanguageKind::LK_Cpp;
+    if (!clang_v3_9::getPredefinedStyle(
+            default_style, clang_v3_9::FormatStyle::LanguageKind::LK_Cpp,
+            &fs3_9)) {
+      throw std::runtime_error("Unknown style " + default_style + ";");
+    }
     std::error_code ec = clang_v3_9::parseConfiguration(data, &fs3_9);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v3_9.\n" +
@@ -4262,6 +4291,10 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   case clang_vx::Version::V4: {
     clang_v4::FormatStyle fs4;
     fs4.Language = clang_v4::FormatStyle::LanguageKind::LK_Cpp;
+    if (!clang_v4::getPredefinedStyle(
+            default_style, clang_v4::FormatStyle::LanguageKind::LK_Cpp, &fs4)) {
+      throw std::runtime_error("Unknown style " + default_style + ";");
+    }
     std::error_code ec = clang_v4::parseConfiguration(data, &fs4);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v4.\n" +
@@ -4271,6 +4304,10 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   }
   case clang_vx::Version::V5: {
     clang_v5::FormatStyle fs5;
+    if (!clang_v5::getPredefinedStyle(
+            default_style, clang_v5::FormatStyle::LanguageKind::LK_Cpp, &fs5)) {
+      throw std::runtime_error("Unknown style " + default_style + ";");
+    }
     fs5.Language = clang_v5::FormatStyle::LanguageKind::LK_Cpp;
     std::error_code ec = clang_v5::parseConfiguration(data, &fs5);
     if (ec) {
@@ -4282,6 +4319,10 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   case clang_vx::Version::V6: {
     clang_v6::FormatStyle fs6;
     fs6.Language = clang_v6::FormatStyle::LanguageKind::LK_Cpp;
+    if (!clang_v6::getPredefinedStyle(
+            default_style, clang_v6::FormatStyle::LanguageKind::LK_Cpp, &fs6)) {
+      throw std::runtime_error("Unknown style " + default_style + ";");
+    }
     std::error_code ec = clang_v6::parseConfiguration(data, &fs6);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v6.\n" +
@@ -4292,6 +4333,10 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   case clang_vx::Version::V7: {
     clang_v7::FormatStyle fs7;
     fs7.Language = clang_v7::FormatStyle::LanguageKind::LK_Cpp;
+    if (!clang_v7::getPredefinedStyle(
+            default_style, clang_v7::FormatStyle::LanguageKind::LK_Cpp, &fs7)) {
+      throw std::runtime_error("Unknown style " + default_style + ";");
+    }
     std::error_code ec = clang_v7::parseConfiguration(data, &fs7);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v7.\n" +
@@ -4302,6 +4347,10 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   case clang_vx::Version::V8: {
     clang_v8::FormatStyle fs8;
     fs8.Language = clang_v8::FormatStyle::LanguageKind::LK_Cpp;
+    if (!clang_v8::getPredefinedStyle(
+            default_style, clang_v8::FormatStyle::LanguageKind::LK_Cpp, &fs8)) {
+      throw std::runtime_error("Unknown style " + default_style + ";");
+    }
     std::error_code ec = clang_v8::parseConfiguration(data, &fs8);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v8.\n" +
@@ -4312,6 +4361,10 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   case clang_vx::Version::V9: {
     clang_v9::FormatStyle fs9;
     fs9.Language = clang_v9::FormatStyle::LanguageKind::LK_Cpp;
+    if (!clang_v9::getPredefinedStyle(
+            default_style, clang_v9::FormatStyle::LanguageKind::LK_Cpp, &fs9)) {
+      throw std::runtime_error("Unknown style " + default_style + ";");
+    }
     std::error_code ec = clang_v9::parseConfiguration(data, &fs9);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v9.\n" +
@@ -4322,6 +4375,11 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   case clang_vx::Version::V10: {
     clang_v10::FormatStyle fs10;
     fs10.Language = clang_v10::FormatStyle::LanguageKind::LK_Cpp;
+    if (!clang_v10::getPredefinedStyle(
+            default_style, clang_v10::FormatStyle::LanguageKind::LK_Cpp,
+            &fs10)) {
+      throw std::runtime_error("Unknown style " + default_style + ";");
+    }
     std::error_code ec = clang_v10::parseConfiguration(data, &fs10);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v10.\n" +
@@ -4332,6 +4390,11 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   case clang_vx::Version::V11: {
     clang_v11::FormatStyle fs11;
     fs11.Language = clang_v11::FormatStyle::LanguageKind::LK_Cpp;
+    if (!clang_v11::getPredefinedStyle(
+            default_style, clang_v11::FormatStyle::LanguageKind::LK_Cpp,
+            &fs11)) {
+      throw std::runtime_error("Unknown style " + default_style + ";");
+    }
     std::error_code ec = clang_v11::parseConfiguration(data, &fs11);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v11.\n" +
@@ -4342,6 +4405,11 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   case clang_vx::Version::V12: {
     clang_v12::FormatStyle fs12;
     fs12.Language = clang_v12::FormatStyle::LanguageKind::LK_Cpp;
+    if (!clang_v12::getPredefinedStyle(
+            default_style, clang_v12::FormatStyle::LanguageKind::LK_Cpp,
+            &fs12)) {
+      throw std::runtime_error("Unknown style " + default_style + ";");
+    }
     std::error_code ec = clang_v12::parseConfiguration(data, &fs12);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v12.\n" +
@@ -4352,6 +4420,11 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   case clang_vx::Version::V13: {
     clang_v13::FormatStyle fs13;
     fs13.Language = clang_v13::FormatStyle::LanguageKind::LK_Cpp;
+    if (!clang_v13::getPredefinedStyle(
+            default_style, clang_v13::FormatStyle::LanguageKind::LK_Cpp,
+            &fs13)) {
+      throw std::runtime_error("Unknown style " + default_style + ";");
+    }
     std::error_code ec = clang_v13::parseConfiguration(data, &fs13);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v13.\n" +
@@ -4362,6 +4435,11 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   case clang_vx::Version::V14: {
     clang_v14::FormatStyle fs14;
     fs14.Language = clang_v14::FormatStyle::LanguageKind::LK_Cpp;
+    if (!clang_v14::getPredefinedStyle(
+            default_style, clang_v14::FormatStyle::LanguageKind::LK_Cpp,
+            &fs14)) {
+      throw std::runtime_error("Unknown style " + default_style + ";");
+    }
     std::error_code ec = clang_v14::parseConfiguration(data, &fs14);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v14.\n" +
@@ -4372,6 +4450,11 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   case clang_vx::Version::V15: {
     clang_v15::FormatStyle fs15;
     fs15.Language = clang_v15::FormatStyle::LanguageKind::LK_Cpp;
+    if (!clang_v15::getPredefinedStyle(
+            default_style, clang_v15::FormatStyle::LanguageKind::LK_Cpp,
+            &fs15)) {
+      throw std::runtime_error("Unknown style " + default_style + ";");
+    }
     std::error_code ec = clang_v15::parseConfiguration(data, &fs15);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v15.\n" +
@@ -4382,6 +4465,11 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   case clang_vx::Version::V16: {
     clang_v16::FormatStyle fs16;
     fs16.Language = clang_v16::FormatStyle::LanguageKind::LK_Cpp;
+    if (!clang_v16::getPredefinedStyle(
+            default_style, clang_v16::FormatStyle::LanguageKind::LK_Cpp,
+            &fs16)) {
+      throw std::runtime_error("Unknown style " + default_style + ";");
+    }
     std::error_code ec = clang_v16::parseConfiguration(data, &fs16);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v16.\n" +
@@ -4392,6 +4480,11 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   case clang_vx::Version::V17: {
     clang_v17::FormatStyle fs17;
     fs17.Language = clang_v17::FormatStyle::LanguageKind::LK_Cpp;
+    if (!clang_v17::getPredefinedStyle(
+            default_style, clang_v17::FormatStyle::LanguageKind::LK_Cpp,
+            &fs17)) {
+      throw std::runtime_error("Unknown style " + default_style + ";");
+    }
     std::error_code ec = clang_v17::parseConfiguration(data, &fs17);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v17.\n" +
@@ -4402,6 +4495,11 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   case clang_vx::Version::V18: {
     clang_v18::FormatStyle fs18;
     fs18.Language = clang_v18::FormatStyle::LanguageKind::LK_Cpp;
+    if (!clang_v18::getPredefinedStyle(
+            default_style, clang_v18::FormatStyle::LanguageKind::LK_Cpp,
+            &fs18)) {
+      throw std::runtime_error("Unknown style " + default_style + ";");
+    }
     std::error_code ec = clang_v18::parseConfiguration(data, &fs18);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v18.\n" +
@@ -4412,6 +4510,11 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
   case clang_vx::Version::V19: {
     clang_v19::FormatStyle fs19;
     fs19.Language = clang_v19::FormatStyle::LanguageKind::LK_Cpp;
+    if (!clang_v19::getPredefinedStyle(
+            default_style, clang_v19::FormatStyle::LanguageKind::LK_Cpp,
+            &fs19)) {
+      throw std::runtime_error("Unknown style " + default_style + ";");
+    }
     std::error_code ec = clang_v19::parseConfiguration(data, &fs19);
     if (ec) {
       throw std::runtime_error("Failed to parse yaml config file v19.\n" +
@@ -4529,7 +4632,7 @@ std::string formatStyleToVersion(const AllFormatStyle &data,
 namespace clang_vx {
 std::string updateTo(Version vstart, Version vend, const std::string &data,
                      const std::string &default_style, bool skip_same_value) {
-  AllFormatStyle before = versionToFormatStyle(vstart, data);
+  AllFormatStyle before = versionToFormatStyle(vstart, data, default_style);
   if (vstart == vend) {
     return formatStyleToVersion(before, default_style, skip_same_value);
   }
@@ -4749,7 +4852,7 @@ std::string updateTo(Version vstart, Version vend, const std::string &data,
 std::string downgradeTo(Version vstart, Version vend, const std::string &data,
                         const std::string &default_style,
                         bool skip_same_value) {
-  AllFormatStyle before = versionToFormatStyle(vstart, data);
+  AllFormatStyle before = versionToFormatStyle(vstart, data, default_style);
   if (vstart == vend) {
     return formatStyleToVersion(before, default_style, skip_same_value);
   }

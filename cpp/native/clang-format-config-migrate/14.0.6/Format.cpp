@@ -507,30 +507,32 @@ template <> struct MappingTraits<FormatStyle> {
     // When reading, read the language first, we need it for getPredefinedStyle.
     IO.mapOptional("Language", Style.Language);
 
+    std::string BasedOnStyle;
     if (IO.outputting()) {
-      std::vector<std::string_view> Styles = {"LLVM",     "Google", "Chromium",
-                                              "Mozilla",  "WebKit", "GNU",
-                                              "Microsoft"};
-      for (llvm::StringRef StyleName : Styles) {
-        FormatStyle PredefinedStyle;
-        if (getPredefinedStyle(StyleName, Style.Language, &PredefinedStyle) &&
-            Style == PredefinedStyle) {
-          IO.mapOptional("# BasedOnStyle", StyleName);
-          break;
+      clang_vx::OutputDiffOnly<clang_v14::FormatStyle> &out =
+          static_cast<clang_vx::OutputDiffOnly<clang_v14::FormatStyle> &>(IO);
+      if (out.getDefaultStyle()) {
+        for (const std::string &StyleName : clang_v14::getStyleNames()) {
+          clang_v14::FormatStyle PredefinedStyle;
+          if (clang_v14::getPredefinedStyle(StyleName, Style.Language,
+                                            &PredefinedStyle) &&
+              *out.getDefaultStyle() == PredefinedStyle) {
+            BasedOnStyle = StyleName;
+            break;
+          }
         }
+        IO.mapOptional("BasedOnStyle", BasedOnStyle);
       }
     } else {
-      std::string BasedOnStyle;
       IO.mapOptional("BasedOnStyle", BasedOnStyle);
-      if (!BasedOnStyle.empty()) {
-        FormatStyle::LanguageKind OldLanguage = Style.Language;
-        FormatStyle::LanguageKind Language =
-            ((FormatStyle *)IO.getContext())->Language;
-        if (!getPredefinedStyle(BasedOnStyle, Language, &Style)) {
-          IO.setError(Twine("Unknown value for BasedOnStyle: ", BasedOnStyle));
-          return;
+      for (const std::string &StyleName : clang_v14::getStyleNames()) {
+        clang_v14::FormatStyle PredefinedStyle;
+        if (clang_v14::getPredefinedStyle(StyleName, Style.Language,
+                                          &PredefinedStyle) &&
+            Style == PredefinedStyle) {
+          BasedOnStyle = StyleName;
+          break;
         }
-        Style.Language = OldLanguage;
       }
     }
 
@@ -714,11 +716,8 @@ template <> struct MappingTraits<FormatStyle> {
     // for Google/Chromium or PCIS_BinPack otherwise. If the deprecated options
     // had a non-default value while PackConstructorInitializers has a default
     // value, set the latter to an equivalent non-default value if needed.
-    std::string BasedOn;
-    clang_vx::IoMapOptionalHardcodedValue<clang_v14::FormatStyle>(
-        IO, "BasedOnStyle", BasedOn);
     const bool IsGoogleOrChromium =
-        BasedOn == "google" || BasedOn == "chromium";
+        BasedOnStyle == "google" || BasedOnStyle == "chromium";
     bool OnCurrentLine = IsGoogleOrChromium;
     bool OnNextLine = true;
     clang_vx::IoMapOptionalHardcodedValue<clang_v14::FormatStyle>(

@@ -252,30 +252,32 @@ template <> struct MappingTraits<FormatStyle> {
     // When reading, read the language first, we need it for getPredefinedStyle.
     IO.mapOptional("Language", Style.Language);
 
+    std::string BasedOnStyle;
     if (IO.outputting()) {
-      std::vector<std::string_view> Styles = {"LLVM",    "Google", "Chromium",
-                                              "Mozilla", "WebKit", "GNU"};
-      for (size_t i = 0, e = Styles.size(); i < e; ++i) {
-        llvm::StringRef StyleName(Styles[i]);
-        FormatStyle PredefinedStyle;
-        if (getPredefinedStyle(StyleName, Style.Language, &PredefinedStyle) &&
-            Style == PredefinedStyle) {
-          IO.mapOptional("# BasedOnStyle", StyleName);
-          break;
+      clang_vx::OutputDiffOnly<clang_v8::FormatStyle> &out =
+          static_cast<clang_vx::OutputDiffOnly<clang_v8::FormatStyle> &>(IO);
+      if (out.getDefaultStyle()) {
+        for (const std::string &StyleName : clang_v8::getStyleNames()) {
+          clang_v8::FormatStyle PredefinedStyle;
+          if (clang_v8::getPredefinedStyle(StyleName, Style.Language,
+                                           &PredefinedStyle) &&
+              *out.getDefaultStyle() == PredefinedStyle) {
+            BasedOnStyle = StyleName;
+            break;
+          }
         }
+        IO.mapOptional("BasedOnStyle", BasedOnStyle);
       }
     } else {
-      std::string BasedOnStyle;
       IO.mapOptional("BasedOnStyle", BasedOnStyle);
-      if (!BasedOnStyle.empty()) {
-        FormatStyle::LanguageKind OldLanguage = Style.Language;
-        FormatStyle::LanguageKind Language =
-            ((FormatStyle *)IO.getContext())->Language;
-        if (!getPredefinedStyle(BasedOnStyle, Language, &Style)) {
-          IO.setError(Twine("Unknown value for BasedOnStyle: ", BasedOnStyle));
-          return;
+      for (const std::string &StyleName : clang_v8::getStyleNames()) {
+        clang_v8::FormatStyle PredefinedStyle;
+        if (clang_v8::getPredefinedStyle(StyleName, Style.Language,
+                                         &PredefinedStyle) &&
+            Style == PredefinedStyle) {
+          BasedOnStyle = StyleName;
+          break;
         }
-        Style.Language = OldLanguage;
       }
     }
 

@@ -1606,21 +1606,26 @@ TEST_CASE("showMigration", "[clang-format-config-migrate]") {
           ss << myline << '\n';
         }
 
-        if (version != max_value) {
-          std::cout << "Update: " << filename << "\n"
-                    << updateTo(version,
-                                static_cast<clang_vx::Version>(
-                                    static_cast<size_t>(version) + 1),
-                                ss.str(), std::string{style}, false)
-                    << "\n";
-        }
-        if (!skip_first) {
-          std::cout << "Downgrade: " << filename << "\n"
-                    << downgradeTo(version,
-                                   static_cast<clang_vx::Version>(
-                                       static_cast<size_t>(version) - 1),
-                                   ss.str(), std::string{style}, true)
-                    << "\n";
+        for (bool skip : {false, true}) {
+          if (version != max_value) {
+            std::cout << "Update: " << filename << ", skip: " << std::boolalpha
+                      << skip << std::noboolalpha << "\n"
+                      << updateTo(version,
+                                  static_cast<clang_vx::Version>(
+                                      static_cast<size_t>(version) + 1),
+                                  ss.str(), std::string{style}, skip)
+                      << "\n";
+          }
+          if (!skip_first) {
+            std::cout << "Downgrade: " << filename
+                      << ", skip: " << std::boolalpha << skip
+                      << std::noboolalpha << "\n"
+                      << downgradeTo(version,
+                                     static_cast<clang_vx::Version>(
+                                         static_cast<size_t>(version) - 1),
+                                     ss.str(), std::string{style}, skip)
+                      << "\n";
+          }
         }
         skip_first = false;
       }

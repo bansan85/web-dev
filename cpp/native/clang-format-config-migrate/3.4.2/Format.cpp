@@ -74,26 +74,31 @@ struct ScalarEnumerationTraits<
 
 template <> struct MappingTraits<clang_v3_4::FormatStyle> {
   static void mapping(llvm::yaml::IO &IO, clang_v3_4::FormatStyle &Style) {
+    std::string BasedOnStyle;
     if (IO.outputting()) {
-      std::vector<std::string_view> Styles = {"LLVM", "Google", "Chromium",
-                                              "Mozilla", "WebKit"};
-      for (size_t i = 0, e = Styles.size(); i < e; ++i) {
-        llvm::StringRef StyleName(Styles[i]);
+      clang_vx::OutputDiffOnly<clang_v3_4::FormatStyle> &out =
+          static_cast<clang_vx::OutputDiffOnly<clang_v3_4::FormatStyle> &>(IO);
+      if (out.getDefaultStyle()) {
+        for (const std::string &StyleName : clang_v3_4::getStyleNames()) {
+          clang_v3_4::FormatStyle PredefinedStyle;
+          if (clang_v3_4::getPredefinedStyle(StyleName, &PredefinedStyle) &&
+              *out.getDefaultStyle() == PredefinedStyle) {
+            BasedOnStyle = StyleName;
+            break;
+          }
+        }
+        IO.mapOptional("BasedOnStyle", BasedOnStyle);
+      }
+    } else {
+      IO.mapOptional("BasedOnStyle", BasedOnStyle);
+      for (const std::string &StyleName : clang_v3_4::getStyleNames()) {
         clang_v3_4::FormatStyle PredefinedStyle;
         if (clang_v3_4::getPredefinedStyle(StyleName, &PredefinedStyle) &&
             Style == PredefinedStyle) {
-          IO.mapOptional("# BasedOnStyle", StyleName);
+          BasedOnStyle = StyleName;
           break;
         }
       }
-    } else {
-      std::string BasedOnStyle;
-      IO.mapOptional("BasedOnStyle", BasedOnStyle);
-      if (!BasedOnStyle.empty())
-        if (!clang_v3_4::getPredefinedStyle(BasedOnStyle, &Style)) {
-          IO.setError(Twine("Unknown value for BasedOnStyle: ", BasedOnStyle));
-          return;
-        }
     }
 
     clang_vx::IoMapOptional<clang_v3_4::FormatStyle>(
