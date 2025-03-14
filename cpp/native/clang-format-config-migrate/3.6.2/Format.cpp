@@ -131,12 +131,12 @@ template <> struct MappingTraits<FormatStyle> {
 
     std::string BasedOnStyle;
     if (IO.outputting()) {
-      clang_vx::OutputDiffOnly<clang_v3_6::FormatStyle> &out =
-          *static_cast<clang_vx::OutputDiffOnly<clang_v3_6::FormatStyle> *>(
+      clang_vx::OutputDiffOnly<FormatStyle> &out =
+          *static_cast<clang_vx::OutputDiffOnly<FormatStyle> *>(
               IO.getContext());
       if (out.getDefaultStyle()) {
         for (const std::string &StyleName : clang_v3_6::getStyleNames()) {
-          clang_v3_6::FormatStyle PredefinedStyle;
+          FormatStyle PredefinedStyle;
           if (clang_v3_6::getPredefinedStyle(StyleName, Style.Language,
                                              &PredefinedStyle) &&
               *out.getDefaultStyle() == PredefinedStyle) {
@@ -149,7 +149,7 @@ template <> struct MappingTraits<FormatStyle> {
     } else {
       IO.mapOptional("BasedOnStyle", BasedOnStyle);
       for (const std::string &StyleName : clang_v3_6::getStyleNames()) {
-        clang_v3_6::FormatStyle PredefinedStyle;
+        FormatStyle PredefinedStyle;
         if (clang_v3_6::getPredefinedStyle(StyleName, Style.Language,
                                            &PredefinedStyle) &&
             Style == PredefinedStyle) {
@@ -159,140 +159,130 @@ template <> struct MappingTraits<FormatStyle> {
       }
     }
 
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
-        IO, "AccessModifierOffset", Style.AccessModifierOffset);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
-        IO, "AlignAfterOpenBracket", Style.AlignAfterOpenBracket);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
-        IO, "AlignEscapedNewlinesLeft", Style.AlignEscapedNewlinesLeft);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(IO, "AlignOperands",
-                                                     Style.AlignOperands);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
-        IO, "AlignTrailingComments", Style.AlignTrailingComments);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
+    clang_vx::IoMapOptional<FormatStyle>(IO, "AccessModifierOffset",
+                                         Style.AccessModifierOffset);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "AlignAfterOpenBracket",
+                                         Style.AlignAfterOpenBracket);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "AlignEscapedNewlinesLeft",
+                                         Style.AlignEscapedNewlinesLeft);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "AlignOperands",
+                                         Style.AlignOperands);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "AlignTrailingComments",
+                                         Style.AlignTrailingComments);
+    clang_vx::IoMapOptional<FormatStyle>(
         IO, "AllowAllParametersOfDeclarationOnNextLine",
         Style.AllowAllParametersOfDeclarationOnNextLine);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
-        IO, "AllowShortBlocksOnASingleLine",
-        Style.AllowShortBlocksOnASingleLine);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
+    clang_vx::IoMapOptional<FormatStyle>(IO, "AllowShortBlocksOnASingleLine",
+                                         Style.AllowShortBlocksOnASingleLine);
+    clang_vx::IoMapOptional<FormatStyle>(
         IO, "AllowShortCaseLabelsOnASingleLine",
         Style.AllowShortCaseLabelsOnASingleLine);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
+    clang_vx::IoMapOptional<FormatStyle>(
         IO, "AllowShortIfStatementsOnASingleLine",
         Style.AllowShortIfStatementsOnASingleLine);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
-        IO, "AllowShortLoopsOnASingleLine", Style.AllowShortLoopsOnASingleLine);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
+    clang_vx::IoMapOptional<FormatStyle>(IO, "AllowShortLoopsOnASingleLine",
+                                         Style.AllowShortLoopsOnASingleLine);
+    clang_vx::IoMapOptional<FormatStyle>(
         IO, "AllowShortFunctionsOnASingleLine",
         Style.AllowShortFunctionsOnASingleLine);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
+    clang_vx::IoMapOptional<FormatStyle>(
         IO, "AlwaysBreakAfterDefinitionReturnType",
         Style.AlwaysBreakAfterDefinitionReturnType);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
-        IO, "AlwaysBreakTemplateDeclarations",
-        Style.AlwaysBreakTemplateDeclarations);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
+    clang_vx::IoMapOptional<FormatStyle>(IO, "AlwaysBreakTemplateDeclarations",
+                                         Style.AlwaysBreakTemplateDeclarations);
+    clang_vx::IoMapOptional<FormatStyle>(
         IO, "AlwaysBreakBeforeMultilineStrings",
         Style.AlwaysBreakBeforeMultilineStrings);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
-        IO, "BreakBeforeBinaryOperators", Style.BreakBeforeBinaryOperators);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
-        IO, "BreakBeforeTernaryOperators", Style.BreakBeforeTernaryOperators);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
+    clang_vx::IoMapOptional<FormatStyle>(IO, "BreakBeforeBinaryOperators",
+                                         Style.BreakBeforeBinaryOperators);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "BreakBeforeTernaryOperators",
+                                         Style.BreakBeforeTernaryOperators);
+    clang_vx::IoMapOptional<FormatStyle>(
         IO, "BreakConstructorInitializersBeforeComma",
         Style.BreakConstructorInitializersBeforeComma);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(IO, "BinPackParameters",
-                                                     Style.BinPackParameters);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(IO, "BinPackArguments",
-                                                     Style.BinPackArguments);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(IO, "ColumnLimit",
-                                                     Style.ColumnLimit);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
+    clang_vx::IoMapOptional<FormatStyle>(IO, "BinPackParameters",
+                                         Style.BinPackParameters);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "BinPackArguments",
+                                         Style.BinPackArguments);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "ColumnLimit", Style.ColumnLimit);
+    clang_vx::IoMapOptional<FormatStyle>(
         IO, "ConstructorInitializerAllOnOneLineOrOnePerLine",
         Style.ConstructorInitializerAllOnOneLineOrOnePerLine);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
+    clang_vx::IoMapOptional<FormatStyle>(
         IO, "ConstructorInitializerIndentWidth",
         Style.ConstructorInitializerIndentWidth);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
-        IO, "DerivePointerAlignment", Style.DerivePointerAlignment);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
+    clang_vx::IoMapOptional<FormatStyle>(IO, "DerivePointerAlignment",
+                                         Style.DerivePointerAlignment);
+    clang_vx::IoMapOptional<FormatStyle>(
         IO, "ExperimentalAutoDetectBinPacking",
         Style.ExperimentalAutoDetectBinPacking);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(IO, "IndentCaseLabels",
-                                                     Style.IndentCaseLabels);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
-        IO, "IndentWrappedFunctionNames", Style.IndentWrappedFunctionNames);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
-        IO, "IndentFunctionDeclarationAfterType",
-        Style.IndentWrappedFunctionNames);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(IO, "MaxEmptyLinesToKeep",
-                                                     Style.MaxEmptyLinesToKeep);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
+    clang_vx::IoMapOptional<FormatStyle>(IO, "IndentCaseLabels",
+                                         Style.IndentCaseLabels);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "IndentWrappedFunctionNames",
+                                         Style.IndentWrappedFunctionNames);
+    clang_vx::IoMapOptional<FormatStyle>(IO,
+                                         "IndentFunctionDeclarationAfterType",
+                                         Style.IndentWrappedFunctionNames);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "MaxEmptyLinesToKeep",
+                                         Style.MaxEmptyLinesToKeep);
+    clang_vx::IoMapOptional<FormatStyle>(
         IO, "KeepEmptyLinesAtTheStartOfBlocks",
         Style.KeepEmptyLinesAtTheStartOfBlocks);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
-        IO, "NamespaceIndentation", Style.NamespaceIndentation);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
-        IO, "ObjCBlockIndentWidth", Style.ObjCBlockIndentWidth);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
-        IO, "ObjCSpaceAfterProperty", Style.ObjCSpaceAfterProperty);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
-        IO, "ObjCSpaceBeforeProtocolList", Style.ObjCSpaceBeforeProtocolList);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
+    clang_vx::IoMapOptional<FormatStyle>(IO, "NamespaceIndentation",
+                                         Style.NamespaceIndentation);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "ObjCBlockIndentWidth",
+                                         Style.ObjCBlockIndentWidth);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "ObjCSpaceAfterProperty",
+                                         Style.ObjCSpaceAfterProperty);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "ObjCSpaceBeforeProtocolList",
+                                         Style.ObjCSpaceBeforeProtocolList);
+    clang_vx::IoMapOptional<FormatStyle>(
         IO, "PenaltyBreakBeforeFirstCallParameter",
         Style.PenaltyBreakBeforeFirstCallParameter);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(IO, "PenaltyBreakComment",
-                                                     Style.PenaltyBreakComment);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(IO, "PenaltyBreakString",
-                                                     Style.PenaltyBreakString);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
-        IO, "PenaltyBreakFirstLessLess", Style.PenaltyBreakFirstLessLess);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
-        IO, "PenaltyExcessCharacter", Style.PenaltyExcessCharacter);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
-        IO, "PenaltyReturnTypeOnItsOwnLine",
-        Style.PenaltyReturnTypeOnItsOwnLine);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(IO, "PointerAlignment",
-                                                     Style.PointerAlignment);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
-        IO, "SpacesBeforeTrailingComments", Style.SpacesBeforeTrailingComments);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
-        IO, "Cpp11BracedListStyle", Style.Cpp11BracedListStyle);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(IO, "Standard",
-                                                     Style.Standard);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(IO, "IndentWidth",
-                                                     Style.IndentWidth);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(IO, "TabWidth",
-                                                     Style.TabWidth);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(IO, "UseTab",
-                                                     Style.UseTab);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(IO, "BreakBeforeBraces",
-                                                     Style.BreakBeforeBraces);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(IO, "SpacesInParentheses",
-                                                     Style.SpacesInParentheses);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
-        IO, "SpacesInSquareBrackets", Style.SpacesInSquareBrackets);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(IO, "SpacesInAngles",
-                                                     Style.SpacesInAngles);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
-        IO, "SpaceInEmptyParentheses", Style.SpaceInEmptyParentheses);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
-        IO, "SpacesInCStyleCastParentheses",
-        Style.SpacesInCStyleCastParentheses);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
-        IO, "SpaceAfterCStyleCast", Style.SpaceAfterCStyleCast);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
-        IO, "SpacesInContainerLiterals", Style.SpacesInContainerLiterals);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
-        IO, "SpaceBeforeAssignmentOperators",
-        Style.SpaceBeforeAssignmentOperators);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(
-        IO, "ContinuationIndentWidth", Style.ContinuationIndentWidth);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(IO, "CommentPragmas",
-                                                     Style.CommentPragmas);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(IO, "ForEachMacros",
-                                                     Style.ForEachMacros);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "PenaltyBreakComment",
+                                         Style.PenaltyBreakComment);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "PenaltyBreakString",
+                                         Style.PenaltyBreakString);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "PenaltyBreakFirstLessLess",
+                                         Style.PenaltyBreakFirstLessLess);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "PenaltyExcessCharacter",
+                                         Style.PenaltyExcessCharacter);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "PenaltyReturnTypeOnItsOwnLine",
+                                         Style.PenaltyReturnTypeOnItsOwnLine);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "PointerAlignment",
+                                         Style.PointerAlignment);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "SpacesBeforeTrailingComments",
+                                         Style.SpacesBeforeTrailingComments);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "Cpp11BracedListStyle",
+                                         Style.Cpp11BracedListStyle);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "Standard", Style.Standard);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "IndentWidth", Style.IndentWidth);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "TabWidth", Style.TabWidth);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "UseTab", Style.UseTab);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "BreakBeforeBraces",
+                                         Style.BreakBeforeBraces);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "SpacesInParentheses",
+                                         Style.SpacesInParentheses);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "SpacesInSquareBrackets",
+                                         Style.SpacesInSquareBrackets);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "SpacesInAngles",
+                                         Style.SpacesInAngles);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "SpaceInEmptyParentheses",
+                                         Style.SpaceInEmptyParentheses);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "SpacesInCStyleCastParentheses",
+                                         Style.SpacesInCStyleCastParentheses);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "SpaceAfterCStyleCast",
+                                         Style.SpaceAfterCStyleCast);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "SpacesInContainerLiterals",
+                                         Style.SpacesInContainerLiterals);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "SpaceBeforeAssignmentOperators",
+                                         Style.SpaceBeforeAssignmentOperators);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "ContinuationIndentWidth",
+                                         Style.ContinuationIndentWidth);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "CommentPragmas",
+                                         Style.CommentPragmas);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "ForEachMacros",
+                                         Style.ForEachMacros);
 
     // For backward compatibility.
     if (!IO.outputting()) {
@@ -301,10 +291,10 @@ template <> struct MappingTraits<FormatStyle> {
       IO.mapOptional("PointerBindsToType", Style.PointerAlignment);
       IO.mapOptional("DerivePointerBinding", Style.DerivePointerAlignment);
     }
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(IO, "SpaceBeforeParens",
-                                                     Style.SpaceBeforeParens);
-    clang_vx::IoMapOptional<clang_v3_6::FormatStyle>(IO, "DisableFormat",
-                                                     Style.DisableFormat);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "SpaceBeforeParens",
+                                         Style.SpaceBeforeParens);
+    clang_vx::IoMapOptional<FormatStyle>(IO, "DisableFormat",
+                                         Style.DisableFormat);
   }
 };
 
