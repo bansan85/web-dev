@@ -776,7 +776,8 @@ template <> struct MappingTraits<FormatStyle> {
     std::string BasedOnStyle;
     if (IO.outputting()) {
       clang_vx::OutputDiffOnly<clang_v16::FormatStyle> &out =
-          static_cast<clang_vx::OutputDiffOnly<clang_v16::FormatStyle> &>(IO);
+          *static_cast<clang_vx::OutputDiffOnly<clang_v16::FormatStyle> *>(
+              IO.getContext());
       if (out.getDefaultStyle()) {
         for (const std::string &StyleName : clang_v16::getStyleNames()) {
           clang_v16::FormatStyle PredefinedStyle;
@@ -2052,16 +2053,16 @@ std::string configurationAsText(const FormatStyle &Style,
   FormatStyle NonConstStyle = Style;
   expandPresetsBraceWrapping(NonConstStyle);
   expandPresetsSpaceBeforeParens(NonConstStyle);
+  std::optional<clang_vx::OutputDiffOnly<FormatStyle>> ctxt;
   if (!SkipSameValue ||
       !getPredefinedStyle(DefaultStyleName, Style.Language, &DefaultStyle)) {
-    clang_vx::OutputDiffOnly<FormatStyle> Output(nullptr, NonConstStyle, false,
-                                                 Stream);
-    Output << NonConstStyle;
+    ctxt.emplace(nullptr, NonConstStyle, false);
   } else {
-    clang_vx::OutputDiffOnly<FormatStyle> Output(&DefaultStyle, NonConstStyle,
-                                                 SkipSameValue, Stream);
-    Output << NonConstStyle;
+    ctxt.emplace(&DefaultStyle, NonConstStyle, SkipSameValue);
   }
+  llvm::yaml::Output Output(Stream, &*ctxt);
+  Output << NonConstStyle;
+
   return Stream.str();
 }
 
