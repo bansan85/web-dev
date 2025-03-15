@@ -370,7 +370,7 @@ std::string configurationAsText(const FormatStyle &Style,
   // non-const reference here.
   FormatStyle NonConstStyle = Style;
   std::optional<clang_vx::OutputDiffOnly<FormatStyle>> ctxt;
-  if (!SkipSameValue || !getPredefinedStyle(DefaultStyleName, &DefaultStyle)) {
+  if (!getPredefinedStyle(DefaultStyleName, &DefaultStyle)) {
     ctxt.emplace(nullptr, NonConstStyle, false);
   } else {
     ctxt.emplace(&DefaultStyle, NonConstStyle, SkipSameValue);

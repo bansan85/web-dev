@@ -4627,17 +4627,43 @@ std::string formatStyleToVersion(const AllFormatStyle &data,
           }},
       data);
 }
+
+std::string getEffectiveStyle(const std::string &based_on_style,
+                              const std::string &default_style,
+                              clang_vx::Version version) {
+  std::vector<std::string> compatible_styles = clang_vx::getStyleNames(version);
+
+  if (!based_on_style.empty() &&
+      containsIgnoreCase(compatible_styles, based_on_style)) {
+    return based_on_style;
+  } else if (!default_style.empty() &&
+             containsIgnoreCase(compatible_styles, default_style)) {
+    return default_style;
+  } else {
+    std::ostringstream ss;
+    if (based_on_style.empty()) {
+      ss << "No BasedOnStyle found in yaml config.\n";
+    } else {
+      ss << based_on_style << " is not compatible with version "
+         << magic_enum::enum_name(version) << " (" << compatible_styles
+         << ").\n";
+    }
+    if (default_style.empty()) {
+      ss << "No fallback style is set.\n";
+    } else {
+      ss << default_style << " is not compatible with version "
+         << magic_enum::enum_name(version) << " (" << compatible_styles
+         << ").\n";
+    }
+    throw std::runtime_error(ss.str());
+  }
+}
+
 } // namespace
 
 namespace clang_vx {
 std::string updateTo(Version vstart, Version vend, const std::string &data,
                      const std::string &default_style, bool skip_same_value) {
-  AllFormatStyle before = versionToFormatStyle(vstart, data, default_style);
-  if (vstart == vend) {
-    return formatStyleToVersion(before, default_style, skip_same_value);
-  }
-  AllFormatStyle after;
-
   std::string based_on_style;
   size_t pos = data.find("BasedOnStyle:");
   if (pos != std::string::npos) {
@@ -4649,39 +4675,23 @@ std::string updateTo(Version vstart, Version vend, const std::string &data,
     std::cout << "BasedOnStyle: " << based_on_style << std::endl;
   }
 
+  std::string style_start =
+      getEffectiveStyle(based_on_style, default_style, vstart);
+
+  AllFormatStyle before = versionToFormatStyle(vstart, data, style_start);
+  if (vstart == vend) {
+    return formatStyleToVersion(before, style_start, skip_same_value);
+  }
+  AllFormatStyle after;
+
+  std::string style_i;
+
   for (size_t vi = static_cast<size_t>(vstart); vi < static_cast<size_t>(vend);
        vi++) {
     Version v_i = static_cast<Version>(vi);
     Version vnext_i = static_cast<Version>(vi + 1);
 
-    std::vector<std::string> compatible_styles = getStyleNames(vnext_i);
-
-    std::string style_i;
-
-    if (!based_on_style.empty() &&
-        containsIgnoreCase(compatible_styles, based_on_style)) {
-      style_i = based_on_style;
-    } else if (!default_style.empty() &&
-               containsIgnoreCase(compatible_styles, default_style)) {
-      style_i = default_style;
-    } else {
-      std::ostringstream ss;
-      if (based_on_style.empty()) {
-        ss << "No BasedOnStyle found in yaml config.\n";
-      } else {
-        ss << based_on_style << " is not compatible with version "
-           << magic_enum::enum_name(vnext_i) << " (" << compatible_styles
-           << ").\n";
-      }
-      if (default_style.empty()) {
-        ss << "No fallback style is set.\n";
-      } else {
-        ss << default_style << " is not compatible with version "
-           << magic_enum::enum_name(vnext_i) << " (" << compatible_styles
-           << ").\n";
-      }
-      throw std::runtime_error(ss.str());
-    }
+    style_i = getEffectiveStyle(based_on_style, default_style, vnext_i);
 
     switch (v_i) {
     case Version::V3_3: {
@@ -4846,18 +4856,12 @@ std::string updateTo(Version vstart, Version vend, const std::string &data,
     std::swap(before, after);
   }
 
-  return formatStyleToVersion(before, default_style, skip_same_value);
+  return formatStyleToVersion(before, style_i, skip_same_value);
 }
 
 std::string downgradeTo(Version vstart, Version vend, const std::string &data,
                         const std::string &default_style,
                         bool skip_same_value) {
-  AllFormatStyle before = versionToFormatStyle(vstart, data, default_style);
-  if (vstart == vend) {
-    return formatStyleToVersion(before, default_style, skip_same_value);
-  }
-  AllFormatStyle after;
-
   std::string based_on_style;
   size_t pos = data.find("BasedOnStyle:");
   if (pos != std::string::npos) {
@@ -4869,39 +4873,23 @@ std::string downgradeTo(Version vstart, Version vend, const std::string &data,
     std::cout << "BasedOnStyle: " << based_on_style << std::endl;
   }
 
+  std::string style_start =
+      getEffectiveStyle(based_on_style, default_style, vstart);
+
+  AllFormatStyle before = versionToFormatStyle(vstart, data, style_start);
+  if (vstart == vend) {
+    return formatStyleToVersion(before, style_start, skip_same_value);
+  }
+  AllFormatStyle after;
+
+  std::string style_i;
+
   for (size_t vi = static_cast<size_t>(vstart); vi > static_cast<size_t>(vend);
        vi--) {
     Version v_i = static_cast<Version>(vi);
     Version vnext_i = static_cast<Version>(vi - 1);
 
-    std::vector<std::string> compatible_styles = getStyleNames(vnext_i);
-
-    std::string style_i;
-
-    if (!based_on_style.empty() &&
-        containsIgnoreCase(compatible_styles, based_on_style)) {
-      style_i = based_on_style;
-    } else if (!default_style.empty() &&
-               containsIgnoreCase(compatible_styles, default_style)) {
-      style_i = default_style;
-    } else {
-      std::ostringstream ss;
-      if (based_on_style.empty()) {
-        ss << "No BasedOnStyle found in yaml config.\n";
-      } else {
-        ss << based_on_style << " is not compatible with version "
-           << magic_enum::enum_name(vnext_i) << " (" << compatible_styles
-           << ").\n";
-      }
-      if (default_style.empty()) {
-        ss << "No fallback style is set.\n";
-      } else {
-        ss << default_style << " is not compatible with version "
-           << magic_enum::enum_name(vnext_i) << " (" << compatible_styles
-           << ").\n";
-      }
-      throw std::runtime_error(ss.str());
-    }
+    style_i = getEffectiveStyle(based_on_style, default_style, vnext_i);
 
     switch (v_i) {
     case Version::V3_4: {
@@ -5066,7 +5054,7 @@ std::string downgradeTo(Version vstart, Version vend, const std::string &data,
     std::swap(before, after);
   }
 
-  return formatStyleToVersion(before, default_style, skip_same_value);
+  return formatStyleToVersion(before, style_i, skip_same_value);
 }
 
 std::string migrateTo(Version vstart, Version vend, const std::string &data,

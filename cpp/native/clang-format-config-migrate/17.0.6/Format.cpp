@@ -2130,8 +2130,7 @@ std::string configurationAsText(const FormatStyle &Style,
   expandPresetsSpaceBeforeParens(NonConstStyle);
   expandPresetsSpacesInParens(NonConstStyle);
   std::optional<clang_vx::OutputDiffOnly<FormatStyle>> ctxt;
-  if (!SkipSameValue ||
-      !getPredefinedStyle(DefaultStyleName, Style.Language, &DefaultStyle)) {
+  if (!getPredefinedStyle(DefaultStyleName, Style.Language, &DefaultStyle)) {
     ctxt.emplace(nullptr, NonConstStyle, false);
   } else {
     ctxt.emplace(&DefaultStyle, NonConstStyle, SkipSameValue);

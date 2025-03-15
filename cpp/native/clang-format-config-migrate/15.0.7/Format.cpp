@@ -1885,8 +1885,7 @@ std::string configurationAsText(const FormatStyle &Style,
   expandPresetsBraceWrapping(NonConstStyle);
   expandPresetsSpaceBeforeParens(NonConstStyle);
   std::optional<clang_vx::OutputDiffOnly<FormatStyle>> ctxt;
-  if (!SkipSameValue ||
-      !getPredefinedStyle(DefaultStyleName, Style.Language, &DefaultStyle)) {
+  if (!getPredefinedStyle(DefaultStyleName, Style.Language, &DefaultStyle)) {
     ctxt.emplace(nullptr, NonConstStyle, false);
   } else {
     ctxt.emplace(&DefaultStyle, NonConstStyle, SkipSameValue);

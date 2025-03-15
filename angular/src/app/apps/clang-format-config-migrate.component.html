@@ -41,7 +41,7 @@
           <option value="V19">V19</option>
         </select>
       </dd>
-      <dt>Based on style (if missing or unavailable):</dt>
+      <dt>Fallback BasedOnStyle (if missing in input config or<br />unavailable in older version while downgrading):</dt>
       <dd>
         <select [(ngModel)]="defaultStyle" (change)="forceMigrate()">
           <option *ngFor="let style of compatibleStyles" [value]="style">{{ style }}
@@ -57,12 +57,12 @@
   </div>
 </app-dialog-popup>
 
-<app-textarea-two [inputChange]="migrate">
+<app-textarea-two inputPlaceholder="Enter clang-format config here" [inputChange]="migrate">
   <div header-input>
-    <h2>Initial style</h2>
+    <h2>Initial clang-format config</h2>
   </div>
   <div header-output>
-    <h2>Migrated style<lucide-icon name="settings" (click)="dialog.openDialog()"></lucide-icon></h2>
+    <h2>Migrated clang-format config<lucide-icon name="settings" (click)="dialog.openDialog()"></lucide-icon></h2>
   </div>
 </app-textarea-two>
 
