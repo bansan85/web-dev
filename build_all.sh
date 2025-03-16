@@ -31,12 +31,18 @@ cmake --build build_webassembly_release --parallel $(nproc --all)
 mkdir -p angular/src/assets
 rm -f angular/src/assets/*
 cp build_webassembly_release/web* angular/src/assets/
+rm build_webassembly_release/ghostpdl-prefix/src/ghostpdl-build/bin/gs.html
+cp build_webassembly_release/ghostpdl-prefix/src/ghostpdl-build/bin/gs.* angular/src/assets/
+cp build_webassembly_release/ghostpdl-prefix/src/ghostpdl-build/bin/gs.* test/gsok
 
 emcmake cmake -S cpp/webassembly -B build_webassembly_debug -G "Ninja" -DCMAKE_BUILD_TYPE="Debug" -DWITH_SANITIZE_ADDRESS=ON -DWITH_SANITIZE_UNDEFINED=ON
 cmake --build build_webassembly_debug --parallel $(nproc --all)
 mkdir -p angular/src/assets
 rm -f angular/src/assets/*
 cp build_webassembly_debug/web* angular/src/assets/
+rm build_webassembly_debug/ghostpdl-prefix/src/ghostpdl-build/bin/gs.html
+cp build_webassembly_debug/ghostpdl-prefix/src/ghostpdl-build/bin/gs.* angular/src/assets/
+cp build_webassembly_debug/ghostpdl-prefix/src/ghostpdl-build/bin/gs.* test/gsok
 
 if [ -f /usr/lib/llvm/${clang_version}/bin/clang ]; then
     cmake -S cpp/tests/ -B build_tests_debug -DWITH_SANITIZE_ADDRESS=ON -DWITH_SANITIZE_UNDEFINED=ON -G "Ninja" -DCMAKE_BUILD_TYPE="Debug" -DCMAKE_C_COMPILER=/usr/lib/llvm/${clang_version}/bin/clang -DCMAKE_CXX_COMPILER=/usr/lib/llvm/${clang_version}/bin/clang++ -DCMAKE_AR=/usr/lib/llvm/${clang_version}/bin/llvm-ar -DCMAKE_AS=/usr/lib/llvm/${clang_version}/bin/llvm-as -DCMAKE_RANLIB=/usr/lib/llvm/${clang_version}/bin/llvm-ranlib -DCMAKE_LINKER_TYPE=LLD
@@ -59,7 +65,7 @@ cd angular
 pnpm install
 ng test --browsers=ChromiumHeadless --watch=false
 
-exit 1
+exit 0
 
 ng build
 ng serve --open --host 0.0.0.0
