@@ -48,6 +48,23 @@ set(LLVM_USE_SANITIZER
 
 add_subdirectory(../third_party/llvm/llvm llvm_build EXCLUDE_FROM_ALL)
 
+include(ExternalProject)
+
+ExternalProject_Add(
+  ghostpdl
+  SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../third_party/ghostpdl"
+  CONFIGURE_COMMAND
+    autoreconf -fi "${CMAKE_CURRENT_SOURCE_DIR}/../third_party/ghostpdl" &&
+    emconfigure "${CMAKE_CURRENT_SOURCE_DIR}/../third_party/ghostpdl/configure"
+    --disable-threading --disable-cups --disable-dbus --disable-gtk
+    --without-libtiff --with-drivers=PS CC=emcc CCAUX=gcc
+    --with-arch_h="${CMAKE_CURRENT_SOURCE_DIR}/../third_party/ghostpdl/arch/windows-x86-msvc.h"
+  BUILD_COMMAND
+    emmake make XE=".html"
+    GS_LDFLAGS="-s EXPORTED_RUNTIME_METHODS='[\"callMain\",\"FS\"]' -s MODULARIZE=1 -s EXPORT_ES6=1 -s ENVIRONMENT=web -s INVOKE_RUN=1 -s EXIT_RUNTIME=0 -s MALLOC='emmalloc' -s ALLOW_MEMORY_GROWTH=1 -s USE_ES6_IMPORT_META=0 $<IF:$<CONFIG:Debug>,--closure 0,--closure 1> $<IF:$<CONFIG:Debug>,-s ASSERTIONS=1,-s ASSERTIONS=0> $<$<CONFIG:Debug>:-s STACK_OVERFLOW_CHECK=2> $<$<CONFIG:Debug>:--emit-symbol-map> $<$<CONFIG:Debug>:-gsource-map> $<$<CONFIG:Debug>:-gseparate-dwarf> --emit-tsd web_ghostpdl.d.ts -fexceptions"
+    -j8
+  INSTALL_COMMAND "")
+
 include(CheckIPOSupported)
 check_ipo_supported(RESULT ipo_supported OUTPUT error)
 
