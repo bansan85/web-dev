@@ -17,3 +17,6 @@
 [submodule "cpp/third_party/magic_enum"]
 	path = cpp/third_party/magic_enum
 	url = https://github.com/Neargye/magic_enum
+[submodule "cpp/third_party/ghostpdl"]
+	path = cpp/third_party/ghostpdl
+	url = https://github.com/ArtifexSoftware/ghostpdl.git
