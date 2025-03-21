@@ -52,9 +52,8 @@ jobs:
           cd ..
       - name: Angular
         run: |
-          cp build/web_*.js angular/src/assets/
-          cp build/web_*.wasm angular/src/assets/
-          cp build/web_*.d.ts angular/src/assets/
+          cp build/{*.js,*.wasm,*.d.ts} angular/src/assets/
+          cp build/ghostpdl-prefix/src/ghostpdl-build/bin/{gs.js,gs.wasm,gs.d.ts} angular/src/assets/
           cd angular
           pnpm install -g @angular/cli
           pnpm install
