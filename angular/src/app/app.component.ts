@@ -16,6 +16,7 @@ import { LogoDemanglerInlineComponent } from './img/logo-demangler-inline.compon
 import { LogoFormatterInlineComponent } from './img/logo-formatter-inline.component';
 import { LogoLightenInlineComponent } from './img/logo-lighten-inline.component';
 import { LogoNamingStyleInlineComponent } from './img/logo-naming-style-inline.component';
+import { LogoMainPdfInlineComponent } from './img/logo-main-pdf-inline.component';
 
 @Component({
   selector: 'app-root',
@@ -28,7 +29,8 @@ import { LogoNamingStyleInlineComponent } from './img/logo-naming-style-inline.c
     LogoNamingStyleInlineComponent,
     LogoLightenInlineComponent,
     GithubMarkInlineComponent,
-    LogoClangFormatConfigMigrateInlineComponent
+    LogoClangFormatConfigMigrateInlineComponent,
+    LogoMainPdfInlineComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
