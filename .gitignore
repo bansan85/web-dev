@@ -1,3 +1,4 @@
 /build*/
 
 /cpp/webassembly/web-*-binding.cpp.inc
+/angular/src/app/apps/gs.js
