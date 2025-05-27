@@ -1,1 +1,7 @@
-<p>main-pdf works!</p>
+<h1>PDF manipulation</h1>
+<input type="file" #fileInput accept="application/pdf">
+<button #compressBtn (click)="compress()">Compresser</button>
+<button #splitBtn (click)="split()">Split</button>
+<p #status></p>
+<button #singleDlBtn (click)="singleDownload()" style="display: none;">Télécharger</button>
+<button #multipleDlBtn (click)="multipleDownload()" style="display: none;">Télécharger</button>

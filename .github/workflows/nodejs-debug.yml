@@ -53,7 +53,8 @@ jobs:
       - name: Angular
         run: |
           cp build/{*.js,*.js.symbols,*.wasm,*.wasm.debug.wasm,*.wasm.map,*.d.ts} angular/src/assets/
-          cp build/ghostpdl-prefix/src/ghostpdl-build/bin/{gs.js,gs.html.symbols,gs.wasm,gs.wasm.debug.wasm,gs.wasm.map,gs.d.ts} angular/src/assets/
+          cp build/ghostpdl-prefix/src/ghostpdl-build/bin/gs.js angular/src/app/apps/
+          cp build/ghostpdl-prefix/src/ghostpdl-build/bin/{gs.html.symbols,gs.wasm,gs.wasm.debug.wasm,gs.wasm.map,gs.d.ts} angular/src/assets/
           cd angular
           pnpm install -g @angular/cli
           pnpm install
