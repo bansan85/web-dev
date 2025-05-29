@@ -1,13 +1,14 @@
 var zip;
+var Module;
+
+import { default as web_gs } from "./gs.js";
 
 function loadScript() {
-  import("./gs.js");
-  import("./jszip.min.js").then(JSZip => {
+  web_gs(Module);
+  import("./jszip.min.js").then((JSZip) => {
     zip = new JSZip.default();
   });
 }
-
-var Module;
 
 function splitPdf(dataStruct, responseCallback) {
   // first download the ps data
