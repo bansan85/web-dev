@@ -1,8 +1,10 @@
-function loadScript() {
-  import("./gs.js");
-}
-
 var Module;
+
+import { default as web_gs } from "./gs.js";
+
+function loadScript() {
+  web_gs(Module);
+}
 
 function compressPdf(dataStruct, responseCallback) {
   // first download the ps data
