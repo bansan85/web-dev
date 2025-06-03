@@ -215,4 +215,11 @@ add_custom_command(
     "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/19.1.6"
     "-OCPP"
     "${CMAKE_CURRENT_SOURCE_DIR}/../webassembly/web-clang-format-config-migrate-v19.1.6-binding.cpp.inc"
+  COMMAND
+    $<TARGET_FILE:clang_format_parser>
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/20.1.6/Format.h"
+    "-I" "${LLVM_INCLUDE_DIRS}" "-I" "${GCC_INCLUDE}" "-I"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/20.1.6"
+    "-OCPP"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../webassembly/web-clang-format-config-migrate-v20.1.6-binding.cpp.inc"
 )
