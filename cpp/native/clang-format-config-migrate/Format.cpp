@@ -9,6 +9,7 @@
 #include "17.0.6/Format.h"
 #include "18.1.8/Format.h"
 #include "19.1.6/Format.h"
+#include "20.1.6/Format.h"
 #include "3.3.0/Format.h"
 #include "3.4.2/Format.h"
 #include "3.5.2/Format.h"
@@ -102,6 +103,7 @@ std::vector<Version> getCompatibleVersion(const std::string &config) {
   PARSE_CONFIG(17);
   PARSE_CONFIG(18);
   PARSE_CONFIG(19);
+  PARSE_CONFIG(20);
 
   return retval;
 }
@@ -185,6 +187,9 @@ std::vector<std::string> getStyleNames(Version version) {
   }
   case Version::V19: {
     return clang_v19::getStyleNames();
+  }
+  case Version::V20: {
+    return clang_v20::getStyleNames();
   }
   default: {
     throw std::runtime_error(__FUNCTION__);

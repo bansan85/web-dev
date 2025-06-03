@@ -8,6 +8,7 @@
 #include "17.0.6/Format.h"
 #include "18.1.8/Format.h"
 #include "19.1.6/Format.h"
+#include "20.1.6/Format.h"
 #include "3.3.0/Format.h"
 #include "3.4.2/Format.h"
 #include "3.5.2/Format.h"
@@ -210,3 +211,11 @@ void update(clang_v18::FormatStyle &prev, clang_v19::FormatStyle &next,
             const std::string &style);
 
 } // namespace clang_update_v19
+
+namespace clang_update_v20 {
+
+template <clang_vx::Update Upgrade>
+void update(clang_v19::FormatStyle &prev, clang_v20::FormatStyle &next,
+            const std::string &style);
+
+} // namespace clang_update_v20
