@@ -42,7 +42,7 @@ import { assertError } from './shared/interfaces/errors.js';
   templateUrl: './demangler.component.html',
   styleUrl: './demangler.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class AppDemanglerComponent implements OnInit {
   private demangler?: DemanglerModule;
