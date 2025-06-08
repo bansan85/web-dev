@@ -7,8 +7,15 @@ import {
   ChangeDetectorRef,
   ViewEncapsulation,
 } from '@angular/core';
-import { WasmLoaderDemanglerService } from '../wasm-loader-demangler.service';
-import { WasmLoaderFormatterService } from '../wasm-loader-formatter.service';
+import {
+  WasmLoaderDemanglerService,
+  DemanglerModule,
+} from '../wasm-loader-demangler.service';
+import {
+  WasmLoaderFormatterService,
+  FormatterModule,
+  FormatStyle,
+} from '../wasm-loader-formatter.service';
 import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
@@ -16,12 +23,6 @@ import { DialogPopupComponent } from '../templates/dialog-popup.component';
 import { FormatterOptionsComponent } from '../formatter-options/formatter-options.component';
 import { TextareaTwoComponent } from '../templates/textarea-two.component';
 import { SpinnerLoadingComponent } from '../templates/spinner-loading.component';
-
-import { EmbindModule as DemanglerModule } from '../../assets/web_demangler.js';
-import {
-  EmbindModule as FormatterModule,
-  FormatStyle,
-} from '../../assets/web_formatter.js';
 
 @Component({
   selector: 'app-demangler',

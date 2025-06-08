@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import web_demangler from '../assets/web_demangler.js';
 import { EmbindModule as DemanglerModule } from '../assets/web_demangler';
 
+export type { EmbindModule as DemanglerModule } from '../assets/web_demangler';
+
 @Injectable({
   providedIn: 'root',
 })

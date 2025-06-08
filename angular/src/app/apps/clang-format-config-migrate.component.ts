@@ -10,12 +10,12 @@ import { FormsModule } from '@angular/forms';
 import { NgIf, NgFor, CommonModule } from '@angular/common';
 import { TextareaTwoComponent } from '../templates/textarea-two.component';
 import { SpinnerLoadingComponent } from '../templates/spinner-loading.component';
-import { WasmLoaderClangFormatConfigMigrateService } from '../wasm-loader-clang-format-config-migrate.service';
 import {
-  EmbindModule as ClangFormatConfigMigrateModule,
+  WasmLoaderClangFormatConfigMigrateService,
+  ClangFormatConfigMigrateModule,
   VersionList,
   Version,
-} from '../../assets/web_clang_format_config_migrate.js';
+} from '../wasm-loader-clang-format-config-migrate.service';
 import { DialogPopupComponent } from '../templates/dialog-popup.component';
 import { LucideAngularModule } from 'lucide-angular';
 

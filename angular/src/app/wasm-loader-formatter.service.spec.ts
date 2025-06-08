@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 
-import { WasmLoaderFormatterService } from './wasm-loader-formatter.service';
 import {
-  EmbindModule as FormatterModule,
+  WasmLoaderFormatterService,
+  FormatterModule,
   FormatStyle,
-} from '../assets/web_formatter.js';
+} from './wasm-loader-formatter.service';
 
 describe('WasmLoaderFormatterService', () => {
   let service: WasmLoaderFormatterService;

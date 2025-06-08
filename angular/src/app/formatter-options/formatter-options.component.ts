@@ -7,10 +7,11 @@ import {
 } from '@angular/core';
 
 import {
-  EmbindModule as FormatterModule,
+  FormatterModule,
   FormatStyle,
   StringList,
-} from '../../assets/web_formatter.js';
+} from '../wasm-loader-formatter.service';
+
 import { NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
