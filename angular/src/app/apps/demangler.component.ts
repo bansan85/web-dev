@@ -11,20 +11,22 @@ import {
   viewChild,
   ViewEncapsulation,
 } from '@angular/core';
+import {
+  WasmLoaderDemanglerService,
+  DemanglerModule,
+} from '../wasm-loader-demangler.service';
+import {
+  WasmLoaderFormatterService,
+  FormatterModule,
+  FormatStyle,
+} from '../wasm-loader-formatter.service';
 import { FormsModule } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
 
-import { EmbindModule as DemanglerModule } from '../../assets/web_demangler.js';
-import {
-  EmbindModule as FormatterModule,
-  FormatStyle,
-} from '../../assets/web_formatter.js';
 import { FormatterOptionsComponent } from '../formatter-options/formatter-options.component';
 import { DialogPopupComponent } from '../templates/dialog-popup.component';
 import { SpinnerLoadingComponent } from '../templates/spinner-loading.component';
 import { TextareaTwoComponent } from '../templates/textarea-two.component';
-import { WasmLoaderDemanglerService } from '../wasm-loader-demangler.service';
-import { WasmLoaderFormatterService } from '../wasm-loader-formatter.service';
 import { assertError } from './shared/interfaces/errors.js';
 
 @Component({

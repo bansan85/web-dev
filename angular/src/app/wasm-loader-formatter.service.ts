@@ -3,6 +3,12 @@ import { Injectable, signal } from '@angular/core';
 import { EmbindModule as FormatterModule } from '../assets/web_formatter';
 import web_formatter from '../assets/web_formatter.js';
 
+export type {
+  EmbindModule as FormatterModule,
+  FormatStyle,
+  StringList,
+} from '../assets/web_formatter';
+
 @Injectable({
   providedIn: 'root',
 })

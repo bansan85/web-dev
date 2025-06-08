@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { EmbindModule as LightenModule } from '../assets/web_lighten.js';
-import { WasmLoaderLightenService } from './wasm-loader-lighten.service';
+import { WasmLoaderLightenService, LightenModule } from './wasm-loader-lighten.service';
 
 describe('WasmLoaderLightenService', () => {
   let service: WasmLoaderLightenService;

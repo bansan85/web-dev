@@ -2,10 +2,9 @@ import { ChangeDetectionStrategy, Component, inject, OnInit, viewChild } from '@
 import { FormsModule } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
 
-import { EmbindModule as LightenModule } from '../../assets/web_lighten.js';
-import { DialogPopupComponent } from '../templates/dialog-popup.component';
 import { TextareaTwoComponent } from '../templates/textarea-two.component';
-import { WasmLoaderLightenService } from '../wasm-loader-lighten.service';
+import { WasmLoaderLightenService, LightenModule } from '../wasm-loader-lighten.service';
+import { DialogPopupComponent } from '../templates/dialog-popup.component';
 
 @Component({
   selector: 'app-lighten',

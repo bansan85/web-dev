@@ -4,6 +4,8 @@ import { EmbindModule as DemanglerModule } from '../assets/web_demangler';
 import web_demangler from '../assets/web_demangler.js';
 import { unknownAssertError } from './apps/shared/interfaces/errors';
 
+export type { EmbindModule as DemanglerModule } from '../assets/web_demangler';
+
 @Injectable({
   providedIn: 'root',
 })

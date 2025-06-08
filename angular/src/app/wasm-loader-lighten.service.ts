@@ -4,6 +4,8 @@ import { EmbindModule as LightenModule } from '../assets/web_lighten';
 import web_lighten from '../assets/web_lighten.js';
 import { unknownAssertError } from './apps/shared/interfaces/errors';
 
+export type { EmbindModule as LightenModule } from '../assets/web_lighten';
+
 @Injectable({
   providedIn: 'root',
 })
