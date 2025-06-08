@@ -17,10 +17,12 @@ export class WasmLoaderClangFormatConfigMigrateService {
   private isLoading = true;
 
   constructor() {
-    web_clang_format_config_migrate().then(async (instance: ClangFormatConfigMigrateModule) => {
-      this.instance = instance;
-      this.isLoading = false;
-    });
+    web_clang_format_config_migrate().then(
+      async (instance: ClangFormatConfigMigrateModule) => {
+        this.instance = instance;
+        this.isLoading = false;
+      }
+    );
   }
 
   async wasm(): Promise<ClangFormatConfigMigrateModule> {

@@ -20,7 +20,7 @@ import { FormsModule } from '@angular/forms';
   imports: [NgIf, NgFor, FormsModule],
   templateUrl: './formatter-options.component.html',
   styleUrl: './formatter-options.component.css',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FormatterOptionsComponent {
   @Input({ required: true }) formatter!: FormatterModule;
