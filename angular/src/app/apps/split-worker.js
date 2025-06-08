@@ -1,10 +1,9 @@
 var zip;
-var Module;
 
 import { default as web_gs } from "./gs.js";
 
-function loadScript() {
-  web_gs(Module);
+function loadScript(module) {
+  web_gs(module);
   import("./jszip.min.js").then((JSZip) => {
     zip = new JSZip.default();
   });
@@ -19,7 +18,7 @@ function splitPdf(dataStruct, responseCallback) {
     // release the URL
     self.URL.revokeObjectURL(dataStruct.psDataURL);
     //set up EMScripten environment
-    Module = {
+    const Module = {
       preRun: [
         function () {
           self.Module.FS.writeFile("input.pdf", new Uint8Array(xhr.response));
@@ -60,7 +59,7 @@ function splitPdf(dataStruct, responseCallback) {
     };
     if (!self.Module) {
       self.Module = Module;
-      loadScript();
+      loadScript(Module);
     } else {
       self.Module["calledRun"] = false;
       self.Module["postRun"] = Module.postRun;
