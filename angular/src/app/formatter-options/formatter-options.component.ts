@@ -7,10 +7,10 @@ import {
 import { FormsModule } from '@angular/forms';
 
 import {
-  EmbindModule as FormatterModule,
+  FormatterModule,
   FormatStyle,
   StringList,
-} from '../../assets/web_formatter.js';
+} from '../wasm-loader-formatter.service';
 
 @Component({
   selector: 'app-formatter-options',

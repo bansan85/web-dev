@@ -10,17 +10,16 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
-
 import {
-  EmbindModule as ClangFormatConfigMigrateModule,
-  Version,
+  WasmLoaderClangFormatConfigMigrateService,
+  ClangFormatConfigMigrateModule,
   VersionList,
-} from '../../assets/web_clang_format_config_migrate.js';
+  Version,
+} from '../wasm-loader-clang-format-config-migrate.service';
 import { GithubMarkInlineComponent } from '../img/github-mark-inline.component.js';
 import { DialogPopupComponent } from '../templates/dialog-popup.component';
 import { SpinnerLoadingComponent } from '../templates/spinner-loading.component';
 import { TextareaTwoComponent } from '../templates/textarea-two.component';
-import { WasmLoaderClangFormatConfigMigrateService } from '../wasm-loader-clang-format-config-migrate.service';
 
 interface SelectItem {
   id: Version;

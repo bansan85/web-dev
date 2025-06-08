@@ -4,6 +4,12 @@ import { EmbindModule as ClangFormatConfigMigrateModule } from '../assets/web_cl
 import web_clang_format_config_migrate from '../assets/web_clang_format_config_migrate.js';
 import { unknownAssertError } from './apps/shared/interfaces/errors';
 
+export type {
+  EmbindModule as ClangFormatConfigMigrateModule,
+  VersionList,
+  Version,
+} from '../assets/web_clang_format_config_migrate';
+
 @Injectable({
   providedIn: 'root',
 })

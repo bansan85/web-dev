@@ -1,6 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 
-import { WasmLoaderClangFormatConfigMigrateService } from './wasm-loader-clang-format-config-migrate.service';
+import {
+  WasmLoaderClangFormatConfigMigrateService,
+} from './wasm-loader-clang-format-config-migrate.service';
 
 describe('WasmLoaderClangFormatConfigMigrateService', () => {
   let service: WasmLoaderClangFormatConfigMigrateService;
