@@ -1,6 +1,5 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { compressPdf } from './compress-init.js';
-import { splitPdf } from './split-init.js';
+import { compressPdf, splitPdf } from './ghostscript-init.js';
 
 @Component({
   selector: 'app-main-pdf',
