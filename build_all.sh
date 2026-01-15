@@ -1,21 +1,20 @@
 clang_version=21
 
-#npm install -g npm@latest
-#npm install -g @angular/cli
+#pnpm install -g @angular/cli
 
 git submodule update --init --recursive --depth=1
 
 # Build generator with native llvm to prepare wrapper for clang-format
 cmake -S cpp/native -B build_native_release -G Ninja -DCMAKE_BUILD_TYPE=Release
 cd build_native_release
-npm install typescript
+pnpm install typescript
 export PATH=$PATH:$(pwd)/node_modules/.bin
 cmake --build . --parallel $(nproc --all)
 cd ..
 
 cmake -S cpp/native -B build_native_debug -G Ninja -DCMAKE_BUILD_TYPE=Debug
 cd build_native_debug
-npm install typescript
+pnpm install typescript
 export PATH=$PATH:$(pwd)/node_modules/.bin
 cmake --build . --parallel $(nproc --all)
 cd ..
@@ -57,7 +56,7 @@ cd ..
 
 # Build Angular project
 cd angular
-npm install
+pnpm install
 
 exit 1
 
