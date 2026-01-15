@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component } from '@angular/core';
 import {
   Router,
@@ -16,7 +16,6 @@ import { LogoClangFormatConfigMigrateInlineComponent } from './img/logo-clang-fo
 @Component({
   selector: 'app-root',
   imports: [
-    CommonModule,
     RouterOutlet,
     RouterLink,
     RouterLinkActive,
@@ -25,8 +24,8 @@ import { LogoClangFormatConfigMigrateInlineComponent } from './img/logo-clang-fo
     LogoNamingStyleInlineComponent,
     LogoLightenInlineComponent,
     GithubMarkInlineComponent,
-    LogoClangFormatConfigMigrateInlineComponent,
-  ],
+    LogoClangFormatConfigMigrateInlineComponent
+],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

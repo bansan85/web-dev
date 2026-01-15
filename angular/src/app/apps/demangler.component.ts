@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { WasmLoaderDemanglerService } from '../wasm-loader-demangler.service';
 import { WasmLoaderFormatterService } from '../wasm-loader-formatter.service';
-import { NgIf } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
 import { DialogPopupComponent } from '../templates/dialog-popup.component';
@@ -30,10 +30,9 @@ import {
     FormatterOptionsComponent,
     FormsModule,
     LucideAngularModule,
-    NgIf,
     TextareaTwoComponent,
-    SpinnerLoadingComponent,
-  ],
+    SpinnerLoadingComponent
+],
   templateUrl: './demangler.component.html',
   styleUrl: './demangler.component.css',
   encapsulation: ViewEncapsulation.None

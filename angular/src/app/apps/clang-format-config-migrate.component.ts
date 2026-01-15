@@ -7,7 +7,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { NgIf, NgFor, CommonModule } from '@angular/common';
+
 import { TextareaTwoComponent } from '../templates/textarea-two.component';
 import { SpinnerLoadingComponent } from '../templates/spinner-loading.component';
 import { WasmLoaderClangFormatConfigMigrateService } from '../wasm-loader-clang-format-config-migrate.service';
@@ -29,13 +29,10 @@ interface SelectItem {
   imports: [
     DialogPopupComponent,
     FormsModule,
-    CommonModule,
-    NgIf,
-    NgFor,
     LucideAngularModule,
     TextareaTwoComponent,
-    SpinnerLoadingComponent,
-  ],
+    SpinnerLoadingComponent
+],
   templateUrl: './clang-format-config-migrate.component.html',
   styleUrl: './clang-format-config-migrate.component.css',
 })

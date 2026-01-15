@@ -3,7 +3,7 @@
     <span>clang-format's options</span>
   </div>
   <div dialog-body>
-    <ng-container *ngIf="formatter">
+    @if (formatter) {
       <dl>
         <dt>Load style from:</dt>
         <dd>
@@ -69,7 +69,7 @@
           (changeOptions)="reformat()">
         </app-formatter-options>
       </details>
-    </ng-container>
+    }
   </div>
 </app-dialog-popup>
 
@@ -82,6 +82,6 @@
   </div>
 </app-textarea-two>
 
-<ng-container *ngIf="isLoading()">
+@if (isLoading()) {
   <app-spinner-loading [size]="spinnerSize" [title]="titleLoading"></app-spinner-loading>
-</ng-container>
+}

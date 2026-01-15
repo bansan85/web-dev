@@ -11,12 +11,12 @@ import {
   FormatStyle,
   StringList,
 } from '../../assets/web_formatter.js';
-import { NgFor, NgIf } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-formatter-options',
-  imports: [NgIf, NgFor, FormsModule],
+  imports: [FormsModule],
   templateUrl: './formatter-options.component.html',
   styleUrl: './formatter-options.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush

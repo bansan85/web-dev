@@ -5,73 +5,73 @@
   <div dialog-body>
     <input type="checkbox" name="enableClangFormat" [ngModel]="enableClangFormat"
       (ngModelChange)="onEnableClangFormat($event)"> Format with clang-format<br />
-    <ng-container *ngIf="enableClangFormat && formatter">
-      <dl>
-        <dt>Load style from:</dt>
-        <dd>
-          <dl>
-            <dt>Preset:</dt>
-            <dd>
-              <select #newStyle>
-                <option value="llvm">LLVM</option>
-                <option value="google">Google</option>
-                <option value="chromium">Chromium</option>
-                <option value="mozilla">Mozilla</option>
-                <option value="webKit">WebKit</option>
-                <option value="gnu">GNU</option>
-                <option value="microsoft">Microsoft</option>
-                <option value="clangFormat">ClangFormat</option>
-                <option value="none">None</option>
-              </select>
-              <button (click)="loadStyle()">Load</button>
-            </dd>
-          </dl>
-        </dd>
-        <dd>
-          <dl>
-            <dt>File:</dt>
-            <dd>
-              <button (click)="fileInput.click()">Browse</button>
-              <input type="file" #fileInput style="display: none" (change)="loadYamlFromFile($event)">
-            </dd>
-          </dl>
-        </dd>
-        <dd>
-          <dl>
-            <dt>Text:</dt>
-            <textarea #textClangConfig rows="5"></textarea>
-            <dd>
-              <button (click)="loadYamlFromText()">Load</button>
-            </dd>
-          </dl>
-        </dd>
-      </dl>
-      <dl>
-        <dt>Save style to:</dt>
-        <dd>
-          <dl>
-            <dt>File</dt>
-            <dd>
-              <button (click)="downloadYaml()">Save</button>
-            </dd>
-          </dl>
-        </dd>
-        <dd>
-          <dl>
-            <dt>Clipboard</dt>
-            <dd>
-              <button (click)="saveYamlToText()">Copy</button>
-            </dd>
-          </dl>
-        </dd>
-      </dl>
-      <details [attr.open]='enableClangFormatExpert ? true : null' (toggle)="onEnableClangFormatExpert($event)">
-        <summary>All parameters</summary>
-        <app-formatter-options [formatStyle]="formatStyle!" [formatter]="formatter!" [emptyStyle]="emptyStyle!"
-          (changeOptions)="reformat()">
+      @if (enableClangFormat && formatter) {
+        <dl>
+          <dt>Load style from:</dt>
+          <dd>
+            <dl>
+              <dt>Preset:</dt>
+              <dd>
+                <select #newStyle>
+                  <option value="llvm">LLVM</option>
+                  <option value="google">Google</option>
+                  <option value="chromium">Chromium</option>
+                  <option value="mozilla">Mozilla</option>
+                  <option value="webKit">WebKit</option>
+                  <option value="gnu">GNU</option>
+                  <option value="microsoft">Microsoft</option>
+                  <option value="clangFormat">ClangFormat</option>
+                  <option value="none">None</option>
+                </select>
+                <button (click)="loadStyle()">Load</button>
+              </dd>
+            </dl>
+          </dd>
+          <dd>
+            <dl>
+              <dt>File:</dt>
+              <dd>
+                <button (click)="fileInput.click()">Browse</button>
+                <input type="file" #fileInput style="display: none" (change)="loadYamlFromFile($event)">
+              </dd>
+            </dl>
+          </dd>
+          <dd>
+            <dl>
+              <dt>Text:</dt>
+              <textarea #textClangConfig rows="5"></textarea>
+              <dd>
+                <button (click)="loadYamlFromText()">Load</button>
+              </dd>
+            </dl>
+          </dd>
+        </dl>
+        <dl>
+          <dt>Save style to:</dt>
+          <dd>
+            <dl>
+              <dt>File</dt>
+              <dd>
+                <button (click)="downloadYaml()">Save</button>
+              </dd>
+            </dl>
+          </dd>
+          <dd>
+            <dl>
+              <dt>Clipboard</dt>
+              <dd>
+                <button (click)="saveYamlToText()">Copy</button>
+              </dd>
+            </dl>
+          </dd>
+        </dl>
+        <details [attr.open]='enableClangFormatExpert ? true : null' (toggle)="onEnableClangFormatExpert($event)">
+          <summary>All parameters</summary>
+          <app-formatter-options [formatStyle]="formatStyle!" [formatter]="formatter!" [emptyStyle]="emptyStyle!"
+            (changeOptions)="reformat()">
         </app-formatter-options>
       </details>
-    </ng-container>
+    }
   </div>
 </app-dialog-popup>
 
@@ -84,6 +84,6 @@
   </div>
 </app-textarea-two>
 
-<ng-container *ngIf="isLoading()">
+@if (isLoading()) {
   <app-spinner-loading [size]="spinnerSize" [title]="titleLoading"></app-spinner-loading>
-</ng-container>
+}

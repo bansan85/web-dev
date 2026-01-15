@@ -8,7 +8,7 @@ import {
   ViewEncapsulation,
 } from '@angular/core';
 import { WasmLoaderFormatterService } from '../wasm-loader-formatter.service';
-import { NgIf } from '@angular/common';
+
 import { FormsModule } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
 import { DialogPopupComponent } from '../templates/dialog-popup.component';
@@ -28,10 +28,9 @@ import {
     FormatterOptionsComponent,
     FormsModule,
     LucideAngularModule,
-    NgIf,
     TextareaTwoComponent,
-    SpinnerLoadingComponent,
-  ],
+    SpinnerLoadingComponent
+],
   templateUrl: './formatter.component.html',
   styleUrl: './formatter.component.css',
   encapsulation: ViewEncapsulation.None
