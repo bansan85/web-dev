@@ -7,17 +7,19 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [22.x]
+        node-version: [24]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           submodules: "true"
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "npm"
-          cache-dependency-path: angular/package-lock.json
+          cache: "pnpm"
+          cache-dependency-path: angular/pnpm-lock.yaml
       - name: ccache
         uses: hendrikmuhs/ccache-action@v1.2
         with:
@@ -26,9 +28,9 @@ jobs:
       - name: Install dependencies
         run: |
           wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key | sudo tee /etc/apt/trusted.gpg.d/apt.llvm.org.asc
-          sudo apt-add-repository -y 'deb https://apt.llvm.org/jammy/ llvm-toolchain-jammy-19 main'
+          sudo apt-add-repository -y 'deb https://apt.llvm.org/jammy/ llvm-toolchain-jammy-21 main'
           sudo apt-get remove --purge -y '*clang*' '*llvm*'
-          sudo apt-get install -y ninja-build clang-19 libclang-19-dev llvm-19-dev lld-19
+          sudo apt-get install -y ninja-build clang-21 libclang-21-dev llvm-21-dev lld-21
       - name: Install Chrome dependencies
         run: |
           sudo apt-get install -y wget gnupg
@@ -49,7 +51,7 @@ jobs:
           cd ../../..
           emcmake cmake -S cpp/webassembly -B build -G "Ninja" -DCMAKE_BUILD_TYPE="Debug" -DWITH_SANITIZE_ADDRESS=ON -DWITH_SANITIZE_UNDEFINED=ON -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
           cd build
-          npm install typescript
+          pnpm install typescript
           export PATH=$PATH:$(pwd)/node_modules/.bin
           cmake --build . --parallel $(nproc --all)
           cd ..
@@ -62,14 +64,14 @@ jobs:
           cp build/web_*.wasm.map angular/src/assets/
           cp build/web_*.d.ts angular/src/assets/
           cd angular
-          npm install -g @angular/cli
-          npm install
+          pnpm install -g @angular/cli
+          pnpm install
           ng test --browsers=ChromeHeadless --watch=false
           ng build --configuration development
           cd ..
       - name: Run tests
         run: |
-          cmake -S cpp/tests/ -B build_tests_debug -DWITH_SANITIZE_ADDRESS=ON -DWITH_SANITIZE_UNDEFINED=ON -G "Ninja" -DCMAKE_BUILD_TYPE="Debug" -DCMAKE_C_COMPILER=/usr/bin/clang-19 -DCMAKE_CXX_COMPILER=/usr/bin/clang++-19 -DCMAKE_AR=/usr/bin/llvm-ar-19 -DCMAKE_AS=/usr/bin/llvm-as-19 -DCMAKE_RANLIB=/usr/bin/llvm-ranlib-19 -DCMAKE_LINKER_TYPE=LLD -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+          cmake -S cpp/tests/ -B build_tests_debug -DWITH_SANITIZE_ADDRESS=ON -DWITH_SANITIZE_UNDEFINED=ON -G "Ninja" -DCMAKE_BUILD_TYPE="Debug" -DCMAKE_C_COMPILER=/usr/bin/clang-21 -DCMAKE_CXX_COMPILER=/usr/bin/clang++-21 -DCMAKE_AR=/usr/bin/llvm-ar-21 -DCMAKE_AS=/usr/bin/llvm-as-21 -DCMAKE_RANLIB=/usr/bin/llvm-ranlib-21 -DCMAKE_LINKER_TYPE=LLD -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
           cmake --build build_tests_debug --parallel $(nproc --all)
           cd build_tests_debug
           ctest
