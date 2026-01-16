@@ -1,14 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 import { AppDemanglerComponent } from './demangler.component';
 import { importProvidersFrom } from '@angular/core';
-import { LucideAngularModule, Settings, X } from 'lucide-angular';
+import { LoaderCircle, LucideAngularModule, Settings, X } from 'lucide-angular';
 
 describe('AppDemanglerComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AppDemanglerComponent],
       providers: [
-        importProvidersFrom(LucideAngularModule.pick({ Settings, X })),
+        importProvidersFrom(LucideAngularModule.pick({ Settings, X, LoaderCircle })),
       ],
     }).compileComponents();
   });
