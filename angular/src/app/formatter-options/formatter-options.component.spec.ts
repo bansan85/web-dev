@@ -55,20 +55,20 @@ describe('FormatterOptionsComponent', () => {
 
     // Test formatStyle.XXX boolean
     {
-      const dtBinPackParameters = Array.from(
+      const dtAllowShortLoopsOnASingleLine = Array.from(
         document.querySelectorAll('dt')
-      ).find((dt) => dt.textContent === 'BinPackParameters:')!;
-      const iBinPackParameters =
-        dtBinPackParameters.nextElementSibling!.querySelector('input')!;
-      expect(iBinPackParameters.getAttribute('type')).toEqual('checkbox');
-      const iBinPackParametersValue = iBinPackParameters.checked;
-      expect(iBinPackParametersValue).toEqual(
-        component.formatStyle.BinPackParameters
+      ).find((dt) => dt.textContent === 'AllowShortLoopsOnASingleLine:')!;
+      const iAllowShortLoopsOnASingleLine =
+        dtAllowShortLoopsOnASingleLine.nextElementSibling!.querySelector('input')!;
+      expect(iAllowShortLoopsOnASingleLine.getAttribute('type')).toEqual('checkbox');
+      const iAllowShortLoopsOnASingleLineValue = iAllowShortLoopsOnASingleLine.checked;
+      expect(iAllowShortLoopsOnASingleLineValue).toEqual(
+        component.formatStyle.AllowShortLoopsOnASingleLine
       );
-      iBinPackParameters.click();
+      iAllowShortLoopsOnASingleLine.click();
       fixture.detectChanges();
-      expect(component.formatStyle.BinPackParameters).toEqual(
-        !iBinPackParametersValue
+      expect(component.formatStyle.AllowShortLoopsOnASingleLine).toEqual(
+        !iAllowShortLoopsOnASingleLineValue
       );
     }
 
