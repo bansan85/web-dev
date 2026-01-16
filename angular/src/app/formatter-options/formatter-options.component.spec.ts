@@ -605,5 +605,5 @@ describe('FormatterOptionsComponent', () => {
       );
       expect(notImplementedSpans.length).toEqual(0);
     }
-  });
+  }, 60000);
 });
