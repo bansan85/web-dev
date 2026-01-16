@@ -115,6 +115,9 @@ describe('FormatterOptionsComponent', () => {
     }
 
     // Test formatStyle.XXX optional
+    /*
+    BracedInitializerIndentWidth is not optional anymore.
+    There is no optional. But keep it just in case.
     {
       const dtBracedInitializerIndentWidth = Array.from(
         document.querySelectorAll('dt')
@@ -169,6 +172,7 @@ describe('FormatterOptionsComponent', () => {
           'undefined'
       ).toEqual(cBracedInitializerIndentWidthValue);
     }
+    */
 
     // Test formatStyle.XXX StringList
     {
@@ -312,7 +316,7 @@ describe('FormatterOptionsComponent', () => {
           .nextElementSibling!.querySelectorAll('dl dd dl dt')
       ).find((dt) => dt.textContent === 'Language:')!;
       const iLanguage = dtLanguage.nextElementSibling!.querySelector('select')!;
-      expect(iLanguage.length).toEqual(11);
+      expect(iLanguage.length).toEqual(12);
       expect(iLanguage.options[0].text).toEqual('None');
       const iLanguageValue = iLanguage.selectedIndex;
       expect(iLanguage.selectedIndex).toEqual(1);
