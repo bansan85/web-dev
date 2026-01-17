@@ -2,6 +2,13 @@ import { TestBed } from '@angular/core/testing';
 import { AppDemanglerComponent } from './demangler.component';
 import { importProvidersFrom } from '@angular/core';
 import { LoaderCircle, LucideAngularModule, Settings, X } from 'lucide-angular';
+import { By } from '@angular/platform-browser';
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
 
 describe('AppDemanglerComponent', () => {
   beforeEach(async () => {
@@ -25,11 +32,18 @@ describe('AppDemanglerComponent', () => {
 
     // Test the loading of wasm for formatStyle
     expect(app.formatStyle).toBeUndefined();
+    expect(fixture.debugElement.query(
+      By.css('app-spinner-loading')
+    )).toBeNull();
 
     await app.loadWasmDemanglerModule();
     await app.loadWasmFormatterModule();
 
     fixture.detectChanges();
+
+    expect(fixture.debugElement.query(
+      By.css('app-spinner-loading')
+    )).toBeNull();
 
     // Test open clang-format dialog
     const settingsImage = document.querySelector(
@@ -37,9 +51,19 @@ describe('AppDemanglerComponent', () => {
     ) as HTMLElement;
     expect(settingsImage).toBeDefined();
 
+    expect(fixture.debugElement.query(
+      By.css('app-dialog-popup dialog:not(.open)')
+    )).toBeTruthy();
+
     settingsImage!.click();
 
     await fixture.whenStable();
+    await sleep(0);
+    await fixture.whenStable();
+
+    expect(fixture.debugElement.query(
+      By.css('app-dialog-popup dialog.open')
+    )).toBeTruthy();
 
     const checkedClangFormat = document.querySelector(
       'input[name="enableClangFormat"]'

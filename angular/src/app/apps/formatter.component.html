@@ -83,5 +83,5 @@
 </app-textarea-two>
 
 @if (isLoading()) {
-  <app-spinner-loading [size]="spinnerSize" [title]="titleLoading"></app-spinner-loading>
+  <app-spinner-loading [size]="spinnerSize()" [title]="titleLoading"></app-spinner-loading>
 }

@@ -6,6 +6,9 @@ import {
   HostListener,
   ChangeDetectorRef,
   ViewEncapsulation,
+  signal,
+  ChangeDetectionStrategy,
+  computed,
 } from '@angular/core';
 import { WasmLoaderDemanglerService } from '../wasm-loader-demangler.service';
 import { WasmLoaderFormatterService } from '../wasm-loader-formatter.service';
@@ -35,13 +38,14 @@ import {
 ],
   templateUrl: './demangler.component.html',
   styleUrl: './demangler.component.css',
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppDemanglerComponent implements OnInit {
   demangler?: DemanglerModule;
   formatter?: FormatterModule;
 
-  spinnerSize = 0;
+  spinnerSize = signal(0);
 
   enableClangFormat = false;
   enableClangFormatExpert = false;
@@ -131,7 +135,7 @@ export class AppDemanglerComponent implements OnInit {
   }
 
   updateIconSize() {
-    this.spinnerSize = Math.min(window.innerWidth / 4, window.innerHeight / 2);
+    this.spinnerSize.set(Math.min(window.innerWidth / 4, window.innerHeight / 2));
   }
 
   async onEnableClangFormat(value: boolean) {
@@ -243,18 +247,18 @@ export class AppDemanglerComponent implements OnInit {
     );
   }
 
-  isLoading(): boolean {
-    if (this.wasmLoaderDemangler.loading()) {
+  protected isLoading = computed(()=>{
+    if (this.wasmLoaderDemangler.isLoading()) {
       this.titleLoading = 'demangler';
       return true;
     }
-    if (this.wasmLoaderFormatter.loading()) {
+    if (this.wasmLoaderFormatter.isLoading()) {
       this.titleLoading = 'formatter';
       return true;
     }
     this.titleLoading = '';
     return false;
-  }
+  });
 
   loadYamlFromFile(event: Event) {
     const fileReader = new FileReader();

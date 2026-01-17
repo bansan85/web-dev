@@ -1,4 +1,4 @@
-<dialog #dialog [ngClass]="{ 'open': isOpen }">
+<dialog #dialog [ngClass]="{ 'open': isOpen() }">
   <div id="dialogHeader" class="dialog-header" #dialogHeader (mousedown)="onMouseDown($event)">
     <span class="dialog-header-title"><ng-content select="[dialog-header]"></ng-content></span>
     <lucide-icon name="x" (click)="closeDialog()"></lucide-icon>

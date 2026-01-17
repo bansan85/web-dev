@@ -57,20 +57,20 @@
       <dd>
         <input type="checkbox" name="exportOnlyChangedValue" [(ngModel)]="exportOnlyChangedValue"
           (change)="forceMigrate()"><br />
-        </dd>
-      </dl>
-    </div>
-  </app-dialog-popup>
+      </dd>
+    </dl>
+  </div>
+</app-dialog-popup>
 
-  <app-textarea-two inputPlaceholder="Enter clang-format config here" [inputChange]="migrate">
-    <div header-input>
-      <h2>Initial clang-format config</h2>
-    </div>
-    <div header-output>
-      <h2>Migrated clang-format config<lucide-icon name="settings" (click)="dialog.openDialog()"></lucide-icon></h2>
-    </div>
-  </app-textarea-two>
+<app-textarea-two inputPlaceholder="Enter clang-format config here" [inputChange]="migrate">
+  <div header-input>
+    <h2>Initial clang-format config</h2>
+  </div>
+  <div header-output>
+    <h2>Migrated clang-format config<lucide-icon name="settings" (click)="dialog.openDialog()"></lucide-icon></h2>
+  </div>
+</app-textarea-two>
 
-  @if (isLoading()) {
-    <app-spinner-loading [size]="spinnerSize" [title]="titleLoading"></app-spinner-loading>
-  }
+@if (isLoading()) {
+  <app-spinner-loading [size]="spinnerSize()" [title]="titleLoading"></app-spinner-loading>
+}

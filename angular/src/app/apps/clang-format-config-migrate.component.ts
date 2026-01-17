@@ -5,6 +5,8 @@ import {
   ViewChild,
   ChangeDetectionStrategy,
   viewChild,
+  signal,
+  computed,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
@@ -32,13 +34,13 @@ interface SelectItem {
     LucideAngularModule,
     TextareaTwoComponent,
     SpinnerLoadingComponent
-],
+  ],
   templateUrl: './clang-format-config-migrate.component.html',
   styleUrl: './clang-format-config-migrate.component.css',
 })
 export class ClangFormatConfigMigrateComponent implements OnInit {
   clangFormatConfigMigrate?: ClangFormatConfigMigrateModule;
-  spinnerSize = 0;
+  protected readonly spinnerSize = signal(0);
 
   titleLoading = '';
 
@@ -76,17 +78,17 @@ export class ClangFormatConfigMigrateComponent implements OnInit {
     }
   }
 
-  isLoading(): boolean {
-    if (this.wasmLoaderClangFormatConfigMigrate.loading()) {
+  protected readonly isLoading = computed(()=> {
+    if (this.wasmLoaderClangFormatConfigMigrate.isLoading()) {
       this.titleLoading = 'clang-format config migrate';
       return true;
     }
     this.titleLoading = '';
     return false;
-  }
+  });
 
   updateIconSize() {
-    this.spinnerSize = Math.min(window.innerWidth / 4, window.innerHeight / 2);
+    this.spinnerSize.set(Math.min(window.innerWidth / 4, window.innerHeight / 2));
   }
 
   async updateCompatibleVersions() {

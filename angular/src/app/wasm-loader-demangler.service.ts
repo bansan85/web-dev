@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import web_demangler from '../assets/web_demangler.js';
 import { EmbindModule as DemanglerModule } from '../assets/web_demangler';
 
@@ -8,20 +8,21 @@ import { EmbindModule as DemanglerModule } from '../assets/web_demangler';
 export class WasmLoaderDemanglerService {
   private instance?: DemanglerModule;
 
-  private isLoading = true;
+  private readonly loading = signal(true);
+  readonly isLoading = this.loading.asReadonly();
 
   constructor() {
     web_demangler().then(async (instance: DemanglerModule) => {
       this.instance = instance;
-      this.isLoading = false;
+      this.loading.set(false);
     });
   }
 
   async wasm(): Promise<DemanglerModule> {
-    if (this.isLoading) {
+    if (this.isLoading()) {
       await new Promise<void>((resolve) => {
         const interval = setInterval(() => {
-          if (!this.isLoading) {
+          if (!this.isLoading()) {
             clearInterval(interval);
             resolve();
           }
@@ -30,9 +31,5 @@ export class WasmLoaderDemanglerService {
     }
 
     return this.instance!;
-  }
-
-  loading(): boolean {
-    return this.isLoading;
   }
 }

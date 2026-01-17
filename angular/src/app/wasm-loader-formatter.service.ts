@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import web_formatter from '../assets/web_formatter.js';
 import { EmbindModule as FormatterModule } from '../assets/web_formatter';
 
@@ -8,13 +8,14 @@ import { EmbindModule as FormatterModule } from '../assets/web_formatter';
 export class WasmLoaderFormatterService {
   private instance?: FormatterModule;
 
-  private isLoading = false;
+  private readonly loading = signal(false);
+  readonly isLoading = this.loading.asReadonly();
 
   async wasm(): Promise<FormatterModule> {
-    if (this.isLoading) {
+    if (this.isLoading()) {
       await new Promise<void>((resolve) => {
         const interval = setInterval(() => {
-          if (!this.isLoading) {
+          if (!this.isLoading()) {
             clearInterval(interval);
             resolve();
           }
@@ -22,14 +23,10 @@ export class WasmLoaderFormatterService {
       });
     }
     if (!this.instance) {
-      this.isLoading = true;
+      this.loading.set(true);
       this.instance = await web_formatter();
-      this.isLoading = false;
+      this.loading.set(false);
     }
     return this.instance!;
-  }
-
-  loading(): boolean {
-    return this.isLoading;
   }
 }

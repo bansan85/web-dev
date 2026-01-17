@@ -1,6 +1,7 @@
 
-import { Component } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import {
+  NavigationEnd,
   Router,
   RouterLink,
   RouterLinkActive,
@@ -12,6 +13,8 @@ import { LogoNamingStyleInlineComponent } from './img/logo-naming-style-inline.c
 import { LogoLightenInlineComponent } from './img/logo-lighten-inline.component';
 import { GithubMarkInlineComponent } from './img/github-mark-inline.component';
 import { LogoClangFormatConfigMigrateInlineComponent } from './img/logo-clang-format-config-migrate-inline.component'
+import { filter, map } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-root',
@@ -25,14 +28,21 @@ import { LogoClangFormatConfigMigrateInlineComponent } from './img/logo-clang-fo
     LogoLightenInlineComponent,
     GithubMarkInlineComponent,
     LogoClangFormatConfigMigrateInlineComponent
-],
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  constructor(private router: Router) { }
+  private router = inject(Router);
 
-  isHomeRoute() {
-    return this.router.url === '/';
-  }
+  private readonly url = toSignal(
+    this.router.events.pipe(
+      filter((event) => event instanceof NavigationEnd),
+      map(() => this.router.url)
+    ),
+    { initialValue: this.router.url }
+  );
+
+  protected readonly isHomeRoute = computed(() => this.url() === '/');
 }
+

@@ -6,6 +6,8 @@ import {
   HostListener,
   ChangeDetectorRef,
   ViewEncapsulation,
+  computed,
+  signal,
 } from '@angular/core';
 import { WasmLoaderFormatterService } from '../wasm-loader-formatter.service';
 
@@ -30,7 +32,7 @@ import {
     LucideAngularModule,
     TextareaTwoComponent,
     SpinnerLoadingComponent
-],
+  ],
   templateUrl: './formatter.component.html',
   styleUrl: './formatter.component.css',
   encapsulation: ViewEncapsulation.None
@@ -38,7 +40,7 @@ import {
 export class AppFormatterComponent implements OnInit {
   formatter?: FormatterModule;
 
-  spinnerSize = 0;
+  spinnerSize = signal(0);
 
   enableClangFormatExpert = false;
 
@@ -112,7 +114,7 @@ export class AppFormatterComponent implements OnInit {
   }
 
   updateIconSize() {
-    this.spinnerSize = Math.min(window.innerWidth / 4, window.innerHeight / 2);
+    this.spinnerSize.set(Math.min(window.innerWidth / 4, window.innerHeight / 2));
   }
 
   async onEnableClangFormatExpert(event: Event) {
@@ -203,14 +205,14 @@ export class AppFormatterComponent implements OnInit {
     );
   }
 
-  isLoading(): boolean {
-    if (this.wasmLoaderFormatter.loading()) {
+  protected isLoading = computed(() => {
+    if (this.wasmLoaderFormatter.isLoading()) {
       this.titleLoading = 'formatter';
       return true;
     }
     this.titleLoading = '';
     return false;
-  }
+  });
 
   loadYamlFromFile(event: Event) {
     const fileReader = new FileReader();

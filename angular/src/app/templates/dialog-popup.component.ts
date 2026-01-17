@@ -4,6 +4,7 @@ import {
   ElementRef,
   Renderer2,
   NgZone,
+  signal,
 } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { LucideAngularModule } from 'lucide-angular';
@@ -17,7 +18,7 @@ import { LucideAngularModule } from 'lucide-angular';
 export class DialogPopupComponent {
   @ViewChild('dialog') dialogRef!: ElementRef<HTMLDialogElement>;
 
-  isOpen = false;
+  protected readonly isOpen = signal(false);
 
   isDragging = false;
   offsetX = 0;
@@ -29,7 +30,7 @@ export class DialogPopupComponent {
 
   openDialog() {
     this.dialogRef.nativeElement.showModal();
-    setTimeout(() => (this.isOpen = true), 0);
+    setTimeout(() => (this.isOpen.set(true)), 0);
     const bounds = this.dialogRef.nativeElement.getBoundingClientRect();
     this.dialogRef.nativeElement.style.margin = '0';
     this.dialogRef.nativeElement.style.left = `${bounds.x}px`;
@@ -48,7 +49,7 @@ export class DialogPopupComponent {
     };
 
     this.dialogRef.nativeElement.addEventListener('transitionend', close);
-    this.isOpen = false;
+    this.isOpen.set(false);
   }
 
   onMouseDown(event: MouseEvent): void {

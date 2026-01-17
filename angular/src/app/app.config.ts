@@ -1,6 +1,6 @@
 import {
   ApplicationConfig,
-  provideZoneChangeDetection,
+  provideZonelessChangeDetection,
   importProvidersFrom,
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
@@ -10,7 +10,7 @@ import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideZonelessChangeDetection(),
     provideRouter(routes),
     importProvidersFrom(
       LucideAngularModule.pick({ Settings, LoaderCircle, X, Copy, RotateCcw, NotebookPen })

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import web_clang_format_config_migrate from '../assets/web_clang_format_config_migrate.js';
 import { EmbindModule as ClangFormatConfigMigrateModule } from '../assets/web_clang_format_config_migrate';
 
@@ -8,20 +8,21 @@ import { EmbindModule as ClangFormatConfigMigrateModule } from '../assets/web_cl
 export class WasmLoaderClangFormatConfigMigrateService {
   private instance?: ClangFormatConfigMigrateModule;
 
-  private isLoading = true;
+  private readonly loading = signal(true);
+  readonly isLoading = this.loading.asReadonly();
 
   constructor() {
     web_clang_format_config_migrate().then(async (instance: ClangFormatConfigMigrateModule) => {
       this.instance = instance;
-      this.isLoading = false;
+      this.loading.set(false);
     });
   }
 
   async wasm(): Promise<ClangFormatConfigMigrateModule> {
-    if (this.isLoading) {
+    if (this.isLoading()) {
       await new Promise<void>((resolve) => {
         const interval = setInterval(() => {
-          if (!this.isLoading) {
+          if (!this.isLoading()) {
             clearInterval(interval);
             resolve();
           }
@@ -30,9 +31,5 @@ export class WasmLoaderClangFormatConfigMigrateService {
     }
 
     return this.instance!;
-  }
-
-  loading(): boolean {
-    return this.isLoading;
   }
 }

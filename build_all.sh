@@ -61,7 +61,7 @@ pnpm install
 exit 1
 
 ng build
-ng test --browsers=ChromeHeadless --watch=false
+ng test --browsers=ChromiumHeadless --watch=false
 ng serve --open --host 0.0.0.0
 ng lint
 cd ..

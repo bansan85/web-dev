@@ -179,7 +179,7 @@ export class FormatterOptionsComponent {
     return typeof value === 'object' && typeof value.$$ === 'undefined';
   }
 
-  getEnum(value: any): boolean {
+  getEnum(value: any): string {
     return value.constructor.name.split('_').slice(2).join('_');
   }
 
