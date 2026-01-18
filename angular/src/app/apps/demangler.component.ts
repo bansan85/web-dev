@@ -1,30 +1,29 @@
 import {
-  Component,
-  OnInit,
-  ElementRef,
-  ViewChild,
-  HostListener,
-  ChangeDetectorRef,
-  ViewEncapsulation,
-  signal,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
   computed,
+  ElementRef,
+  HostListener,
+  OnInit,
+  signal,
+  ViewChild,
+  ViewEncapsulation,
 } from '@angular/core';
-import { WasmLoaderDemanglerService } from '../wasm-loader-demangler.service';
-import { WasmLoaderFormatterService } from '../wasm-loader-formatter.service';
-
 import { FormsModule } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
-import { DialogPopupComponent } from '../templates/dialog-popup.component';
-import { FormatterOptionsComponent } from '../formatter-options/formatter-options.component';
-import { TextareaTwoComponent } from '../templates/textarea-two.component';
-import { SpinnerLoadingComponent } from '../templates/spinner-loading.component';
 
 import { EmbindModule as DemanglerModule } from '../../assets/web_demangler.js';
 import {
   EmbindModule as FormatterModule,
   FormatStyle,
 } from '../../assets/web_formatter.js';
+import { FormatterOptionsComponent } from '../formatter-options/formatter-options.component';
+import { DialogPopupComponent } from '../templates/dialog-popup.component';
+import { SpinnerLoadingComponent } from '../templates/spinner-loading.component';
+import { TextareaTwoComponent } from '../templates/textarea-two.component';
+import { WasmLoaderDemanglerService } from '../wasm-loader-demangler.service';
+import { WasmLoaderFormatterService } from '../wasm-loader-formatter.service';
 
 @Component({
   selector: 'app-demangler',
@@ -38,14 +37,14 @@ import {
 ],
   templateUrl: './demangler.component.html',
   styleUrl: './demangler.component.css',
-  encapsulation: ViewEncapsulation.None,
   changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None
 })
 export class AppDemanglerComponent implements OnInit {
   demangler?: DemanglerModule;
   formatter?: FormatterModule;
 
-  spinnerSize = signal(0);
+  readonly spinnerSize = signal(0);
 
   enableClangFormat = false;
   enableClangFormatExpert = false;
@@ -70,9 +69,9 @@ export class AppDemanglerComponent implements OnInit {
   }
 
   constructor(
-    private wasmLoaderDemangler: WasmLoaderDemanglerService,
-    private wasmLoaderFormatter: WasmLoaderFormatterService,
-    private cdr: ChangeDetectorRef
+    private readonly wasmLoaderDemangler: WasmLoaderDemanglerService,
+    private readonly wasmLoaderFormatter: WasmLoaderFormatterService,
+    private readonly cdr: ChangeDetectorRef
   ) {
     this.demangle = this.demangle.bind(this);
   }
@@ -168,16 +167,16 @@ export class AppDemanglerComponent implements OnInit {
     const rect = this.dialog.dialogRef.nativeElement.getBoundingClientRect();
     if (rect.right > window.innerWidth) {
       this.dialog.dialogRef.nativeElement.style.left =
-        window.innerWidth -
-        this.dialog.dialogRef.nativeElement.offsetWidth +
-        'px';
+        `${window.innerWidth -
+        this.dialog.dialogRef.nativeElement.offsetWidth 
+        }px`;
     }
     if (rect.bottom > window.innerHeight) {
       this.dialog.dialogRef.nativeElement.style.top =
-        (window.innerHeight -
+        `${(window.innerHeight -
           this.dialog.dialogRef.nativeElement.offsetHeight) /
-        2 +
-        'px';
+        2 
+        }px`;
     }
   }
 
@@ -247,7 +246,7 @@ export class AppDemanglerComponent implements OnInit {
     );
   }
 
-  protected isLoading = computed(()=>{
+  protected readonly isLoading = computed(()=>{
     if (this.wasmLoaderDemangler.isLoading()) {
       this.titleLoading = 'demangler';
       return true;

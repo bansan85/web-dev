@@ -1,12 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { LucideAngularModule } from 'lucide-angular';
 import { FormsModule } from '@angular/forms';
-
-import { TextareaTwoComponent } from '../templates/textarea-two.component';
-import { WasmLoaderLightenService } from '../wasm-loader-lighten.service';
-import { DialogPopupComponent } from '../templates/dialog-popup.component';
+import { LucideAngularModule } from 'lucide-angular';
 
 import { EmbindModule as LightenModule } from '../../assets/web_lighten.js';
+import { DialogPopupComponent } from '../templates/dialog-popup.component';
+import { TextareaTwoComponent } from '../templates/textarea-two.component';
+import { WasmLoaderLightenService } from '../wasm-loader-lighten.service';
 
 @Component({
   selector: 'app-lighten',
@@ -24,9 +23,9 @@ export class AppLightenComponent implements OnInit {
 
   @ViewChild(TextareaTwoComponent) textareaTwo!: TextareaTwoComponent;
 
-  count: number = 4;
+  count = 4;
 
-  constructor(private wasmLoaderLighten: WasmLoaderLightenService) {
+  constructor(private readonly wasmLoaderLighten: WasmLoaderLightenService) {
     this.lightenNumber = this.lightenNumber.bind(this);
   }
 

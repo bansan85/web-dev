@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
-import { WasmLoaderLightenService } from './wasm-loader-lighten.service';
 import { EmbindModule as LightenModule } from '../assets/web_lighten.js';
+import { WasmLoaderLightenService } from './wasm-loader-lighten.service';
 
 describe('WasmLoaderLightenService', () => {
   let service: WasmLoaderLightenService;
@@ -16,7 +16,7 @@ describe('WasmLoaderLightenService', () => {
   });
 
   it('check lighten', async () => {
-    const lighten: LightenModule = await service.wasm()!;
+    const lighten: LightenModule = await service.wasm();
 
     expect(lighten.web_lighten_number('1', 4)).toEqual('1');
     expect(lighten.web_lighten_number('1.', 4)).toEqual('1');

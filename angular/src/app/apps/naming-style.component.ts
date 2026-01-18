@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
@@ -45,10 +45,10 @@ export class AppNamingStyleComponent implements OnInit {
 
   saveToYaml() {
     navigator.clipboard.writeText(
-      'CheckOptions:\n' +
+      `CheckOptions:\n${ 
       Array.from(this.checkedSet)
         .map((key) => `  - key: readability-identifier-naming.${key}Case\n    value: 'aNy_CasE'`)
-        .join("\n")
+        .join("\n")}`
     );
   }
 

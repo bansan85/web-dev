@@ -1,8 +1,9 @@
-import { TestBed } from '@angular/core/testing';
-import { AppDemanglerComponent } from './demangler.component';
 import { importProvidersFrom } from '@angular/core';
-import { LoaderCircle, LucideAngularModule, Settings, X } from 'lucide-angular';
+import { TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
+import { LoaderCircle, LucideAngularModule, Settings, X } from 'lucide-angular';
+
+import { AppDemanglerComponent } from './demangler.component';
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => {
@@ -48,14 +49,14 @@ describe('AppDemanglerComponent', () => {
     // Test open clang-format dialog
     const settingsImage = document.querySelector(
       'lucide-icon[name="settings"]'
-    ) as HTMLElement;
+    )! as HTMLElement;
     expect(settingsImage).toBeDefined();
 
     expect(fixture.debugElement.query(
       By.css('app-dialog-popup dialog:not(.open)')
     )).toBeTruthy();
 
-    settingsImage!.click();
+    settingsImage.click();
 
     await fixture.whenStable();
     await sleep(0);
@@ -67,7 +68,7 @@ describe('AppDemanglerComponent', () => {
 
     const checkedClangFormat = document.querySelector(
       'input[name="enableClangFormat"]'
-    ) as HTMLElement;
+    )! as HTMLElement;
     checkedClangFormat.click();
     fixture.detectChanges();
     await fixture.whenStable();

@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { importProvidersFrom } from '@angular/core';
-import { LucideAngularModule, Settings, X, LoaderCircle } from 'lucide-angular';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { LoaderCircle,LucideAngularModule, Settings, X } from 'lucide-angular';
 
 import { ClangFormatConfigMigrateComponent } from './clang-format-config-migrate.component';
 

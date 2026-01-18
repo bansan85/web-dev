@@ -1,12 +1,12 @@
+import { NgClass } from '@angular/common';
 import {
   Component,
-  ViewChild,
   ElementRef,
-  Renderer2,
   NgZone,
+  Renderer2,
   signal,
+  ViewChild,
 } from '@angular/core';
-import { NgClass } from '@angular/common';
 import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
@@ -26,11 +26,11 @@ export class DialogPopupComponent {
   mouseMoveListener?: () => void;
   mouseUpListener?: () => void;
 
-  constructor(private renderer: Renderer2, private ngZone: NgZone) { }
+  constructor(private readonly renderer: Renderer2, private readonly ngZone: NgZone) { }
 
   openDialog() {
     this.dialogRef.nativeElement.showModal();
-    setTimeout(() => (this.isOpen.set(true)), 0);
+    setTimeout(() => { this.isOpen.set(true); }, 0);
     const bounds = this.dialogRef.nativeElement.getBoundingClientRect();
     this.dialogRef.nativeElement.style.margin = '0';
     this.dialogRef.nativeElement.style.left = `${bounds.x}px`;
@@ -74,7 +74,7 @@ export class DialogPopupComponent {
   }
 
   private onMouseMove(event: MouseEvent): void {
-    if (!this.isDragging) return;
+    if (!this.isDragging) {return;}
 
     const dialogElement = this.dialogRef.nativeElement;
     dialogElement.style.left = `${event.clientX - this.offsetX}px`;

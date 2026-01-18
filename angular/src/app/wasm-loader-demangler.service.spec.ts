@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
-import { WasmLoaderDemanglerService } from './wasm-loader-demangler.service';
 import { EmbindModule as DemanglerModule } from '../assets/web_demangler.js';
+import { WasmLoaderDemanglerService } from './wasm-loader-demangler.service';
 
 describe('WasmLoaderDemanglerService', () => {
   let service: WasmLoaderDemanglerService;
@@ -16,7 +16,7 @@ describe('WasmLoaderDemanglerService', () => {
   });
 
   it('check demangler', async () => {
-    const demangler: DemanglerModule = await service.wasm()!;
+    const demangler: DemanglerModule = await service.wasm();
 
     expect(demangler.web_demangle('_ZTI1Y')).toEqual('typeinfo for Y');
     expect(demangler.web_demangle('_ZN1BD1Ev')).toEqual('B::~B()');

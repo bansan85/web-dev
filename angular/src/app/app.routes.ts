@@ -1,9 +1,10 @@
 import { Routes } from '@angular/router';
+
+import { ClangFormatConfigMigrateComponent } from './apps/clang-format-config-migrate.component';
 import { AppDemanglerComponent } from './apps/demangler.component';
 import { AppFormatterComponent } from './apps/formatter.component';
-import { AppNamingStyleComponent } from './apps/naming-style.component';
 import { AppLightenComponent } from './apps/lighten.component';
-import { ClangFormatConfigMigrateComponent } from './apps/clang-format-config-migrate.component';
+import { AppNamingStyleComponent } from './apps/naming-style.component';
 
 export const routes: Routes = [
   { path: 'demangler', component: AppDemanglerComponent },

@@ -1,5 +1,6 @@
 
 import { Component, computed, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import {
   NavigationEnd,
   Router,
@@ -7,14 +8,14 @@ import {
   RouterLinkActive,
   RouterOutlet,
 } from '@angular/router';
-import { LogoDemanglerInlineComponent } from './img/logo-demangler-inline.component';
-import { LogoFormatterInlineComponent } from './img/logo-formatter-inline.component';
-import { LogoNamingStyleInlineComponent } from './img/logo-naming-style-inline.component';
-import { LogoLightenInlineComponent } from './img/logo-lighten-inline.component';
+import { filter, map } from 'rxjs';
+
 import { GithubMarkInlineComponent } from './img/github-mark-inline.component';
 import { LogoClangFormatConfigMigrateInlineComponent } from './img/logo-clang-format-config-migrate-inline.component'
-import { filter, map } from 'rxjs';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { LogoDemanglerInlineComponent } from './img/logo-demangler-inline.component';
+import { LogoFormatterInlineComponent } from './img/logo-formatter-inline.component';
+import { LogoLightenInlineComponent } from './img/logo-lighten-inline.component';
+import { LogoNamingStyleInlineComponent } from './img/logo-naming-style-inline.component';
 
 @Component({
   selector: 'app-root',
@@ -33,7 +34,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  private router = inject(Router);
+  private readonly router = inject(Router);
 
   private readonly url = toSignal(
     this.router.events.pipe(

@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
-import web_demangler from '../assets/web_demangler.js';
+
 import { EmbindModule as DemanglerModule } from '../assets/web_demangler';
+import web_demangler from '../assets/web_demangler.js';
 
 @Injectable({
   providedIn: 'root',

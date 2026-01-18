@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
-import web_formatter from '../assets/web_formatter.js';
+
 import { EmbindModule as FormatterModule } from '../assets/web_formatter';
+import web_formatter from '../assets/web_formatter.js';
 
 @Injectable({
   providedIn: 'root',
@@ -27,6 +28,6 @@ export class WasmLoaderFormatterService {
       this.instance = await web_formatter();
       this.loading.set(false);
     }
-    return this.instance!;
+    return this.instance;
   }
 }

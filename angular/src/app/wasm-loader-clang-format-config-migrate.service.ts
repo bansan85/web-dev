@@ -1,6 +1,7 @@
 import { Injectable, signal } from '@angular/core';
-import web_clang_format_config_migrate from '../assets/web_clang_format_config_migrate.js';
+
 import { EmbindModule as ClangFormatConfigMigrateModule } from '../assets/web_clang_format_config_migrate';
+import web_clang_format_config_migrate from '../assets/web_clang_format_config_migrate.js';
 
 @Injectable({
   providedIn: 'root',

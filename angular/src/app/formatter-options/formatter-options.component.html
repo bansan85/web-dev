@@ -5,8 +5,8 @@
     }
     <dd>
       @if (isNumber($any(emptyStyle)[key])) {
-        <input type="number" [ngModel]="$any(formatStyle)[key]" (ngModelChange)="updateRawType($event, [key])"
-          [min]="minNumber($any(formatStyle), key)" [max]="maxNumber($any(formatStyle), key)" />
+        <input type="number" [max]="maxNumber($any(formatStyle), key)" [min]="minNumber($any(formatStyle), key)"
+          [ngModel]="$any(formatStyle)[key]" (ngModelChange)="updateRawType($event, [key])" />
       } @else {
         @if (isBoolean($any(emptyStyle)[key])) {
           <input type="checkbox" [ngModel]="$any(formatStyle)[key]" (ngModelChange)="updateRawType($event, [key])" />
@@ -34,8 +34,8 @@
                 } @else {
                   @if (isList($any(emptyStyle)[key])) {
                     <span>Size:</span>
-                    <input type="number" [ngModel]="$any(formatStyle)[key].size()" (ngModelChange)="resizeList($event, [key])"
-                      min="0" max="0xFFFFFFFF" />
+                    <input max="0xFFFFFFFF" min="0" type="number"
+                      [ngModel]="$any(formatStyle)[key].size()" (ngModelChange)="resizeList($event, [key])" />
                     @for (index of [].constructor($any(formatStyle)[key].size()); track index; let i = $index) {
                       <dl>
                         <dt>Item {{ i }}</dt>
@@ -47,10 +47,10 @@
                               }
                               <dd>
                                 @if (isNumber($any(formatStyle)[key].get(i)[subkey])) {
-                                  <input type="number" [ngModel]="$any(formatStyle)[key].get(i)[subkey]"
-                                    (ngModelChange)="updateRawType($event, [key, i, subkey])"
+                                  <input type="number" [max]="maxNumber($any(formatStyle)[key].get(i), subkey)"
                                     [min]="minNumber($any(formatStyle)[key].get(i), subkey)"
-                                    [max]="maxNumber($any(formatStyle)[key].get(i), subkey)" />
+                                    [ngModel]="$any(formatStyle)[key].get(i)[subkey]"
+                                    (ngModelChange)="updateRawType($event, [key, i, subkey])" />
                                 } @else {
                                   @if (isBoolean($any(formatStyle)[key].get(i)[subkey])) {
                                     <input type="checkbox" [ngModel]="$any(formatStyle)[key].get(i)[subkey]"
@@ -104,9 +104,9 @@
                           }
                           <dd>
                             @if (isNumber($any(emptyStyle)[key][subkey])) {
-                              <input type="number" [ngModel]="$any(formatStyle)[key][subkey]"
-                                (ngModelChange)="updateRawType($event, [key, subkey])" [min]="minNumber($any(formatStyle)[key], subkey)"
-                                [max]="maxNumber($any(formatStyle)[key], subkey)" />
+                              <input type="number" [max]="maxNumber($any(formatStyle)[key], subkey)"
+                                [min]="minNumber($any(formatStyle)[key], subkey)" [ngModel]="$any(formatStyle)[key][subkey]"
+                                (ngModelChange)="updateRawType($event, [key, subkey])" />
                             } @else {
                               @if (isBoolean($any(emptyStyle)[key][subkey])) {
                                 <input type="checkbox" [ngModel]="$any(formatStyle)[key][subkey]"
@@ -138,8 +138,8 @@
                                       } @else {
                                         @if (isList($any(emptyStyle)[key][subkey])) {
                                           <span>Size:</span>
-                                          <input type="number" [ngModel]="$any(formatStyle)[key][subkey].size()"
-                                            (ngModelChange)="resizeList($event, [key, subkey])" min="0" max="0xFFFFFFFF" />
+                                          <input max="0xFFFFFFFF" min="0"
+                                            type="number" [ngModel]="$any(formatStyle)[key][subkey].size()" (ngModelChange)="resizeList($event, [key, subkey])" />
                                           @for (index of [].constructor($any(formatStyle)[key][subkey].size()); track index; let i = $index) {
                                             <dl>
                                               <dt>Item {{ i }}</dt>
@@ -151,10 +151,10 @@
                                                     }
                                                     <dd>
                                                       @if (isNumber($any(formatStyle)[key][subkey].get(i)[subkey2])) {
-                                                        <input type="number" [ngModel]="$any(formatStyle)[key][subkey].get(i)[subkey2]"
-                                                          (ngModelChange)="updateRawType($event, [key, subkey, i, subkey2])"
+                                                        <input type="number" [max]="maxNumber($any(formatStyle)[key][subkey].get(i), subkey2)"
                                                           [min]="minNumber($any(formatStyle)[key][subkey].get(i), subkey2)"
-                                                          [max]="maxNumber($any(formatStyle)[key][subkey].get(i), subkey2)" />
+                                                          [ngModel]="$any(formatStyle)[key][subkey].get(i)[subkey2]"
+                                                          (ngModelChange)="updateRawType($event, [key, subkey, i, subkey2])" />
                                                       } @else {
                                                         @if (isBoolean($any(formatStyle)[key][subkey].get(i)[subkey2])) {
                                                           <input type="checkbox" [ngModel]="$any(formatStyle)[key][subkey].get(i)[subkey2]"

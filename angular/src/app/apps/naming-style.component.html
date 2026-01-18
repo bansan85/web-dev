@@ -1,7 +1,7 @@
 <div class="buttons">
-    <lucide-icon name="rotate-ccw" (click)="reset()" class="action" title="Reset"></lucide-icon>
-    <lucide-icon name="copy" (click)="saveToYaml()" class="action" title="Copy"></lucide-icon>
-    <lucide-icon name="notebook-pen" (click)="setMinimum()" class="action" title="Set to default"></lucide-icon>
+    <lucide-icon class="action" name="rotate-ccw" title="Reset" (click)="reset()" />
+    <lucide-icon class="action" name="copy" title="Copy" (click)="saveToYaml()" />
+    <lucide-icon class="action" name="notebook-pen" title="Set to default" (click)="setMinimum()" />
 </div>
 
 <div class="case">
@@ -11,7 +11,7 @@
     <div class="content">
         <div class="checkboxes">
             <div>
-                <input type="checkbox" id="Typedef" name="Typedef" [checked]="isChecked('Typedef')"
+                <input id="Typedef" name="Typedef" type="checkbox" [checked]="isChecked('Typedef')"
                     (change)="onCheckboxChange($event)" />
                 <label for="Typedef">Typedef</label>
             </div>
@@ -31,7 +31,7 @@
     <div class="content">
         <div class="checkboxes">
             <div>
-                <input type="checkbox" id="TypeAlias" name="TypeAlias" [checked]="isChecked('TypeAlias')"
+                <input id="TypeAlias" name="TypeAlias" type="checkbox" [checked]="isChecked('TypeAlias')"
                     (change)="onCheckboxChange($event)" />
                 <label for="TypeAlias">TypeAlias</label>
             </div>
@@ -51,12 +51,12 @@
     <div class="content">
         <div class="checkboxes">
             <div>
-                <input type="checkbox" id="InlineNamespace" name="InlineNamespace"
+                <input id="InlineNamespace" name="InlineNamespace" type="checkbox"
                     [checked]="isChecked('InlineNamespace')" (change)="onCheckboxChange($event)" />
                 <label for="InlineNamespace">InlineNamespace</label>
             </div>
             <div>
-                <input type="checkbox" id="Namespace" name="Namespace" [checked]="isChecked('Namespace')"
+                <input id="Namespace" name="Namespace" type="checkbox" [checked]="isChecked('Namespace')"
                     (change)="onCheckboxChange($event)" />
                 <label for="Namespace">Namespace</label>
             </div>
@@ -79,7 +79,7 @@
     <div class="content">
         <div class="checkboxes">
             <div>
-                <input type="checkbox" id="Enum" name="Enum" [checked]="isChecked('Enum')"
+                <input id="Enum" name="Enum" type="checkbox" [checked]="isChecked('Enum')"
                     (change)="onCheckboxChange($event)" />
                 <label for="Enum">Enum</label>
             </div>
@@ -100,17 +100,17 @@ enum class eNuM &#123;&#125;</code>
     <div class="content">
         <div class="checkboxes">
             <div>
-                <input type="checkbox" id="ScopedEnumConstant" name="ScopedEnumConstant"
+                <input id="ScopedEnumConstant" name="ScopedEnumConstant" type="checkbox"
                     [checked]="isChecked('ScopedEnumConstant')" (change)="onCheckboxChange($event)" />
                 <label for="ScopedEnumConstant">ScopedEnumConstant</label>
             </div>
             <div>
-                <input type="checkbox" id="EnumConstant" name="EnumConstant" [checked]="isChecked('EnumConstant')"
+                <input id="EnumConstant" name="EnumConstant" type="checkbox" [checked]="isChecked('EnumConstant')"
                     (change)="onCheckboxChange($event)" />
                 <label for="EnumConstant">EnumConstant</label>
             </div>
             <div>
-                <input type="checkbox" id="Constant_Enum" name="Constant_Enum" [checked]="isChecked('Constant')"
+                <input id="Constant_Enum" name="Constant_Enum" type="checkbox" [checked]="isChecked('Constant')"
                     (change)="onCheckboxChange($event)" />
                 <label for="Constant_Enum">Constant</label>
             </div>
@@ -137,22 +137,22 @@ enum eNUM &#123;<br /></code>
     <div class="content">
         <div class="checkboxes">
             <div>
-                <input type="checkbox" id="AbstractClass" name="AbstractClass" [checked]="isChecked('AbstractClass')"
+                <input id="AbstractClass" name="AbstractClass" type="checkbox" [checked]="isChecked('AbstractClass')"
                     (change)="onCheckboxChange($event)" />
                 <label for="AbstractClass">AbstractClass</label>
             </div>
             <div>
-                <input type="checkbox" id="Struct" name="Struct" [checked]="isChecked('Struct')"
+                <input id="Struct" name="Struct" type="checkbox" [checked]="isChecked('Struct')"
                     (change)="onCheckboxChange($event)" />
                 <label for="Struct">Struct</label>
             </div>
             <div>
-                <input type="checkbox" id="Class" name="Class" [checked]="isChecked('Class')"
+                <input id="Class" name="Class" type="checkbox" [checked]="isChecked('Class')"
                     (change)="onCheckboxChange($event)" />
                 <label for="Class">Class</label>
             </div>
             <div>
-                <input type="checkbox" id="Union" name="Union" [checked]="isChecked('Union')"
+                <input id="Union" name="Union" type="checkbox" [checked]="isChecked('Union')"
                     (change)="onCheckboxChange($event)" />
                 <label for="Union">Union</label>
             </div>
@@ -183,32 +183,32 @@ enum eNUM &#123;<br /></code>
     <div class="content">
         <div class="checkboxes">
             <div>
-                <input type="checkbox" id="ConstantMember" name="ConstantMember" [checked]="isChecked('ConstantMember')"
+                <input id="ConstantMember" name="ConstantMember" type="checkbox" [checked]="isChecked('ConstantMember')"
                     (change)="onCheckboxChange($event)" />
                 <label for="ConstantMember">ConstantMember</label>
             </div>
             <div>
-                <input type="checkbox" id="Constant_Member" name="Constant_Member" [checked]="isChecked('Constant')"
+                <input id="Constant_Member" name="Constant_Member" type="checkbox" [checked]="isChecked('Constant')"
                     (change)="onCheckboxChange($event)" />
                 <label for="Constant_Member">Constant</label>
             </div>
             <div>
-                <input type="checkbox" id="PrivateMember" name="PrivateMember" [checked]="isChecked('PrivateMember')"
+                <input id="PrivateMember" name="PrivateMember" type="checkbox" [checked]="isChecked('PrivateMember')"
                     (change)="onCheckboxChange($event)" />
                 <label for="PrivateMember">PrivateMember</label>
             </div>
             <div>
-                <input type="checkbox" id="ProtectedMember" name="ProtectedMember"
+                <input id="ProtectedMember" name="ProtectedMember" type="checkbox"
                     [checked]="isChecked('ProtectedMember')" (change)="onCheckboxChange($event)" />
                 <label for="ProtectedMember">ProtectedMember</label>
             </div>
             <div>
-                <input type="checkbox" id="PublicMember" name="PublicMember" [checked]="isChecked('PublicMember')"
+                <input id="PublicMember" name="PublicMember" type="checkbox" [checked]="isChecked('PublicMember')"
                     (change)="onCheckboxChange($event)" />
                 <label for="PublicMember">PublicMember</label>
             </div>
             <div>
-                <input type="checkbox" id="Member" name="Member" [checked]="isChecked('Member')"
+                <input id="Member" name="Member" type="checkbox" [checked]="isChecked('Member')"
                     (change)="onCheckboxChange($event)" />
                 <label for="Member">Member</label>
             </div>
@@ -242,32 +242,32 @@ enum eNUM &#123;<br /></code>
     <div class="content">
         <div class="checkboxes">
             <div>
-                <input type="checkbox" id="ConstantPointerParameter" name="ConstantPointerParameter"
+                <input id="ConstantPointerParameter" name="ConstantPointerParameter" type="checkbox"
                     [checked]="isChecked('ConstantPointerParameter')" (change)="onCheckboxChange($event)" />
                 <label for="ConstantPointerParameter">ConstantPointerParameter</label>
             </div>
             <div>
-                <input type="checkbox" id="ConstantParameter" name="ConstantParameter"
+                <input id="ConstantParameter" name="ConstantParameter" type="checkbox"
                     [checked]="isChecked('ConstantParameter')" (change)="onCheckboxChange($event)" />
                 <label for="ConstantParameter">ConstantParameter</label>
             </div>
             <div>
-                <input type="checkbox" id="Constant_Parameter" name="Constant_Parameter"
+                <input id="Constant_Parameter" name="Constant_Parameter" type="checkbox"
                     [checked]="isChecked('Constant')" (change)="onCheckboxChange($event)" />
                 <label for="Constant_Parameter">Constant</label>
             </div>
             <div>
-                <input type="checkbox" id="ParameterPack" name="ParameterPack" [checked]="isChecked('ParameterPack')"
+                <input id="ParameterPack" name="ParameterPack" type="checkbox" [checked]="isChecked('ParameterPack')"
                     (change)="onCheckboxChange($event)" />
                 <label for="ParameterPack">ParameterPack</label>
             </div>
             <div>
-                <input type="checkbox" id="PointerParameter" name="PointerParameter"
+                <input id="PointerParameter" name="PointerParameter" type="checkbox"
                     [checked]="isChecked('PointerParameter')" (change)="onCheckboxChange($event)" />
                 <label for="PointerParameter">PointerParameter</label>
             </div>
             <div>
-                <input type="checkbox" id="Parameter" name="Parameter" [checked]="isChecked('Parameter')"
+                <input id="Parameter" name="Parameter" type="checkbox" [checked]="isChecked('Parameter')"
                     (change)="onCheckboxChange($event)" />
                 <label for="Parameter">Parameter</label>
             </div>
@@ -301,47 +301,47 @@ void fOo(<br /></code>
     <div class="content">
         <div class="checkboxes">
             <div>
-                <input type="checkbox" id="ConstexprVariable_Local" name="ConstexprVariable_Local"
+                <input id="ConstexprVariable_Local" name="ConstexprVariable_Local" type="checkbox"
                     [checked]="isChecked('ConstexprVariable')" (change)="onCheckboxChange($event)" />
                 <label for="ConstexprVariable_Local">ConstexprVariable</label>
             </div>
             <div>
-                <input type="checkbox" id="StaticConstant" name="StaticConstant" [checked]="isChecked('StaticConstant')"
+                <input id="StaticConstant" name="StaticConstant" type="checkbox" [checked]="isChecked('StaticConstant')"
                     (change)="onCheckboxChange($event)" />
                 <label for="StaticConstant">StaticConstant</label>
             </div>
             <div>
-                <input type="checkbox" id="LocalConstantPointer" name="LocalConstantPointer"
+                <input id="LocalConstantPointer" name="LocalConstantPointer" type="checkbox"
                     [checked]="isChecked('LocalConstantPointer')" (change)="onCheckboxChange($event)" />
                 <label for="LocalConstantPointer">LocalConstantPointer</label>
             </div>
             <div>
-                <input type="checkbox" id="LocalConstant" name="LocalConstant" [checked]="isChecked('LocalConstant')"
+                <input id="LocalConstant" name="LocalConstant" type="checkbox" [checked]="isChecked('LocalConstant')"
                     (change)="onCheckboxChange($event)" />
                 <label for="LocalConstant">LocalConstant</label>
             </div>
             <div>
-                <input type="checkbox" id="Constant_Local" name="Constant_Local" [checked]="isChecked('Constant')"
+                <input id="Constant_Local" name="Constant_Local" type="checkbox" [checked]="isChecked('Constant')"
                     (change)="onCheckboxChange($event)" />
                 <label for="Constant_Local">Constant</label>
             </div>
             <div>
-                <input type="checkbox" id="StaticVariable" name="StaticVariable" [checked]="isChecked('StaticVariable')"
+                <input id="StaticVariable" name="StaticVariable" type="checkbox" [checked]="isChecked('StaticVariable')"
                     (change)="onCheckboxChange($event)" />
                 <label for="StaticVariable">StaticVariable</label>
             </div>
             <div>
-                <input type="checkbox" id="LocalPointer" name="LocalPointer" [checked]="isChecked('LocalPointer')"
+                <input id="LocalPointer" name="LocalPointer" type="checkbox" [checked]="isChecked('LocalPointer')"
                     (change)="onCheckboxChange($event)" />
                 <label for="LocalPointer">LocalPointer</label>
             </div>
             <div>
-                <input type="checkbox" id="LocalVariable" name="LocalVariable" [checked]="isChecked('LocalVariable')"
+                <input id="LocalVariable" name="LocalVariable" type="checkbox" [checked]="isChecked('LocalVariable')"
                     (change)="onCheckboxChange($event)" />
                 <label for="LocalVariable">LocalVariable</label>
             </div>
             <div>
-                <input type="checkbox" id="Variable_Local" name="Variable_Local" [checked]="isChecked('Variable')"
+                <input id="Variable_Local" name="Variable_Local" type="checkbox" [checked]="isChecked('Variable')"
                     (change)="onCheckboxChange($event)" />
                 <label for="Variable_Local">Variable</label>
             </div>
@@ -381,37 +381,37 @@ void fOo(<br /></code>
     <div class="content">
         <div class="checkboxes">
             <div>
-                <input type="checkbox" id="ConstexprVariable_Global" name="ConstexprVariable_Global"
+                <input id="ConstexprVariable_Global" name="ConstexprVariable_Global" type="checkbox"
                     [checked]="isChecked('ConstexprVariable')" (change)="onCheckboxChange($event)" />
                 <label for="ConstexprVariable_Global">ConstexprVariable</label>
             </div>
             <div>
-                <input type="checkbox" id="GlobalConstantPointer" name="GlobalConstantPointer"
+                <input id="GlobalConstantPointer" name="GlobalConstantPointer" type="checkbox"
                     [checked]="isChecked('GlobalConstantPointer')" (change)="onCheckboxChange($event)" />
                 <label for="GlobalConstantPointer">GlobalConstantPointer</label>
             </div>
             <div>
-                <input type="checkbox" id="GlobalConstant" name="GlobalConstant" [checked]="isChecked('GlobalConstant')"
+                <input id="GlobalConstant" name="GlobalConstant" type="checkbox" [checked]="isChecked('GlobalConstant')"
                     (change)="onCheckboxChange($event)" />
                 <label for="GlobalConstant">GlobalConstant</label>
             </div>
             <div>
-                <input type="checkbox" id="Constant_Global" name="Constant_Global" [checked]="isChecked('Constant')"
+                <input id="Constant_Global" name="Constant_Global" type="checkbox" [checked]="isChecked('Constant')"
                     (change)="onCheckboxChange($event)" />
                 <label for="Constant_Global">Constant</label>
             </div>
             <div>
-                <input type="checkbox" id="GlobalPointer" name="GlobalPointer" [checked]="isChecked('GlobalPointer')"
+                <input id="GlobalPointer" name="GlobalPointer" type="checkbox" [checked]="isChecked('GlobalPointer')"
                     (change)="onCheckboxChange($event)" />
                 <label for="GlobalPointer">GlobalPointer</label>
             </div>
             <div>
-                <input type="checkbox" id="GlobalVariable" name="GlobalVariable" [checked]="isChecked('GlobalVariable')"
+                <input id="GlobalVariable" name="GlobalVariable" type="checkbox" [checked]="isChecked('GlobalVariable')"
                     (change)="onCheckboxChange($event)" />
                 <label for="GlobalVariable">GlobalVariable</label>
             </div>
             <div>
-                <input type="checkbox" id="Variable_Global" name="Variable_Global" [checked]="isChecked('Variable')"
+                <input id="Variable_Global" name="Variable_Global" type="checkbox" [checked]="isChecked('Variable')"
                     (change)="onCheckboxChange($event)" />
                 <label for="Variable_Global">Variable</label>
             </div>
@@ -443,22 +443,22 @@ void fOo(<br /></code>
     <div class="content">
         <div class="checkboxes">
             <div>
-                <input type="checkbox" id="ClassConstant" name="ClassConstant" [checked]="isChecked('ClassConstant')"
+                <input id="ClassConstant" name="ClassConstant" type="checkbox" [checked]="isChecked('ClassConstant')"
                     (change)="onCheckboxChange($event)" />
                 <label for="ClassConstant">ClassConstant</label>
             </div>
             <div>
-                <input type="checkbox" id="Constant_StaticMember" name="Constant_StaticMember"
+                <input id="Constant_StaticMember" name="Constant_StaticMember" type="checkbox"
                     [checked]="isChecked('Constant')" (change)="onCheckboxChange($event)" />
                 <label for="Constant_StaticMember">Constant</label>
             </div>
             <div>
-                <input type="checkbox" id="ClassMember" name="ClassMember" [checked]="isChecked('ClassMember')"
+                <input id="ClassMember" name="ClassMember" type="checkbox" [checked]="isChecked('ClassMember')"
                     (change)="onCheckboxChange($event)" />
                 <label for="ClassMember">ClassMember</label>
             </div>
             <div>
-                <input type="checkbox" id="Variable_Member" name="Variable_Member" [checked]="isChecked('Variable')"
+                <input id="Variable_Member" name="Variable_Member" type="checkbox" [checked]="isChecked('Variable')"
                     (change)="onCheckboxChange($event)" />
                 <label for="Variable_Member">Variable</label>
             </div>
@@ -483,47 +483,47 @@ void fOo(<br /></code>
     <div class="content">
         <div class="checkboxes">
             <div>
-                <input type="checkbox" id="ConstexprMethod" name="ConstexprMethod"
+                <input id="ConstexprMethod" name="ConstexprMethod" type="checkbox"
                     [checked]="isChecked('ConstexprMethod')" (change)="onCheckboxChange($event)" />
                 <label for="ConstexprMethod">ConstexprMethod</label>
             </div>
             <div>
-                <input type="checkbox" id="ConstexprFunction" name="ConstexprFunction"
+                <input id="ConstexprFunction" name="ConstexprFunction" type="checkbox"
                     [checked]="isChecked('ConstexprFunction')" (change)="onCheckboxChange($event)" />
                 <label for="ConstexprFunction">ConstexprFunction</label>
             </div>
             <div>
-                <input type="checkbox" id="ClassMethod" name="ClassMethod" [checked]="isChecked('ClassMethod')"
+                <input id="ClassMethod" name="ClassMethod" type="checkbox" [checked]="isChecked('ClassMethod')"
                     (change)="onCheckboxChange($event)" />
                 <label for="ClassMethod">ClassMethod</label>
             </div>
             <div>
-                <input type="checkbox" id="VirtualMethod" name="VirtualMethod" [checked]="isChecked('VirtualMethod')"
+                <input id="VirtualMethod" name="VirtualMethod" type="checkbox" [checked]="isChecked('VirtualMethod')"
                     (change)="onCheckboxChange($event)" />
                 <label for="VirtualMethod">VirtualMethod</label>
             </div>
             <div>
-                <input type="checkbox" id="PrivateMethod" name="PrivateMethod" [checked]="isChecked('PrivateMethod')"
+                <input id="PrivateMethod" name="PrivateMethod" type="checkbox" [checked]="isChecked('PrivateMethod')"
                     (change)="onCheckboxChange($event)" />
                 <label for="PrivateMethod">PrivateMethod</label>
             </div>
             <div>
-                <input type="checkbox" id="ProtectedMethod" name="ProtectedMethod"
+                <input id="ProtectedMethod" name="ProtectedMethod" type="checkbox"
                     [checked]="isChecked('ProtectedMethod')" (change)="onCheckboxChange($event)" />
                 <label for="ProtectedMethod">ProtectedMethod</label>
             </div>
             <div>
-                <input type="checkbox" id="PublicMethod" name="PublicMethod" [checked]="isChecked('PublicMethod')"
+                <input id="PublicMethod" name="PublicMethod" type="checkbox" [checked]="isChecked('PublicMethod')"
                     (change)="onCheckboxChange($event)" />
                 <label for="PublicMethod">PublicMethod</label>
             </div>
             <div>
-                <input type="checkbox" id="Method" name="Method" [checked]="isChecked('Method')"
+                <input id="Method" name="Method" type="checkbox" [checked]="isChecked('Method')"
                     (change)="onCheckboxChange($event)" />
                 <label for="Method">Method</label>
             </div>
             <div>
-                <input type="checkbox" id="Function" name="Function" [checked]="isChecked('Function')"
+                <input id="Function" name="Function" type="checkbox" [checked]="isChecked('Function')"
                     (change)="onCheckboxChange($event)" />
                 <label for="Function">Function</label>
             </div>
@@ -566,17 +566,17 @@ class B : public A &#123;
     <div class="content">
         <div class="checkboxes">
             <div>
-                <input type="checkbox" id="ConstexprFunction" name="ConstexprFunction"
+                <input id="ConstexprFunction" name="ConstexprFunction" type="checkbox"
                     [checked]="isChecked('ConstexprFunction')" (change)="onCheckboxChange($event)" />
                 <label for="ConstexprFunction">ConstexprFunction</label>
             </div>
             <div>
-                <input type="checkbox" id="GlobalFunction" name="GlobalFunction" [checked]="isChecked('GlobalFunction')"
+                <input id="GlobalFunction" name="GlobalFunction" type="checkbox" [checked]="isChecked('GlobalFunction')"
                     (change)="onCheckboxChange($event)" />
                 <label for="GlobalFunction">GlobalFunction</label>
             </div>
             <div>
-                <input type="checkbox" id="Function" name="Function" [checked]="isChecked('Function')"
+                <input id="Function" name="Function" type="checkbox" [checked]="isChecked('Function')"
                     (change)="onCheckboxChange($event)" />
                 <label for="Function">Function</label>
             </div>
@@ -599,22 +599,22 @@ class B : public A &#123;
     <div class="content">
         <div class="checkboxes">
             <div>
-                <input type="checkbox" id="TypeTemplateParameter" name="TypeTemplateParameter"
+                <input id="TypeTemplateParameter" name="TypeTemplateParameter" type="checkbox"
                     [checked]="isChecked('TypeTemplateParameter')" (change)="onCheckboxChange($event)" />
                 <label for="TypeTemplateParameter">TypeTemplateParameter</label>
             </div>
             <div>
-                <input type="checkbox" id="ValueTemplateParameter" name="ValueTemplateParameter"
+                <input id="ValueTemplateParameter" name="ValueTemplateParameter" type="checkbox"
                     [checked]="isChecked('ValueTemplateParameter')" (change)="onCheckboxChange($event)" />
                 <label for="ValueTemplateParameter">ValueTemplateParameter</label>
             </div>
             <div>
-                <input type="checkbox" id="TemplateTemplateParameter" name="TemplateTemplateParameter"
+                <input id="TemplateTemplateParameter" name="TemplateTemplateParameter" type="checkbox"
                     [checked]="isChecked('TemplateTemplateParameter')" (change)="onCheckboxChange($event)" />
                 <label for="TemplateTemplateParameter">TemplateTemplateParameter</label>
             </div>
             <div>
-                <input type="checkbox" id="TemplateParameter" name="TemplateParameter"
+                <input id="TemplateParameter" name="TemplateParameter" type="checkbox"
                     [checked]="isChecked('TemplateParameter')" (change)="onCheckboxChange($event)" />
                 <label for="TemplateParameter">TemplateParameter</label>
             </div>
@@ -642,7 +642,7 @@ class B : public A &#123;
     <div class="content">
         <div class="checkboxes">
             <div>
-                <input type="checkbox" id="Concept" name="Concept" [checked]="isChecked('Concept')"
+                <input id="Concept" name="Concept" type="checkbox" [checked]="isChecked('Concept')"
                     (change)="onCheckboxChange($event)" />
                 <label for="Concept">Concept</label>
             </div>
@@ -663,7 +663,7 @@ concept ConCepT = std::is_base_of&lt;U, T&gt;::value;<br /></code>
     <div class="content">
         <div class="checkboxes">
             <div>
-                <input type="checkbox" id="MacroDefinition" name="MacroDefinition"
+                <input id="MacroDefinition" name="MacroDefinition" type="checkbox"
                     [checked]="isChecked('MacroDefinition')" (change)="onCheckboxChange($event)" />
                 <label for="MacroDefinition">MacroDefinition</label>
             </div>

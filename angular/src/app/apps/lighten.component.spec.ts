@@ -1,8 +1,8 @@
+import { importProvidersFrom } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LucideAngularModule, Settings, X } from 'lucide-angular';
 
 import { AppLightenComponent } from './lighten.component';
-import { importProvidersFrom } from '@angular/core';
 
 describe('LightenComponent', () => {
   let component: AppLightenComponent;

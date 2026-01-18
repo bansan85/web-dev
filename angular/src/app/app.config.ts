@@ -1,10 +1,10 @@
 import {
   ApplicationConfig,
-  provideZonelessChangeDetection,
   importProvidersFrom,
+  provideZonelessChangeDetection,
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { LucideAngularModule, Settings, LoaderCircle, X, Copy, RotateCcw, NotebookPen } from 'lucide-angular';
+import { Copy, LoaderCircle, LucideAngularModule, NotebookPen,RotateCcw, Settings, X } from 'lucide-angular';
 
 import { routes } from './app.routes';
 

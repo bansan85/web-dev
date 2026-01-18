@@ -3,7 +3,7 @@
     <span>clang-format's options</span>
   </div>
   <div dialog-body>
-    <input type="checkbox" name="enableClangFormat" [ngModel]="enableClangFormat"
+    <input name="enableClangFormat" type="checkbox" [ngModel]="enableClangFormat"
       (ngModelChange)="onEnableClangFormat($event)"> Format with clang-format<br />
       @if (enableClangFormat && formatter) {
         <dl>
@@ -32,7 +32,7 @@
               <dt>File:</dt>
               <dd>
                 <button (click)="fileInput.click()">Browse</button>
-                <input type="file" #fileInput style="display: none" (change)="loadYamlFromFile($event)">
+                <input #fileInput style="display: none" type="file" (change)="loadYamlFromFile($event)">
               </dd>
             </dl>
           </dd>
@@ -67,9 +67,8 @@
         </dl>
         <details [attr.open]='enableClangFormatExpert ? true : null' (toggle)="onEnableClangFormatExpert($event)">
           <summary>All parameters</summary>
-          <app-formatter-options [formatStyle]="formatStyle!" [formatter]="formatter!" [emptyStyle]="emptyStyle!"
-            (changeOptions)="reformat()">
-        </app-formatter-options>
+          <app-formatter-options [emptyStyle]="emptyStyle!" [formatStyle]="formatStyle!" [formatter]="formatter!"
+            (changeOptions)="reformat()" />
       </details>
     }
   </div>
@@ -80,10 +79,10 @@
     <h2>Mangled symbol (C++, D, Rust, MSVC, Itanium)</h2>
   </div>
   <div header-output>
-    <h2>Demangled symbol<lucide-icon name="settings" (click)="dialog.openDialog()"></lucide-icon></h2>
+    <h2>Demangled symbol<lucide-icon name="settings" (click)="dialog.openDialog()" /></h2>
   </div>
 </app-textarea-two>
 
 @if (isLoading()) {
-  <app-spinner-loading [size]="spinnerSize()" [title]="titleLoading"></app-spinner-loading>
+  <app-spinner-loading [size]="spinnerSize()" [title]="titleLoading" />
 }

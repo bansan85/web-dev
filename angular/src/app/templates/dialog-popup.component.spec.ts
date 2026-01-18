@@ -1,8 +1,8 @@
+import { importProvidersFrom } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { LucideAngularModule, X } from 'lucide-angular';
 
 import { DialogPopupComponent } from './dialog-popup.component';
-import { importProvidersFrom } from '@angular/core';
-import { LucideAngularModule, X } from 'lucide-angular';
 
 describe('DialogPopupComponent', () => {
   let component: DialogPopupComponent;

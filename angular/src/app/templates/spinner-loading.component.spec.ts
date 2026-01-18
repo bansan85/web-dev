@@ -1,8 +1,8 @@
+import { importProvidersFrom } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { LucideAngularModule, LoaderCircle } from 'lucide-angular';
+import { LoaderCircle,LucideAngularModule } from 'lucide-angular';
 
 import { SpinnerLoadingComponent } from './spinner-loading.component';
-import { importProvidersFrom } from '@angular/core';
 
 describe('SpinnerLoadingComponent', () => {
   let component: SpinnerLoadingComponent;

@@ -1,25 +1,25 @@
 import {
-  Component,
-  OnInit,
-  HostListener,
-  ViewChild,
   ChangeDetectionStrategy,
-  viewChild,
-  signal,
+  Component,
   computed,
+  HostListener,
+  OnInit,
+  signal,
+  ViewChild,
+  viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { LucideAngularModule } from 'lucide-angular';
 
-import { TextareaTwoComponent } from '../templates/textarea-two.component';
-import { SpinnerLoadingComponent } from '../templates/spinner-loading.component';
-import { WasmLoaderClangFormatConfigMigrateService } from '../wasm-loader-clang-format-config-migrate.service';
 import {
   EmbindModule as ClangFormatConfigMigrateModule,
-  VersionList,
   Version,
+  VersionList,
 } from '../../assets/web_clang_format_config_migrate.js';
 import { DialogPopupComponent } from '../templates/dialog-popup.component';
-import { LucideAngularModule } from 'lucide-angular';
+import { SpinnerLoadingComponent } from '../templates/spinner-loading.component';
+import { TextareaTwoComponent } from '../templates/textarea-two.component';
+import { WasmLoaderClangFormatConfigMigrateService } from '../wasm-loader-clang-format-config-migrate.service';
 
 interface SelectItem {
   id: Version;
@@ -55,7 +55,7 @@ export class ClangFormatConfigMigrateComponent implements OnInit {
   exportOnlyChangedValue = true;
 
   constructor(
-    private wasmLoaderClangFormatConfigMigrate: WasmLoaderClangFormatConfigMigrateService
+    private readonly wasmLoaderClangFormatConfigMigrate: WasmLoaderClangFormatConfigMigrateService
   ) {
     this.migrate = this.migrate.bind(this);
   }
@@ -96,7 +96,7 @@ export class ClangFormatConfigMigrateComponent implements OnInit {
 
     const versions: VersionList =
       this.clangFormatConfigMigrate!.getCompatibleVersion(
-        this.textareaTwo.inputElement.nativeElement!.value
+        this.textareaTwo.inputElement.nativeElement.value
       );
     this.compatibleVersions = [];
 
@@ -115,7 +115,7 @@ export class ClangFormatConfigMigrateComponent implements OnInit {
 
     this.compatibleStyles = [];
 
-    let oldVersion = this.getOldVersion();
+    const oldVersion = this.getOldVersion();
     if (oldVersion === undefined) {
       return;
     }

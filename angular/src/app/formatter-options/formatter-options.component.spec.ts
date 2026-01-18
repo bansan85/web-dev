@@ -1,8 +1,8 @@
+import { ChangeDetectorRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FormatterOptionsComponent } from './formatter-options.component';
 import { WasmLoaderFormatterService } from '../wasm-loader-formatter.service';
-import { ChangeDetectorRef } from '@angular/core';
+import { FormatterOptionsComponent } from './formatter-options.component';
 
 describe('FormatterOptionsComponent', () => {
   let component: FormatterOptionsComponent;
@@ -230,7 +230,7 @@ describe('FormatterOptionsComponent', () => {
       expect(
         Array.from(
           dtRawStringFormats.nextElementSibling!.querySelectorAll('dt')
-        ).filter((x) => x.textContent!.match(/Item \d+/)).length
+        ).filter((x) => /Item \d+/.exec((x.textContent))).length
       ).toEqual(3);
 
       Array.from(dtRawStringFormats.nextElementSibling!.querySelectorAll('dt'))
@@ -267,7 +267,7 @@ describe('FormatterOptionsComponent', () => {
       // Check formatStyleKeys
       const allItems = Array.from(
         dtRawStringFormats.nextElementSibling!.querySelectorAll('dt')
-      ).filter((x) => x.textContent!.match(/Item \d+/));
+      ).filter((x) => /Item \d+/.exec((x.textContent)));
       expect(allItems.length).toEqual(2);
       const allItemsI =
         allItems[0].nextElementSibling!.querySelectorAll('dl dt');
@@ -280,7 +280,7 @@ describe('FormatterOptionsComponent', () => {
         'BasedOnStyle:',
       ];
       allItemsI.forEach((x, i) =>
-        expect(x.textContent).toEqual(allItemsIExpected[i])
+        { expect(x.textContent).toEqual(allItemsIExpected[i]); }
       );
     }
 
@@ -479,7 +479,7 @@ describe('FormatterOptionsComponent', () => {
       expect(
         Array.from(
           dtIncludeCategories.nextElementSibling!.querySelectorAll('dt')
-        ).filter((x) => x.textContent!.match(/Item \d+/)).length
+        ).filter((x) => /Item \d+/.exec((x.textContent))).length
       ).toEqual(3);
 
       Array.from(dtIncludeCategories.nextElementSibling!.querySelectorAll('dt'))
@@ -518,7 +518,7 @@ describe('FormatterOptionsComponent', () => {
       // Check formatStyleKeys
       const allItems = Array.from(
         dtIncludeCategories.nextElementSibling!.querySelectorAll('dt')
-      ).filter((x) => x.textContent!.match(/Item \d+/));
+      ).filter((x) => /Item \d+/.exec((x.textContent)));
       expect(allItems.length).toEqual(2);
       const allItemsI =
         allItems[0].nextElementSibling!.querySelectorAll('dl dt');
@@ -530,7 +530,7 @@ describe('FormatterOptionsComponent', () => {
         'RegexIsCaseSensitive:',
       ];
       allItemsI.forEach((x, i) =>
-        expect(x.textContent).toEqual(allItemsIExpected[i])
+        { expect(x.textContent).toEqual(allItemsIExpected[i]); }
       );
     }
 

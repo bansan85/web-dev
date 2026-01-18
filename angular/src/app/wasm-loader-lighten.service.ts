@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import web_lighten from '../assets/web_lighten.js';
+
 import { EmbindModule as LightenModule } from '../assets/web_lighten';
+import web_lighten from '../assets/web_lighten.js';
 
 @Injectable({
   providedIn: 'root',

@@ -1,7 +1,8 @@
-import { TestBed } from '@angular/core/testing';
-import { AppComponent } from './app.component';
 import { importProvidersFrom } from '@angular/core';
-import { LucideAngularModule, Settings, LoaderCircle, X } from 'lucide-angular';
+import { TestBed } from '@angular/core/testing';
+import { LoaderCircle, LucideAngularModule, Settings, X } from 'lucide-angular';
+
+import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
   beforeEach(async () => {

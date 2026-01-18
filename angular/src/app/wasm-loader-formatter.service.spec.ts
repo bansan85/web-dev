@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
 
-import { WasmLoaderFormatterService } from './wasm-loader-formatter.service';
 import {
   EmbindModule as FormatterModule,
   FormatStyle,
 } from '../assets/web_formatter.js';
+import { WasmLoaderFormatterService } from './wasm-loader-formatter.service';
 
 describe('WasmLoaderFormatterService', () => {
   let service: WasmLoaderFormatterService;
@@ -26,7 +26,7 @@ describe('WasmLoaderFormatterService', () => {
     }
     expect(i).toBeLessThan(10);
     expect(service.wasm()).toBeDefined();
-    const formatter: FormatterModule = await service.wasm()!;
+    const formatter: FormatterModule = await service.wasm();
 
     const llvmStyle: FormatStyle = formatter.getLLVMStyle();
     expect(formatter.formatter('int main(){int a; int b;}', llvmStyle))

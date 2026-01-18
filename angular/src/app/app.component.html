@@ -1,24 +1,24 @@
 @if (isHomeRoute()) {
-  <a routerLink="/demangler" routerLinkActive="active" ariaCurrentWhenActive="page"
+  <a ariaCurrentWhenActive="page" routerLink="/demangler" routerLinkActive="active"
     title="Demangler (C++, D, Rust, MSVC, Itanium)">
-    <app-logo-demangler-inline class="apps-box"></app-logo-demangler-inline>
+    <app-logo-demangler-inline class="apps-box" />
   </a>
-  <a routerLink="/formatter" routerLinkActive="active" ariaCurrentWhenActive="page" title="Format C++ code">
-    <app-logo-formatter-inline class="apps-box"></app-logo-formatter-inline>
+  <a ariaCurrentWhenActive="page" routerLink="/formatter" routerLinkActive="active" title="Format C++ code">
+    <app-logo-formatter-inline class="apps-box" />
   </a>
-  <a routerLink="/naming-style" routerLinkActive="active" ariaCurrentWhenActive="page" title="C++ naming style">
-    <app-logo-naming-style-inline class="apps-box"></app-logo-naming-style-inline>
+  <a ariaCurrentWhenActive="page" routerLink="/naming-style" routerLinkActive="active" title="C++ naming style">
+    <app-logo-naming-style-inline class="apps-box" />
   </a>
-  <a routerLink="/lighten" routerLinkActive="active" ariaCurrentWhenActive="page" title="Lighten data (JSON / SVG)">
-    <app-logo-lighten-inline class="apps-box"></app-logo-lighten-inline>
+  <a ariaCurrentWhenActive="page" routerLink="/lighten" routerLinkActive="active" title="Lighten data (JSON / SVG)">
+    <app-logo-lighten-inline class="apps-box" />
   </a>
-  <a routerLink="/clang-format-config-migrate" routerLinkActive="active" ariaCurrentWhenActive="page"
+  <a ariaCurrentWhenActive="page" routerLink="/clang-format-config-migrate" routerLinkActive="active"
     title="Migrate version clang-format's config file">
-    <app-logo-clang-format-config-migrate-inline class="apps-box"></app-logo-clang-format-config-migrate-inline>
+    <app-logo-clang-format-config-migrate-inline class="apps-box" />
   </a>
 }
-<router-outlet></router-outlet>
+<router-outlet />
 
 <a href="https://github.com/bansan85/web-demangler">
-  <app-github-mark-inline class="github_logo"></app-github-mark-inline>
+  <app-github-mark-inline class="github_logo" />
 </a>

@@ -5,14 +5,13 @@ import {
   Input,
   Output,
 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 import {
   EmbindModule as FormatterModule,
   FormatStyle,
   StringList,
 } from '../../assets/web_formatter.js';
-
-import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-formatter-options',
@@ -41,7 +40,7 @@ export class FormatterOptionsComponent {
   }
 
   formatStyleKeys(keys: (string | number)[]): any {
-    let target = this.getLastStruct(this.formatStyle!, keys);
+    let target = this.getLastStruct(this.formatStyle, keys);
 
     if (keys.length != 0) {
       if (typeof keys.at(-1) === 'number') {
@@ -99,7 +98,7 @@ export class FormatterOptionsComponent {
   }
 
   minNumber(root_field: any, field: string): number {
-    switch (root_field['get' + field + 'Type']()) {
+    switch (root_field[`get${  field  }Type`]()) {
       case -8: {
         return -127;
         break;
@@ -129,7 +128,7 @@ export class FormatterOptionsComponent {
   }
 
   maxNumber(root_field: any, field: string): number {
-    switch (root_field['get' + field + 'Type']()) {
+    switch (root_field[`get${  field  }Type`]()) {
       case -8: {
         return 0x7f;
         break;
@@ -199,7 +198,7 @@ export class FormatterOptionsComponent {
     this.updateField(keys, (x: any[]) => {
       x[x.length - 1] = (this.formatter as any)[
         x[x.length - 1].constructor.name.split('_')[0]
-      ][x[x.length - 1].constructor.name.split('_')[1] + '_' + newValue];
+      ][`${x[x.length - 1].constructor.name.split('_')[1]  }_${  newValue}`];
     });
   }
 
@@ -213,7 +212,7 @@ export class FormatterOptionsComponent {
     keys: (string | number)[]
   ) {
     this.updateField(keys, (x: any[]) => {
-      const checked = (event.target as HTMLInputElement).checked;
+      const {checked} = (event.target as HTMLInputElement);
       x[x.length - 1] = checked
         ? inputValue === ''
           ? 0
@@ -242,7 +241,7 @@ export class FormatterOptionsComponent {
     const value: StringList = raw_value as StringList;
     const retval: string[] = [];
     for (let i = 0; i < value.size(); i++) {
-      retval.push(value.get(i) as string);
+      retval.push(value.get(i)!);
     }
     return retval.join('\n');
   }
@@ -253,7 +252,7 @@ export class FormatterOptionsComponent {
       const data: string = (event.target as any).value;
       data
         .split('\n')
-        .forEach((data_i) => (x[x.length - 1] as StringList).push_back(data_i));
+        .forEach((data_i) => { (x[x.length - 1] as StringList).push_back(data_i); });
     });
   }
 

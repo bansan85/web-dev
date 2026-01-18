@@ -1,27 +1,26 @@
 import {
-  Component,
-  OnInit,
-  ElementRef,
-  ViewChild,
-  HostListener,
   ChangeDetectorRef,
-  ViewEncapsulation,
+  Component,
   computed,
+  ElementRef,
+  HostListener,
+  OnInit,
   signal,
+  ViewChild,
+  ViewEncapsulation,
 } from '@angular/core';
-import { WasmLoaderFormatterService } from '../wasm-loader-formatter.service';
-
 import { FormsModule } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
-import { DialogPopupComponent } from '../templates/dialog-popup.component';
-import { FormatterOptionsComponent } from '../formatter-options/formatter-options.component';
-import { TextareaTwoComponent } from '../templates/textarea-two.component';
-import { SpinnerLoadingComponent } from '../templates/spinner-loading.component';
 
 import {
   EmbindModule as FormatterModule,
   FormatStyle,
 } from '../../assets/web_formatter.js';
+import { FormatterOptionsComponent } from '../formatter-options/formatter-options.component';
+import { DialogPopupComponent } from '../templates/dialog-popup.component';
+import { SpinnerLoadingComponent } from '../templates/spinner-loading.component';
+import { TextareaTwoComponent } from '../templates/textarea-two.component';
+import { WasmLoaderFormatterService } from '../wasm-loader-formatter.service';
 
 @Component({
   selector: 'app-formatter',
@@ -40,7 +39,7 @@ import {
 export class AppFormatterComponent implements OnInit {
   formatter?: FormatterModule;
 
-  spinnerSize = signal(0);
+  readonly spinnerSize = signal(0);
 
   enableClangFormatExpert = false;
 
@@ -64,8 +63,8 @@ export class AppFormatterComponent implements OnInit {
   }
 
   constructor(
-    private wasmLoaderFormatter: WasmLoaderFormatterService,
-    private cdr: ChangeDetectorRef
+    private readonly wasmLoaderFormatter: WasmLoaderFormatterService,
+    private readonly cdr: ChangeDetectorRef
   ) {
     this.format = this.format.bind(this);
   }
@@ -133,16 +132,16 @@ export class AppFormatterComponent implements OnInit {
     const rect = this.dialog.dialogRef.nativeElement.getBoundingClientRect();
     if (rect.right > window.innerWidth) {
       this.dialog.dialogRef.nativeElement.style.left =
-        window.innerWidth -
-        this.dialog.dialogRef.nativeElement.offsetWidth +
-        'px';
+        `${window.innerWidth -
+        this.dialog.dialogRef.nativeElement.offsetWidth 
+        }px`;
     }
     if (rect.bottom > window.innerHeight) {
       this.dialog.dialogRef.nativeElement.style.top =
-        (window.innerHeight -
+        `${(window.innerHeight -
           this.dialog.dialogRef.nativeElement.offsetHeight) /
-        2 +
-        'px';
+        2 
+        }px`;
     }
   }
 
@@ -150,7 +149,7 @@ export class AppFormatterComponent implements OnInit {
     await this.loadWasmFormatterModule();
     if (this.formatter) {
       const lines = mangledName.split('\n');
-      let demangledName = this.formatter!.formatter(
+      const demangledName = this.formatter.formatter(
         mangledName,
         this.formatStyle!
       );
@@ -205,7 +204,7 @@ export class AppFormatterComponent implements OnInit {
     );
   }
 
-  protected isLoading = computed(() => {
+  protected readonly isLoading = computed(() => {
     if (this.wasmLoaderFormatter.isLoading()) {
       this.titleLoading = 'formatter';
       return true;
