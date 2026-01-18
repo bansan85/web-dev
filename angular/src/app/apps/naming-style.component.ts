@@ -21,7 +21,6 @@ export class AppNamingStyleComponent implements OnInit {
   }
 
   private saveToLocalStorage() {
-    console.log(JSON.stringify(Array.from(this.checkedSet)));
     localStorage.setItem("naming_style", JSON.stringify(Array.from(this.checkedSet)));
   }
 

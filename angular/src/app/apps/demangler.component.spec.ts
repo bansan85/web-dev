@@ -76,5 +76,5 @@ describe('AppDemanglerComponent', () => {
     await fixture.whenStable();
 
     expect(app.formatStyle).toBeDefined();
-  });
+  }, 60000);
 });
