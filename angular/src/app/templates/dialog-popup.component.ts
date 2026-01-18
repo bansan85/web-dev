@@ -1,11 +1,13 @@
 import { NgClass } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
+  inject,
   NgZone,
   Renderer2,
   signal,
-  ViewChild,
+  viewChild,
 } from '@angular/core';
 import { LucideAngularModule } from 'lucide-angular';
 
@@ -13,10 +15,11 @@ import { LucideAngularModule } from 'lucide-angular';
   selector: 'app-dialog-popup',
   imports: [NgClass, LucideAngularModule],
   templateUrl: './dialog-popup.component.html',
-  styleUrl: './dialog-popup.component.css'
+  styleUrl: './dialog-popup.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DialogPopupComponent {
-  @ViewChild('dialog') dialogRef!: ElementRef<HTMLDialogElement>;
+  readonly dialogRef = viewChild.required<ElementRef<HTMLDialogElement>>('dialog');
 
   protected readonly isOpen = signal(false);
 
@@ -26,36 +29,37 @@ export class DialogPopupComponent {
   mouseMoveListener?: () => void;
   mouseUpListener?: () => void;
 
-  constructor(private readonly renderer: Renderer2, private readonly ngZone: NgZone) { }
+  private readonly ngZone=inject( NgZone);
+  private readonly renderer=inject( Renderer2);
 
   openDialog() {
-    this.dialogRef.nativeElement.showModal();
+    this.dialogRef().nativeElement.showModal();
     setTimeout(() => { this.isOpen.set(true); }, 0);
-    const bounds = this.dialogRef.nativeElement.getBoundingClientRect();
-    this.dialogRef.nativeElement.style.margin = '0';
-    this.dialogRef.nativeElement.style.left = `${bounds.x}px`;
-    this.dialogRef.nativeElement.style.top = `${bounds.y}px`;
+    const bounds = this.dialogRef().nativeElement.getBoundingClientRect();
+    this.dialogRef().nativeElement.style.margin = '0';
+    this.dialogRef().nativeElement.style.left = `${bounds.x}px`;
+    this.dialogRef().nativeElement.style.top = `${bounds.y}px`;
   }
 
   closeDialog() {
     const close = (event: TransitionEvent) => {
       if (event.propertyName === 'opacity') {
-        this.dialogRef.nativeElement.close();
-        this.dialogRef.nativeElement.removeEventListener(
+        this.dialogRef().nativeElement.close();
+        this.dialogRef().nativeElement.removeEventListener(
           'transitionend',
           close
         );
       }
     };
 
-    this.dialogRef.nativeElement.addEventListener('transitionend', close);
+    this.dialogRef().nativeElement.addEventListener('transitionend', close);
     this.isOpen.set(false);
   }
 
   onMouseDown(event: MouseEvent): void {
     this.isDragging = true;
 
-    const dialogElement = this.dialogRef.nativeElement;
+    const dialogElement = this.dialogRef().nativeElement;
     this.offsetX = event.clientX - dialogElement.getBoundingClientRect().left;
     this.offsetY = event.clientY - dialogElement.getBoundingClientRect().top;
 
@@ -76,7 +80,7 @@ export class DialogPopupComponent {
   private onMouseMove(event: MouseEvent): void {
     if (!this.isDragging) {return;}
 
-    const dialogElement = this.dialogRef.nativeElement;
+    const dialogElement = this.dialogRef().nativeElement;
     dialogElement.style.left = `${event.clientX - this.offsetX}px`;
     dialogElement.style.top = `${event.clientY - this.offsetY}px`;
   }

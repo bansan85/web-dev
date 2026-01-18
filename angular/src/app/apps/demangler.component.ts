@@ -5,9 +5,10 @@ import {
   computed,
   ElementRef,
   HostListener,
+  inject,
   OnInit,
   signal,
-  ViewChild,
+  viewChild,
   ViewEncapsulation,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -24,6 +25,7 @@ import { SpinnerLoadingComponent } from '../templates/spinner-loading.component'
 import { TextareaTwoComponent } from '../templates/textarea-two.component';
 import { WasmLoaderDemanglerService } from '../wasm-loader-demangler.service';
 import { WasmLoaderFormatterService } from '../wasm-loader-formatter.service';
+import { assertError } from './shared/interfaces/errors.js';
 
 @Component({
   selector: 'app-demangler',
@@ -34,7 +36,7 @@ import { WasmLoaderFormatterService } from '../wasm-loader-formatter.service';
     LucideAngularModule,
     TextareaTwoComponent,
     SpinnerLoadingComponent
-],
+  ],
   templateUrl: './demangler.component.html',
   styleUrl: './demangler.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -56,23 +58,22 @@ export class AppDemanglerComponent implements OnInit {
   pendingText = false;
   titleLoading = '';
 
-  @ViewChild('newStyle') newStyle!: ElementRef<HTMLSelectElement>;
-  @ViewChild('dialog') dialog!: DialogPopupComponent;
-  @ViewChild('textClangConfig')
-  textClangConfig!: ElementRef<HTMLTextAreaElement>;
+  private readonly newStyle = viewChild.required<ElementRef<HTMLSelectElement>>('newStyle');
+  private readonly dialog = viewChild.required<DialogPopupComponent>('dialog');
+  private readonly textClangConfig = viewChild.required<ElementRef<HTMLTextAreaElement>>('textClangConfig');
 
-  @ViewChild(TextareaTwoComponent) textareaTwo!: TextareaTwoComponent;
+  private readonly textareaTwo = viewChild.required(TextareaTwoComponent);
 
   @HostListener('window:resize')
   onResize() {
     this.updateIconSize();
   }
 
-  constructor(
-    private readonly wasmLoaderDemangler: WasmLoaderDemanglerService,
-    private readonly wasmLoaderFormatter: WasmLoaderFormatterService,
-    private readonly cdr: ChangeDetectorRef
-  ) {
+  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly wasmLoaderDemangler = inject(WasmLoaderDemanglerService);
+  private readonly wasmLoaderFormatter = inject(WasmLoaderFormatterService);
+
+  constructor() {
     this.demangle = this.demangle.bind(this);
   }
 
@@ -94,9 +95,7 @@ export class AppDemanglerComponent implements OnInit {
   }
 
   async loadWasmDemanglerModule() {
-    if (!this.demangler) {
-      this.demangler = await this.wasmLoaderDemangler.wasm();
-    }
+    this.demangler ??= await this.wasmLoaderDemangler.wasm();
   }
 
   async loadWasmFormatterModule() {
@@ -128,7 +127,7 @@ export class AppDemanglerComponent implements OnInit {
 
     if (this.pendingText) {
       const event = new Event('input', { bubbles: true });
-      this.textareaTwo.inputElement.nativeElement.dispatchEvent(event);
+      this.textareaTwo().inputElement().nativeElement.dispatchEvent(event);
     }
     this.pendingText = false;
   }
@@ -151,7 +150,7 @@ export class AppDemanglerComponent implements OnInit {
     this.reformat();
   }
 
-  async onEnableClangFormatExpert(event: Event) {
+  onEnableClangFormatExpert(event: Event) {
     this.enableClangFormatExpert = (event as any).newState === 'open';
 
     localStorage.setItem(
@@ -164,18 +163,18 @@ export class AppDemanglerComponent implements OnInit {
 
   private centerDialog() {
     this.cdr.detectChanges();
-    const rect = this.dialog.dialogRef.nativeElement.getBoundingClientRect();
+    const rect = this.dialog().dialogRef().nativeElement.getBoundingClientRect();
     if (rect.right > window.innerWidth) {
-      this.dialog.dialogRef.nativeElement.style.left =
+      this.dialog().dialogRef().nativeElement.style.left =
         `${window.innerWidth -
-        this.dialog.dialogRef.nativeElement.offsetWidth 
+        this.dialog().dialogRef().nativeElement.offsetWidth
         }px`;
     }
     if (rect.bottom > window.innerHeight) {
-      this.dialog.dialogRef.nativeElement.style.top =
+      this.dialog().dialogRef().nativeElement.style.top =
         `${(window.innerHeight -
-          this.dialog.dialogRef.nativeElement.offsetHeight) /
-        2 
+          this.dialog().dialogRef().nativeElement.offsetHeight) /
+        2
         }px`;
     }
   }
@@ -203,7 +202,7 @@ export class AppDemanglerComponent implements OnInit {
   }
 
   loadStyle() {
-    switch (this.newStyle.nativeElement.value) {
+    switch (this.newStyle().nativeElement.value) {
       case 'llvm':
         this.formatStyle = this.formatter!.getLLVMStyle();
         break;
@@ -231,6 +230,8 @@ export class AppDemanglerComponent implements OnInit {
       case 'none':
         this.formatStyle = this.formatter!.getNoStyle();
         break;
+      default:
+        throw assertError(`Unknown style ${this.newStyle().nativeElement.value}.`);
     }
 
     this.reformat();
@@ -238,7 +239,7 @@ export class AppDemanglerComponent implements OnInit {
 
   reformat() {
     const event = new Event('input', { bubbles: true });
-    this.textareaTwo.inputElement.nativeElement.dispatchEvent(event);
+    this.textareaTwo().inputElement().nativeElement.dispatchEvent(event);
 
     localStorage.setItem(
       'formatStyle',
@@ -246,7 +247,7 @@ export class AppDemanglerComponent implements OnInit {
     );
   }
 
-  protected readonly isLoading = computed(()=>{
+  protected readonly isLoading = computed(() => {
     if (this.wasmLoaderDemangler.isLoading()) {
       this.titleLoading = 'demangler';
       return true;
@@ -274,7 +275,7 @@ export class AppDemanglerComponent implements OnInit {
 
   loadYamlFromText() {
     this.formatStyle = this.formatter!.deserializeFromYaml(
-      this.textClangConfig.nativeElement.value
+      this.textClangConfig().nativeElement.value
     );
     this.reformat();
   }
@@ -291,8 +292,8 @@ export class AppDemanglerComponent implements OnInit {
     link.click();
   }
 
-  saveYamlToText() {
-    navigator.clipboard.writeText(
+  async saveYamlToText() {
+    await navigator.clipboard.writeText(
       this.formatter!.serializeToYaml(this.formatStyle!)
     );
   }

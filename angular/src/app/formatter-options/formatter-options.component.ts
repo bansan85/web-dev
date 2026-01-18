@@ -1,9 +1,8 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
   Input,
-  Output,
+  output,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
@@ -25,11 +24,11 @@ export class FormatterOptionsComponent {
   @Input({ required: true }) formatStyle!: FormatStyle;
   @Input({ required: true }) emptyStyle!: FormatStyle;
 
-  @Output() changeOptions: EventEmitter<any> = new EventEmitter<any>();
+  readonly changeOptions = output();
 
   private getLastStruct(root: FormatStyle, keys: (string | number)[]) {
     let target = root as any;
-    for (let i = 0; i < keys.length - 1; i++) {
+    for (let i = 0; i < keys.length - 1; i += 1) {
       if (typeof keys[i] === 'number') {
         target = target.get(keys[i]);
       } else {
@@ -42,7 +41,7 @@ export class FormatterOptionsComponent {
   formatStyleKeys(keys: (string | number)[]): any {
     let target = this.getLastStruct(this.formatStyle, keys);
 
-    if (keys.length != 0) {
+    if (keys.length !== 0) {
       if (typeof keys.at(-1) === 'number') {
         target = target.get(keys.at(-1));
       } else {
@@ -79,10 +78,10 @@ export class FormatterOptionsComponent {
 
     assign(tree);
 
-    for (let i = keys.length - 1; i > 0; i--) {
+    for (let i = keys.length - 1; i > 0; i -= 1) {
       if (typeof keys[i] === 'number') {
         tree[i - 1].set(keys[i], tree[i]);
-        i--;
+        i -= 1;
       } else {
         tree[i - 1][keys[i]] = tree[i];
       }
@@ -93,75 +92,63 @@ export class FormatterOptionsComponent {
     this.changeOptions.emit();
   }
 
-  isNumber(value: any): boolean {
+  isNumber(value: unknown): boolean {
     return typeof value === 'number';
   }
 
   minNumber(root_field: any, field: string): number {
-    switch (root_field[`get${  field  }Type`]()) {
+    switch (root_field[`get${field}Type`]()) {
       case -8: {
         return -127;
-        break;
       }
       case 8: {
         return 0;
-        break;
       }
       case -16: {
         return -32767;
-        break;
       }
       case 16: {
         return 0;
-        break;
       }
       case -32: {
         return -2147483647;
-        break;
       }
       case 32: {
         return 0;
-        break;
       }
     }
     return 0;
   }
 
   maxNumber(root_field: any, field: string): number {
-    switch (root_field[`get${  field  }Type`]()) {
+    switch (root_field[`get${field}Type`]()) {
       case -8: {
         return 0x7f;
-        break;
       }
       case 8: {
         return 0xff;
-        break;
       }
       case -16: {
         return 0x7fff;
-        break;
       }
       case 16: {
         return 0xffff;
-        break;
       }
       case -32: {
         return 0x7fffffff;
-        break;
       }
       case 32: {
         return 0xffffffff;
-        break;
       }
     }
     return 0;
   }
 
-  isBoolean(value: any): boolean {
+  isBoolean(value: unknown): boolean {
     return typeof value === 'boolean';
   }
 
-  isString(value: any): boolean {
+  isString(value: unknown): boolean {
     return typeof value === 'string';
   }
 
@@ -198,7 +185,7 @@ export class FormatterOptionsComponent {
     this.updateField(keys, (x: any[]) => {
       x[x.length - 1] = (this.formatter as any)[
         x[x.length - 1].constructor.name.split('_')[0]
-      ][`${x[x.length - 1].constructor.name.split('_')[1]  }_${  newValue}`];
+      ][`${x[x.length - 1].constructor.name.split('_')[1]}_${newValue}`];
     });
   }
 
@@ -212,7 +199,7 @@ export class FormatterOptionsComponent {
     keys: (string | number)[]
   ) {
     this.updateField(keys, (x: any[]) => {
-      const {checked} = (event.target as HTMLInputElement);
+      const { checked } = (event.target as HTMLInputElement);
       x[x.length - 1] = checked
         ? inputValue === ''
           ? 0
@@ -233,14 +220,14 @@ export class FormatterOptionsComponent {
     return (
       typeof value === 'object' &&
       typeof value.$$ !== 'undefined' &&
-      value.$$.ptrType.registeredClass.name == 'StringList'
+      value.$$.ptrType.registeredClass.name === 'StringList'
     );
   }
 
   stringListToTextArea(raw_value: any): string {
     const value: StringList = raw_value as StringList;
     const retval: string[] = [];
-    for (let i = 0; i < value.size(); i++) {
+    for (let i = 0; i < value.size(); i += 1) {
       retval.push(value.get(i)!);
     }
     return retval.join('\n');
@@ -252,11 +239,11 @@ export class FormatterOptionsComponent {
       const data: string = (event.target as any).value;
       data
         .split('\n')
-        .forEach((data_i) => { (x[x.length - 1] as StringList).push_back(data_i); });
+        .forEach((dataI) => { (x[x.length - 1] as StringList).push_back(dataI); });
     });
   }
 
-  isFunction(value: any): boolean {
+  isFunction(value: unknown): boolean {
     return typeof value === 'function';
   }
 
@@ -282,7 +269,7 @@ export class FormatterOptionsComponent {
           ]()
         );
       } else if (x[x.length - 1].size() < value) {
-        for (let i = x[x.length - 1].size(); i < value; i++) {
+        for (let i : number = x[x.length - 1].size(); i < value; i += 1) {
           x[x.length - 1].push_back(
             new (this.formatter as any)![
               x[x.length - 1].$$.ptrType.registeredClass.name.slice(0, -4)

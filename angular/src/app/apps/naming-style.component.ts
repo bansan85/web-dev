@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { LucideAngularModule } from 'lucide-angular';
 
 @Component({
@@ -7,15 +7,16 @@ import { LucideAngularModule } from 'lucide-angular';
   imports: [CommonModule, LucideAngularModule],
   templateUrl: './naming-style.component.html',
   styleUrl: './naming-style.component.css',
-  preserveWhitespaces: true
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  preserveWhitespaces: true,
 })
 export class AppNamingStyleComponent implements OnInit {
   checkedSet = new Set<string>();
 
-  async ngOnInit() {
-    const naming_style = localStorage.getItem("naming_style");
-    if (naming_style) {
-      this.checkedSet = new Set(JSON.parse(naming_style));
+  ngOnInit() {
+    const namingStyle = localStorage.getItem("naming_style");
+    if (namingStyle) {
+      this.checkedSet = new Set(JSON.parse(namingStyle));
     }
   }
 
@@ -43,10 +44,9 @@ export class AppNamingStyleComponent implements OnInit {
     this.saveToLocalStorage();
   }
 
-  saveToYaml() {
-    navigator.clipboard.writeText(
-      `CheckOptions:\n${ 
-      Array.from(this.checkedSet)
+  async saveToYaml() {
+    await navigator.clipboard.writeText(
+      `CheckOptions:\n${Array.from(this.checkedSet)
         .map((key) => `  - key: readability-identifier-naming.${key}Case\n    value: 'aNy_CasE'`)
         .join("\n")}`
     );

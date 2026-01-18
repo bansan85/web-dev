@@ -18,6 +18,8 @@ describe('SpinnerLoadingComponent', () => {
 
     fixture = TestBed.createComponent(SpinnerLoadingComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('size', 150);
+    fixture.componentRef.setInput('title', 'title');
     fixture.detectChanges();
   });
 

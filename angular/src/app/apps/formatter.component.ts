@@ -1,12 +1,14 @@
 import {
+  ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   computed,
   ElementRef,
   HostListener,
+  inject,
   OnInit,
   signal,
-  ViewChild,
+  viewChild,
   ViewEncapsulation,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -21,6 +23,7 @@ import { DialogPopupComponent } from '../templates/dialog-popup.component';
 import { SpinnerLoadingComponent } from '../templates/spinner-loading.component';
 import { TextareaTwoComponent } from '../templates/textarea-two.component';
 import { WasmLoaderFormatterService } from '../wasm-loader-formatter.service';
+import { assertError } from './shared/interfaces/errors.js';
 
 @Component({
   selector: 'app-formatter',
@@ -34,7 +37,8 @@ import { WasmLoaderFormatterService } from '../wasm-loader-formatter.service';
   ],
   templateUrl: './formatter.component.html',
   styleUrl: './formatter.component.css',
-  encapsulation: ViewEncapsulation.None
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  encapsulation: ViewEncapsulation.None,
 })
 export class AppFormatterComponent implements OnInit {
   formatter?: FormatterModule;
@@ -50,21 +54,21 @@ export class AppFormatterComponent implements OnInit {
   pendingText = false;
   titleLoading = '';
 
-  @ViewChild('newStyle') newStyle!: ElementRef<HTMLSelectElement>;
-  @ViewChild('dialog') dialog!: DialogPopupComponent;
-  @ViewChild('textClangConfig')
-  textClangConfig!: ElementRef<HTMLTextAreaElement>;
+  private readonly newStyle = viewChild.required<ElementRef<HTMLSelectElement>>('newStyle');
+  private readonly dialog = viewChild.required<DialogPopupComponent>('dialog');
+  private readonly textClangConfig = viewChild.required<ElementRef<HTMLTextAreaElement>>('textClangConfig');
 
-  @ViewChild(TextareaTwoComponent) textareaTwo!: TextareaTwoComponent;
+  private readonly textareaTwo = viewChild.required(TextareaTwoComponent);
 
   @HostListener('window:resize')
   onResize() {
     this.updateIconSize();
   }
 
+  private readonly wasmLoaderFormatter = inject(WasmLoaderFormatterService);
+  private readonly cdr = inject(ChangeDetectorRef);
+
   constructor(
-    private readonly wasmLoaderFormatter: WasmLoaderFormatterService,
-    private readonly cdr: ChangeDetectorRef
   ) {
     this.format = this.format.bind(this);
   }
@@ -107,7 +111,7 @@ export class AppFormatterComponent implements OnInit {
 
     if (this.pendingText) {
       const event = new Event('input', { bubbles: true });
-      this.textareaTwo.inputElement.nativeElement.dispatchEvent(event);
+      this.textareaTwo().inputElement().nativeElement.dispatchEvent(event);
     }
     this.pendingText = false;
   }
@@ -116,7 +120,7 @@ export class AppFormatterComponent implements OnInit {
     this.spinnerSize.set(Math.min(window.innerWidth / 4, window.innerHeight / 2));
   }
 
-  async onEnableClangFormatExpert(event: Event) {
+  onEnableClangFormatExpert(event: Event) {
     this.enableClangFormatExpert = (event as any).newState === 'open';
 
     localStorage.setItem(
@@ -129,18 +133,18 @@ export class AppFormatterComponent implements OnInit {
 
   private centerDialog() {
     this.cdr.detectChanges();
-    const rect = this.dialog.dialogRef.nativeElement.getBoundingClientRect();
+    const rect = this.dialog().dialogRef().nativeElement.getBoundingClientRect();
     if (rect.right > window.innerWidth) {
-      this.dialog.dialogRef.nativeElement.style.left =
+      this.dialog().dialogRef().nativeElement.style.left =
         `${window.innerWidth -
-        this.dialog.dialogRef.nativeElement.offsetWidth 
+        this.dialog().dialogRef().nativeElement.offsetWidth
         }px`;
     }
     if (rect.bottom > window.innerHeight) {
-      this.dialog.dialogRef.nativeElement.style.top =
+      this.dialog().dialogRef().nativeElement.style.top =
         `${(window.innerHeight -
-          this.dialog.dialogRef.nativeElement.offsetHeight) /
-        2 
+          this.dialog().dialogRef().nativeElement.offsetHeight) /
+        2
         }px`;
     }
   }
@@ -148,7 +152,6 @@ export class AppFormatterComponent implements OnInit {
   async format(mangledName: string): Promise<string> {
     await this.loadWasmFormatterModule();
     if (this.formatter) {
-      const lines = mangledName.split('\n');
       const demangledName = this.formatter.formatter(
         mangledName,
         this.formatStyle!
@@ -161,7 +164,7 @@ export class AppFormatterComponent implements OnInit {
   }
 
   loadStyle() {
-    switch (this.newStyle.nativeElement.value) {
+    switch (this.newStyle().nativeElement.value) {
       case 'llvm':
         this.formatStyle = this.formatter!.getLLVMStyle();
         break;
@@ -189,6 +192,8 @@ export class AppFormatterComponent implements OnInit {
       case 'none':
         this.formatStyle = this.formatter!.getNoStyle();
         break;
+      default:
+        throw assertError(`Unknown style ${this.newStyle().nativeElement.value}.`);
     }
 
     this.reformat();
@@ -196,7 +201,7 @@ export class AppFormatterComponent implements OnInit {
 
   reformat() {
     const event = new Event('input', { bubbles: true });
-    this.textareaTwo.inputElement.nativeElement.dispatchEvent(event);
+    this.textareaTwo().inputElement().nativeElement.dispatchEvent(event);
 
     localStorage.setItem(
       'formatStyle',
@@ -228,7 +233,7 @@ export class AppFormatterComponent implements OnInit {
 
   loadYamlFromText() {
     this.formatStyle = this.formatter!.deserializeFromYaml(
-      this.textClangConfig.nativeElement.value
+      this.textClangConfig().nativeElement.value
     );
     this.reformat();
   }
@@ -245,8 +250,8 @@ export class AppFormatterComponent implements OnInit {
     link.click();
   }
 
-  saveYamlToText() {
-    navigator.clipboard.writeText(
+  async saveYamlToText() {
+    await navigator.clipboard.writeText(
       this.formatter!.serializeToYaml(this.formatStyle!)
     );
   }

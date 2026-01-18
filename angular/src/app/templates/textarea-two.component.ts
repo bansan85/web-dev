@@ -1,22 +1,23 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, input, viewChild } from '@angular/core';
 
 @Component({
   selector: 'app-textarea-two',
   imports: [CommonModule],
   templateUrl: './textarea-two.component.html',
-  styleUrl: './textarea-two.component.css'
+  styleUrl: './textarea-two.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TextareaTwoComponent {
-  @ViewChild('inputElement') inputElement!: ElementRef<HTMLTextAreaElement>;
+  readonly inputElement = viewChild.required<ElementRef<HTMLTextAreaElement>>('inputElement');
 
-  @Input() inputPlaceholder!: string;
+  readonly inputPlaceholder = input.required<string>();
 
-  @Input() inputChange!: (input: string) => Promise<string>;
+  readonly inputChange = input.required<(input: string) => Promise<string>>();
 
   outputStr: Promise<string> = Promise.resolve('');
 
-  inputToOutput(input: string) {
-    this.outputStr = this.inputChange(input);
+  inputToOutput(inputStr: string) {
+    this.outputStr = this.inputChange()(inputStr);
   }
 }

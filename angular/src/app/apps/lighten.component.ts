@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
 
@@ -17,15 +17,18 @@ import { WasmLoaderLightenService } from '../wasm-loader-lighten.service';
   ],
   templateUrl: './lighten.component.html',
   styleUrl: './lighten.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppLightenComponent implements OnInit {
   lighten?: LightenModule;
 
-  @ViewChild(TextareaTwoComponent) textareaTwo!: TextareaTwoComponent;
+  readonly textareaTwo = viewChild.required(TextareaTwoComponent);
+
+  private readonly wasmLoaderLighten = inject(WasmLoaderLightenService);
 
   count = 4;
 
-  constructor(private readonly wasmLoaderLighten: WasmLoaderLightenService) {
+  constructor() {
     this.lightenNumber = this.lightenNumber.bind(this);
   }
 
@@ -39,9 +42,7 @@ export class AppLightenComponent implements OnInit {
   }
 
   async loadWasmLightenModule() {
-    if (!this.lighten) {
-      this.lighten = await this.wasmLoaderLighten.wasm();
-    }
+    this.lighten ??= await this.wasmLoaderLighten.wasm();
   }
 
   roundNumbers(data: any): any {
@@ -68,13 +69,13 @@ export class AppLightenComponent implements OnInit {
       const parsedJson = JSON.parse(input);
       const roundedJson = this.roundNumbers(parsedJson);
       return JSON.stringify(roundedJson, null, 2);
-    } catch (error) {
+    } catch (_error) {
       return 'Invalid JSON input';
     }
   }
 
-  async lightenNumber(input: string): Promise<string> {
-    return this.processJson(input);
+  lightenNumber(input: string): Promise<string> {
+    return Promise.resolve(this.processJson(input));
   }
 
   onCount(count: number) {
@@ -83,6 +84,6 @@ export class AppLightenComponent implements OnInit {
     localStorage.setItem('lighten-count', count.toString());
 
     const event = new Event('input', { bubbles: true });
-    this.textareaTwo.inputElement.nativeElement.dispatchEvent(event);
+    this.textareaTwo().inputElement().nativeElement.dispatchEvent(event);
   }
 }

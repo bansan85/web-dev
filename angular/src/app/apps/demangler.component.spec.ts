@@ -47,6 +47,7 @@ describe('AppDemanglerComponent', () => {
     )).toBeNull();
 
     // Test open clang-format dialog
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     const settingsImage = document.querySelector(
       'lucide-icon[name="settings"]'
     )! as HTMLElement;
@@ -66,6 +67,7 @@ describe('AppDemanglerComponent', () => {
       By.css('app-dialog-popup dialog.open')
     )).toBeTruthy();
 
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     const checkedClangFormat = document.querySelector(
       'input[name="enableClangFormat"]'
     )! as HTMLElement;

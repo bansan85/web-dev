@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { EmbindModule as LightenModule } from '../assets/web_lighten';
 import web_lighten from '../assets/web_lighten.js';
+import { unknownAssertError } from './apps/shared/interfaces/errors';
 
 @Injectable({
   providedIn: 'root',
@@ -12,9 +13,11 @@ export class WasmLoaderLightenService {
   private isLoading = true;
 
   constructor() {
-    web_lighten().then(async (instance: LightenModule) => {
+    web_lighten().then((instance: LightenModule) => {
       this.instance = instance;
       this.isLoading = false;
+    }).catch((err: unknown) => {
+      throw unknownAssertError(err);
     });
   }
 

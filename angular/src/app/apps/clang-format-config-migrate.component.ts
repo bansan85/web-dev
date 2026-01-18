@@ -3,9 +3,9 @@ import {
   Component,
   computed,
   HostListener,
+  inject,
   OnInit,
   signal,
-  ViewChild,
   viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -37,6 +37,7 @@ interface SelectItem {
   ],
   templateUrl: './clang-format-config-migrate.component.html',
   styleUrl: './clang-format-config-migrate.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ClangFormatConfigMigrateComponent implements OnInit {
   clangFormatConfigMigrate?: ClangFormatConfigMigrateModule;
@@ -48,14 +49,16 @@ export class ClangFormatConfigMigrateComponent implements OnInit {
 
   compatibleStyles?: string[] = [];
 
-  @ViewChild(TextareaTwoComponent) textareaTwo!: TextareaTwoComponent;
+  private readonly textareaTwo = viewChild.required(TextareaTwoComponent);
+
   oldVersion = '';
   newVersion = '';
   defaultStyle = '';
   exportOnlyChangedValue = true;
 
+  private readonly wasmLoaderClangFormatConfigMigrate = inject(WasmLoaderClangFormatConfigMigrateService);
+
   constructor(
-    private readonly wasmLoaderClangFormatConfigMigrate: WasmLoaderClangFormatConfigMigrateService
   ) {
     this.migrate = this.migrate.bind(this);
   }
@@ -72,13 +75,10 @@ export class ClangFormatConfigMigrateComponent implements OnInit {
   }
 
   async loadWasmLoaderClangFormatConfigMigrate() {
-    if (!this.clangFormatConfigMigrate) {
-      this.clangFormatConfigMigrate =
-        await this.wasmLoaderClangFormatConfigMigrate.wasm();
-    }
+    this.clangFormatConfigMigrate ??= await this.wasmLoaderClangFormatConfigMigrate.wasm();
   }
 
-  protected readonly isLoading = computed(()=> {
+  protected readonly isLoading = computed(() => {
     if (this.wasmLoaderClangFormatConfigMigrate.isLoading()) {
       this.titleLoading = 'clang-format config migrate';
       return true;
@@ -96,11 +96,11 @@ export class ClangFormatConfigMigrateComponent implements OnInit {
 
     const versions: VersionList =
       this.clangFormatConfigMigrate!.getCompatibleVersion(
-        this.textareaTwo.inputElement.nativeElement.value
+        this.textareaTwo().inputElement().nativeElement.value
       );
     this.compatibleVersions = [];
 
-    for (let index = 0; index < versions.size(); index++) {
+    for (let index = 0; index < versions.size(); index += 1) {
       const version = versions.get(index)!;
       const element: SelectItem = {
         id: version,
@@ -120,15 +120,15 @@ export class ClangFormatConfigMigrateComponent implements OnInit {
       return;
     }
 
-    if (this.compatibleVersions.length != 0) {
+    if (this.compatibleVersions.length !== 0) {
       const compatibleStylesCpp =
         this.clangFormatConfigMigrate!.getStyleNamesRange(
           oldVersion,
           this.clangFormatConfigMigrate!.versionStringToEnum(this.newVersion)
         );
       const sizeStyles = compatibleStylesCpp.size();
-      for (let i = 0; i < sizeStyles; i++) {
-        this.compatibleStyles.push(compatibleStylesCpp.get(i)!.toString());
+      for (let i = 0; i < sizeStyles; i += 1) {
+        this.compatibleStyles.push(compatibleStylesCpp.get(i)!);
       }
     }
   }
@@ -136,13 +136,13 @@ export class ClangFormatConfigMigrateComponent implements OnInit {
   getOldVersion(): Version | undefined {
     let retval: Version;
 
-    if (this.compatibleVersions.length == 0) {
+    if (this.compatibleVersions.length === 0) {
       return undefined;
     }
 
-    if (this.oldVersion == 'min') {
+    if (this.oldVersion === 'min') {
       retval = this.compatibleVersions[0].id;
-    } else if (this.oldVersion == 'max') {
+    } else if (this.oldVersion === 'max') {
       retval = this.compatibleVersions[this.compatibleVersions.length - 1].id;
     } else {
       retval = this.clangFormatConfigMigrate!.versionStringToEnum(
@@ -177,6 +177,6 @@ export class ClangFormatConfigMigrateComponent implements OnInit {
 
   forceMigrate() {
     const event = new Event('input', { bubbles: true });
-    this.textareaTwo.inputElement.nativeElement.dispatchEvent(event);
+    this.textareaTwo().inputElement().nativeElement.dispatchEvent(event);
   }
 }

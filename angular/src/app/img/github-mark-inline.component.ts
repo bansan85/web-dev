@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'app-github-mark-inline',
   standalone: true,
   templateUrl: '../../assets/img/github-mark.svg',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class GithubMarkInlineComponent {}

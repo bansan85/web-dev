@@ -14,6 +14,8 @@ describe('TextareaTwoComponent', () => {
 
     fixture = TestBed.createComponent(TextareaTwoComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('inputPlaceholder', 'Placeholder');
+    fixture.componentRef.setInput('inputChange', (_inputStr:string)=>'outputStr');
     fixture.detectChanges();
   });
 

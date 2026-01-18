@@ -2,6 +2,7 @@ import { Injectable, signal } from '@angular/core';
 
 import { EmbindModule as ClangFormatConfigMigrateModule } from '../assets/web_clang_format_config_migrate';
 import web_clang_format_config_migrate from '../assets/web_clang_format_config_migrate.js';
+import { unknownAssertError } from './apps/shared/interfaces/errors';
 
 @Injectable({
   providedIn: 'root',
@@ -13,9 +14,11 @@ export class WasmLoaderClangFormatConfigMigrateService {
   readonly isLoading = this.loading.asReadonly();
 
   constructor() {
-    web_clang_format_config_migrate().then(async (instance: ClangFormatConfigMigrateModule) => {
+    web_clang_format_config_migrate().then((instance: ClangFormatConfigMigrateModule) => {
       this.instance = instance;
       this.loading.set(false);
+    }).catch((err: unknown) => {
+      throw unknownAssertError(err);
     });
   }
 

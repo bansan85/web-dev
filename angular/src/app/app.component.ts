@@ -1,5 +1,5 @@
 
-import { Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
   NavigationEnd,
@@ -31,7 +31,8 @@ import { LogoNamingStyleInlineComponent } from './img/logo-naming-style-inline.c
     LogoClangFormatConfigMigrateInlineComponent
   ],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrl: './app.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
   private readonly router = inject(Router);

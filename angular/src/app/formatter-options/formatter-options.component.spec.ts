@@ -187,10 +187,10 @@ describe('FormatterOptionsComponent', () => {
       for (
         let i = 0;
         i < component.formatStyle.WhitespaceSensitiveMacros.size();
-        i++
+        i += 1
       ) {
         stringList.push(
-          component.formatStyle.WhitespaceSensitiveMacros.get(i)!.toString()
+          component.formatStyle.WhitespaceSensitiveMacros.get(i)!
         );
       }
       expect(tWhitespaceSensitiveMacros.value).toEqual(stringList.join('\n'));
@@ -202,10 +202,10 @@ describe('FormatterOptionsComponent', () => {
       for (
         let i = 0;
         i < component.formatStyle.WhitespaceSensitiveMacros.size();
-        i++
+        i += 1
       ) {
         stringList2.push(
-          component.formatStyle.WhitespaceSensitiveMacros.get(i)!.toString()
+          component.formatStyle.WhitespaceSensitiveMacros.get(i)!
         );
       }
       expect(tWhitespaceSensitiveMacros.value).toEqual(stringList2.join('\n'));
@@ -230,7 +230,7 @@ describe('FormatterOptionsComponent', () => {
       expect(
         Array.from(
           dtRawStringFormats.nextElementSibling!.querySelectorAll('dt')
-        ).filter((x) => /Item \d+/.exec((x.textContent))).length
+        ).filter((x) => /Item \d+/u.exec((x.textContent))).length
       ).toEqual(3);
 
       Array.from(dtRawStringFormats.nextElementSibling!.querySelectorAll('dt'))
@@ -267,7 +267,7 @@ describe('FormatterOptionsComponent', () => {
       // Check formatStyleKeys
       const allItems = Array.from(
         dtRawStringFormats.nextElementSibling!.querySelectorAll('dt')
-      ).filter((x) => /Item \d+/.exec((x.textContent)));
+      ).filter((x) => /Item \d+/u.exec((x.textContent)));
       expect(allItems.length).toEqual(2);
       const allItemsI =
         allItems[0].nextElementSibling!.querySelectorAll('dl dt');
@@ -279,8 +279,7 @@ describe('FormatterOptionsComponent', () => {
         'CanonicalDelimiter:',
         'BasedOnStyle:',
       ];
-      allItemsI.forEach((x, i) =>
-        { expect(x.textContent).toEqual(allItemsIExpected[i]); }
+      allItemsI.forEach((x, i) => { expect(x.textContent).toEqual(allItemsIExpected[i]); }
       );
     }
 
@@ -347,12 +346,11 @@ describe('FormatterOptionsComponent', () => {
       for (
         let i = 0;
         i < component.formatStyle.RawStringFormats.get(0)!.Delimiters.size();
-        i++
+        i += 1
       ) {
         stringList.push(
           component.formatStyle.RawStringFormats.get(0)!
             .Delimiters.get(i)!
-            .toString()
         );
       }
       expect(tDelimiters.value).toEqual(stringList.join('\n'));
@@ -366,13 +364,9 @@ describe('FormatterOptionsComponent', () => {
       for (
         let i = 0;
         i < component.formatStyle.RawStringFormats.get(0)!.Delimiters.size();
-        i++
+        i += 1
       ) {
-        stringList2.push(
-          component.formatStyle.RawStringFormats.get(0)!
-            .Delimiters.get(i)!
-            .toString()
-        );
+        stringList2.push(component.formatStyle.RawStringFormats.get(0)!.Delimiters.get(i)!);
       }
       expect(tDelimiters.value).toEqual(stringList2.join('\n'));
     }
@@ -479,7 +473,7 @@ describe('FormatterOptionsComponent', () => {
       expect(
         Array.from(
           dtIncludeCategories.nextElementSibling!.querySelectorAll('dt')
-        ).filter((x) => /Item \d+/.exec((x.textContent))).length
+        ).filter((x) => /Item \d+/u.exec((x.textContent))).length
       ).toEqual(3);
 
       Array.from(dtIncludeCategories.nextElementSibling!.querySelectorAll('dt'))
@@ -518,7 +512,7 @@ describe('FormatterOptionsComponent', () => {
       // Check formatStyleKeys
       const allItems = Array.from(
         dtIncludeCategories.nextElementSibling!.querySelectorAll('dt')
-      ).filter((x) => /Item \d+/.exec((x.textContent)));
+      ).filter((x) => /Item \d+/u.exec((x.textContent)));
       expect(allItems.length).toEqual(2);
       const allItemsI =
         allItems[0].nextElementSibling!.querySelectorAll('dl dt');
@@ -529,8 +523,7 @@ describe('FormatterOptionsComponent', () => {
         'SortPriority:',
         'RegexIsCaseSensitive:',
       ];
-      allItemsI.forEach((x, i) =>
-        { expect(x.textContent).toEqual(allItemsIExpected[i]); }
+      allItemsI.forEach((x, i) => { expect(x.textContent).toEqual(allItemsIExpected[i]); }
       );
     }
 
@@ -601,7 +594,7 @@ describe('FormatterOptionsComponent', () => {
     {
       const spans = document.querySelectorAll('span');
       const notImplementedSpans = Array.from(spans).filter((span) =>
-        span.textContent?.startsWith('Not implemented')
+        span.textContent.startsWith('Not implemented')
       );
       expect(notImplementedSpans.length).toEqual(0);
     }
