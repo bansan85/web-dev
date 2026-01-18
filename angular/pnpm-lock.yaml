@@ -66,6 +66,9 @@ importers:
       eslint:
         specifier: ^9.39.2
         version: 9.39.2(jiti@1.21.7)
+      eslint-plugin-simple-import-sort:
+        specifier: ^12.1.1
+        version: 12.1.1(eslint@9.39.2(jiti@1.21.7))
       jasmine-core:
         specifier: ~5.13.0
         version: 5.13.0
@@ -1939,6 +1942,11 @@ packages:
   escape-string-regexp@4.0.0:
     resolution: {integrity: sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==}
     engines: {node: '>=10'}
+
+  eslint-plugin-simple-import-sort@12.1.1:
+    resolution: {integrity: sha512-6nuzu4xwQtE3332Uz0to+TxDQYRLTKRESSc2hefVT48Zc8JthmN23Gx9lnYhu0FtkRSL1oxny3kJ2aveVhmOVA==}
+    peerDependencies:
+      eslint: '>=5.0.0'
 
   eslint-scope@8.4.0:
     resolution: {integrity: sha512-sNXOfKCn74rt8RICKMvJS7XKV/Xk9kA7DyJr8mJik3S7Cwgy3qlkkmyS2uQB3jiJg6VNdZd/pDBJu0nvG2NlTg==}
@@ -5348,6 +5356,10 @@ snapshots:
   escape-html@1.0.3: {}
 
   escape-string-regexp@4.0.0: {}
+
+  eslint-plugin-simple-import-sort@12.1.1(eslint@9.39.2(jiti@1.21.7)):
+    dependencies:
+      eslint: 9.39.2(jiti@1.21.7)
 
   eslint-scope@8.4.0:
     dependencies:
