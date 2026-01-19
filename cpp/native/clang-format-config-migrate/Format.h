@@ -40,7 +40,8 @@ enum class Version {
   V17,
   V18,
   V19,
-  V20
+  V20,
+  V21
 };
 
 std::vector<Version> getCompatibleVersion(const std::string &config);

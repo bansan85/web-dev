@@ -33,7 +33,8 @@ EMSCRIPTEN_BINDINGS(web_clang_format_config_migrate) {
       .value("V17", clang_vx::Version::V17)
       .value("V18", clang_vx::Version::V18)
       .value("V19", clang_vx::Version::V19)
-      .value("V20", clang_vx::Version::V20);
+      .value("V20", clang_vx::Version::V20)
+      .value("V21", clang_vx::Version::V21);
 
   emscripten::register_vector<clang_vx::Version>("VersionList");
 

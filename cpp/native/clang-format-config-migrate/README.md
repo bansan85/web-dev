@@ -6,16 +6,18 @@ Get the version of the new LLVM version with 3 digits (i.e. 20.1.6) and create a
 
 In this new folder, copy the following files from LLVM project (`cpp/third_party/llvm`):
 
-  - clang/lib/Format/Format.cpp
   - clang/include/clang/Format/Format.h
-  - clang/lib/Tooling/Inclusions/IncludeStyle.cpp
   - clang/include/clang/Tooling/Inclusions/IncludeStyle.h
+  - clang/lib/Format/Format.cpp
+  - clang/lib/Tooling/Inclusions/IncludeStyle.cpp
 
 ## Adjust code
 
 Keep only the main struct of each header and helpers that are needed to serialize to Yaml format.
 
-You know what you need to change, the easiest solution is to compare the file with its latest version that has been integrated in `clang-format-config-migrate` project.
+When editing, it's strongly recommanded to edit the file with a GUI editor (i.e. WinMerge) that allow real time comparision with its latest version that has been integrated in `clang-format-config-migrate` project.
+
+Keep up to date the next paragraph to be sure to not forget something.
 
 ### IncludeStyle.h
 
@@ -87,11 +89,26 @@ inline std::error_code parseConfiguration(const std::string &Config,
 }
 ```
 
+and
+
+```cpp
+  friend std::error_code
+  parseConfiguration(llvm::MemoryBufferRef Config, FormatStyle *Style,
+                     bool AllowUnknownOptions,
+                     llvm::SourceMgr::DiagHandlerTy DiagHandler,
+                     void *DiagHandlerCtxt, bool IsDotHFile);
+```
+
+to
+
+```
+  friend std::error_code parseConfiguration(llvm::MemoryBufferRef Config,
+                                            FormatStyle *Style);
+```
+
 Replace prototype `std::string configurationAsText(const FormatStyle &Style);` to `std::string configurationAsText(const FormatStyle &Style, const std::string &DefaultStyleName, bool SkipSameValue);`. More parameters are needed for migration.
 
-Remove all prototype after `configurationAsText` and keep only `isClangFormatOn` / `isClangFormatOff`.
-
-Replace `StringRef` by `const std::string &` for `isClangFormatOn` / `isClangFormatOff`.
+Remove all prototype after `configurationAsText`.
 
 Replace `clang::format::ParseError` by `clang_vXX::ParseError`.
 
@@ -138,12 +155,26 @@ namespace prec = clang::prec;
 namespace tok = clang::tok;
 ```
 
-Replace all `IO.mapOptional(` by `clang_vx::IoMapOptional<FormatStyle>(IO, ` except:
+Replace all `IO.mapOptional(` by `clang_vx::IoMapOptional<FormatStyle>(IO, ` (`clang_vx` must not be replaced by the version of clang) except:
 
   - if `template <> struct MappingTraits` is used in a `std::vector` (i.e. `RawStringFormat`),
   - if you are in condition `!IO.outputting()` because you will only read, not write.
 
 In `template <> struct MappingTraits<FormatStyle>`, replace the `BasedOnStyle` field from:
+
+In `template <> struct MappingTraits<FormatStyle::SpacesInLineComment>`, replace
+
+```cpp
+    clang_vx::IoMapOptional<FormatStyle>(IO, "Maximum", signedMaximum);
+```
+
+by
+
+```cpp
+    clang_vx::IoMapOptional<FormatStyle>(IO, "Maximum", signedMaximum,
+                                         Space.Maximum);
+```
+
 
 ```cpp
     StringRef BasedOnStyle;
@@ -268,6 +299,12 @@ Remove the huge anonymous namespace at the end of the file and functions after. 
 
 Replace `tooling::IncludeStyle` by `clang_vXX::IncludeStyle`.
 
+Replace namespace `format::clang` by `clang_vXX`.
+
+In prototype `getPredefinedStyle`, explicity set `llvm` namespace to `llvm::StringRef`.
+
+Apply `clang-format`.
+
 ## Build new files
 
 ### `cpp/native/CMakeLists.txt`
@@ -331,7 +368,7 @@ Just add
 namespace clang_update_vXX {
 
 template <clang_vx::Update Upgrade>
-void update(clang_vxx::FormatStyle &prev, clang_vXX::FormatStyle &next,
+void update(clang_vPP::FormatStyle &prev, clang_vXX::FormatStyle &next,
             const std::string &style);
 
 } // namespace clang_update_vXX
@@ -408,6 +445,9 @@ Finally, duplicate the whole namespace `clang_update_vPP` to `clang_update_vXX`.
 
 Then you need to open `cpp/native/clang-format-config-migrate/XX.YY.ZZ/Format.h` and compare with `cpp/native/clang-format-config-migrate/PP.QQ.RR/Format.h`.
 
+At first, all `frozen::unordered_map` in `clang_update_vXX` before update `function`.
+
+
 It's important to compare for each field, in both old and new version :
   - the field exist only in new version. Use `NEW_FIELD`.
   - the field name and type are the same. Use `ASSIGN_MAGIC_ENUM` for enum type, `ASSIGN_SAME_FIELD` either.
@@ -427,7 +467,7 @@ Add the new version number to the binding of the `enum class Version`. Add `.val
 
 ## Tests
 
-You need to generate dataset with default config for each style. Launch command with clang-format (here for webkit style):
+You need to generate dataset with default config for each style. Launch command with clang-format-XX (here for webkit style):
 
 `clang-format-XX -dump-config -style=webkit > cpp/tests/data/config-file-XX.cfg`
 
@@ -440,7 +480,7 @@ In `cpp/tests/CMakeLists.txt`, add in source file of `test_clang_format_config_m
     "${CMAKE_CURRENT_SOURCE_DIR}/../native/clang-format-config-migrate/XX.YY.ZZ/IncludeStyle.h"
 ```
 
-In `cpp/tests/clang-format-config-migrate.cpp`, append `clang_vx::Version::VXX` to all fields in `compatibilities` variable. For example, replace `clang_vx::Version::VPP` by `clang_vx::Version::VPP, clang_vx::Version::VXX` and apply `clang-format`.
+In `cpp/tests/clang-format-config-migrate.cpp`, append `clang_vx::Version::VXX` to all fields in `compatibilities` variable. For example, replace `clang_vx::Version::VPP` by `clang_vx::Version::VPP, clang_vx::Version::VXX` (EXCEPT for v6 than is not compatible with another version) and apply `clang-format`.
 
 In `cpp/tests/clang-format-config-migrate.cpp`, add all files generated by previous command `clang-format -dump-config -style=...` in `compatibilities`: `{"STYLE-XX.cfg", {clang_vx::Version::VXX}}`.
 

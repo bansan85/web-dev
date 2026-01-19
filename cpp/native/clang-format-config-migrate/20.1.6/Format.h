@@ -5495,9 +5495,6 @@ std::string configurationAsText(const FormatStyle &Style,
                                 const std::string &DefaultStyleName,
                                 bool SkipSameValue);
 
-bool isClangFormatOn(const std::string &Comment);
-bool isClangFormatOff(const std::string &Comment);
-
 } // namespace clang_v20
 
 template <>
