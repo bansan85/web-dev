@@ -36,7 +36,7 @@
                     <span>Size:</span>
                     <input max="0xFFFFFFFF" min="0" type="number"
                       [ngModel]="$any(formatStyle)[key].size()" (ngModelChange)="resizeList($event, [key])" />
-                    @for (index of [].constructor($any(formatStyle)[key].size()); track index; let i = $index) {
+                    @for (index of [].constructor($any(formatStyle)[key].size()); track $index; let i = $index) {
                       <dl>
                         <dt>Item {{ i }}</dt>
                         <dd>
@@ -140,7 +140,7 @@
                                           <span>Size:</span>
                                           <input max="0xFFFFFFFF" min="0"
                                             type="number" [ngModel]="$any(formatStyle)[key][subkey].size()" (ngModelChange)="resizeList($event, [key, subkey])" />
-                                          @for (index of [].constructor($any(formatStyle)[key][subkey].size()); track index; let i = $index) {
+                                          @for (index of [].constructor($any(formatStyle)[key][subkey].size()); track $index; let i = $index) {
                                             <dl>
                                               <dt>Item {{ i }}</dt>
                                               <dd>
