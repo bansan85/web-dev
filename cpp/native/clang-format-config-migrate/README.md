@@ -303,6 +303,14 @@ Replace namespace `format::clang` by `clang_vXX`.
 
 In prototype `getPredefinedStyle`, explicity set `llvm` namespace to `llvm::StringRef`.
 
+In `getPredefinedStyle`, before `Style->Language = Language;`, add (the same in `configurationAsText`):
+
+```cpp
+  expandPresetsBraceWrapping(*Style);
+  expandPresetsSpaceBeforeParens(*Style);
+  expandPresetsSpacesInParens(*Style);
+```
+
 Apply `clang-format`.
 
 ## Build new files
@@ -497,6 +505,15 @@ At the end of the `updateEnum` test, add:
       clang_vXX::FormatStyle styleXX_old;
       clang_vXX::getPredefinedStyle(
           style, clang_vXX::FormatStyle::LanguageKind::LK_Cpp, &styleXX_old);
+
+      REQUIRE(clang_vXX::configurationAsText(styleXX_old, style, true) ==
+              R"XX(---
+Language:        Cpp
+BasedOnStyle:    )XX" +
+                  style + R"XX(
+...
+)XX");
+
       clang_vPP::FormatStyle stylePP_new;
       clang_update_vXX::update<clang_vx::Update::DOWNGRADE>(stylePP_new,
                                                             styleXX_old, style);

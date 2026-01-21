@@ -1335,6 +1335,8 @@ bool getPredefinedStyle(llvm::StringRef Name,
     return false;
   }
 
+  *Style = expandPresets(*Style);
+
   Style->Language = Language;
   return true;
 }

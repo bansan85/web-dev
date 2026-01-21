@@ -1685,6 +1685,9 @@ bool getPredefinedStyle(llvm::StringRef Name,
     return false;
   }
 
+  expandPresetsBraceWrapping(*Style);
+  expandPresetsSpaceBeforeParens(*Style);
+
   Style->Language = Language;
   return true;
 }

@@ -1034,6 +1034,14 @@ TEST_CASE("updateEnum", "[clang-format-config-migrate]") {
 
       clang_v3_4::FormatStyle style3_4_old;
       clang_v3_4::getPredefinedStyle(style, &style3_4_old);
+
+      REQUIRE(clang_v3_4::configurationAsText(style3_4_old, style, true) ==
+              R"XX(---
+BasedOnStyle:    )XX" +
+                  style + R"XX(
+...
+)XX");
+
       clang_v3_3::FormatStyle style3_3_new;
       clang_update_v3_4::update<clang_vx::Update::DOWNGRADE>(
           style3_3_new, style3_4_old, style);
@@ -1058,6 +1066,15 @@ TEST_CASE("updateEnum", "[clang-format-config-migrate]") {
       clang_v3_5::FormatStyle style3_5_old;
       clang_v3_5::getPredefinedStyle(
           style, clang_v3_5::FormatStyle::LanguageKind::LK_Cpp, &style3_5_old);
+
+      REQUIRE(clang_v3_5::configurationAsText(style3_5_old, style, true) ==
+              R"XX(---
+Language:        Cpp
+BasedOnStyle:    )XX" +
+                  style + R"XX(
+...
+)XX");
+
       clang_v3_4::FormatStyle style3_4_new;
       clang_update_v3_5::update<clang_vx::Update::DOWNGRADE>(
           style3_4_new, style3_5_old, style);
@@ -1102,6 +1119,15 @@ TEST_CASE("updateEnum", "[clang-format-config-migrate]") {
       clang_v3_6::FormatStyle style3_6_old;
       clang_v3_6::getPredefinedStyle(
           style, clang_v3_6::FormatStyle::LanguageKind::LK_Cpp, &style3_6_old);
+
+      REQUIRE(clang_v3_6::configurationAsText(style3_6_old, style, true) ==
+              R"XX(---
+Language:        Cpp
+BasedOnStyle:    )XX" +
+                  (style == "none" ? "llvm" : style) + R"XX(
+...
+)XX");
+
       clang_v3_5::FormatStyle style3_5_new;
       clang_update_v3_6::update<clang_vx::Update::DOWNGRADE>(
           style3_5_new, style3_6_old, style);
@@ -1131,6 +1157,15 @@ TEST_CASE("updateEnum", "[clang-format-config-migrate]") {
       clang_v3_7::FormatStyle style3_7_old;
       clang_v3_7::getPredefinedStyle(
           style, clang_v3_7::FormatStyle::LanguageKind::LK_Cpp, &style3_7_old);
+
+      REQUIRE(clang_v3_7::configurationAsText(style3_7_old, style, true) ==
+              R"XX(---
+Language:        Cpp
+BasedOnStyle:    )XX" +
+                  style + R"XX(
+...
+)XX");
+
       clang_v3_6::FormatStyle style3_6_new;
       clang_update_v3_7::update<clang_vx::Update::DOWNGRADE>(
           style3_6_new, style3_7_old, style);
@@ -1206,6 +1241,15 @@ TEST_CASE("updateEnum", "[clang-format-config-migrate]") {
       clang_v3_8::FormatStyle style3_8_old;
       clang_v3_8::getPredefinedStyle(
           style, clang_v3_8::FormatStyle::LanguageKind::LK_Cpp, &style3_8_old);
+
+      REQUIRE(clang_v3_8::configurationAsText(style3_8_old, style, true) ==
+              R"XX(---
+Language:        Cpp
+BasedOnStyle:    )XX" +
+                  style + R"XX(
+...
+)XX");
+
       clang_v3_7::FormatStyle style3_7_new;
       clang_update_v3_8::update<clang_vx::Update::DOWNGRADE>(
           style3_7_new, style3_8_old, style);
@@ -1245,6 +1289,15 @@ TEST_CASE("updateEnum", "[clang-format-config-migrate]") {
       clang_v3_9::FormatStyle style3_9_old;
       clang_v3_9::getPredefinedStyle(
           style, clang_v3_9::FormatStyle::LanguageKind::LK_Cpp, &style3_9_old);
+
+      REQUIRE(clang_v3_9::configurationAsText(style3_9_old, style, true) ==
+              R"XX(---
+Language:        Cpp
+BasedOnStyle:    )XX" +
+                  style + R"XX(
+...
+)XX");
+
       clang_v3_8::FormatStyle style3_8_new;
       clang_update_v3_9::update<clang_vx::Update::DOWNGRADE>(
           style3_8_new, style3_9_old, style);
@@ -1263,6 +1316,15 @@ TEST_CASE("updateEnum", "[clang-format-config-migrate]") {
       clang_v4::FormatStyle style4_old;
       clang_v4::getPredefinedStyle(
           style, clang_v4::FormatStyle::LanguageKind::LK_Cpp, &style4_old);
+
+      REQUIRE(clang_v4::configurationAsText(style4_old, style, true) ==
+              R"XX(---
+Language:        Cpp
+BasedOnStyle:    )XX" +
+                  style + R"XX(
+...
+)XX");
+
       clang_v3_9::FormatStyle style3_9_new;
       clang_update_v4::update<clang_vx::Update::DOWNGRADE>(style3_9_new,
                                                            style4_old, style);
@@ -1308,6 +1370,15 @@ TEST_CASE("updateEnum", "[clang-format-config-migrate]") {
       clang_v5::FormatStyle style5_old;
       clang_v5::getPredefinedStyle(
           style, clang_v5::FormatStyle::LanguageKind::LK_Cpp, &style5_old);
+
+      REQUIRE(clang_v5::configurationAsText(style5_old, style, true) ==
+              R"XX(---
+Language:        Cpp
+BasedOnStyle:    )XX" +
+                  style + R"XX(
+...
+)XX");
+
       clang_v4::FormatStyle style4_new;
       clang_update_v5::update<clang_vx::Update::DOWNGRADE>(style4_new,
                                                            style5_old, style);
@@ -1349,6 +1420,15 @@ TEST_CASE("updateEnum", "[clang-format-config-migrate]") {
       clang_v6::FormatStyle style6_old;
       clang_v6::getPredefinedStyle(
           style, clang_v6::FormatStyle::LanguageKind::LK_Cpp, &style6_old);
+
+      REQUIRE(clang_v6::configurationAsText(style6_old, style, true) ==
+              R"XX(---
+Language:        Cpp
+BasedOnStyle:    )XX" +
+                  style + R"XX(
+...
+)XX");
+
       clang_v5::FormatStyle style5_new;
       clang_update_v6::update<clang_vx::Update::DOWNGRADE>(style5_new,
                                                            style6_old, style);
@@ -1373,6 +1453,15 @@ TEST_CASE("updateEnum", "[clang-format-config-migrate]") {
       clang_v7::FormatStyle style7_old;
       clang_v7::getPredefinedStyle(
           style, clang_v7::FormatStyle::LanguageKind::LK_Cpp, &style7_old);
+
+      REQUIRE(clang_v7::configurationAsText(style7_old, style, true) ==
+              R"XX(---
+Language:        Cpp
+BasedOnStyle:    )XX" +
+                  style + R"XX(
+...
+)XX");
+
       clang_v6::FormatStyle style6_new;
       clang_update_v7::update<clang_vx::Update::DOWNGRADE>(style6_new,
                                                            style7_old, style);
@@ -1402,6 +1491,15 @@ TEST_CASE("updateEnum", "[clang-format-config-migrate]") {
       clang_v8::FormatStyle style8_old;
       clang_v8::getPredefinedStyle(
           style, clang_v8::FormatStyle::LanguageKind::LK_Cpp, &style8_old);
+
+      REQUIRE(clang_v8::configurationAsText(style8_old, style, true) ==
+              R"XX(---
+Language:        Cpp
+BasedOnStyle:    )XX" +
+                  style + R"XX(
+...
+)XX");
+
       clang_v7::FormatStyle style7_new;
       clang_update_v8::update<clang_vx::Update::DOWNGRADE>(style7_new,
                                                            style8_old, style);
@@ -1419,6 +1517,15 @@ TEST_CASE("updateEnum", "[clang-format-config-migrate]") {
       clang_v9::FormatStyle style9_old;
       clang_v9::getPredefinedStyle(
           style, clang_v9::FormatStyle::LanguageKind::LK_Cpp, &style9_old);
+
+      REQUIRE(clang_v9::configurationAsText(style9_old, style, true) ==
+              R"XX(---
+Language:        Cpp
+BasedOnStyle:    )XX" +
+                  style + R"XX(
+...
+)XX");
+
       clang_v8::FormatStyle style8_new;
       clang_update_v9::update<clang_vx::Update::DOWNGRADE>(style8_new,
                                                            style9_old, style);
@@ -1447,6 +1554,15 @@ TEST_CASE("updateEnum", "[clang-format-config-migrate]") {
       clang_v10::FormatStyle style10_old;
       clang_v10::getPredefinedStyle(
           style, clang_v10::FormatStyle::LanguageKind::LK_Cpp, &style10_old);
+
+      REQUIRE(clang_v10::configurationAsText(style10_old, style, true) ==
+              R"XX(---
+Language:        Cpp
+BasedOnStyle:    )XX" +
+                  style + R"XX(
+...
+)XX");
+
       clang_v9::FormatStyle style9_new;
       clang_update_v10::update<clang_vx::Update::DOWNGRADE>(style9_new,
                                                             style10_old, style);
@@ -1487,6 +1603,15 @@ TEST_CASE("updateEnum", "[clang-format-config-migrate]") {
       clang_v11::FormatStyle style11_old;
       clang_v11::getPredefinedStyle(
           style, clang_v11::FormatStyle::LanguageKind::LK_Cpp, &style11_old);
+
+      REQUIRE(clang_v11::configurationAsText(style11_old, style, true) ==
+              R"XX(---
+Language:        Cpp
+BasedOnStyle:    )XX" +
+                  style + R"XX(
+...
+)XX");
+
       clang_v10::FormatStyle style10_new;
       clang_update_v11::update<clang_vx::Update::DOWNGRADE>(style10_new,
                                                             style11_old, style);
@@ -1512,6 +1637,15 @@ TEST_CASE("updateEnum", "[clang-format-config-migrate]") {
       clang_v12::FormatStyle style12_old;
       clang_v12::getPredefinedStyle(
           style, clang_v12::FormatStyle::LanguageKind::LK_Cpp, &style12_old);
+
+      REQUIRE(clang_v12::configurationAsText(style12_old, style, true) ==
+              R"XX(---
+Language:        Cpp
+BasedOnStyle:    )XX" +
+                  style + R"XX(
+...
+)XX");
+
       clang_v11::FormatStyle style11_new;
       clang_update_v12::update<clang_vx::Update::DOWNGRADE>(style11_new,
                                                             style12_old, style);
@@ -1535,6 +1669,15 @@ TEST_CASE("updateEnum", "[clang-format-config-migrate]") {
       clang_v13::FormatStyle style13_old;
       clang_v13::getPredefinedStyle(
           style, clang_v13::FormatStyle::LanguageKind::LK_Cpp, &style13_old);
+
+      REQUIRE(clang_v13::configurationAsText(style13_old, style, true) ==
+              R"XX(---
+Language:        Cpp
+BasedOnStyle:    )XX" +
+                  style + R"XX(
+...
+)XX");
+
       clang_v12::FormatStyle style12_new;
       clang_update_v13::update<clang_vx::Update::DOWNGRADE>(style12_new,
                                                             style13_old, style);
@@ -1566,6 +1709,15 @@ TEST_CASE("updateEnum", "[clang-format-config-migrate]") {
       clang_v14::FormatStyle style14_old;
       clang_v14::getPredefinedStyle(
           style, clang_v14::FormatStyle::LanguageKind::LK_Cpp, &style14_old);
+
+      REQUIRE(clang_v14::configurationAsText(style14_old, style, true) ==
+              R"XX(---
+Language:        Cpp
+BasedOnStyle:    )XX" +
+                  style + R"XX(
+...
+)XX");
+
       clang_v13::FormatStyle style13_new;
       clang_update_v14::update<clang_vx::Update::DOWNGRADE>(style13_new,
                                                             style14_old, style);
@@ -1593,6 +1745,15 @@ TEST_CASE("updateEnum", "[clang-format-config-migrate]") {
       clang_v15::FormatStyle style15_old;
       clang_v15::getPredefinedStyle(
           style, clang_v15::FormatStyle::LanguageKind::LK_Cpp, &style15_old);
+
+      REQUIRE(clang_v15::configurationAsText(style15_old, style, true) ==
+              R"XX(---
+Language:        Cpp
+BasedOnStyle:    )XX" +
+                  style + R"XX(
+...
+)XX");
+
       clang_v14::FormatStyle style14_new;
       clang_update_v15::update<clang_vx::Update::DOWNGRADE>(style14_new,
                                                             style15_old, style);
@@ -1641,6 +1802,15 @@ TEST_CASE("updateEnum", "[clang-format-config-migrate]") {
       clang_v16::FormatStyle style16_old;
       clang_v16::getPredefinedStyle(
           style, clang_v16::FormatStyle::LanguageKind::LK_Cpp, &style16_old);
+
+      REQUIRE(clang_v16::configurationAsText(style16_old, style, true) ==
+              R"XX(---
+Language:        Cpp
+BasedOnStyle:    )XX" +
+                  style + R"XX(
+...
+)XX");
+
       clang_v15::FormatStyle style15_new;
       clang_update_v16::update<clang_vx::Update::DOWNGRADE>(style15_new,
                                                             style16_old, style);
@@ -1664,6 +1834,15 @@ TEST_CASE("updateEnum", "[clang-format-config-migrate]") {
       clang_v17::FormatStyle style17_old;
       clang_v17::getPredefinedStyle(
           style, clang_v17::FormatStyle::LanguageKind::LK_Cpp, &style17_old);
+
+      REQUIRE(clang_v17::configurationAsText(style17_old, style, true) ==
+              R"XX(---
+Language:        Cpp
+BasedOnStyle:    )XX" +
+                  style + R"XX(
+...
+)XX");
+
       clang_v16::FormatStyle style16_new;
       clang_update_v17::update<clang_vx::Update::DOWNGRADE>(style16_new,
                                                             style17_old, style);
@@ -1682,6 +1861,15 @@ TEST_CASE("updateEnum", "[clang-format-config-migrate]") {
       clang_v18::FormatStyle style18_old;
       clang_v18::getPredefinedStyle(
           style, clang_v18::FormatStyle::LanguageKind::LK_Cpp, &style18_old);
+
+      REQUIRE(clang_v18::configurationAsText(style18_old, style, true) ==
+              R"XX(---
+Language:        Cpp
+BasedOnStyle:    )XX" +
+                  style + R"XX(
+...
+)XX");
+
       clang_v17::FormatStyle style17_new;
       clang_update_v18::update<clang_vx::Update::DOWNGRADE>(style17_new,
                                                             style18_old, style);
@@ -1709,6 +1897,15 @@ TEST_CASE("updateEnum", "[clang-format-config-migrate]") {
       clang_v19::FormatStyle style19_old;
       clang_v19::getPredefinedStyle(
           style, clang_v19::FormatStyle::LanguageKind::LK_Cpp, &style19_old);
+
+      REQUIRE(clang_v19::configurationAsText(style19_old, style, true) ==
+              R"XX(---
+Language:        Cpp
+BasedOnStyle:    )XX" +
+                  style + R"XX(
+...
+)XX");
+
       clang_v18::FormatStyle style18_new;
       clang_update_v19::update<clang_vx::Update::DOWNGRADE>(style18_new,
                                                             style19_old, style);
@@ -1742,6 +1939,15 @@ TEST_CASE("updateEnum", "[clang-format-config-migrate]") {
       clang_v20::FormatStyle style20_old;
       clang_v20::getPredefinedStyle(
           style, clang_v20::FormatStyle::LanguageKind::LK_Cpp, &style20_old);
+
+      REQUIRE(clang_v20::configurationAsText(style20_old, style, true) ==
+              R"XX(---
+Language:        Cpp
+BasedOnStyle:    )XX" +
+                  style + R"XX(
+...
+)XX");
+
       clang_v19::FormatStyle style19_new;
       clang_update_v20::update<clang_vx::Update::DOWNGRADE>(style19_new,
                                                             style20_old, style);
@@ -1771,6 +1977,15 @@ TEST_CASE("updateEnum", "[clang-format-config-migrate]") {
       clang_v21::FormatStyle style21_old;
       clang_v21::getPredefinedStyle(
           style, clang_v21::FormatStyle::LanguageKind::LK_Cpp, &style21_old);
+
+      REQUIRE(clang_v21::configurationAsText(style21_old, style, true) ==
+              R"XX(---
+Language:        Cpp
+BasedOnStyle:    )XX" +
+                  style + R"XX(
+...
+)XX");
+
       clang_v20::FormatStyle style20_new;
       clang_update_v21::update<clang_vx::Update::DOWNGRADE>(style20_new,
                                                             style21_old, style);

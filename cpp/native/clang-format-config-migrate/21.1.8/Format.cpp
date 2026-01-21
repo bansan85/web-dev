@@ -2228,6 +2228,10 @@ bool getPredefinedStyle(llvm::StringRef Name,
   else
     return false;
 
+  expandPresetsBraceWrapping(*Style);
+  expandPresetsSpaceBeforeParens(*Style);
+  expandPresetsSpacesInParens(*Style);
+
   Style->Language = Language;
   return true;
 }
