@@ -9,7 +9,7 @@
         <select [(ngModel)]="oldVersion" (change)="forceMigrate()">
           <option value="min">Lowest compatible</option>
           <option value="max">Newest compatible</option>
-          @for (version of compatibleVersions; track version) {
+          @for (version of compatibleVersions(); track version) {
             <option [value]="version.name">{{ version.name }}
             </option>
           }
@@ -68,7 +68,7 @@
     <h2>Initial clang-format config</h2>
   </div>
   <div header-output>
-    <h2>Migrated clang-format config<lucide-icon name="settings" (click)="dialog.openDialog()" /></h2>
+    <h2>Migrated clang-format config<lucide-icon name="settings" (click)="openSettings()" /></h2>
   </div>
 </app-textarea-two>
 

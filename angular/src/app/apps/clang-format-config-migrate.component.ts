@@ -45,11 +45,12 @@ export class ClangFormatConfigMigrateComponent implements OnInit {
 
   titleLoading = '';
 
-  compatibleVersions: SelectItem[] = [];
+  protected readonly compatibleVersions = signal<SelectItem[]>([]);
 
   compatibleStyles?: string[] = [];
 
   private readonly textareaTwo = viewChild.required(TextareaTwoComponent);
+  private readonly settingsDialog = viewChild.required(DialogPopupComponent);
 
   oldVersion = '';
   newVersion = '';
@@ -98,7 +99,7 @@ export class ClangFormatConfigMigrateComponent implements OnInit {
       this.clangFormatConfigMigrate!.getCompatibleVersion(
         this.textareaTwo().inputElement().nativeElement.value
       );
-    this.compatibleVersions = [];
+    const compatibleVersions : SelectItem[] = [];
 
     for (let index = 0; index < versions.size(); index += 1) {
       const version = versions.get(index)!;
@@ -106,8 +107,9 @@ export class ClangFormatConfigMigrateComponent implements OnInit {
         id: version,
         name: this.clangFormatConfigMigrate!.versionEnumToString(version),
       };
-      this.compatibleVersions.push(element);
+      compatibleVersions.push(element);
     }
+    this.compatibleVersions.set(compatibleVersions);
   }
 
   async updateCompatibleStyles() {
@@ -120,7 +122,7 @@ export class ClangFormatConfigMigrateComponent implements OnInit {
       return;
     }
 
-    if (this.compatibleVersions.length !== 0) {
+    if (this.compatibleVersions().length !== 0) {
       const compatibleStylesCpp =
         this.clangFormatConfigMigrate!.getStyleNamesRange(
           oldVersion,
@@ -136,14 +138,14 @@ export class ClangFormatConfigMigrateComponent implements OnInit {
   getOldVersion(): Version | undefined {
     let retval: Version;
 
-    if (this.compatibleVersions.length === 0) {
+    if (this.compatibleVersions().length === 0) {
       return undefined;
     }
 
     if (this.oldVersion === 'min') {
-      retval = this.compatibleVersions[0].id;
+      retval = this.compatibleVersions()[0].id;
     } else if (this.oldVersion === 'max') {
-      retval = this.compatibleVersions[this.compatibleVersions.length - 1].id;
+      retval = this.compatibleVersions()[this.compatibleVersions().length - 1].id;
     } else {
       retval = this.clangFormatConfigMigrate!.versionStringToEnum(
         this.oldVersion
@@ -178,5 +180,10 @@ export class ClangFormatConfigMigrateComponent implements OnInit {
   forceMigrate() {
     const event = new Event('input', { bubbles: true });
     this.textareaTwo().inputElement().nativeElement.dispatchEvent(event);
+  }
+
+  protected async openSettings(){
+    await this.updateCompatibleVersions();
+    this.settingsDialog().openDialog();
   }
 }
