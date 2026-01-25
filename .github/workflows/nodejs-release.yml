@@ -60,7 +60,8 @@ jobs:
           pnpm install
           npx playwright install --with-deps
           ng test --browsers=chromiumHeadless --watch=false
-          ng build --configuration production
+          pnpm build
+          pnpm build-naming-style
           cd ..
       - name: Run tests
         run: |
@@ -82,5 +83,14 @@ jobs:
             mkdir img
             cd img
             mput angular/dist/web-demangler/browser/img/*
+          bye
+          EOF
+          sshpass -p ${{ secrets.UPLOAD_PASSWORD }} sftp -P ${{ vars.UPLOAD_PORT }} ${{ secrets.UPLOAD_USERNAME }}@${{ secrets.UPLOAD_HOST }}:${{ secrets.UPLOAD_PATH_NAMING_STYLE_RELEASE }} <<EOF
+            rm *
+            mput angular/dist/naming-style/browser/*
+            mput angular/dist/naming-style/browser/.*
+            mkdir img
+            cd img
+            mput angular/dist/naming-style/browser/img/*
           bye
           EOF

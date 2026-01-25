@@ -4,7 +4,11 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "start-naming-style": "ng serve --configuration naming-style",
+    "build": "ng build --configuration production",
+    "build-dev": "ng build --configuration development",
+    "build-naming-style": "ng build --configuration naming-style",
+    "build-naming-style-dev": "ng build --configuration naming-style-dev",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint"

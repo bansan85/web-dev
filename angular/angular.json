@@ -13,23 +13,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "outputPath": "dist/web-demangler",
-            "index": "src/index.html",
-            "browser": "src/main.ts",
-            "polyfills": [
-            ],
-            "tsConfig": "tsconfig.app.json",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "public"
-              },
-              {
-                "glob": "**/*",
-                "input": "src/assets",
-                "output": "/"
-              }
-            ],
+            "polyfills": [],
             "styles": [
               "src/styles.css"
             ],
@@ -49,12 +33,88 @@
                   "maximumError": "4kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputPath": "dist/web-demangler",
+              "outputHashing": "all",
+              "tsConfig": "tsconfig.app.json",
+              "index": "src/index.html",
+              "browser": "src/main.ts",
+              "assets": [
+                {
+                  "glob": "**/*",
+                  "input": "src/assets",
+                  "output": "/"
+                },
+                {
+                  "glob": "**/*",
+                  "input": "public"
+                }
+              ]
             },
             "development": {
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true
+              "outputPath": "dist/web-demangler-dev",
+              "sourceMap": true,
+              "tsConfig": "tsconfig.app.json",
+              "index": "src/index.html",
+              "browser": "src/main.ts",
+              "assets": [
+                {
+                  "glob": "**/*",
+                  "input": "src/assets",
+                  "output": "/"
+                },
+                {
+                  "glob": "**/*",
+                  "input": "public"
+                }
+              ]
+            },
+            "naming-style": {
+              "outputPath": "dist/naming-style",
+              "outputHashing": "all",
+              "tsConfig": "tsconfig.app.naming-style.json",
+              "index": {
+                "input": "src/index-naming-style.html",
+                "output": "index.html"
+              },
+              "browser": "src/main-naming-style.ts",
+              "fileReplacements": [
+                {
+                  "replace": "src/app/app.routes.ts",
+                  "with": "src/app/app.routes.naming-style.ts"
+                }
+              ],
+              "assets": [
+                {
+                  "glob": "**/*",
+                  "input": "public"
+                }
+              ]
+            },
+            "naming-style-dev": {
+              "optimization": false,
+              "extractLicenses": false,
+              "outputPath": "dist/naming-style-dev",
+              "sourceMap": true,
+              "tsConfig": "tsconfig.app.naming-style.json",
+              "index": {
+                "input": "src/index-naming-style.html",
+                "output": "index.html"
+              },
+              "browser": "src/main-naming-style.ts",
+              "fileReplacements": [
+                {
+                  "replace": "src/app/app.routes.ts",
+                  "with": "src/app/app.routes.naming-style.ts"
+                }
+              ],
+              "assets": [
+                {
+                  "glob": "**/*",
+                  "input": "public"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -62,6 +122,12 @@
         "serve": {
           "builder": "@angular/build:dev-server",
           "configurations": {
+            "naming-style": {
+              "buildTarget": "web-demangler:build:naming-style"
+            },
+            "naming-style-dev": {
+              "buildTarget": "web-demangler:build:naming-style-dev"
+            },
             "production": {
               "buildTarget": "web-demangler:build:production"
             },
