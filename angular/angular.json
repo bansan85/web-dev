@@ -115,6 +115,62 @@
                   "input": "public"
                 }
               ]
+            },
+            "clang-format": {
+              "outputPath": "dist/clang-format",
+              "outputHashing": "all",
+              "tsConfig": "tsconfig.app.clang-format.json",
+              "index": {
+                "input": "src/index-clang-format.html",
+                "output": "index.html"
+              },
+              "browser": "src/main-clang-format.ts",
+              "fileReplacements": [
+                {
+                  "replace": "src/app/app.routes.ts",
+                  "with": "src/app/app.routes.clang-format.ts"
+                }
+              ],
+              "assets": [
+                {
+                  "glob": "web_formatter.*",
+                  "input": "src/assets",
+                  "output": "/"
+                },
+                {
+                  "glob": "**/*",
+                  "input": "public"
+                }
+              ]
+            },
+            "clang-format-dev": {
+              "optimization": false,
+              "extractLicenses": false,
+              "outputPath": "dist/clang-format-dev",
+              "sourceMap": true,
+              "tsConfig": "tsconfig.app.clang-format.json",
+              "index": {
+                "input": "src/index-clang-format.html",
+                "output": "index.html"
+              },
+              "browser": "src/main-clang-format.ts",
+              "fileReplacements": [
+                {
+                  "replace": "src/app/app.routes.ts",
+                  "with": "src/app/app.routes.clang-format.ts"
+                }
+              ],
+              "assets": [
+                {
+                  "glob": "web_formatter.*",
+                  "input": "src/assets",
+                  "output": "/"
+                },
+                {
+                  "glob": "**/*",
+                  "input": "public"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -127,6 +183,12 @@
             },
             "naming-style-dev": {
               "buildTarget": "web-demangler:build:naming-style-dev"
+            },
+            "clang-format": {
+              "buildTarget": "web-demangler:build:clang-format"
+            },
+            "clang-format-dev": {
+              "buildTarget": "web-demangler:build:clang-format-dev"
             },
             "production": {
               "buildTarget": "web-demangler:build:production"

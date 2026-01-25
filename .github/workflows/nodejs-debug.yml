@@ -65,6 +65,7 @@ jobs:
           ng test --browsers=chromiumHeadless --watch=false
           pnpm build-dev
           pnpm build-naming-style-dev
+          pnpm build-clang-format-dev
           cd ..
       - name: Run tests
         run: |
@@ -95,5 +96,14 @@ jobs:
             mkdir img
             cd img
             mput angular/dist/naming-style-dev/browser/img/*
+          bye
+          EOF
+          sshpass -p ${{ secrets.UPLOAD_PASSWORD }} sftp -P ${{ vars.UPLOAD_PORT }} ${{ secrets.UPLOAD_USERNAME }}@${{ secrets.UPLOAD_HOST }}:${{ secrets.UPLOAD_PATH_CLANG_FORMAT_DEBUG }} <<EOF
+            rm *
+            mput angular/dist/clang-format-dev/browser/*
+            mput angular/dist/clang-format-dev/browser/.*
+            mkdir img
+            cd img
+            mput angular/dist/clang-format-dev/browser/img/*
           bye
           EOF

@@ -5,10 +5,13 @@
     "ng": "ng",
     "start": "ng serve",
     "start-naming-style": "ng serve --configuration naming-style",
+    "start-clang-format": "ng serve --configuration clang-format",
     "build": "ng build --configuration production",
     "build-dev": "ng build --configuration development",
     "build-naming-style": "ng build --configuration naming-style",
     "build-naming-style-dev": "ng build --configuration naming-style-dev",
+    "build-clang-format": "ng build --configuration clang-format",
+    "build-clang-format-dev": "ng build --configuration clang-format-dev",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint"
