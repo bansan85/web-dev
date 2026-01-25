@@ -1,8 +1,25 @@
 <div class="buttons">
-    <lucide-icon class="action" name="rotate-ccw" title="Reset" (click)="reset()" />
+    <lucide-icon class="action" name="import" title="Import" (click)="showImport()" />
+    <lucide-icon class="action" name="refresh-ccw" title="Reset" (click)="reset()" />
     <lucide-icon class="action" name="copy" title="Copy" (click)="saveToYaml()" />
     <lucide-icon class="action" name="notebook-pen" title="Set to default" (click)="setMinimum()" />
 </div>
+
+<app-dialog-popup #dialog>
+  <div dialog-header>
+    <span>clang-format's options</span>
+  </div>
+  <div dialog-body>
+    Insert your <code>readability-identifier-naming.*</code> like:<br />
+    <code class="code"><br />
+CheckOptions:
+  - key: readability-identifier-naming.TypedefCase
+    value: 'aNy_CasE'<br />
+    </code>
+    <textarea #namingText rows="20"></textarea><br />
+    <button type="button" (click)="importFromText()">Import</button>
+  </div>
+</app-dialog-popup>
 
 <div class="case">
     <h2 class="title">

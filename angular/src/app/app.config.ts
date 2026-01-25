@@ -4,7 +4,7 @@ import {
   provideZonelessChangeDetection,
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { Copy, LoaderCircle, LucideAngularModule, NotebookPen,RotateCcw, Settings, X } from 'lucide-angular';
+import { Copy, Import, LoaderCircle, LucideAngularModule, NotebookPen, RefreshCcw, Settings, X } from 'lucide-angular';
 
 import { routes } from './app.routes';
 
@@ -13,7 +13,7 @@ export const appConfig: ApplicationConfig = {
     provideZonelessChangeDetection(),
     provideRouter(routes),
     importProvidersFrom(
-      LucideAngularModule.pick({ Settings, LoaderCircle, X, Copy, RotateCcw, NotebookPen })
+      LucideAngularModule.pick({ Settings, LoaderCircle, X, Copy, RefreshCcw, NotebookPen, Import })
     ),
   ],
 };

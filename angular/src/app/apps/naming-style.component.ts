@@ -1,16 +1,21 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, OnInit, viewChild } from '@angular/core';
 import { LucideAngularModule } from 'lucide-angular';
+
+import { DialogPopupComponent } from '../templates/dialog-popup.component';
 
 @Component({
   selector: 'app-naming-style',
-  imports: [CommonModule, LucideAngularModule],
+  imports: [DialogPopupComponent, CommonModule, LucideAngularModule],
   templateUrl: './naming-style.component.html',
   styleUrl: './naming-style.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
   preserveWhitespaces: true,
 })
 export class AppNamingStyleComponent implements OnInit {
+  private readonly dialog = viewChild.required<DialogPopupComponent>('dialog');
+  private readonly namingText = viewChild.required<ElementRef<HTMLTextAreaElement>>('namingText');
+
   private checkedSet = new Set<string>();
 
   ngOnInit() {
@@ -41,6 +46,23 @@ export class AppNamingStyleComponent implements OnInit {
   protected reset() {
     this.checkedSet.clear();
     this.saveToLocalStorage();
+  }
+
+  protected showImport() {
+    this.dialog().openDialog();
+  }
+
+  protected importFromText() {
+    this.checkedSet.clear();
+    this.namingText().nativeElement.value.split('\n')
+      .filter(line => line.includes('readability-identifier-naming.'))
+      .map(line => {
+        const match = /readability-identifier-naming\.(?<name>.+?)Case/u.exec(line);
+        return match?.groups?.['name'] ?? '';
+      })
+      .filter(Boolean)
+      .forEach(item => this.checkedSet.add(item));
+    this.dialog().closeDialog();
   }
 
   protected async saveToYaml() {

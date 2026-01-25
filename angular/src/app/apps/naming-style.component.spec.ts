@@ -1,6 +1,6 @@
 import { importProvidersFrom } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Copy, LucideAngularModule, NotebookPen,RotateCcw } from 'lucide-angular';
+import { Copy, Import, LucideAngularModule, NotebookPen, RefreshCcw, X } from 'lucide-angular';
 
 import { AppNamingStyleComponent } from './naming-style.component';
 
@@ -13,7 +13,7 @@ describe('NamingStyleComponent', () => {
       imports: [AppNamingStyleComponent],
       providers: [
         importProvidersFrom(
-          LucideAngularModule.pick({ Copy, RotateCcw, NotebookPen })
+          LucideAngularModule.pick({ Copy, RefreshCcw, NotebookPen, Import, X })
         ),
       ],
     })
