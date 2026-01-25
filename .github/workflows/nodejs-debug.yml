@@ -66,6 +66,7 @@ jobs:
           pnpm build-dev
           pnpm build-naming-style-dev
           pnpm build-clang-format-dev
+          pnpm build-clang-format-config-dev
           cd ..
       - name: Run tests
         run: |
@@ -105,5 +106,14 @@ jobs:
             mkdir img
             cd img
             mput angular/dist/clang-format-dev/browser/img/*
+          bye
+          EOF
+          sshpass -p ${{ secrets.UPLOAD_PASSWORD }} sftp -P ${{ vars.UPLOAD_PORT }} ${{ secrets.UPLOAD_USERNAME }}@${{ secrets.UPLOAD_HOST }}:${{ secrets.UPLOAD_PATH_CLANG_FORMAT_CONFIG_DEBUG }} <<EOF
+            rm *
+            mput angular/dist/clang-format-config-dev/browser/*
+            mput angular/dist/clang-format-config-dev/browser/.*
+            mkdir img
+            cd img
+            mput angular/dist/clang-format-config-dev/browser/img/*
           bye
           EOF
