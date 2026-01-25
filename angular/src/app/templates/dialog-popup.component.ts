@@ -23,14 +23,14 @@ export class DialogPopupComponent {
 
   protected readonly isOpen = signal(false);
 
-  isDragging = false;
-  offsetX = 0;
-  offsetY = 0;
-  mouseMoveListener?: () => void;
-  mouseUpListener?: () => void;
+  private isDragging = false;
+  private offsetX = 0;
+  private offsetY = 0;
+  private mouseMoveListener?: () => void;
+  private mouseUpListener?: () => void;
 
-  private readonly ngZone=inject( NgZone);
-  private readonly renderer=inject( Renderer2);
+  private readonly ngZone = inject(NgZone);
+  private readonly renderer = inject(Renderer2);
 
   openDialog() {
     this.dialogRef().nativeElement.showModal();
@@ -56,7 +56,7 @@ export class DialogPopupComponent {
     this.isOpen.set(false);
   }
 
-  onMouseDown(event: MouseEvent): void {
+  protected onMouseDown(event: MouseEvent): void {
     this.isDragging = true;
 
     const dialogElement = this.dialogRef().nativeElement;
@@ -78,7 +78,7 @@ export class DialogPopupComponent {
   }
 
   private onMouseMove(event: MouseEvent): void {
-    if (!this.isDragging) {return;}
+    if (!this.isDragging) { return; }
 
     const dialogElement = this.dialogRef().nativeElement;
     dialogElement.style.left = `${event.clientX - this.offsetX}px`;

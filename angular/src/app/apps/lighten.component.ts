@@ -20,13 +20,13 @@ import { WasmLoaderLightenService } from '../wasm-loader-lighten.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppLightenComponent implements OnInit {
-  lighten?: LightenModule;
+  private lighten?: LightenModule;
 
-  readonly textareaTwo = viewChild.required(TextareaTwoComponent);
+  private readonly textareaTwo = viewChild.required(TextareaTwoComponent);
 
   private readonly wasmLoaderLighten = inject(WasmLoaderLightenService);
 
-  count = 4;
+  protected count = 4;
 
   constructor() {
     this.lightenNumber = this.lightenNumber.bind(this);
@@ -41,11 +41,11 @@ export class AppLightenComponent implements OnInit {
     await this.loadWasmLightenModule();
   }
 
-  async loadWasmLightenModule() {
+  private async loadWasmLightenModule() {
     this.lighten ??= await this.wasmLoaderLighten.wasm();
   }
 
-  roundNumbers(data: any): any {
+  private roundNumbers(data: any): any {
     if (typeof data === 'number') {
       return Number(
         this.lighten!.web_lighten_number(data.toString(), this.count)
@@ -64,7 +64,7 @@ export class AppLightenComponent implements OnInit {
     return data;
   }
 
-  processJson(input: string): string {
+  private processJson(input: string): string {
     try {
       const parsedJson = JSON.parse(input);
       const roundedJson = this.roundNumbers(parsedJson);
@@ -74,11 +74,11 @@ export class AppLightenComponent implements OnInit {
     }
   }
 
-  lightenNumber(input: string): Promise<string> {
+  protected lightenNumber(input: string): Promise<string> {
     return Promise.resolve(this.processJson(input));
   }
 
-  onCount(count: number) {
+  protected onCount(count: number) {
     this.count = count;
 
     localStorage.setItem('lighten-count', count.toString());

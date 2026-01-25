@@ -63,7 +63,7 @@
           </dl>
         </dd>
       </dl>
-      <details [attr.open]='enableClangFormatExpert ? true : null' (toggle)="onEnableClangFormatExpert($event)">
+      <details [attr.open]='enableClangFormatExpert() ? true : null' (toggle)="onEnableClangFormatExpert($event)">
         <summary>All parameters</summary>
         <app-formatter-options [emptyStyle]="emptyStyle!" [formatStyle]="formatStyle!" [formatter]="formatter!"
           (changeOptions)="reformat()" />

@@ -11,7 +11,7 @@ import { LucideAngularModule } from 'lucide-angular';
   preserveWhitespaces: true,
 })
 export class AppNamingStyleComponent implements OnInit {
-  checkedSet = new Set<string>();
+  private checkedSet = new Set<string>();
 
   ngOnInit() {
     const namingStyle = localStorage.getItem("naming_style");
@@ -24,7 +24,7 @@ export class AppNamingStyleComponent implements OnInit {
     localStorage.setItem("naming_style", JSON.stringify(Array.from(this.checkedSet)));
   }
 
-  onCheckboxChange(event: Event) {
+  protected onCheckboxChange(event: Event) {
     const checkbox = event.target as HTMLInputElement;
     if (checkbox.checked) {
       this.checkedSet.add(checkbox.id.split('_')[0]);
@@ -34,16 +34,16 @@ export class AppNamingStyleComponent implements OnInit {
     this.saveToLocalStorage();
   }
 
-  isChecked(id: string): boolean {
+  protected isChecked(id: string): boolean {
     return this.checkedSet.has(id);
   }
 
-  reset() {
+  protected reset() {
     this.checkedSet.clear();
     this.saveToLocalStorage();
   }
 
-  async saveToYaml() {
+  protected async saveToYaml() {
     await navigator.clipboard.writeText(
       `CheckOptions:\n${Array.from(this.checkedSet)
         .map((key) => `  - key: readability-identifier-naming.${key}Case\n    value: 'aNy_CasE'`)
@@ -51,7 +51,7 @@ export class AppNamingStyleComponent implements OnInit {
     );
   }
 
-  setMinimum() {
+  protected setMinimum() {
     this.checkedSet.clear();
     this.checkedSet.add('Typedef');
     this.checkedSet.add('TypeAlias');

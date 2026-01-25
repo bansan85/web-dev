@@ -40,22 +40,22 @@ interface SelectItem {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ClangFormatConfigMigrateComponent implements OnInit {
-  clangFormatConfigMigrate?: ClangFormatConfigMigrateModule;
+  private clangFormatConfigMigrate?: ClangFormatConfigMigrateModule;
   protected readonly spinnerSize = signal(0);
 
-  titleLoading = '';
+  protected titleLoading = '';
 
   protected readonly compatibleVersions = signal<SelectItem[]>([]);
 
-  compatibleStyles?: string[] = [];
+  protected readonly compatibleStyles = signal<string[]>([]);
 
   private readonly textareaTwo = viewChild.required(TextareaTwoComponent);
   private readonly settingsDialog = viewChild.required(DialogPopupComponent);
 
-  oldVersion = '';
-  newVersion = '';
-  defaultStyle = '';
-  exportOnlyChangedValue = true;
+  protected oldVersion = '';
+  protected newVersion = '';
+  protected defaultStyle = '';
+  protected exportOnlyChangedValue = true;
 
   private readonly wasmLoaderClangFormatConfigMigrate = inject(WasmLoaderClangFormatConfigMigrateService);
 
@@ -75,7 +75,7 @@ export class ClangFormatConfigMigrateComponent implements OnInit {
     this.updateIconSize();
   }
 
-  async loadWasmLoaderClangFormatConfigMigrate() {
+  private async loadWasmLoaderClangFormatConfigMigrate() {
     this.clangFormatConfigMigrate ??= await this.wasmLoaderClangFormatConfigMigrate.wasm();
   }
 
@@ -88,18 +88,18 @@ export class ClangFormatConfigMigrateComponent implements OnInit {
     return false;
   });
 
-  updateIconSize() {
+  private updateIconSize() {
     this.spinnerSize.set(Math.min(window.innerWidth / 4, window.innerHeight / 2));
   }
 
-  async updateCompatibleVersions() {
+  private async updateCompatibleVersions() {
     await this.loadWasmLoaderClangFormatConfigMigrate();
 
     const versions: VersionList =
       this.clangFormatConfigMigrate!.getCompatibleVersion(
         this.textareaTwo().inputElement().nativeElement.value
       );
-    const compatibleVersions : SelectItem[] = [];
+    const compatibleVersions: SelectItem[] = [];
 
     for (let index = 0; index < versions.size(); index += 1) {
       const version = versions.get(index)!;
@@ -112,10 +112,10 @@ export class ClangFormatConfigMigrateComponent implements OnInit {
     this.compatibleVersions.set(compatibleVersions);
   }
 
-  async updateCompatibleStyles() {
+  protected async updateCompatibleStyles() {
     await this.loadWasmLoaderClangFormatConfigMigrate();
 
-    this.compatibleStyles = [];
+    const compatibleStyles: string[] = [];
 
     const oldVersion = this.getOldVersion();
     if (oldVersion === undefined) {
@@ -130,12 +130,14 @@ export class ClangFormatConfigMigrateComponent implements OnInit {
         );
       const sizeStyles = compatibleStylesCpp.size();
       for (let i = 0; i < sizeStyles; i += 1) {
-        this.compatibleStyles.push(compatibleStylesCpp.get(i)!);
+        compatibleStyles.push(compatibleStylesCpp.get(i)!);
       }
     }
+
+    this.compatibleStyles.set(compatibleStyles);
   }
 
-  getOldVersion(): Version | undefined {
+  private getOldVersion(): Version | undefined {
     let retval: Version;
 
     if (this.compatibleVersions().length === 0) {
@@ -155,7 +157,7 @@ export class ClangFormatConfigMigrateComponent implements OnInit {
     return retval;
   }
 
-  async migrate(config: string): Promise<string> {
+  protected async migrate(config: string): Promise<string> {
     await this.loadWasmLoaderClangFormatConfigMigrate();
 
     await this.updateCompatibleVersions();
@@ -177,12 +179,12 @@ export class ClangFormatConfigMigrateComponent implements OnInit {
     );
   }
 
-  forceMigrate() {
+  protected forceMigrate() {
     const event = new Event('input', { bubbles: true });
     this.textareaTwo().inputElement().nativeElement.dispatchEvent(event);
   }
 
-  protected async openSettings(){
+  protected async openSettings() {
     await this.updateCompatibleVersions();
     this.settingsDialog().openDialog();
   }

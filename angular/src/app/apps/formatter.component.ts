@@ -41,18 +41,18 @@ import { assertError } from './shared/interfaces/errors.js';
   encapsulation: ViewEncapsulation.None,
 })
 export class AppFormatterComponent implements OnInit {
-  formatter?: FormatterModule;
+  protected formatter?: FormatterModule;
 
-  readonly spinnerSize = signal(0);
+  protected readonly spinnerSize = signal(0);
 
-  enableClangFormatExpert = false;
+  protected readonly enableClangFormatExpert = signal(false);
 
-  formatStyle?: FormatStyle;
-  emptyStyle?: FormatStyle;
+  protected formatStyle?: FormatStyle;
+  protected emptyStyle?: FormatStyle;
 
   // Text by pending if text insert while wasm is loading.
-  pendingText = false;
-  titleLoading = '';
+  private pendingText = false;
+  protected titleLoading = '';
 
   private readonly newStyle = viewChild.required<ElementRef<HTMLSelectElement>>('newStyle');
   private readonly dialog = viewChild.required<DialogPopupComponent>('dialog');
@@ -78,11 +78,11 @@ export class AppFormatterComponent implements OnInit {
 
     await this.loadWasmFormatterModule();
 
-    this.enableClangFormatExpert =
-      localStorage.getItem('enableClangFormatExpert') === 'true';
+    this.enableClangFormatExpert.set(
+      localStorage.getItem('enableClangFormatExpert') === 'true');
   }
 
-  async loadWasmFormatterModule() {
+  private async loadWasmFormatterModule() {
     if (this.formatter) {
       return;
     }
@@ -116,16 +116,16 @@ export class AppFormatterComponent implements OnInit {
     this.pendingText = false;
   }
 
-  updateIconSize() {
+  private updateIconSize() {
     this.spinnerSize.set(Math.min(window.innerWidth / 4, window.innerHeight / 2));
   }
 
-  onEnableClangFormatExpert(event: Event) {
-    this.enableClangFormatExpert = (event as any).newState === 'open';
+  protected onEnableClangFormatExpert(event: Event) {
+    this.enableClangFormatExpert.set((event as any).newState === 'open');
 
     localStorage.setItem(
       'enableClangFormatExpert',
-      this.enableClangFormatExpert.toString()
+      this.enableClangFormatExpert().toString()
     );
 
     this.centerDialog();
@@ -149,7 +149,7 @@ export class AppFormatterComponent implements OnInit {
     }
   }
 
-  async format(mangledName: string): Promise<string> {
+  protected async format(mangledName: string): Promise<string> {
     await this.loadWasmFormatterModule();
     if (this.formatter) {
       const demangledName = this.formatter.formatter(
@@ -163,7 +163,7 @@ export class AppFormatterComponent implements OnInit {
     }
   }
 
-  loadStyle() {
+  protected loadStyle() {
     switch (this.newStyle().nativeElement.value) {
       case 'llvm':
         this.formatStyle = this.formatter!.getLLVMStyle();
@@ -199,7 +199,7 @@ export class AppFormatterComponent implements OnInit {
     this.reformat();
   }
 
-  reformat() {
+  protected reformat() {
     const event = new Event('input', { bubbles: true });
     this.textareaTwo().inputElement().nativeElement.dispatchEvent(event);
 
@@ -218,7 +218,7 @@ export class AppFormatterComponent implements OnInit {
     return false;
   });
 
-  loadYamlFromFile(event: Event) {
+  protected loadYamlFromFile(event: Event) {
     const fileReader = new FileReader();
     fileReader.onload = () => {
       this.formatStyle = this.formatter!.deserializeFromYaml(
@@ -231,14 +231,14 @@ export class AppFormatterComponent implements OnInit {
     );
   }
 
-  loadYamlFromText() {
+  protected loadYamlFromText() {
     this.formatStyle = this.formatter!.deserializeFromYaml(
       this.textClangConfig().nativeElement.value
     );
     this.reformat();
   }
 
-  downloadYaml() {
+  protected downloadYaml() {
     const newBlob = new Blob(
       [this.formatter!.serializeToYaml(this.formatStyle!)],
       { type: 'application/x-yaml' }
@@ -250,7 +250,7 @@ export class AppFormatterComponent implements OnInit {
     link.click();
   }
 
-  async saveYamlToText() {
+  protected async saveYamlToText() {
     await navigator.clipboard.writeText(
       this.formatter!.serializeToYaml(this.formatStyle!)
     );

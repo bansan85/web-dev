@@ -43,20 +43,20 @@ import { assertError } from './shared/interfaces/errors.js';
   encapsulation: ViewEncapsulation.None
 })
 export class AppDemanglerComponent implements OnInit {
-  demangler?: DemanglerModule;
-  formatter?: FormatterModule;
+  private demangler?: DemanglerModule;
+  protected formatter?: FormatterModule;
 
-  readonly spinnerSize = signal(0);
+  protected readonly spinnerSize = signal(0);
 
-  enableClangFormat = false;
-  enableClangFormatExpert = false;
+  protected enableClangFormat = false;
+  protected enableClangFormatExpert = false;
 
   formatStyle?: FormatStyle;
-  emptyStyle?: FormatStyle;
+  protected emptyStyle?: FormatStyle;
 
   // Text by pending if text insert while wasm is loading.
-  pendingText = false;
-  titleLoading = '';
+  private pendingText = false;
+  protected titleLoading = '';
 
   private readonly newStyle = viewChild.required<ElementRef<HTMLSelectElement>>('newStyle');
   private readonly dialog = viewChild.required<DialogPopupComponent>('dialog');
@@ -132,11 +132,11 @@ export class AppDemanglerComponent implements OnInit {
     this.pendingText = false;
   }
 
-  updateIconSize() {
+  private updateIconSize() {
     this.spinnerSize.set(Math.min(window.innerWidth / 4, window.innerHeight / 2));
   }
 
-  async onEnableClangFormat(value: boolean) {
+  protected async onEnableClangFormat(value: boolean) {
     this.enableClangFormat = value;
 
     localStorage.setItem('enableClangFormat', value.toString());
@@ -150,7 +150,7 @@ export class AppDemanglerComponent implements OnInit {
     this.reformat();
   }
 
-  onEnableClangFormatExpert(event: Event) {
+  protected onEnableClangFormatExpert(event: Event) {
     this.enableClangFormatExpert = (event as any).newState === 'open';
 
     localStorage.setItem(
@@ -179,7 +179,7 @@ export class AppDemanglerComponent implements OnInit {
     }
   }
 
-  async demangle(mangledName: string): Promise<string> {
+  protected async demangle(mangledName: string): Promise<string> {
     await this.loadWasmDemanglerModule();
     if (this.enableClangFormat) {
       await this.loadWasmFormatterModule();
@@ -201,7 +201,7 @@ export class AppDemanglerComponent implements OnInit {
     }
   }
 
-  loadStyle() {
+  protected loadStyle() {
     switch (this.newStyle().nativeElement.value) {
       case 'llvm':
         this.formatStyle = this.formatter!.getLLVMStyle();
@@ -237,7 +237,7 @@ export class AppDemanglerComponent implements OnInit {
     this.reformat();
   }
 
-  reformat() {
+  protected reformat() {
     const event = new Event('input', { bubbles: true });
     this.textareaTwo().inputElement().nativeElement.dispatchEvent(event);
 
@@ -260,7 +260,7 @@ export class AppDemanglerComponent implements OnInit {
     return false;
   });
 
-  loadYamlFromFile(event: Event) {
+  protected loadYamlFromFile(event: Event) {
     const fileReader = new FileReader();
     fileReader.onload = () => {
       this.formatStyle = this.formatter!.deserializeFromYaml(
@@ -273,14 +273,14 @@ export class AppDemanglerComponent implements OnInit {
     );
   }
 
-  loadYamlFromText() {
+  protected loadYamlFromText() {
     this.formatStyle = this.formatter!.deserializeFromYaml(
       this.textClangConfig().nativeElement.value
     );
     this.reformat();
   }
 
-  downloadYaml() {
+  protected downloadYaml() {
     const newBlob = new Blob(
       [this.formatter!.serializeToYaml(this.formatStyle!)],
       { type: 'application/x-yaml' }
@@ -292,7 +292,7 @@ export class AppDemanglerComponent implements OnInit {
     link.click();
   }
 
-  async saveYamlToText() {
+  protected async saveYamlToText() {
     await navigator.clipboard.writeText(
       this.formatter!.serializeToYaml(this.formatStyle!)
     );

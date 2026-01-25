@@ -38,7 +38,7 @@ export class FormatterOptionsComponent {
     return target;
   }
 
-  formatStyleKeys(keys: (string | number)[]): any {
+  protected formatStyleKeys(keys: (string | number)[]): any {
     let target = this.getLastStruct(this.formatStyle, keys);
 
     if (keys.length !== 0) {
@@ -64,7 +64,7 @@ export class FormatterOptionsComponent {
     return retval;
   }
 
-  updateField(keys: (string | number)[], assign: (x: any[]) => void): void {
+  private updateField(keys: (string | number)[], assign: (x: any[]) => void): void {
     const tree: any[] = [];
     let target = this.formatStyle as any;
     for (const key of keys) {
@@ -92,11 +92,11 @@ export class FormatterOptionsComponent {
     this.changeOptions.emit();
   }
 
-  isNumber(value: unknown): boolean {
+  protected isNumber(value: unknown): boolean {
     return typeof value === 'number';
   }
 
-  minNumber(root_field: any, field: string): number {
+  protected minNumber(root_field: any, field: string): number {
     switch (root_field[`get${field}Type`]()) {
       case -8: {
         return -127;
@@ -120,7 +120,7 @@ export class FormatterOptionsComponent {
     return 0;
   }
 
-  maxNumber(root_field: any, field: string): number {
+  protected maxNumber(root_field: any, field: string): number {
     switch (root_field[`get${field}Type`]()) {
       case -8: {
         return 0x7f;
@@ -144,15 +144,15 @@ export class FormatterOptionsComponent {
     return 0;
   }
 
-  isBoolean(value: unknown): boolean {
+  protected isBoolean(value: unknown): boolean {
     return typeof value === 'boolean';
   }
 
-  isString(value: unknown): boolean {
+  protected isString(value: unknown): boolean {
     return typeof value === 'string';
   }
 
-  updateRawType(
+  protected updateRawType(
     newValue: number | boolean | string,
     keys: (string | number)[]
   ): void {
@@ -161,15 +161,15 @@ export class FormatterOptionsComponent {
     });
   }
 
-  isEnum(value: any): boolean {
+  protected isEnum(value: any): boolean {
     return typeof value === 'object' && typeof value.$$ === 'undefined';
   }
 
-  getEnum(value: any): string {
+  protected getEnum(value: any): string {
     return value.constructor.name.split('_').slice(2).join('_');
   }
 
-  allEnums(value: any): string[] {
+  protected allEnums(value: any): string[] {
     const items = Object.getOwnPropertyNames(
       Object.getPrototypeOf(value).constructor
     );
@@ -181,7 +181,7 @@ export class FormatterOptionsComponent {
       .map((item) => item.split('_').slice(1).join('_'));
   }
 
-  updateEnum(newValue: string, keys: (string | number)[]): void {
+  protected updateEnum(newValue: string, keys: (string | number)[]): void {
     this.updateField(keys, (x: any[]) => {
       x[x.length - 1] = (this.formatter as any)[
         x[x.length - 1].constructor.name.split('_')[0]
@@ -189,11 +189,11 @@ export class FormatterOptionsComponent {
     });
   }
 
-  isUndefined(value: any): boolean {
+  protected isUndefined(value: any): boolean {
     return typeof value === 'undefined';
   }
 
-  onUndefinedCheckboxChange(
+  protected onUndefinedCheckboxChange(
     event: Event,
     inputValue: string,
     keys: (string | number)[]
@@ -208,7 +208,7 @@ export class FormatterOptionsComponent {
     });
   }
 
-  onUndefinedInputChange(value: string, keys: (string | number)[]) {
+  protected onUndefinedInputChange(value: string, keys: (string | number)[]) {
     this.updateField(keys, (x: any[]) => {
       if (x[x.length - 1] !== undefined) {
         x[x.length - 1] = Number(value);
@@ -216,7 +216,7 @@ export class FormatterOptionsComponent {
     });
   }
 
-  isStringList(value: any): boolean {
+  protected isStringList(value: any): boolean {
     return (
       typeof value === 'object' &&
       typeof value.$$ !== 'undefined' &&
@@ -224,7 +224,7 @@ export class FormatterOptionsComponent {
     );
   }
 
-  stringListToTextArea(raw_value: any): string {
+  protected stringListToTextArea(raw_value: any): string {
     const value: StringList = raw_value as StringList;
     const retval: string[] = [];
     for (let i = 0; i < value.size(); i += 1) {
@@ -233,7 +233,7 @@ export class FormatterOptionsComponent {
     return retval.join('\n');
   }
 
-  public onStringList(event: Event, keys: (string | number)[]): void {
+  protected onStringList(event: Event, keys: (string | number)[]): void {
     this.updateField(keys, (x: any[]) => {
       (x[x.length - 1] as StringList).resize(0, '');
       const data: string = (event.target as any).value;
@@ -243,11 +243,11 @@ export class FormatterOptionsComponent {
     });
   }
 
-  isFunction(value: unknown): boolean {
+  protected isFunction(value: unknown): boolean {
     return typeof value === 'function';
   }
 
-  isList(value: any): boolean {
+  protected isList(value: any): boolean {
     return (
       typeof value === 'object' &&
       typeof value.$$ !== 'undefined' &&
@@ -259,7 +259,7 @@ export class FormatterOptionsComponent {
     );
   }
 
-  resizeList(value: number, keys: (string | number)[]): void {
+  protected resizeList(value: number, keys: (string | number)[]): void {
     this.updateField(keys, (x: any[]) => {
       if (x[x.length - 1].size() > value) {
         x[x.length - 1].resize(
@@ -269,7 +269,7 @@ export class FormatterOptionsComponent {
           ]()
         );
       } else if (x[x.length - 1].size() < value) {
-        for (let i : number = x[x.length - 1].size(); i < value; i += 1) {
+        for (let i: number = x[x.length - 1].size(); i < value; i += 1) {
           x[x.length - 1].push_back(
             new (this.formatter as any)![
               x[x.length - 1].$$.ptrType.registeredClass.name.slice(0, -4)
@@ -280,15 +280,11 @@ export class FormatterOptionsComponent {
     });
   }
 
-  isMiscStruct(value: any): boolean {
+  protected isMiscStruct(value: any): boolean {
     return (
       typeof value === 'object' &&
       typeof value.$$ !== 'undefined' &&
       !this.isList(value)
     );
-  }
-
-  typeOf(value: any): string {
-    return typeof value;
   }
 }

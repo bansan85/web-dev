@@ -48,7 +48,7 @@
       <dt>Fallback BasedOnStyle (if missing in input config or<br />unavailable in older version while downgrading):</dt>
       <dd>
         <select [(ngModel)]="defaultStyle" (change)="forceMigrate()">
-          @for (style of compatibleStyles; track style) {
+          @for (style of compatibleStyles(); track style) {
             <option [value]="style">{{ style }}
             </option>
           }

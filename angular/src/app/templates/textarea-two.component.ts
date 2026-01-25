@@ -15,7 +15,7 @@ export class TextareaTwoComponent {
 
   readonly inputChange = input.required<(input: string) => Promise<string>>();
 
-  outputStr: Promise<string> = Promise.resolve('');
+  protected outputStr: Promise<string> = Promise.resolve('');
 
   inputToOutput(inputStr: string) {
     this.outputStr = this.inputChange()(inputStr);
