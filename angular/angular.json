@@ -227,6 +227,128 @@
                   "input": "public"
                 }
               ]
+            },
+            "lighten": {
+              "outputPath": "dist/lighten",
+              "outputHashing": "all",
+              "tsConfig": "tsconfig.app.lighten.json",
+              "index": {
+                "input": "src/index-lighten.html",
+                "output": "index.html"
+              },
+              "browser": "src/main-lighten.ts",
+              "fileReplacements": [
+                {
+                  "replace": "src/app/app.routes.ts",
+                  "with": "src/app/app.routes.lighten.ts"
+                }
+              ],
+              "assets": [
+                {
+                  "glob": "web_lighten.*",
+                  "input": "src/assets",
+                  "output": "/"
+                },
+                {
+                  "glob": "**/*",
+                  "input": "public"
+                }
+              ]
+            },
+            "lighten-dev": {
+              "optimization": false,
+              "extractLicenses": false,
+              "outputPath": "dist/lighten-dev",
+              "sourceMap": true,
+              "tsConfig": "tsconfig.app.lighten.json",
+              "index": {
+                "input": "src/index-lighten.html",
+                "output": "index.html"
+              },
+              "browser": "src/main-lighten.ts",
+              "fileReplacements": [
+                {
+                  "replace": "src/app/app.routes.ts",
+                  "with": "src/app/app.routes.lighten.ts"
+                }
+              ],
+              "assets": [
+                {
+                  "glob": "web_lighten.*",
+                  "input": "src/assets",
+                  "output": "/"
+                },
+                {
+                  "glob": "**/*",
+                  "input": "public"
+                }
+              ]
+            },
+            "demangler": {
+              "outputPath": "dist/demangler",
+              "outputHashing": "all",
+              "tsConfig": "tsconfig.app.demangler.json",
+              "index": {
+                "input": "src/index-demangler.html",
+                "output": "index.html"
+              },
+              "browser": "src/main-demangler.ts",
+              "fileReplacements": [
+                {
+                  "replace": "src/app/app.routes.ts",
+                  "with": "src/app/app.routes.demangler.ts"
+                }
+              ],
+              "assets": [
+                {
+                  "glob": "web_demangler.*",
+                  "input": "src/assets",
+                  "output": "/"
+                },
+                {
+                  "glob": "web_formatter.*",
+                  "input": "src/assets",
+                  "output": "/"
+                },
+                {
+                  "glob": "**/*",
+                  "input": "public"
+                }
+              ]
+            },
+            "demangler-dev": {
+              "optimization": false,
+              "extractLicenses": false,
+              "outputPath": "dist/demangler-dev",
+              "sourceMap": true,
+              "tsConfig": "tsconfig.app.demangler.json",
+              "index": {
+                "input": "src/index-demangler.html",
+                "output": "index.html"
+              },
+              "browser": "src/main-demangler.ts",
+              "fileReplacements": [
+                {
+                  "replace": "src/app/app.routes.ts",
+                  "with": "src/app/app.routes.demangler.ts"
+                }
+              ],
+              "assets": [
+                {
+                  "glob": "web_demangler.*",
+                  "input": "src/assets",
+                  "output": "/"
+                },
+                {
+                  "glob": "web_formatter.*",
+                  "input": "src/assets",
+                  "output": "/"
+                },
+                {
+                  "glob": "**/*",
+                  "input": "public"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -251,6 +373,18 @@
             },
             "clang-format-config-dev": {
               "buildTarget": "web-demangler:build:clang-format-config-dev"
+            },
+            "lighten": {
+              "buildTarget": "web-demangler:build:lighten"
+            },
+            "lighten-dev": {
+              "buildTarget": "web-demangler:build:lighten-dev"
+            },
+            "demangler": {
+              "buildTarget": "web-demangler:build:demangler"
+            },
+            "demangler-dev": {
+              "buildTarget": "web-demangler:build:demangler-dev"
             },
             "production": {
               "buildTarget": "web-demangler:build:production"

@@ -67,6 +67,8 @@ jobs:
           pnpm build-naming-style-dev
           pnpm build-clang-format-dev
           pnpm build-clang-format-config-dev
+          pnpm build-lighten-dev
+          pnpm build-demangler-dev
           cd ..
       - name: Run tests
         run: |
@@ -115,5 +117,23 @@ jobs:
             mkdir img
             cd img
             mput angular/dist/clang-format-config-dev/browser/img/*
+          bye
+          EOF
+          sshpass -p ${{ secrets.UPLOAD_PASSWORD }} sftp -P ${{ vars.UPLOAD_PORT }} ${{ secrets.UPLOAD_USERNAME }}@${{ secrets.UPLOAD_HOST }}:${{ secrets.UPLOAD_PATH_LIGHTEN_DEBUG }} <<EOF
+            rm *
+            mput angular/dist/lighten-dev/browser/*
+            mput angular/dist/lighten-dev/browser/.*
+            mkdir img
+            cd img
+            mput angular/dist/lighten-dev/browser/img/*
+          bye
+          EOF
+          sshpass -p ${{ secrets.UPLOAD_PASSWORD }} sftp -P ${{ vars.UPLOAD_PORT }} ${{ secrets.UPLOAD_USERNAME }}@${{ secrets.UPLOAD_HOST }}:${{ secrets.UPLOAD_PATH_DEMANGLER_DEBUG }} <<EOF
+            rm *
+            mput angular/dist/demangler-dev/browser/*
+            mput angular/dist/demangler-dev/browser/.*
+            mkdir img
+            cd img
+            mput angular/dist/demangler-dev/browser/img/*
           bye
           EOF
