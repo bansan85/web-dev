@@ -69,7 +69,8 @@ export class AppLightenComponent implements OnInit {
       const parsedJson = JSON.parse(input);
       const roundedJson = this.roundNumbers(parsedJson);
       return JSON.stringify(roundedJson, null, 2);
-    } catch (_error) {
+    } catch (error) {
+      console.error(error);
       return 'Invalid JSON input';
     }
   }
