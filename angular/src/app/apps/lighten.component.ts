@@ -41,11 +41,11 @@ export class AppLightenComponent implements OnInit {
     await this.loadWasmLightenModule();
   }
 
-  private async loadWasmLightenModule() {
+  async loadWasmLightenModule() {
     this.lighten ??= await this.wasmLoaderLighten.wasm();
   }
 
-  private roundNumbers(data: any): any {
+  private roundNumbers = (data: any): any => {
     if (typeof data === 'number') {
       return Number(
         this.lighten!.web_lighten_number(data.toString(), this.count)
