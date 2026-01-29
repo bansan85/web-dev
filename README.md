@@ -4,21 +4,26 @@ There is lots of online tools on Internet. But they usually have 2 bigs problems
 
 I developped some free and specific tools than can be easily deployed.
 
-## Demos
+## readability-identifier-naming
 
-### readability-identifier-naming
-
-Demo to [configure `readability-identifier-naming` rule](https://naming-style.le-garrec.fr) for `clang-tidy`.
+Online demo to [configure `readability-identifier-naming` rule](https://naming-style.le-garrec.fr) for `clang-tidy`.
 
 This tool simplifies the configuration of `readability-identifier-naming` rule for `clang-tidy`. It visually shows the priority hierarchy when multiple naming rules overlap.
 
 The last configuration is stored in your local storage.
 
-![readability-identifier-naming](doc/readability-identifier-naming.png).
+![readability-identifier-naming](doc/readability-identifier-naming.png)
 
-### clang-format
+There is 4 actions button:
 
-Demo to format your code with [clang-format](https://clang-format.le-garrec.fr).
+  * `Import` your `readability-identifier-naming.*` from your `.clang-tidy` file.
+  * `Copy` will put current config in clipboard.
+  * `Reset` will unset all `readability-identifier-naming.*`.
+  * `Set to default` will set `readability-identifier-naming.*` to a minimum config that will check all names.
+
+## clang-format
+
+Online demo to format your code with [clang-format](https://clang-format.le-garrec.fr).
 
 Format your code with `clang-format` and import / edit your config file.
 
@@ -26,31 +31,40 @@ The clang-format's version is the latest supported by the other tools `clang-for
 
 ![clang-format](doc/clang-format.png)
 
+You can also configure the clang-format config file.
+
 ![clang-format options](doc/clang-format-options.png)
 
-### clang-format config
+## clang-format config
 
-Demo to [migrate your config file](https://clang-format-config.le-garrec.fr) of `clang-format` from a version to another.
+Online demo to [migrate your config file](https://clang-format-config.le-garrec.fr) of `clang-format` from a version to another.
 
-Sometimes, you configure `clang-format` using the latest version on your computer but your CI doesn't support it. With this tool, you may migrate your config file from a version to another (higher or lower) and removes options whose values match the defaults.
+With this tool, you may migrate your config file from a version to another (higher or lower) and removes options whose values match the defaults.
 
 ![clang-format-config](doc/clang-format-config.png)
 
+You may also use it just to remove options whose values match the defaults. Just migrate from and to the same version.
+
 ![clang-format-config options](doc/clang-format-config-options.png)
 
-### Demangler
+## Demangler
 
-Demo to [demangler](https://demangler.le-garrec.fr) your symbols.
+Online demo to [demangler](https://demangler.le-garrec.fr) your symbols.
 
 Demangler (and `clang-format`) your symbols.
 
-![demangler](doc/clang-format-config.png)
+![demangler](doc/demangler.png)
 
-![demangler options](doc/clang-format-config-options.png)
+![demangler options](doc/demangler-options.png)
 
-### Lighten
+## Lighten
 
-Demo to [lighten](https://lighten.le-garrec.fr) your numbers.
+Online demo to [lighten](https://lighten.le-garrec.fr) your numbers.
 
 IEEE floating point sucks. It may prints `3.999999` / `4.0000001` instead of `4`. The only available option is to define a threshold on the number of consecutive trailing zeros or nines, beyond which the value is truncated.
 
+![lighten](doc/lighten.png)
+
+You can only set the minimum consecutive 0s or 9s required to trigger string rounding.
+
+![lighten options](doc/lighten-options.png)
