@@ -16,6 +16,7 @@ import {
   Version,
   VersionList,
 } from '../../assets/web_clang_format_config_migrate.js';
+import { GithubMarkInlineComponent } from '../img/github-mark-inline.component.js';
 import { DialogPopupComponent } from '../templates/dialog-popup.component';
 import { SpinnerLoadingComponent } from '../templates/spinner-loading.component';
 import { TextareaTwoComponent } from '../templates/textarea-two.component';
@@ -33,7 +34,8 @@ interface SelectItem {
     FormsModule,
     LucideAngularModule,
     TextareaTwoComponent,
-    SpinnerLoadingComponent
+    SpinnerLoadingComponent,
+    GithubMarkInlineComponent,
   ],
   templateUrl: './clang-format-config-migrate.component.html',
   styleUrl: './clang-format-config-migrate.component.css',

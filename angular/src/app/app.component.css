@@ -7,20 +7,3 @@
     color: #fefefe;
   }
 }
-
-.github_logo {
-  color: #1c1c1e;
-}
-
-@media (prefers-color-scheme: dark) {
-  .github_logo {
-    color: #fefefe;
-  }
-}
-
-.github_logo {
-  position: fixed;
-  top: 0.5em;
-  right: 0.5em;
-  width: 2em;
-}

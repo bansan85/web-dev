@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { LucideAngularModule } from 'lucide-angular';
 
 import { EmbindModule as LightenModule } from '../../assets/web_lighten.js';
+import { GithubMarkInlineComponent } from '../img/github-mark-inline.component.js';
 import { DialogPopupComponent } from '../templates/dialog-popup.component';
 import { TextareaTwoComponent } from '../templates/textarea-two.component';
 import { WasmLoaderLightenService } from '../wasm-loader-lighten.service';
@@ -14,6 +15,7 @@ import { WasmLoaderLightenService } from '../wasm-loader-lighten.service';
     LucideAngularModule,
     FormsModule,
     DialogPopupComponent,
+    GithubMarkInlineComponent,
   ],
   templateUrl: './lighten.component.html',
   styleUrl: './lighten.component.css',

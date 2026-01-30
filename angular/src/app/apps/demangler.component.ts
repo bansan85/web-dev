@@ -20,6 +20,7 @@ import {
   FormatStyle,
 } from '../../assets/web_formatter.js';
 import { FormatterOptionsComponent } from '../formatter-options/formatter-options.component';
+import { GithubMarkInlineComponent } from '../img/github-mark-inline.component.js';
 import { DialogPopupComponent } from '../templates/dialog-popup.component';
 import { SpinnerLoadingComponent } from '../templates/spinner-loading.component';
 import { TextareaTwoComponent } from '../templates/textarea-two.component';
@@ -35,7 +36,8 @@ import { assertError } from './shared/interfaces/errors.js';
     FormsModule,
     LucideAngularModule,
     TextareaTwoComponent,
-    SpinnerLoadingComponent
+    SpinnerLoadingComponent,
+    GithubMarkInlineComponent,
   ],
   templateUrl: './demangler.component.html',
   styleUrl: './demangler.component.css',

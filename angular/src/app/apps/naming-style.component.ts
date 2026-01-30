@@ -2,11 +2,12 @@ import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, ElementRef, OnInit, viewChild } from '@angular/core';
 import { LucideAngularModule } from 'lucide-angular';
 
+import { GithubMarkInlineComponent } from '../img/github-mark-inline.component';
 import { DialogPopupComponent } from '../templates/dialog-popup.component';
 
 @Component({
   selector: 'app-naming-style',
-  imports: [DialogPopupComponent, CommonModule, LucideAngularModule],
+  imports: [DialogPopupComponent, CommonModule, LucideAngularModule, GithubMarkInlineComponent],
   templateUrl: './naming-style.component.html',
   styleUrl: './naming-style.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
