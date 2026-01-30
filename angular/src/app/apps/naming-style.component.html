@@ -1,8 +1,8 @@
 <div class="buttons">
     <lucide-icon class="action" name="import" title="Import" (click)="showImport()" />
-    <lucide-icon class="action" name="refresh-ccw" title="Reset" (click)="reset()" />
-    <lucide-icon class="action" name="copy" title="Copy" (click)="saveToYaml()" />
-    <lucide-icon class="action" name="notebook-pen" title="Set to default" (click)="setMinimum()" />
+    <lucide-icon class="action" name="copy" title="Export to clipboard" (click)="saveToYaml()" />
+    <lucide-icon class="action" name="refresh-ccw" title="Reset to empty config" (click)="reset()" />
+    <lucide-icon class="action" name="notebook-pen" title="Reset to minimal config" (click)="setMinimum()" />
 </div>
 
 <app-dialog-popup #dialog>
