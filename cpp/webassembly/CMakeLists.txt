@@ -56,6 +56,8 @@ ExternalProject_Add(
   CONFIGURE_COMMAND
     autoreconf -fi "${CMAKE_CURRENT_SOURCE_DIR}/../third_party/ghostpdl" &&
     emconfigure "${CMAKE_CURRENT_SOURCE_DIR}/../third_party/ghostpdl/configure"
+    CFLAGS=-Wno-error=incompatible-pointer-types
+    CXXFLAGS=-Wno-error=incompatible-pointer-types
     --disable-threading --disable-cups --disable-dbus --disable-gtk
     --without-libtiff --with-drivers=PS CC=emcc CCAUX=gcc
     --with-arch_h="${CMAKE_CURRENT_SOURCE_DIR}/../third_party/ghostpdl/arch/windows-x86-msvc.h"
