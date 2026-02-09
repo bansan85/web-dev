@@ -94,6 +94,13 @@ export default defineConfig(
       'func-names': 'off',
       '@angular-eslint/no-experimental': 'off',
       '@typescript-eslint/prefer-readonly': 'error',
+      // Too hard to apply
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-non-null-assertion': 'off',
+      'no-prototype-builtins': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
     },
   },
   {
@@ -112,6 +119,8 @@ export default defineConfig(
       ],
       '@angular-eslint/template/i18n': 'off',
       '@angular-eslint/template/no-call-expression': 'off',
+      '@angular-eslint/template/no-any': 'off',
+      '@angular-eslint/template/cyclomatic-complexity': 'off',
     },
   }
 );

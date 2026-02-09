@@ -4,8 +4,8 @@ import { ClangFormatConfigMigrateComponent } from './apps/clang-format-config-mi
 import { AppDemanglerComponent } from './apps/demangler.component';
 import { AppFormatterComponent } from './apps/formatter.component';
 import { AppLightenComponent } from './apps/lighten.component';
-import { AppNamingStyleComponent } from './apps/naming-style.component';
 import { MainPdfComponent } from './apps/main-pdf.component';
+import { AppNamingStyleComponent } from './apps/naming-style.component';
 
 export const routes: Routes = [
   { path: 'demangler', component: AppDemanglerComponent },

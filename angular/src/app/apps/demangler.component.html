@@ -23,7 +23,7 @@
                   <option value="clangFormat">ClangFormat</option>
                   <option value="none">None</option>
                 </select>
-                <button (click)="loadStyle()">Load</button>
+                <button type="button" (click)="loadStyle()">Load</button>
               </dd>
             </dl>
           </dd>
@@ -31,7 +31,7 @@
             <dl>
               <dt>File:</dt>
               <dd>
-                <button (click)="fileInput.click()">Browse</button>
+                <button type="button" (click)="fileInput.click()">Browse</button>
                 <input #fileInput style="display: none" type="file" (change)="loadYamlFromFile($event)">
               </dd>
             </dl>
@@ -41,7 +41,7 @@
               <dt>Text:</dt>
               <textarea #textClangConfig rows="5"></textarea>
               <dd>
-                <button (click)="loadYamlFromText()">Load</button>
+                <button type="button" (click)="loadYamlFromText()">Load</button>
               </dd>
             </dl>
           </dd>
@@ -52,7 +52,7 @@
             <dl>
               <dt>File</dt>
               <dd>
-                <button (click)="downloadYaml()">Save</button>
+                <button type="button" (click)="downloadYaml()">Save</button>
               </dd>
             </dl>
           </dd>
@@ -60,7 +60,7 @@
             <dl>
               <dt>Clipboard</dt>
               <dd>
-                <button (click)="saveYamlToText()">Copy</button>
+                <button type="button" (click)="saveYamlToText()">Copy</button>
               </dd>
             </dl>
           </dd>

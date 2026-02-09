@@ -15,8 +15,8 @@ import { LogoClangFormatConfigMigrateInlineComponent } from './img/logo-clang-fo
 import { LogoDemanglerInlineComponent } from './img/logo-demangler-inline.component';
 import { LogoFormatterInlineComponent } from './img/logo-formatter-inline.component';
 import { LogoLightenInlineComponent } from './img/logo-lighten-inline.component';
-import { LogoNamingStyleInlineComponent } from './img/logo-naming-style-inline.component';
 import { LogoMainPdfInlineComponent } from './img/logo-main-pdf-inline.component';
+import { LogoNamingStyleInlineComponent } from './img/logo-naming-style-inline.component';
 
 @Component({
   selector: 'app-root',

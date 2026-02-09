@@ -6,9 +6,10 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
+import { assertError } from '../apps/shared/interfaces/errors';
 import {
-  FormatterModule,
   FormatStyle,
+  FormatterModule,
   StringList,
 } from '../wasm-loader-formatter.service';
 
@@ -51,10 +52,6 @@ export class FormatterOptionsComponent {
 
     const retval: any = [];
 
-    if (!this.formatter) {
-      return retval;
-    }
-
     for (const key in target) {
       if (target.hasOwnProperty(key) || key in target) {
         retval.push(key);
@@ -87,7 +84,7 @@ export class FormatterOptionsComponent {
       }
     }
 
-    (this.formatStyle as any)[keys.at(0)!] = tree[0];
+    [(this.formatStyle as any)[keys.at(0)!]] = tree;
 
     this.changeOptions.emit();
   }
@@ -96,8 +93,8 @@ export class FormatterOptionsComponent {
     return typeof value === 'number';
   }
 
-  protected minNumber(root_field: any, field: string): number {
-    switch (root_field[`get${field}Type`]()) {
+  protected minNumber(rootField: any, field: string): number {
+    switch (rootField[`get${field}Type`]()) {
       case -8: {
         return -127;
       }
@@ -116,12 +113,14 @@ export class FormatterOptionsComponent {
       case 32: {
         return 0;
       }
+      default: {
+        throw assertError(`Unknown value ${rootField[`get${field}Type`]()} to get min number.`);
+      }
     }
-    return 0;
   }
 
-  protected maxNumber(root_field: any, field: string): number {
-    switch (root_field[`get${field}Type`]()) {
+  protected maxNumber(rootField: any, field: string): number {
+    switch (rootField[`get${field}Type`]()) {
       case -8: {
         return 0x7f;
       }
@@ -140,8 +139,10 @@ export class FormatterOptionsComponent {
       case 32: {
         return 0xffffffff;
       }
+      default: {
+        throw assertError(`Unknown value ${rootField[`get${field}Type`]()} to get max number.`);
+      }
     }
-    return 0;
   }
 
   protected isBoolean(value: unknown): boolean {
@@ -224,8 +225,8 @@ export class FormatterOptionsComponent {
     );
   }
 
-  protected stringListToTextArea(raw_value: any): string {
-    const value: StringList = raw_value as StringList;
+  protected stringListToTextArea(rawValue: any): string {
+    const value: StringList = rawValue as StringList;
     const retval: string[] = [];
     for (let i = 0; i < value.size(); i += 1) {
       retval.push(value.get(i)!);

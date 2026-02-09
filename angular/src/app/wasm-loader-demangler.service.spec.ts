@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { WasmLoaderDemanglerService, DemanglerModule } from './wasm-loader-demangler.service';
+import { DemanglerModule,WasmLoaderDemanglerService } from './wasm-loader-demangler.service';
 
 describe('WasmLoaderDemanglerService', () => {
   let service: WasmLoaderDemanglerService;

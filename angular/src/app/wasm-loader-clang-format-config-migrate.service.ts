@@ -6,8 +6,8 @@ import { unknownAssertError } from './apps/shared/interfaces/errors';
 
 export type {
   EmbindModule as ClangFormatConfigMigrateModule,
-  VersionList,
   Version,
+  VersionList,
 } from '../assets/web_clang_format_config_migrate';
 
 @Injectable({

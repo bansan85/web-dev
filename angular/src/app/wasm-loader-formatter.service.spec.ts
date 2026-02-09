@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 
 import {
-  WasmLoaderFormatterService,
-  FormatterModule,
   FormatStyle,
+  FormatterModule,
+  WasmLoaderFormatterService,
 } from './wasm-loader-formatter.service';
 
 describe('WasmLoaderFormatterService', () => {

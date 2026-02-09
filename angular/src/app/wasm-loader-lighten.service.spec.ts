@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { WasmLoaderLightenService, LightenModule } from './wasm-loader-lighten.service';
+import { LightenModule, WasmLoaderLightenService } from './wasm-loader-lighten.service';
 
 describe('WasmLoaderLightenService', () => {
   let service: WasmLoaderLightenService;

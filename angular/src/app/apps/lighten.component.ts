@@ -46,7 +46,7 @@ export class AppLightenComponent implements OnInit {
     this.lighten ??= await this.wasmLoaderLighten.wasm();
   }
 
-  private roundNumbers = (data: any): any => {
+  private readonly roundNumbers = (data: any): any => {
     if (typeof data === 'number') {
       return Number(
         this.lighten!.web_lighten_number(data.toString(), this.count)
