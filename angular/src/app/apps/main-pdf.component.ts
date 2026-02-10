@@ -1,6 +1,12 @@
-import { ChangeDetectionStrategy, Component, ElementRef,viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 
 import { compressPdf, splitPdf } from './ghostscript-init.js';
+
+enum ButtonAction {
+  None,
+  Single,
+  Multiple,
+}
 
 @Component({
   selector: 'app-main-pdf',
@@ -10,21 +16,26 @@ import { compressPdf, splitPdf } from './ghostscript-init.js';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MainPdfComponent {
-  private readonly fileInput = viewChild.required<ElementRef<HTMLInputElement>>('fileInput');
-  private readonly status = viewChild.required<ElementRef<HTMLParagraphElement>>('status');
-  private readonly singleDlBtn = viewChild.required<ElementRef<HTMLButtonElement>>('singleDlBtn');
-  private readonly multipleDlBtn = viewChild.required<ElementRef<HTMLButtonElement>>('multipleDlBtn');
+  private singleFileName: File | null = null;
+  private buttonAction = ButtonAction.None;
+
+  protected readonly status = signal('');
+  protected readonly downloadVisilibity = signal('hide');
 
   generatedUrl: any = null;
 
+  onSingleFileSelected(event: Event) {
+    const element = event.currentTarget as HTMLInputElement;
+    const files = element.files!;
+    [this.singleFileName] = files;
+  }
+
   compress() {
-    if (this.fileInput().nativeElement.files!.length === 0) {
-      this.status().nativeElement.textContent =
-        'Veuillez sélectionner un fichier PDF.';
+    if (this.singleFileName === null) {
+      this.status.set('Select one PDF file.');
       return;
     }
 
-    const [file] = this.fileInput().nativeElement.files!;
     const reader = new FileReader();
 
     reader.onload = async (event) => {
@@ -32,72 +43,71 @@ export class MainPdfComponent {
       const blob = new Blob([arrayBuffer!], { type: 'application/pdf' });
       const pdfDataURL = URL.createObjectURL(blob);
 
-      this.status().nativeElement.textContent = 'Compress in progress...';
-      this.singleDlBtn().nativeElement.style.display = 'none';
-      this.multipleDlBtn().nativeElement.style.display = 'none';
+      this.status.set('Compress in progress...');
+      this.downloadVisilibity.set('hide');
 
       try {
         this.generatedUrl = await compressPdf({ psDataURL: pdfDataURL });
 
-        this.status().nativeElement.textContent = 'Compress done.';
-        this.singleDlBtn().nativeElement.style.display = 'block';
+        this.status.set('Compress done.');
+        this.downloadVisilibity.set('show-block');
+        this.buttonAction = ButtonAction.Single;
       } catch (error) {
         console.error('Failed while compressing: ', error);
-        this.status().nativeElement.textContent = 'Failed while compressing.';
+        this.status.set('Failed while compressing.');
       }
     };
 
-    reader.readAsArrayBuffer(file);
+    reader.readAsArrayBuffer(this.singleFileName);
   }
   split() {
-    if (this.fileInput().nativeElement.files!.length === 0) {
-      this.status().nativeElement.textContent = 'Veuillez sélectionner un fichier PDF.';
+    if (this.singleFileName === null) {
+      this.status.set('Select one PDF file.');
       return;
     }
 
-    const [file] = this.fileInput().nativeElement.files!;
     const reader = new FileReader();
 
-    reader.onload = async (event)=> {
+    reader.onload = async (event) => {
       const arrayBuffer = event.target!.result;
       const blob = new Blob([arrayBuffer!], { type: 'application/pdf' });
       const pdfDataURL = URL.createObjectURL(blob);
 
-      this.status().nativeElement.textContent = 'Split in progress...';
-      this.singleDlBtn().nativeElement.style.display = 'none';
-      this.multipleDlBtn().nativeElement.style.display = 'none';
+      this.status.set('Split in progress...');
+      this.downloadVisilibity.set('hide');
 
       try {
         this.generatedUrl = await splitPdf({ psDataURL: pdfDataURL });
 
-        this.status().nativeElement.textContent = 'Split done.';
-        this.multipleDlBtn().nativeElement.style.display = 'block';
+        this.status.set('Split done.');
+        this.downloadVisilibity.set('show-block');
+        this.buttonAction = ButtonAction.Multiple;
       } catch (error) {
         console.error('Failed while spliting:', error);
-        this.status().nativeElement.textContent = 'Failed while spliting.';
+        this.status.set('Failed while spliting.');
       }
     };
 
-    reader.readAsArrayBuffer(file);
+    reader.readAsArrayBuffer(this.singleFileName);
   }
-  singleDownload() {
+
+  download() {
     if (this.generatedUrl) {
-      const downloadLink = document.createElement("a");
-      downloadLink.href = this.generatedUrl;
-      downloadLink.download = "generated.pdf";
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-      document.body.removeChild(downloadLink);
+      if (this.buttonAction === ButtonAction.Single) {
+        const downloadLink = document.createElement('a');
+        downloadLink.href = this.generatedUrl;
+        downloadLink.download = 'generated.pdf';
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+      } else {
+        const downloadLink = document.createElement('a');
+        downloadLink.href = this.generatedUrl;
+        downloadLink.download = 'generated.zip';
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+      }
+    }
   }
-  }
-  multipleDownload() {
-    if (this.generatedUrl) {
-      const downloadLink = document.createElement("a");
-      downloadLink.href = this.generatedUrl;
-      downloadLink.download = "generated.zip";
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-      document.body.removeChild(downloadLink);
-  }
-}
 }

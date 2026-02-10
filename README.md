@@ -68,3 +68,7 @@ IEEE floating point sucks. It may prints `3.999999` / `4.0000001` instead of `4`
 You can only set the minimum consecutive 0s or 9s required to trigger string rounding.
 
 ![lighten options](doc/lighten-options.png)
+
+## Recommended IDE Setup
+
+[VS Code](https://code.visualstudio.com/) + [Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=rvest.vs-code-prettier-eslint)

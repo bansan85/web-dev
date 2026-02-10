@@ -5,6 +5,7 @@ import angular from 'angular-eslint';
 import { defineConfig } from 'eslint/config';
 import requireOnPush from './src/eslint-rules/require-onpush.js';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
+import eslintConfigPrettier from 'eslint-config-prettier';
 
 export default defineConfig(
   {
@@ -14,6 +15,7 @@ export default defineConfig(
       ...tseslint.configs.strictTypeChecked,
       ...tseslint.configs.stylisticTypeChecked,
       ...angular.configs.tsAll,
+      eslintConfigPrettier,
     ],
     languageOptions: {
       parserOptions: {
@@ -109,6 +111,7 @@ export default defineConfig(
       ...angular.configs.templateRecommended,
       ...angular.configs.templateAccessibility,
       ...angular.configs.templateAll,
+      eslintConfigPrettier,
     ],
     rules: {
       '@angular-eslint/template/attributes-order': [

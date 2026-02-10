@@ -1,7 +1,6 @@
 <h1>PDF manipulation</h1>
-<input #fileInput accept="application/pdf" type="file">
-<button #compressBtn type="button" (click)="compress()">Compresser</button>
-<button #splitBtn type="button" (click)="split()">Split</button>
-<p #status></p>
-<button #singleDlBtn style="display: none;" type="button" (click)="singleDownload()">Télécharger</button>
-<button #multipleDlBtn style="display: none;" type="button" (click)="multipleDownload()">Télécharger</button>
+<input accept="application/pdf" type="file" (change)="onSingleFileSelected($event)">
+<button type="button" (click)="compress()">Compresser</button>
+<button type="button" (click)="split()">Split</button>
+<p>{{this.status()}}</p>
+<button type="button" [class]="downloadVisilibity()" (click)="download()">Télécharger</button>
