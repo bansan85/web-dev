@@ -1,11 +1,18 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 
-import { compressPdf, splitPdf } from './ghostscript-init.js';
-
 enum ButtonAction {
   None,
   Single,
   Multiple,
+}
+
+interface PdfWorkerInput {
+  psDataURL: string;
+}
+
+interface PdfWorkerMessage {
+  data: PdfWorkerInput;
+  target: string;
 }
 
 @Component({
@@ -30,6 +37,32 @@ export class MainPdfComponent {
     [this.singleFileName] = files;
   }
 
+  private pdfWorker: Worker | null = null;
+
+  private runWorker(dataStruct: PdfWorkerInput, target: string): Promise<unknown> {
+    this.pdfWorker?.terminate();
+    this.pdfWorker = new Worker(
+      new URL('./ghostscript-worker.js', import.meta.url),
+      { type: 'module' },
+    );
+    this.pdfWorker.postMessage({ data: dataStruct, target } as PdfWorkerMessage);
+    return new Promise((resolve) => {
+      const listener = (e: MessageEvent) => {
+        resolve(e.data);
+        this.pdfWorker!.removeEventListener('message', listener);
+      };
+      this.pdfWorker!.addEventListener('message', listener);
+    });
+  }
+
+  private compressPdf(dataStruct: PdfWorkerInput): Promise<unknown> {
+    return this.runWorker(dataStruct, 'compress.wasm');
+  }
+
+  private splitPdf(dataStruct: PdfWorkerInput): Promise<unknown> {
+    return this.runWorker(dataStruct, 'split.wasm');
+  }
+
   protected compress() {
     if (this.singleFileName === null) {
       this.status.set('Select one PDF file.');
@@ -47,7 +80,7 @@ export class MainPdfComponent {
       this.downloadVisilibity.set('display-none');
 
       try {
-        this.generatedUrl = await compressPdf({ psDataURL: pdfDataURL });
+        this.generatedUrl = await this.compressPdf({ psDataURL: pdfDataURL });
 
         this.status.set('Compress done.');
         this.downloadVisilibity.set('display-block');
@@ -78,7 +111,7 @@ export class MainPdfComponent {
       this.downloadVisilibity.set('display-none');
 
       try {
-        this.generatedUrl = await splitPdf({ psDataURL: pdfDataURL });
+        this.generatedUrl = await this.splitPdf({ psDataURL: pdfDataURL });
 
         this.status.set('Split done.');
         this.downloadVisilibity.set('display-block');
