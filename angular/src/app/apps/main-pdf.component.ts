@@ -20,7 +20,7 @@ export class MainPdfComponent {
   private buttonAction = ButtonAction.None;
 
   protected readonly status = signal('');
-  protected readonly downloadVisilibity = signal('hide');
+  protected readonly downloadVisilibity = signal('display-none');
 
   generatedUrl: any = null;
 
@@ -44,13 +44,13 @@ export class MainPdfComponent {
       const pdfDataURL = URL.createObjectURL(blob);
 
       this.status.set('Compress in progress...');
-      this.downloadVisilibity.set('hide');
+      this.downloadVisilibity.set('display-none');
 
       try {
         this.generatedUrl = await compressPdf({ psDataURL: pdfDataURL });
 
         this.status.set('Compress done.');
-        this.downloadVisilibity.set('show-block');
+        this.downloadVisilibity.set('display-block');
         this.buttonAction = ButtonAction.Single;
       } catch (error) {
         console.error('Failed while compressing: ', error);
@@ -74,13 +74,13 @@ export class MainPdfComponent {
       const pdfDataURL = URL.createObjectURL(blob);
 
       this.status.set('Split in progress...');
-      this.downloadVisilibity.set('hide');
+      this.downloadVisilibity.set('display-none');
 
       try {
         this.generatedUrl = await splitPdf({ psDataURL: pdfDataURL });
 
         this.status.set('Split done.');
-        this.downloadVisilibity.set('show-block');
+        this.downloadVisilibity.set('display-block');
         this.buttonAction = ButtonAction.Multiple;
       } catch (error) {
         console.error('Failed while spliting:', error);

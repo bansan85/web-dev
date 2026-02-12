@@ -35,3 +35,11 @@ body {
   right: 0.5em;
   width: 2em;
 }
+
+.display-none {
+    display: none;
+}
+
+.display-block {
+    display: block;
+}
