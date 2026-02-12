@@ -22,15 +22,15 @@ export class MainPdfComponent {
   protected readonly status = signal('');
   protected readonly downloadVisilibity = signal('display-none');
 
-  generatedUrl: any = null;
+  private generatedUrl: any = null;
 
-  onSingleFileSelected(event: Event) {
+  protected onSingleFileSelected(event: Event) {
     const element = event.currentTarget as HTMLInputElement;
     const files = element.files!;
     [this.singleFileName] = files;
   }
 
-  compress() {
+  protected compress() {
     if (this.singleFileName === null) {
       this.status.set('Select one PDF file.');
       return;
@@ -60,7 +60,8 @@ export class MainPdfComponent {
 
     reader.readAsArrayBuffer(this.singleFileName);
   }
-  split() {
+
+  protected split() {
     if (this.singleFileName === null) {
       this.status.set('Select one PDF file.');
       return;
@@ -91,7 +92,7 @@ export class MainPdfComponent {
     reader.readAsArrayBuffer(this.singleFileName);
   }
 
-  download() {
+  protected download() {
     if (this.generatedUrl) {
       if (this.buttonAction === ButtonAction.Single) {
         const downloadLink = document.createElement('a');
