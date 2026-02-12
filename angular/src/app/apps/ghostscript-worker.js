@@ -91,6 +91,7 @@ function splitPdf(dataStruct, responseCallback) {
             zip.file(fileName, blob);
             i++;
           }
+          // No need to compress.
           zip.generateAsync({ type: "blob" }).then(function (content) {
             var pdfDataURL = self.URL.createObjectURL(content);
             responseCallback({ pdfDataURL: pdfDataURL, url: dataStruct.url });
