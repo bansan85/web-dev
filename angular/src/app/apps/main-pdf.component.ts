@@ -29,7 +29,7 @@ export class MainPdfComponent {
   protected onSingleFileSelected(event: Event) {
     const element = event.currentTarget as HTMLInputElement;
     const files = element.files!;
-    [this.singleFileName] = files;
+    this.singleFileName = files.item(0);
   }
 
   private pdfWorker: Worker | null = null;
