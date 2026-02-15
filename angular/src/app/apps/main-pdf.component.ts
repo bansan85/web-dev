@@ -104,6 +104,42 @@ export class MainPdfComponent {
     reader.readAsArrayBuffer(this.singleFileName);
   }
 
+  protected pageCount() {
+    if (this.singleFileName === null) {
+      this.status.set('Select one PDF file.');
+      return;
+    }
+
+    this.pdfWorker?.terminate();
+
+    const reader = new FileReader();
+
+    reader.onload = async (event) => {
+      const arrayBuffer = event.target!.result;
+      const blob = new Blob([arrayBuffer!], { type: 'application/pdf' });
+      const pdfDataURL = URL.createObjectURL(blob);
+
+      this.status.set('Counting in progress...');
+      this.downloadVisilibity.set('display-none');
+
+      try {
+        const [pdfWorker, pageCount] = this.pdfWorkerService.pageCountPdf({
+          psDataURL: pdfDataURL,
+        });
+        this.pdfWorker = pdfWorker;
+        console.log(await pageCount);
+
+        this.status.set('Counting done.');
+        this.buttonAction = ButtonAction.None;
+      } catch (error) {
+        console.error('Failed while Counting: ', error);
+        this.status.set('Failed while Counting.');
+      }
+    };
+
+    reader.readAsArrayBuffer(this.singleFileName);
+  }
+
   protected download() {
     if (this.generatedUrl) {
       if (this.buttonAction === ButtonAction.Single) {

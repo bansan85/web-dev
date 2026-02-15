@@ -2,5 +2,6 @@
 <input accept="application/pdf" type="file" (change)="onSingleFileSelected($event)">
 <button type="button" (click)="compress()">Compresser</button>
 <button type="button" (click)="split()">Split</button>
+<button type="button" (click)="pageCount()">Page count</button>
 <p>{{this.status()}}</p>
 <button type="button" [class]="downloadVisilibity()" (click)="download()">Télécharger</button>

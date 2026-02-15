@@ -7,18 +7,18 @@ import { PdfWorkerMessage } from '../models/pdf-worker-message';
   providedIn: 'root',
 })
 export class PdfWorkerService {
-  private runWorker(
+  private runWorker<T>(
     dataStruct: PdfWorkerInput,
     target: string,
-  ): [Worker, Promise<string>] {
+  ): [Worker, Promise<T>] {
     const pdfWorker = new Worker(
       new URL('./ghostscript-worker.ts', import.meta.url),
       { type: 'module' },
     );
     pdfWorker.postMessage({ data: dataStruct, target } as PdfWorkerMessage);
 
-    const promise = new Promise<string>((resolve) => {
-      const listener = (e: MessageEvent<string>) => {
+    const promise = new Promise<T>((resolve) => {
+      const listener = (e: MessageEvent<T>) => {
         resolve(e.data);
         pdfWorker.removeEventListener('message', listener);
       };
@@ -34,5 +34,9 @@ export class PdfWorkerService {
 
   splitPdf(dataStruct: PdfWorkerInput): [Worker, Promise<string>] {
     return this.runWorker(dataStruct, 'split');
+  }
+
+  pageCountPdf(dataStruct: PdfWorkerInput): [Worker, Promise<number>] {
+    return this.runWorker(dataStruct, 'pageCount');
   }
 }

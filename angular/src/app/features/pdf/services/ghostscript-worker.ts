@@ -136,6 +136,57 @@ async function splitPdf(
   }
 }
 
+async function getPageCount(
+  dataStruct: WorkerData,
+  responseCallback: (res: any) => void,
+): Promise<void> {
+  const response = await fetch(dataStruct.psDataURL);
+  const buffer = await response.arrayBuffer();
+  self.URL.revokeObjectURL(dataStruct.psDataURL);
+
+  let output = '';
+
+  const moduleConfig = {
+    preRun: [
+      () => {
+        self.Module.FS.writeFile('input.pdf', new Uint8Array(buffer));
+      },
+    ],
+    postRun: [
+      () => {
+        const pageCount = parseInt(output.trim(), 10);
+        responseCallback({ pageCount, url: dataStruct.url });
+      },
+    ],
+    arguments: [
+      '-q',
+      '-dNODISPLAY',
+      '-dNOSAFER',
+      '-c',
+      '(input.pdf) (r) file runpdfbegin pdfpagecount = quit',
+    ],
+    print: (text: string) => {
+      output += text;
+    },
+    printErr: () => {
+      //
+    },
+    totalDependencies: 0,
+    noExitRuntime: 1,
+  };
+
+  if (self.Module) {
+    self.Module.calledRun = false;
+    self.Module.postRun = moduleConfig.postRun;
+    self.Module.preRun = moduleConfig.preRun;
+    self.Module.print = moduleConfig.print;
+    self.Module.callMain(moduleConfig.arguments);
+  } else {
+    self.Module = moduleConfig;
+    await loadScript(moduleConfig);
+  }
+}
+
 self.addEventListener('message', (e: MessageEvent<WorkerMessage>) => {
   const { target, data } = e.data;
 
@@ -152,6 +203,16 @@ self.addEventListener('message', (e: MessageEvent<WorkerMessage>) => {
   } else if (target === 'split') {
     splitPdf(data, ({ pdfDataURL }) => {
       self.postMessage(pdfDataURL);
+    })
+      .then(() => {
+        //
+      })
+      .catch((err: unknown) => {
+        throw unknownAssertError(err);
+      });
+  } else if (target === 'pageCount') {
+    getPageCount(data, ({ pageCount }) => {
+      self.postMessage(pageCount);
     })
       .then(() => {
         //
