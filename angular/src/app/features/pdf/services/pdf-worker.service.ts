@@ -39,4 +39,8 @@ export class PdfWorkerService {
   pageCountPdf(dataStruct: PdfWorkerInput): [Worker, Promise<number>] {
     return this.runWorker(dataStruct, 'pageCount');
   }
+
+  pageImageSized(dataStruct: PdfWorkerInput): [Worker, Promise<string>] {
+    return this.runWorker(dataStruct, 'pageImageSized');
+  }
 }

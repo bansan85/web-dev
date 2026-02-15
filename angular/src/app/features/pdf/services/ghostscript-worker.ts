@@ -187,6 +187,66 @@ async function getPageCount(
   }
 }
 
+async function getPageImageSized(
+  dataStruct: WorkerData,
+  pageNumber: number,
+  resolution: number,
+  responseCallback: (res: any) => void,
+): Promise<void> {
+  const response = await fetch(dataStruct.pdfDataURL);
+  const buffer = await response.arrayBuffer();
+  self.URL.revokeObjectURL(dataStruct.pdfDataURL);
+
+  const moduleConfig = {
+    preRun: [
+      () => {
+        self.Module.FS.writeFile('input.pdf', new Uint8Array(buffer));
+      },
+    ],
+    postRun: [
+      () => {
+        const fileName = 'output.png';
+        if (self.Module.FS.analyzePath(fileName).exists) {
+          const uarray = self.Module.FS.readFile(fileName);
+          const blob = new Blob([uarray], { type: 'image/png' });
+          const pdfDataURL = self.URL.createObjectURL(blob);
+          responseCallback({ pdfDataURL, url: dataStruct.url });
+        }
+      },
+    ],
+    arguments: [
+      '-sDEVICE=fpng',
+      `-r${resolution}`,
+      `-dFirstPage=${pageNumber}`,
+      `-dLastPage=${pageNumber}`,
+      '-dNOPAUSE',
+      '-dBATCH',
+      '-dQUIET',
+      '-dNOSAFER',
+      '-sOutputFile=output.png',
+      'input.pdf',
+    ],
+    print: () => {
+      //
+    },
+    printErr: () => {
+      //
+    },
+    totalDependencies: 0,
+    noExitRuntime: 1,
+  };
+
+  if (self.Module) {
+    self.Module.calledRun = false;
+    self.Module.postRun = moduleConfig.postRun;
+    self.Module.preRun = moduleConfig.preRun;
+    self.Module.callMain(moduleConfig.arguments);
+  } else {
+    self.Module = moduleConfig;
+    await loadScript(moduleConfig);
+  }
+}
+
 self.addEventListener('message', (e: MessageEvent<WorkerMessage>) => {
   const { target, data } = e.data;
 
@@ -213,6 +273,16 @@ self.addEventListener('message', (e: MessageEvent<WorkerMessage>) => {
   } else if (target === 'pageCount') {
     getPageCount(data, ({ pageCount }) => {
       self.postMessage(pageCount);
+    })
+      .then(() => {
+        //
+      })
+      .catch((err: unknown) => {
+        throw unknownAssertError(err);
+      });
+  } else if (target === 'pageImageSized') {
+    getPageImageSized(data, 2, 50, ({ pdfDataURL }) => {
+      self.postMessage(pdfDataURL);
     })
       .then(() => {
         //

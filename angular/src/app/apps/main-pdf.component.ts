@@ -140,6 +140,41 @@ export class MainPdfComponent {
     reader.readAsArrayBuffer(this.singleFileName);
   }
 
+  protected pageImageSized() {
+    if (this.singleFileName === null) {
+      this.status.set('Select one PDF file.');
+      return;
+    }
+
+    this.pdfWorker?.terminate();
+
+    const reader = new FileReader();
+
+    reader.onload = async (event) => {
+      const arrayBuffer = event.target!.result;
+      const blob = new Blob([arrayBuffer!], { type: 'image/png' });
+      const pdfDataURL = URL.createObjectURL(blob);
+
+      this.status.set('Imaging in progress...');
+      this.downloadVisilibity.set('display-none');
+
+      try {
+        const [pdfWorker, generatedUrl] = this.pdfWorkerService.pageImageSized({ pdfDataURL });
+        this.pdfWorker = pdfWorker;
+        this.generatedUrl = await generatedUrl;
+
+        this.status.set('Imaging done.');
+        this.downloadVisilibity.set('display-block');
+        this.buttonAction = ButtonAction.Single;
+      } catch (error) {
+        console.error('Failed while imaging: ', error);
+        this.status.set('Failed while imaging.');
+      }
+    };
+
+    reader.readAsArrayBuffer(this.singleFileName);
+  }
+
   protected download() {
     if (this.generatedUrl) {
       if (this.buttonAction === ButtonAction.Single) {
