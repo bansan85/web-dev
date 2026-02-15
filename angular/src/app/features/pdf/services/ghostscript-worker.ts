@@ -8,7 +8,7 @@ declare const self: typeof globalThis & { Module: any };
 let zip: JSZip;
 
 interface WorkerData {
-  psDataURL: string;
+  pdfDataURL: string;
   url: string;
 }
 
@@ -26,9 +26,9 @@ async function compressPdf(
   dataStruct: WorkerData,
   responseCallback: (res: any) => void,
 ): Promise<void> {
-  const response = await fetch(dataStruct.psDataURL);
+  const response = await fetch(dataStruct.pdfDataURL);
   const buffer = await response.arrayBuffer();
-  self.URL.revokeObjectURL(dataStruct.psDataURL);
+  self.URL.revokeObjectURL(dataStruct.pdfDataURL);
 
   const moduleConfig = {
     preRun: [
@@ -81,9 +81,9 @@ async function splitPdf(
   dataStruct: WorkerData,
   responseCallback: (res: any) => void,
 ): Promise<void> {
-  const response = await fetch(dataStruct.psDataURL);
+  const response = await fetch(dataStruct.pdfDataURL);
   const buffer = await response.arrayBuffer();
-  self.URL.revokeObjectURL(dataStruct.psDataURL);
+  self.URL.revokeObjectURL(dataStruct.pdfDataURL);
 
   const moduleConfig = {
     preRun: [
@@ -140,9 +140,9 @@ async function getPageCount(
   dataStruct: WorkerData,
   responseCallback: (res: any) => void,
 ): Promise<void> {
-  const response = await fetch(dataStruct.psDataURL);
+  const response = await fetch(dataStruct.pdfDataURL);
   const buffer = await response.arrayBuffer();
-  self.URL.revokeObjectURL(dataStruct.psDataURL);
+  self.URL.revokeObjectURL(dataStruct.pdfDataURL);
 
   let output = '';
 

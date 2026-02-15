@@ -1,3 +1,3 @@
 export interface PdfWorkerInput {
-  psDataURL: string;
+  pdfDataURL: string;
 }

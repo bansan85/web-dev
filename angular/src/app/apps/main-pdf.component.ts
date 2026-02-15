@@ -53,7 +53,7 @@ export class MainPdfComponent {
       this.downloadVisilibity.set('display-none');
 
       try {
-        const [pdfWorker, generatedUrl] = this.pdfWorkerService.compressPdf({ psDataURL: pdfDataURL });
+        const [pdfWorker, generatedUrl] = this.pdfWorkerService.compressPdf({ pdfDataURL });
         this.pdfWorker = pdfWorker;
         this.generatedUrl = await generatedUrl;
 
@@ -88,7 +88,7 @@ export class MainPdfComponent {
       this.downloadVisilibity.set('display-none');
 
       try {
-        const [pdfWorker, generatedUrl] = this.pdfWorkerService.splitPdf({ psDataURL: pdfDataURL });
+        const [pdfWorker, generatedUrl] = this.pdfWorkerService.splitPdf({ pdfDataURL });
         this.pdfWorker = pdfWorker;
         this.generatedUrl = await generatedUrl;
 
@@ -124,7 +124,7 @@ export class MainPdfComponent {
 
       try {
         const [pdfWorker, pageCount] = this.pdfWorkerService.pageCountPdf({
-          psDataURL: pdfDataURL,
+          pdfDataURL,
         });
         this.pdfWorker = pdfWorker;
         console.log(await pageCount);
