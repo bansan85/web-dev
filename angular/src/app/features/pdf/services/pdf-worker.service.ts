@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { PdfWorkerInput } from '../models/pdf-worker-input';
 import { PdfWorkerMessage } from '../models/pdf-worker-message';
+import { WorkerImagePdfOutput, WorkerNumberOutput, WorkerPdfOutput, WorkerZipOutput } from '../models/pdf-worker-output';
 
 @Injectable({
   providedIn: 'root',
@@ -28,19 +29,19 @@ export class PdfWorkerService {
     return [pdfWorker, promise];
   }
 
-  compressPdf(dataStruct: PdfWorkerInput): [Worker, Promise<string>] {
+  compressPdf(dataStruct: PdfWorkerInput): [Worker, Promise<WorkerPdfOutput>] {
     return this.runWorker(dataStruct, 'compress');
   }
 
-  splitPdf(dataStruct: PdfWorkerInput): [Worker, Promise<string>] {
+  splitPdf(dataStruct: PdfWorkerInput): [Worker, Promise<WorkerZipOutput>] {
     return this.runWorker(dataStruct, 'split');
   }
 
-  pageCountPdf(dataStruct: PdfWorkerInput): [Worker, Promise<number>] {
+  pageCountPdf(dataStruct: PdfWorkerInput): [Worker, Promise<WorkerNumberOutput>] {
     return this.runWorker(dataStruct, 'pageCount');
   }
 
-  pageImageSized(dataStruct: PdfWorkerInput): [Worker, Promise<string>] {
+  pageImageSized(dataStruct: PdfWorkerInput): [Worker, Promise<WorkerImagePdfOutput>] {
     return this.runWorker(dataStruct, 'pageImageSized');
   }
 }

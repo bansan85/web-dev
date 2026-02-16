@@ -53,9 +53,10 @@ export class MainPdfComponent {
       this.downloadVisilibity.set('display-none');
 
       try {
-        const [pdfWorker, generatedUrl] = this.pdfWorkerService.compressPdf({ pdfDataURL });
+        const [pdfWorker, retvalPromise] = this.pdfWorkerService.compressPdf({ pdfDataURL });
         this.pdfWorker = pdfWorker;
-        this.generatedUrl = await generatedUrl;
+        const retval = await retvalPromise;
+        this.generatedUrl = retval.pdfDataURL;
 
         this.status.set('Compress done.');
         this.downloadVisilibity.set('display-block');
@@ -88,9 +89,10 @@ export class MainPdfComponent {
       this.downloadVisilibity.set('display-none');
 
       try {
-        const [pdfWorker, generatedUrl] = this.pdfWorkerService.splitPdf({ pdfDataURL });
+        const [pdfWorker, retvalPromise] = this.pdfWorkerService.splitPdf({ pdfDataURL });
         this.pdfWorker = pdfWorker;
-        this.generatedUrl = await generatedUrl;
+        const retval = await retvalPromise;
+        this.generatedUrl = retval.zipDataURL;
 
         this.status.set('Split done.');
         this.downloadVisilibity.set('display-block');
@@ -123,11 +125,12 @@ export class MainPdfComponent {
       this.downloadVisilibity.set('display-none');
 
       try {
-        const [pdfWorker, pageCount] = this.pdfWorkerService.pageCountPdf({
+        const [pdfWorker, retvalPromise] = this.pdfWorkerService.pageCountPdf({
           pdfDataURL,
         });
         this.pdfWorker = pdfWorker;
-        console.log(await pageCount);
+        const retval = await retvalPromise;
+        console.log(retval.value);
 
         this.status.set('Counting done.');
         this.buttonAction = ButtonAction.None;
@@ -159,9 +162,10 @@ export class MainPdfComponent {
       this.downloadVisilibity.set('display-none');
 
       try {
-        const [pdfWorker, generatedUrl] = this.pdfWorkerService.pageImageSized({ pdfDataURL });
+        const [pdfWorker, retvalPromise] = this.pdfWorkerService.pageImageSized({ pdfDataURL });
         this.pdfWorker = pdfWorker;
-        this.generatedUrl = await generatedUrl;
+        const retval = await retvalPromise;
+        this.generatedUrl = retval.pngDataURL;
 
         this.status.set('Imaging done.');
         this.downloadVisilibity.set('display-block');

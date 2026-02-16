@@ -2,6 +2,7 @@ import JSZip from 'jszip';
 
 import { unknownAssertError } from '../../../apps/shared/interfaces/errors.js';
 import { default as webGs } from './gs.js';
+import { WorkerImagePdfOutput, WorkerNumberOutput, WorkerPdfOutput, WorkerZipOutput } from '../models/pdf-worker-output.js';
 
 declare const self: typeof globalThis & { Module: any };
 
@@ -23,7 +24,7 @@ async function loadScript(module: any): Promise<void> {
 
 async function compressPdf(
   dataStruct: WorkerData,
-  responseCallback: (res: any) => void,
+  responseCallback: (res: WorkerPdfOutput) => void,
 ): Promise<void> {
   const response = await fetch(dataStruct.pdfDataURL);
   const buffer = await response.arrayBuffer();
@@ -78,7 +79,7 @@ async function compressPdf(
 
 async function splitPdf(
   dataStruct: WorkerData,
-  responseCallback: (res: any) => void,
+  responseCallback: (res: WorkerZipOutput) => void,
 ): Promise<void> {
   const response = await fetch(dataStruct.pdfDataURL);
   const buffer = await response.arrayBuffer();
@@ -102,8 +103,8 @@ async function splitPdf(
           i += 1;
         }
         const content = await zip.generateAsync({ type: 'blob' });
-        const pdfDataURL = self.URL.createObjectURL(content);
-        responseCallback({ pdfDataURL });
+        const zipDataURL = self.URL.createObjectURL(content);
+        responseCallback({ zipDataURL });
       },
     ],
     arguments: [
@@ -137,7 +138,7 @@ async function splitPdf(
 
 async function getPageCount(
   dataStruct: WorkerData,
-  responseCallback: (res: any) => void,
+  responseCallback: (res: WorkerNumberOutput) => void,
 ): Promise<void> {
   const response = await fetch(dataStruct.pdfDataURL);
   const buffer = await response.arrayBuffer();
@@ -153,8 +154,8 @@ async function getPageCount(
     ],
     postRun: [
       () => {
-        const pageCount = parseInt(output.trim(), 10);
-        responseCallback({ pageCount });
+        const value = parseInt(output.trim(), 10);
+        responseCallback({ value });
       },
     ],
     arguments: [
@@ -190,7 +191,7 @@ async function getPageImageSized(
   dataStruct: WorkerData,
   pageNumber: number,
   resolution: number,
-  responseCallback: (res: any) => void,
+  responseCallback: (res: WorkerImagePdfOutput) => void,
 ): Promise<void> {
   const response = await fetch(dataStruct.pdfDataURL);
   const buffer = await response.arrayBuffer();
@@ -208,8 +209,8 @@ async function getPageImageSized(
         if (self.Module.FS.analyzePath(fileName).exists) {
           const uarray = self.Module.FS.readFile(fileName);
           const blob = new Blob([uarray], { type: 'image/png' });
-          const pdfDataURL = self.URL.createObjectURL(blob);
-          responseCallback({ pdfDataURL });
+          const pngDataURL = self.URL.createObjectURL(blob);
+          responseCallback({ pngDataURL, pageNumber });
         }
       },
     ],
@@ -225,10 +226,12 @@ async function getPageImageSized(
       '-sOutputFile=output.png',
       'input.pdf',
     ],
-    print: () => {
+    print: (text: string) => {
+      console.log(text);
       //
     },
-    printErr: () => {
+    printErr: (text: string) => {
+      console.error(text);
       //
     },
     totalDependencies: 0,
@@ -250,8 +253,8 @@ self.addEventListener('message', (e: MessageEvent<WorkerMessage>) => {
   const { target, data } = e.data;
 
   if (target === 'compress') {
-    compressPdf(data, ({ pdfDataURL }) => {
-      self.postMessage(pdfDataURL);
+    compressPdf(data, (retval) => {
+      self.postMessage(retval);
     })
       .then(() => {
         //
@@ -260,8 +263,8 @@ self.addEventListener('message', (e: MessageEvent<WorkerMessage>) => {
         throw unknownAssertError(err);
       });
   } else if (target === 'split') {
-    splitPdf(data, ({ pdfDataURL }) => {
-      self.postMessage(pdfDataURL);
+    splitPdf(data, (retval) => {
+      self.postMessage(retval);
     })
       .then(() => {
         //
@@ -270,8 +273,8 @@ self.addEventListener('message', (e: MessageEvent<WorkerMessage>) => {
         throw unknownAssertError(err);
       });
   } else if (target === 'pageCount') {
-    getPageCount(data, ({ pageCount }) => {
-      self.postMessage(pageCount);
+    getPageCount(data, (retval) => {
+      self.postMessage(retval);
     })
       .then(() => {
         //
@@ -280,8 +283,8 @@ self.addEventListener('message', (e: MessageEvent<WorkerMessage>) => {
         throw unknownAssertError(err);
       });
   } else if (target === 'pageImageSized') {
-    getPageImageSized(data, 2, 50, ({ pdfDataURL }) => {
-      self.postMessage(pdfDataURL);
+    getPageImageSized(data, 2, 50, (retval) => {
+      self.postMessage(retval);
     })
       .then(() => {
         //
