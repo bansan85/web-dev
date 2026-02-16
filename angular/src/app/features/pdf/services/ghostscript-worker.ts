@@ -9,7 +9,6 @@ let zip: JSZip;
 
 interface WorkerData {
   pdfDataURL: string;
-  url: string;
 }
 
 interface WorkerMessage {
@@ -43,7 +42,7 @@ async function compressPdf(
         });
         const blob = new Blob([uarray], { type: 'application/octet-stream' });
         const pdfDataURL = self.URL.createObjectURL(blob);
-        responseCallback({ pdfDataURL, url: dataStruct.url });
+        responseCallback({ pdfDataURL });
       },
     ],
     arguments: [
@@ -104,7 +103,7 @@ async function splitPdf(
         }
         const content = await zip.generateAsync({ type: 'blob' });
         const pdfDataURL = self.URL.createObjectURL(content);
-        responseCallback({ pdfDataURL, url: dataStruct.url });
+        responseCallback({ pdfDataURL });
       },
     ],
     arguments: [
@@ -155,7 +154,7 @@ async function getPageCount(
     postRun: [
       () => {
         const pageCount = parseInt(output.trim(), 10);
-        responseCallback({ pageCount, url: dataStruct.url });
+        responseCallback({ pageCount });
       },
     ],
     arguments: [
@@ -210,7 +209,7 @@ async function getPageImageSized(
           const uarray = self.Module.FS.readFile(fileName);
           const blob = new Blob([uarray], { type: 'image/png' });
           const pdfDataURL = self.URL.createObjectURL(blob);
-          responseCallback({ pdfDataURL, url: dataStruct.url });
+          responseCallback({ pdfDataURL });
         }
       },
     ],
