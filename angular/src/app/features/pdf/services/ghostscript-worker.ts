@@ -3,27 +3,18 @@ import JSZip from 'jszip';
 import { unknownAssertError } from '../../../apps/shared/interfaces/errors.js';
 import { default as webGs } from './gs.js';
 import { WorkerImagePdfOutput, WorkerNumberOutput, WorkerPdfOutput, WorkerZipOutput } from '../models/pdf-worker-output.js';
+import { PdfWorkerImageInput, PdfWorkerInput, PdfWorkerMessage } from '../models/pdf-worker-input.js';
 
 declare const self: typeof globalThis & { Module: any };
 
 let zip: JSZip;
 
-interface WorkerData {
-  pdfDataURL: string;
-}
-
-interface WorkerMessage {
-  target: string;
-  data: WorkerData;
-}
-
 async function loadScript(module: any): Promise<void> {
-  zip = new JSZip();
   await webGs(module);
 }
 
 async function compressPdf(
-  dataStruct: WorkerData,
+  dataStruct: PdfWorkerInput,
   responseCallback: (res: WorkerPdfOutput) => void,
 ): Promise<void> {
   const response = await fetch(dataStruct.pdfDataURL);
@@ -78,7 +69,7 @@ async function compressPdf(
 }
 
 async function splitPdf(
-  dataStruct: WorkerData,
+  dataStruct: PdfWorkerInput,
   responseCallback: (res: WorkerZipOutput) => void,
 ): Promise<void> {
   const response = await fetch(dataStruct.pdfDataURL);
@@ -93,6 +84,7 @@ async function splitPdf(
     ],
     postRun: [
       async () => {
+        zip = new JSZip();
         let i = 1;
         while (self.Module.FS.analyzePath(`${i}.pdf`).exists) {
           const fileName = `${i}.pdf`;
@@ -137,7 +129,7 @@ async function splitPdf(
 }
 
 async function getPageCount(
-  dataStruct: WorkerData,
+  dataStruct: PdfWorkerInput,
   responseCallback: (res: WorkerNumberOutput) => void,
 ): Promise<void> {
   const response = await fetch(dataStruct.pdfDataURL);
@@ -188,9 +180,7 @@ async function getPageCount(
 }
 
 async function getPageImageSized(
-  dataStruct: WorkerData,
-  pageNumber: number,
-  resolution: number,
+  dataStruct: PdfWorkerImageInput,
   responseCallback: (res: WorkerImagePdfOutput) => void,
 ): Promise<void> {
   const response = await fetch(dataStruct.pdfDataURL);
@@ -210,15 +200,15 @@ async function getPageImageSized(
           const uarray = self.Module.FS.readFile(fileName);
           const blob = new Blob([uarray], { type: 'image/png' });
           const pngDataURL = self.URL.createObjectURL(blob);
-          responseCallback({ pngDataURL, pageNumber });
+          responseCallback({ pngDataURL, pageNumber: dataStruct.pageNumber });
         }
       },
     ],
     arguments: [
       '-sDEVICE=fpng',
-      `-r${resolution}`,
-      `-dFirstPage=${pageNumber}`,
-      `-dLastPage=${pageNumber}`,
+      `-r${dataStruct.resolution}`,
+      `-dFirstPage=${dataStruct.pageNumber}`,
+      `-dLastPage=${dataStruct.pageNumber}`,
       '-dNOPAUSE',
       '-dBATCH',
       '-dQUIET',
@@ -249,11 +239,11 @@ async function getPageImageSized(
   }
 }
 
-self.addEventListener('message', (e: MessageEvent<WorkerMessage>) => {
-  const { target, data } = e.data;
+self.addEventListener('message', (e: MessageEvent<PdfWorkerMessage>) => {
+  const { action, data } = e.data;
 
-  if (target === 'compress') {
-    compressPdf(data, (retval) => {
+  if (action === 'compress') {
+    compressPdf(data as PdfWorkerInput, (retval) => {
       self.postMessage(retval);
     })
       .then(() => {
@@ -262,8 +252,8 @@ self.addEventListener('message', (e: MessageEvent<WorkerMessage>) => {
       .catch((err: unknown) => {
         throw unknownAssertError(err);
       });
-  } else if (target === 'split') {
-    splitPdf(data, (retval) => {
+  } else if (action === 'split') {
+    splitPdf(data as PdfWorkerInput, (retval) => {
       self.postMessage(retval);
     })
       .then(() => {
@@ -272,8 +262,8 @@ self.addEventListener('message', (e: MessageEvent<WorkerMessage>) => {
       .catch((err: unknown) => {
         throw unknownAssertError(err);
       });
-  } else if (target === 'pageCount') {
-    getPageCount(data, (retval) => {
+  } else if (action === 'pageCount') {
+    getPageCount(data as PdfWorkerInput, (retval) => {
       self.postMessage(retval);
     })
       .then(() => {
@@ -282,8 +272,8 @@ self.addEventListener('message', (e: MessageEvent<WorkerMessage>) => {
       .catch((err: unknown) => {
         throw unknownAssertError(err);
       });
-  } else if (target === 'pageImageSized') {
-    getPageImageSized(data, 2, 50, (retval) => {
+  } else if (action === 'pageImageSized') {
+    getPageImageSized(data as PdfWorkerImageInput, (retval) => {
       self.postMessage(retval);
     })
       .then(() => {

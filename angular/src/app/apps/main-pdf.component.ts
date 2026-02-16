@@ -162,7 +162,7 @@ export class MainPdfComponent {
       this.downloadVisilibity.set('display-none');
 
       try {
-        const [pdfWorker, retvalPromise] = this.pdfWorkerService.pageImageSized({ pdfDataURL });
+        const [pdfWorker, retvalPromise] = this.pdfWorkerService.pageImageSized({ pdfDataURL, pageNumber: 2, resolution: 10 });
         this.pdfWorker = pdfWorker;
         const retval = await retvalPromise;
         this.generatedUrl = retval.pngDataURL;

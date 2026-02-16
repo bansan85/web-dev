@@ -1,22 +1,21 @@
 import { Injectable } from '@angular/core';
 
-import { PdfWorkerInput } from '../models/pdf-worker-input';
-import { PdfWorkerMessage } from '../models/pdf-worker-message';
+import { PdfWorkerImageInput, PdfWorkerInput, PdfWorkerMessage } from '../models/pdf-worker-input';
 import { WorkerImagePdfOutput, WorkerNumberOutput, WorkerPdfOutput, WorkerZipOutput } from '../models/pdf-worker-output';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PdfWorkerService {
-  private runWorker<T>(
-    dataStruct: PdfWorkerInput,
-    target: string,
+  private runWorker<T, U>(
+    dataStruct: U,
+    action: string,
   ): [Worker, Promise<T>] {
     const pdfWorker = new Worker(
       new URL('./ghostscript-worker.ts', import.meta.url),
       { type: 'module' },
     );
-    pdfWorker.postMessage({ data: dataStruct, target } as PdfWorkerMessage);
+    pdfWorker.postMessage({ action, data: dataStruct } as PdfWorkerMessage);
 
     const promise = new Promise<T>((resolve) => {
       const listener = (e: MessageEvent<T>) => {
@@ -41,7 +40,7 @@ export class PdfWorkerService {
     return this.runWorker(dataStruct, 'pageCount');
   }
 
-  pageImageSized(dataStruct: PdfWorkerInput): [Worker, Promise<WorkerImagePdfOutput>] {
+  pageImageSized(dataStruct: PdfWorkerImageInput): [Worker, Promise<WorkerImagePdfOutput>] {
     return this.runWorker(dataStruct, 'pageImageSized');
   }
 }
