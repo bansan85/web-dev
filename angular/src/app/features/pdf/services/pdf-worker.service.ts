@@ -1,14 +1,23 @@
 import { Injectable } from '@angular/core';
 
-import { PdfWorkerImageInput, PdfWorkerInput, PdfWorkerMessage } from '../models/pdf-worker-input';
-import { WorkerImagePdfOutput, WorkerNumberOutput, WorkerPdfOutput, WorkerZipOutput } from '../models/pdf-worker-output';
+import {
+  PdfWorkerImageInput,
+  PdfWorkerInput,
+  PdfWorkerMessage,
+} from '../models/pdf-worker-input';
+import {
+  WorkerImagePdfOutput,
+  WorkerNumberOutput,
+  WorkerPdfOutput,
+  WorkerZipOutput,
+} from '../models/pdf-worker-output';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PdfWorkerService {
-  private runWorker<T, U>(
-    dataStruct: U,
+  private runWorker<T>(
+    dataStruct: unknown,
     action: string,
   ): [Worker, Promise<T>] {
     const pdfWorker = new Worker(
@@ -36,11 +45,15 @@ export class PdfWorkerService {
     return this.runWorker(dataStruct, 'split');
   }
 
-  pageCountPdf(dataStruct: PdfWorkerInput): [Worker, Promise<WorkerNumberOutput>] {
+  pageCountPdf(
+    dataStruct: PdfWorkerInput,
+  ): [Worker, Promise<WorkerNumberOutput>] {
     return this.runWorker(dataStruct, 'pageCount');
   }
 
-  pageImageSized(dataStruct: PdfWorkerImageInput): [Worker, Promise<WorkerImagePdfOutput>] {
+  pageImageSized(
+    dataStruct: PdfWorkerImageInput,
+  ): [Worker, Promise<WorkerImagePdfOutput>] {
     return this.runWorker(dataStruct, 'pageImageSized');
   }
 }

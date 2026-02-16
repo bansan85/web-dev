@@ -1,9 +1,9 @@
 import JSZip from 'jszip';
 
 import { unknownAssertError } from '../../../apps/shared/interfaces/errors.js';
-import { default as webGs } from './gs.js';
-import { WorkerImagePdfOutput, WorkerNumberOutput, WorkerPdfOutput, WorkerZipOutput } from '../models/pdf-worker-output.js';
 import { PdfWorkerImageInput, PdfWorkerInput, PdfWorkerMessage } from '../models/pdf-worker-input.js';
+import { WorkerImagePdfOutput, WorkerNumberOutput, WorkerPdfOutput, WorkerZipOutput } from '../models/pdf-worker-output.js';
+import { default as webGs } from './gs.js';
 
 declare const self: typeof globalThis & { Module: any };
 
