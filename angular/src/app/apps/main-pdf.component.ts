@@ -23,6 +23,7 @@ enum ButtonAction {
 })
 export class MainPdfComponent {
   private singleFileName: File | null = null;
+  private singleFileBuffer: ArrayBuffer | null = null;
   private buttonAction = ButtonAction.None;
 
   protected readonly status = signal('');
@@ -37,7 +38,8 @@ export class MainPdfComponent {
 
   constructor() {
     effect(() => {
-      void this.generatePages();
+      void this.numberOfPages();
+      this.generatePages();
     });
   }
 
@@ -163,42 +165,26 @@ export class MainPdfComponent {
     reader.readAsArrayBuffer(this.singleFileName);
   }
 
-  protected async getPageImage(pageNumber: number): Promise<string> {
-    console.log(pageNumber);
-    if (!this.singleFileName) {
-      throw new Error('No file selected');
-    }
+  private async getPageImage(pageNumber: number): Promise<string> {
+    return new Promise(async (resolve, reject) => {
+      const [_, retvalPromise] = this.pdfWorkerService.pageImageSized({
+        pdfBuffer: this.singleFileBuffer!,
+        pageNumber,
+        resolution: 10,
+      });
 
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-
-      reader.onload = async (event) => {
-        try {
-          const arrayBuffer = event.target?.result as ArrayBuffer;
-          const blob = new Blob([arrayBuffer], { type: 'image/png' });
-          const pdfDataURL = URL.createObjectURL(blob);
-
-          const [_, retvalPromise] = this.pdfWorkerService.pageImageSized({
-            pdfDataURL,
-            pageNumber,
-            resolution: 10,
-          });
-
-          const retval = await retvalPromise;
-          resolve(retval.pngDataURL);
-        } catch (error) {
-          reject(error instanceof Error ? error : new Error(String(error)));
-        }
-      };
-
-      reader.onerror = () => {
-        reject(new Error('FileReader error'));
-      };
-      reader.readAsArrayBuffer(this.singleFileName!);
+      const retval = await retvalPromise;
+      resolve(retval.pngDataURL);
     });
   }
 
   public async generatePages(): Promise<void> {
+    if (this.singleFileName === null) {
+      return;
+      throw new Error('No file selected');
+    }
+
+    this.singleFileBuffer = await this.singleFileName.arrayBuffer();
     const count = this.numberOfPages();
     const concurrency = 8;
     this.generatedPageUrls.set(new Array(count).fill(''));

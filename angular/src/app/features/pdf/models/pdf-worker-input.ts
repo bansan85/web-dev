@@ -3,7 +3,7 @@ export interface PdfWorkerInput {
 }
 
 export interface PdfWorkerImageInput {
-  pdfDataURL: string;
+  pdfBuffer: ArrayBuffer;
   pageNumber: number,
   resolution: number,
 }

@@ -183,14 +183,10 @@ async function getPageImageSized(
   dataStruct: PdfWorkerImageInput,
   responseCallback: (res: WorkerImagePdfOutput) => void,
 ): Promise<void> {
-  const response = await fetch(dataStruct.pdfDataURL);
-  const buffer = await response.arrayBuffer();
-  self.URL.revokeObjectURL(dataStruct.pdfDataURL);
-
   const moduleConfig = {
     preRun: [
       () => {
-        self.Module.FS.writeFile('input.pdf', new Uint8Array(buffer));
+        self.Module.FS.writeFile('input.pdf', new Uint8Array(dataStruct.pdfBuffer));
       },
     ],
     postRun: [
