@@ -190,7 +190,7 @@ export class MainPdfComponent {
 
     this.singleFileBuffer = await this.singleFileName.arrayBuffer();
     const count = this.numberOfPages();
-    const concurrency = 8;
+    const concurrency = Math.min(navigator.hardwareConcurrency, count);
     this.generatedPageUrls().forEach(url => {
       if (url) URL.revokeObjectURL(url);
     });
