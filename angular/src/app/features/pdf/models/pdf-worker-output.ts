@@ -11,7 +11,7 @@ export interface WorkerNumberOutput {
 }
 
 export interface WorkerImagePdfOutput {
-    pngDataURL: string;
+    pngBytes: ArrayBuffer;
     pageNumber: number;
 }
 

@@ -194,9 +194,7 @@ async function getPageImageSized(
         const fileName = 'output.png';
         if (self.Module.FS.analyzePath(fileName).exists) {
           const uarray = self.Module.FS.readFile(fileName);
-          const blob = new Blob([uarray], { type: 'image/png' });
-          const pngDataURL = self.URL.createObjectURL(blob);
-          responseCallback({ pngDataURL, pageNumber: dataStruct.pageNumber });
+          responseCallback({ pngBytes: uarray, pageNumber: dataStruct.pageNumber });
         }
       },
     ],

@@ -166,16 +166,20 @@ export class MainPdfComponent {
   }
 
   private async getPageImage(pageNumber: number): Promise<string> {
-    return new Promise(async (resolve, reject) => {
-      const [_, retvalPromise] = this.pdfWorkerService.pageImageSized({
-        pdfBuffer: this.singleFileBuffer!,
-        pageNumber,
-        resolution: 10,
-      });
-
-      const retval = await retvalPromise;
-      resolve(retval.pngDataURL);
+    const [worker, retvalPromise] = this.pdfWorkerService.pageImageSized({
+      pdfBuffer: this.singleFileBuffer!,
+      pageNumber,
+      resolution: 10,
     });
+
+    try {
+      const retval = await retvalPromise;
+      // Create blob URL in main thread context
+      const blob = new Blob([retval.pngBytes], { type: 'image/png' });
+      return URL.createObjectURL(blob);
+    } finally {
+      worker.terminate(); // always terminate, even on error
+    }
   }
 
   public async generatePages(): Promise<void> {
@@ -187,6 +191,9 @@ export class MainPdfComponent {
     this.singleFileBuffer = await this.singleFileName.arrayBuffer();
     const count = this.numberOfPages();
     const concurrency = 8;
+    this.generatedPageUrls().forEach(url => {
+      if (url) URL.revokeObjectURL(url);
+    });
     this.generatedPageUrls.set(new Array(count).fill(''));
 
     const indices = Array.from({ length: count }, (_, i) => i);
