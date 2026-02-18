@@ -75,6 +75,14 @@ export class MainPdfComponent {
         });
         this.pdfWorker = pdfWorker;
         const retval = await retvalPromise;
+
+        if (retval.stdErr !== "") {
+          throw new Error(retval.stdErr)
+        }
+        if (retval.stdOut !== "") {
+          throw new Error(retval.stdOut)
+        }
+
         this.generatedUrl = retval.pdfDataURL;
 
         this.status.set('Compress done.');
@@ -113,6 +121,14 @@ export class MainPdfComponent {
         });
         this.pdfWorker = pdfWorker;
         const retval = await retvalPromise;
+
+        if (retval.stdErr !== "") {
+          throw new Error(retval.stdErr)
+        }
+        if (retval.stdOut !== "") {
+          throw new Error(retval.stdOut)
+        }
+
         this.generatedUrl = retval.zipDataURL;
 
         this.status.set('Split done.');
@@ -151,14 +167,21 @@ export class MainPdfComponent {
         });
         this.pdfWorker = pdfWorker;
         const retval = await retvalPromise;
-        console.log(retval.value);
+
+        if (retval.stdErr !== "") {
+          throw new Error(retval.stdErr)
+        }
+        if (retval.stdOut !== "" && retval.value !== parseInt(retval.stdOut.trim(), 10)) {
+          throw new Error(retval.stdOut)
+        }
+
         this.numberOfPages.set(retval.value);
 
         this.status.set('Counting done.');
         this.buttonAction = ButtonAction.None;
       } catch (error) {
-        console.error('Failed while Counting: ', error);
-        this.status.set('Failed while Counting.');
+        console.error('Failed while counting: ', error);
+        this.status.set('Failed while counting.');
       }
     };
 
@@ -174,6 +197,14 @@ export class MainPdfComponent {
 
     try {
       const retval = await retvalPromise;
+
+      if (retval.stdErr !== "") {
+        throw new Error(retval.stdErr)
+      }
+      if (retval.stdOut !== "") {
+        throw new Error(retval.stdOut)
+      }
+
       // Create blob URL in main thread context
       const blob = new Blob([retval.pngBytes], { type: 'image/png' });
       return URL.createObjectURL(blob);
@@ -201,15 +232,19 @@ export class MainPdfComponent {
     const worker = async () => {
       while (indices.length > 0) {
         const i = indices.shift()!;
-        try {
-          const url = await this.getPageImage(i + 1);
-          this.generatedPageUrls.update((urls) => {
-            const newUrls = [...urls];
-            newUrls[i] = url;
-            return newUrls;
-          });
-        } catch (error) {
-          console.error(error);
+        let success = false;
+        while (!success) {
+          try {
+            const url = await this.getPageImage(i + 1);
+            success = true;
+            this.generatedPageUrls.update((urls) => {
+              const newUrls = [...urls];
+              newUrls[i] = url;
+              return newUrls;
+            });
+          } catch (error) {
+            console.error(`Page ${i}: ${error}`);
+          }
         }
       }
     };

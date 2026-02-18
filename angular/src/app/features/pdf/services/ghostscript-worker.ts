@@ -21,6 +21,9 @@ async function compressPdf(
   const buffer = await response.arrayBuffer();
   self.URL.revokeObjectURL(dataStruct.pdfDataURL);
 
+  let stdOut = '';
+  let stdErr = '';
+
   const moduleConfig = {
     preRun: [
       () => {
@@ -34,7 +37,7 @@ async function compressPdf(
         });
         const blob = new Blob([uarray], { type: 'application/octet-stream' });
         const pdfDataURL = self.URL.createObjectURL(blob);
-        responseCallback({ pdfDataURL });
+        responseCallback({ pdfDataURL, stdOut, stdErr });
       },
     ],
     arguments: [
@@ -47,11 +50,11 @@ async function compressPdf(
       '-sOutputFile=output.pdf',
       'input.pdf',
     ],
-    print: () => {
-      // Can't disable print method when calling ghostscript.
+    print: (text: string) => {
+      stdOut += text;
     },
-    printErr: () => {
-      // Can't disable print method when calling ghostscript.
+    printErr: (text: string) => {
+      stdErr += text;
     },
     totalDependencies: 0,
     noExitRuntime: 1,
@@ -76,6 +79,9 @@ async function splitPdf(
   const buffer = await response.arrayBuffer();
   self.URL.revokeObjectURL(dataStruct.pdfDataURL);
 
+  let stdOut = '';
+  let stdErr = '';
+
   const moduleConfig = {
     preRun: [
       () => {
@@ -96,7 +102,7 @@ async function splitPdf(
         }
         const content = await zip.generateAsync({ type: 'blob' });
         const zipDataURL = self.URL.createObjectURL(content);
-        responseCallback({ zipDataURL });
+        responseCallback({ zipDataURL, stdOut, stdErr });
       },
     ],
     arguments: [
@@ -107,11 +113,11 @@ async function splitPdf(
       '-sOutputFile=%d.pdf',
       'input.pdf',
     ],
-    print: () => {
-      // Can't disable print method when calling ghostscript.
+    print: (text: string) => {
+      stdOut += text;
     },
-    printErr: () => {
-      // Can't disable print method when calling ghostscript.
+    printErr: (text: string) => {
+      stdErr += text;
     },
     totalDependencies: 0,
     noExitRuntime: 1,
@@ -136,7 +142,8 @@ async function getPageCount(
   const buffer = await response.arrayBuffer();
   self.URL.revokeObjectURL(dataStruct.pdfDataURL);
 
-  let output = '';
+  let stdOut = '';
+  let stdErr = '';
 
   const moduleConfig = {
     preRun: [
@@ -146,8 +153,8 @@ async function getPageCount(
     ],
     postRun: [
       () => {
-        const value = parseInt(output.trim(), 10);
-        responseCallback({ value });
+        const value = parseInt(stdOut.trim(), 10);
+        responseCallback({ value, stdOut, stdErr });
       },
     ],
     arguments: [
@@ -158,10 +165,10 @@ async function getPageCount(
       '(input.pdf) (r) file runpdfbegin pdfpagecount = quit',
     ],
     print: (text: string) => {
-      output += text;
+      stdOut += text;
     },
-    printErr: () => {
-      //
+    printErr: (text: string) => {
+      stdErr += text;
     },
     totalDependencies: 0,
     noExitRuntime: 1,
@@ -183,6 +190,9 @@ async function getPageImageSized(
   dataStruct: PdfWorkerImageInput,
   responseCallback: (res: WorkerImagePdfOutput) => void,
 ): Promise<void> {
+  let stdOut = '';
+  let stdErr = '';
+
   const moduleConfig = {
     preRun: [
       () => {
@@ -194,7 +204,7 @@ async function getPageImageSized(
         const fileName = 'output.png';
         if (self.Module.FS.analyzePath(fileName).exists) {
           const uarray = self.Module.FS.readFile(fileName);
-          responseCallback({ pngBytes: uarray, pageNumber: dataStruct.pageNumber });
+          responseCallback({ pngBytes: uarray, pageNumber: dataStruct.pageNumber, stdOut, stdErr });
         }
       },
     ],
@@ -211,12 +221,10 @@ async function getPageImageSized(
       'input.pdf',
     ],
     print: (text: string) => {
-      console.log(text);
-      //
+      stdOut += text;
     },
     printErr: (text: string) => {
-      console.error(text);
-      //
+      stdErr += text;
     },
     totalDependencies: 0,
     noExitRuntime: 1,
