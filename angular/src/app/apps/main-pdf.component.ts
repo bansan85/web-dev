@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 
 import { PdfWorkerService } from '../features/pdf/services/pdf-worker.service';
+import { GithubMarkInlineComponent } from '../img/github-mark-inline.component';
 
 enum ButtonAction {
   None,
@@ -16,7 +17,7 @@ enum ButtonAction {
 
 @Component({
   selector: 'app-main-pdf',
-  imports: [],
+  imports: [GithubMarkInlineComponent],
   templateUrl: './main-pdf.component.html',
   styleUrl: './main-pdf.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

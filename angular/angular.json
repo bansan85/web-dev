@@ -349,6 +349,62 @@
                   "input": "public"
                 }
               ]
+            },
+            "pdf": {
+              "outputPath": "dist/pdf",
+              "outputHashing": "all",
+              "tsConfig": "tsconfig.app.pdf.json",
+              "index": {
+                "input": "src/index-pdf.html",
+                "output": "index.html"
+              },
+              "browser": "src/main-pdf.ts",
+              "fileReplacements": [
+                {
+                  "replace": "src/app/app.routes.ts",
+                  "with": "src/app/app.routes.pdf.ts"
+                }
+              ],
+              "assets": [
+                {
+                  "glob": "gs.*",
+                  "input": "src/assets",
+                  "output": "/"
+                },
+                {
+                  "glob": "**/*",
+                  "input": "public"
+                }
+              ]
+            },
+            "pdf-dev": {
+              "optimization": false,
+              "extractLicenses": false,
+              "outputPath": "dist/pdf-dev",
+              "sourceMap": true,
+              "tsConfig": "tsconfig.app.pdf.json",
+              "index": {
+                "input": "src/index-pdf.html",
+                "output": "index.html"
+              },
+              "browser": "src/main-pdf.ts",
+              "fileReplacements": [
+                {
+                  "replace": "src/app/app.routes.ts",
+                  "with": "src/app/app.routes.pdf.ts"
+                }
+              ],
+              "assets": [
+                {
+                  "glob": "gs.*",
+                  "input": "src/assets",
+                  "output": "/"
+                },
+                {
+                  "glob": "**/*",
+                  "input": "public"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -385,6 +441,12 @@
             },
             "demangler-dev": {
               "buildTarget": "web-demangler:build:demangler-dev"
+            },
+            "pdf": {
+              "buildTarget": "web-demangler:build:pdf"
+            },
+            "pdf-dev": {
+              "buildTarget": "web-demangler:build:pdf-dev"
             },
             "production": {
               "buildTarget": "web-demangler:build:production"

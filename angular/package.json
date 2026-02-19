@@ -9,6 +9,7 @@
     "start-clang-format-config": "ng serve --configuration clang-format-config",
     "start-lighten": "ng serve --configuration lighten",
     "start-demangler": "ng serve --configuration demangler",
+    "start-pdf": "ng serve --configuration pdf",
     "build": "ng build --configuration production",
     "build-dev": "ng build --configuration development",
     "build-naming-style": "ng build --configuration naming-style",
@@ -21,6 +22,8 @@
     "build-lighten-dev": "ng build --configuration lighten-dev",
     "build-demangler": "ng build --configuration demangler",
     "build-demangler-dev": "ng build --configuration demangler-dev",
+    "build-pdf": "ng build --configuration pdf",
+    "build-pdf-dev": "ng build --configuration pdf-dev",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "lint": "ng lint"
