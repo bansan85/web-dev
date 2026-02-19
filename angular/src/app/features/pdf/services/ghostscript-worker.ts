@@ -252,7 +252,8 @@ self.addEventListener('message', (e: MessageEvent<PdfWorkerMessage>) => {
         //
       })
       .catch((err: unknown) => {
-        throw unknownAssertError(err);
+        const retval = { pdfDataURL: "", stdOut: "", stdErr: String(err) } as WorkerPdfOutput;
+        self.postMessage(retval);
       });
   } else if (action === 'split') {
     splitPdf(data as PdfWorkerInput, (retval) => {
@@ -262,9 +263,11 @@ self.addEventListener('message', (e: MessageEvent<PdfWorkerMessage>) => {
         //
       })
       .catch((err: unknown) => {
-        throw unknownAssertError(err);
+        const retval = { zipDataURL: "", stdOut: "", stdErr: String(err) } as WorkerZipOutput;
+        self.postMessage(retval);
       });
   } else if (action === 'pageCount') {
+    const inputData = data as PdfWorkerInput;
     getPageCount(data as PdfWorkerInput, (retval) => {
       self.postMessage(retval);
     })
@@ -272,17 +275,20 @@ self.addEventListener('message', (e: MessageEvent<PdfWorkerMessage>) => {
         //
       })
       .catch((err: unknown) => {
-        throw unknownAssertError(err);
+        const retval = { value: 0, stdOut: "", stdErr: String(err) } as WorkerNumberOutput;
+        self.postMessage(retval);
       });
   } else if (action === 'pageImageSized') {
-    getPageImageSized(data as PdfWorkerImageInput, (retval) => {
+    const inputData = data as PdfWorkerImageInput;
+    getPageImageSized(inputData, (retval) => {
       self.postMessage(retval);
     })
       .then(() => {
         //
       })
       .catch((err: unknown) => {
-        throw unknownAssertError(err);
+        const retval = { pngBytes: new ArrayBuffer(), pageNumber: inputData.pageNumber, stdOut: "", stdErr: String(err) } as WorkerImagePdfOutput;
+        self.postMessage(retval);
       });
   }
 });

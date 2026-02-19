@@ -205,11 +205,11 @@ export class MainPdfComponent {
         throw new Error(retval.stdOut)
       }
 
-      // Create blob URL in main thread context
+      // Create blob URL in main thread context to allow worker termination.
       const blob = new Blob([retval.pngBytes], { type: 'image/png' });
       return URL.createObjectURL(blob);
     } finally {
-      worker.terminate(); // always terminate, even on error
+      worker.terminate();
     }
   }
 
@@ -232,18 +232,17 @@ export class MainPdfComponent {
     const worker = async () => {
       while (indices.length > 0) {
         const i = indices.shift()!;
-        let success = false;
-        while (!success) {
+        for (let retry = 0; retry < 10; retry += 1) {
           try {
             const url = await this.getPageImage(i + 1);
-            success = true;
             this.generatedPageUrls.update((urls) => {
               const newUrls = [...urls];
               newUrls[i] = url;
               return newUrls;
             });
+            break;
           } catch (error) {
-            console.error(`Page ${i}: ${error}`);
+            console.error(`Page ${i + 1}: ${error}`);
           }
         }
       }
