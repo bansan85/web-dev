@@ -1,11 +1,11 @@
 export interface WorkerPdfOutput {
-    pdfDataURL: string;
+    pdfDataURL: ArrayBuffer;
     stdOut: string;
     stdErr: string;
 }
 
 export interface WorkerZipOutput {
-    zipDataURL: string;
+    zipDataURL: ArrayBuffer;
     stdOut: string;
     stdErr: string;
 }

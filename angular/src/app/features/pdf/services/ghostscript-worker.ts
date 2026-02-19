@@ -1,8 +1,16 @@
 import JSZip from 'jszip';
 
-import { unknownAssertError } from '../../../apps/shared/interfaces/errors.js';
-import { PdfWorkerImageInput, PdfWorkerInput, PdfWorkerMessage } from '../models/pdf-worker-input.js';
-import { WorkerImagePdfOutput, WorkerNumberOutput, WorkerPdfOutput, WorkerZipOutput } from '../models/pdf-worker-output.js';
+import {
+  PdfWorkerImageInput,
+  PdfWorkerInput,
+  PdfWorkerMessage,
+} from '../models/pdf-worker-input.js';
+import {
+  WorkerImagePdfOutput,
+  WorkerNumberOutput,
+  WorkerPdfOutput,
+  WorkerZipOutput,
+} from '../models/pdf-worker-output.js';
 import { default as webGs } from './gs.js';
 
 declare const self: typeof globalThis & { Module: any };
@@ -17,27 +25,24 @@ async function compressPdf(
   dataStruct: PdfWorkerInput,
   responseCallback: (res: WorkerPdfOutput) => void,
 ): Promise<void> {
-  const response = await fetch(dataStruct.pdfDataURL);
-  const buffer = await response.arrayBuffer();
-  self.URL.revokeObjectURL(dataStruct.pdfDataURL);
-
   let stdOut = '';
   let stdErr = '';
 
   const moduleConfig = {
     preRun: [
       () => {
-        self.Module.FS.writeFile('input.pdf', new Uint8Array(buffer));
+        self.Module.FS_writeFile(
+          'input.pdf',
+          new Uint8Array(dataStruct.pdfBuffer),
+        );
       },
     ],
     postRun: [
       () => {
-        const uarray = self.Module.FS.readFile('output.pdf', {
+        const uarray = self.Module.FS_readFile('output.pdf', {
           encoding: 'binary',
         });
-        const blob = new Blob([uarray], { type: 'application/octet-stream' });
-        const pdfDataURL = self.URL.createObjectURL(blob);
-        responseCallback({ pdfDataURL, stdOut, stdErr });
+        responseCallback({ pdfDataURL: uarray, stdOut, stdErr });
       },
     ],
     arguments: [
@@ -75,34 +80,36 @@ async function splitPdf(
   dataStruct: PdfWorkerInput,
   responseCallback: (res: WorkerZipOutput) => void,
 ): Promise<void> {
-  const response = await fetch(dataStruct.pdfDataURL);
-  const buffer = await response.arrayBuffer();
-  self.URL.revokeObjectURL(dataStruct.pdfDataURL);
-
   let stdOut = '';
   let stdErr = '';
 
   const moduleConfig = {
     preRun: [
       () => {
-        self.Module.FS.writeFile('input.pdf', new Uint8Array(buffer));
+        self.Module.FS_writeFile(
+          'input.pdf',
+          new Uint8Array(dataStruct.pdfBuffer),
+        );
       },
     ],
     postRun: [
       async () => {
         zip = new JSZip();
         let i = 1;
-        while (self.Module.FS.analyzePath(`${i}.pdf`).exists) {
+        while (self.Module.FS_analyzePath(`${i}.pdf`).error === 0) {
           const fileName = `${i}.pdf`;
-          const uarray = self.Module.FS.readFile(fileName, {
+          const uarray = self.Module.FS_readFile(fileName, {
             encoding: 'binary',
           });
           zip.file(fileName, new Blob([uarray], { type: 'application/pdf' }));
           i += 1;
         }
         const content = await zip.generateAsync({ type: 'blob' });
-        const zipDataURL = self.URL.createObjectURL(content);
-        responseCallback({ zipDataURL, stdOut, stdErr });
+        responseCallback({
+          zipDataURL: await content.arrayBuffer(),
+          stdOut,
+          stdErr,
+        });
       },
     ],
     arguments: [
@@ -138,17 +145,16 @@ async function getPageCount(
   dataStruct: PdfWorkerInput,
   responseCallback: (res: WorkerNumberOutput) => void,
 ): Promise<void> {
-  const response = await fetch(dataStruct.pdfDataURL);
-  const buffer = await response.arrayBuffer();
-  self.URL.revokeObjectURL(dataStruct.pdfDataURL);
-
   let stdOut = '';
   let stdErr = '';
 
   const moduleConfig = {
     preRun: [
       () => {
-        self.Module.FS.writeFile('input.pdf', new Uint8Array(buffer));
+        self.Module.FS_writeFile(
+          'input.pdf',
+          new Uint8Array(dataStruct.pdfBuffer),
+        );
       },
     ],
     postRun: [
@@ -196,15 +202,23 @@ async function getPageImageSized(
   const moduleConfig = {
     preRun: [
       () => {
-        self.Module.FS.writeFile('input.pdf', new Uint8Array(dataStruct.pdfBuffer));
+        self.Module.FS_writeFile(
+          'input.pdf',
+          new Uint8Array(dataStruct.pdfBuffer),
+        );
       },
     ],
     postRun: [
       () => {
         const fileName = 'output.png';
-        if (self.Module.FS.analyzePath(fileName).exists) {
-          const uarray = self.Module.FS.readFile(fileName);
-          responseCallback({ pngBytes: uarray, pageNumber: dataStruct.pageNumber, stdOut, stdErr });
+        if (self.Module.FS_analyzePath(fileName).error === 0) {
+          const uarray = self.Module.FS_readFile(fileName);
+          responseCallback({
+            pngBytes: uarray,
+            pageNumber: dataStruct.pageNumber,
+            stdOut,
+            stdErr,
+          });
         }
       },
     ],
@@ -252,7 +266,11 @@ self.addEventListener('message', (e: MessageEvent<PdfWorkerMessage>) => {
         //
       })
       .catch((err: unknown) => {
-        const retval = { pdfDataURL: "", stdOut: "", stdErr: String(err) } as WorkerPdfOutput;
+        const retval = {
+          pdfDataURL: new ArrayBuffer(),
+          stdOut: '',
+          stdErr: String(err),
+        } as WorkerPdfOutput;
         self.postMessage(retval);
       });
   } else if (action === 'split') {
@@ -263,19 +281,27 @@ self.addEventListener('message', (e: MessageEvent<PdfWorkerMessage>) => {
         //
       })
       .catch((err: unknown) => {
-        const retval = { zipDataURL: "", stdOut: "", stdErr: String(err) } as WorkerZipOutput;
+        const retval = {
+          zipDataURL: new ArrayBuffer(),
+          stdOut: '',
+          stdErr: String(err),
+        } as WorkerZipOutput;
         self.postMessage(retval);
       });
   } else if (action === 'pageCount') {
     const inputData = data as PdfWorkerInput;
-    getPageCount(data as PdfWorkerInput, (retval) => {
+    getPageCount(inputData, (retval) => {
       self.postMessage(retval);
     })
       .then(() => {
         //
       })
       .catch((err: unknown) => {
-        const retval = { value: 0, stdOut: "", stdErr: String(err) } as WorkerNumberOutput;
+        const retval = {
+          value: 0,
+          stdOut: '',
+          stdErr: String(err),
+        } as WorkerNumberOutput;
         self.postMessage(retval);
       });
   } else if (action === 'pageImageSized') {
@@ -287,7 +313,12 @@ self.addEventListener('message', (e: MessageEvent<PdfWorkerMessage>) => {
         //
       })
       .catch((err: unknown) => {
-        const retval = { pngBytes: new ArrayBuffer(), pageNumber: inputData.pageNumber, stdOut: "", stdErr: String(err) } as WorkerImagePdfOutput;
+        const retval = {
+          pngBytes: new ArrayBuffer(),
+          pageNumber: inputData.pageNumber,
+          stdOut: '',
+          stdErr: String(err),
+        } as WorkerImagePdfOutput;
         self.postMessage(retval);
       });
   }

@@ -63,7 +63,7 @@ ExternalProject_Add(
     --with-arch_h="${CMAKE_CURRENT_SOURCE_DIR}/../third_party/ghostpdl/arch/windows-x86-msvc.h"
   BUILD_COMMAND
     emmake make XE=".html"
-    GS_LDFLAGS="-s MODULARIZE=1 -s EXPORT_ES6=1 -s EXPORTED_RUNTIME_METHODS='[\"FS\"]' -s ENVIRONMENT=web -s INVOKE_RUN=1 -s EXIT_RUNTIME=1 -s MALLOC='emmalloc' -s ALLOW_MEMORY_GROWTH=1 $<IF:$<CONFIG:Debug>,--closure 0,--closure 1> $<IF:$<CONFIG:Debug>,-s ASSERTIONS=1,-s ASSERTIONS=0> $<$<CONFIG:Debug>:-s STACK_OVERFLOW_CHECK=2> $<$<CONFIG:Debug>:--emit-symbol-map> $<$<CONFIG:Debug>:-gsource-map> $<$<CONFIG:Debug>:-gseparate-dwarf> --emit-tsd gs.d.ts -fexceptions"
+    GS_LDFLAGS="-s MODULARIZE=1 -s EXPORT_ES6=1 -s EXPORTED_RUNTIME_METHODS='[\"FS\",\"FS_analyzePath\",\"FS_readFile\",\"FS_writeFile\"]' -s ENVIRONMENT=web -s INVOKE_RUN=1 -s EXIT_RUNTIME=1 -s MALLOC='emmalloc' -s ALLOW_MEMORY_GROWTH=1 $<IF:$<CONFIG:Debug>,--closure 0,--closure 1> $<IF:$<CONFIG:Debug>,-s ASSERTIONS=1,-s ASSERTIONS=0> $<$<CONFIG:Debug>:-s STACK_OVERFLOW_CHECK=2> $<$<CONFIG:Debug>:--emit-symbol-map> $<$<CONFIG:Debug>:-gsource-map> $<$<CONFIG:Debug>:-gseparate-dwarf> --emit-tsd gs.d.ts -fexceptions"
     -j8
   INSTALL_COMMAND "")
 

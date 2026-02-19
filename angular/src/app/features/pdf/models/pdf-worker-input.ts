@@ -1,5 +1,5 @@
 export interface PdfWorkerInput {
-  pdfDataURL: string;
+  pdfBuffer: ArrayBuffer;
 }
 
 export interface PdfWorkerImageInput {

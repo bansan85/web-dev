@@ -37,156 +37,130 @@ export class MainPdfComponent {
 
   private readonly pdfWorkerService = inject(PdfWorkerService);
 
-  constructor() {
-    effect(() => {
-      void this.numberOfPages();
-      this.generatePages();
-    });
-  }
-
-  protected onSingleFileSelected(event: Event) {
+  protected async onSingleFileSelected(event: Event) {
     const element = event.currentTarget as HTMLInputElement;
     const files = element.files!;
-    this.singleFileName = files.item(0);
+    this.singleFileName = files.item(0)!;
+    this.singleFileBuffer = await this.singleFileName.arrayBuffer();
   }
 
   private pdfWorker: Worker | null = null;
 
-  protected compress() {
+  protected async compress() {
     if (this.singleFileName === null) {
       this.status.set('Select one PDF file.');
       return;
     }
 
     this.pdfWorker?.terminate();
+    this.pdfWorker = null;
 
-    const reader = new FileReader();
+    this.status.set('Compress in progress...');
+    this.downloadVisilibity.set('display-none');
 
-    reader.onload = async (event) => {
-      const arrayBuffer = event.target!.result;
-      const blob = new Blob([arrayBuffer!], { type: 'application/pdf' });
-      const pdfDataURL = URL.createObjectURL(blob);
+    try {
+      const [pdfWorker, retvalPromise] = this.pdfWorkerService.compressPdf({
+        pdfBuffer: this.singleFileBuffer!,
+      });
+      this.pdfWorker = pdfWorker;
+      const retval = await retvalPromise;
 
-      this.status.set('Compress in progress...');
-      this.downloadVisilibity.set('display-none');
-
-      try {
-        const [pdfWorker, retvalPromise] = this.pdfWorkerService.compressPdf({
-          pdfDataURL,
-        });
-        this.pdfWorker = pdfWorker;
-        const retval = await retvalPromise;
-
-        if (retval.stdErr !== "") {
-          throw new Error(retval.stdErr)
-        }
-        if (retval.stdOut !== "") {
-          throw new Error(retval.stdOut)
-        }
-
-        this.generatedUrl = retval.pdfDataURL;
-
-        this.status.set('Compress done.');
-        this.downloadVisilibity.set('display-block');
-        this.buttonAction = ButtonAction.Single;
-      } catch (error) {
-        console.error('Failed while compressing: ', error);
-        this.status.set('Failed while compressing.');
+      if (retval.stdErr !== '') {
+        throw new Error(retval.stdErr);
       }
-    };
+      if (retval.stdOut !== '') {
+        throw new Error(retval.stdOut);
+      }
 
-    reader.readAsArrayBuffer(this.singleFileName);
+      const blob = new Blob([retval.pdfDataURL], { type: 'application/pdf' });
+      this.generatedUrl = URL.createObjectURL(blob);
+
+      this.status.set('Compress done.');
+      this.downloadVisilibity.set('display-block');
+      this.buttonAction = ButtonAction.Single;
+    } catch (error) {
+      console.error('Failed while compressing: ', error);
+      this.status.set('Failed while compressing.');
+    }
   }
 
-  protected split() {
+  protected async split() {
     if (this.singleFileName === null) {
       this.status.set('Select one PDF file.');
       return;
     }
 
     this.pdfWorker?.terminate();
+    this.pdfWorker = null;
 
-    const reader = new FileReader();
+    this.status.set('Split in progress...');
+    this.downloadVisilibity.set('display-none');
 
-    reader.onload = async (event) => {
-      const arrayBuffer = event.target!.result;
-      const blob = new Blob([arrayBuffer!], { type: 'application/pdf' });
-      const pdfDataURL = URL.createObjectURL(blob);
+    try {
+      const [pdfWorker, retvalPromise] = this.pdfWorkerService.splitPdf({
+        pdfBuffer: this.singleFileBuffer!,
+      });
+      this.pdfWorker = pdfWorker;
+      const retval = await retvalPromise;
 
-      this.status.set('Split in progress...');
-      this.downloadVisilibity.set('display-none');
-
-      try {
-        const [pdfWorker, retvalPromise] = this.pdfWorkerService.splitPdf({
-          pdfDataURL,
-        });
-        this.pdfWorker = pdfWorker;
-        const retval = await retvalPromise;
-
-        if (retval.stdErr !== "") {
-          throw new Error(retval.stdErr)
-        }
-        if (retval.stdOut !== "") {
-          throw new Error(retval.stdOut)
-        }
-
-        this.generatedUrl = retval.zipDataURL;
-
-        this.status.set('Split done.');
-        this.downloadVisilibity.set('display-block');
-        this.buttonAction = ButtonAction.Multiple;
-      } catch (error) {
-        console.error('Failed while spliting:', error);
-        this.status.set('Failed while spliting.');
+      if (retval.stdErr !== '') {
+        throw new Error(retval.stdErr);
       }
-    };
+      if (retval.stdOut !== '') {
+        throw new Error(retval.stdOut);
+      }
 
-    reader.readAsArrayBuffer(this.singleFileName);
+      const blob = new Blob([retval.zipDataURL], { type: 'application/zip' });
+      this.generatedUrl = URL.createObjectURL(blob);
+
+      this.status.set('Split done.');
+      this.downloadVisilibity.set('display-block');
+      this.buttonAction = ButtonAction.Multiple;
+    } catch (error) {
+      console.error('Failed while spliting:', error);
+      this.status.set('Failed while spliting.');
+    }
   }
 
-  protected pageCount() {
+  protected async pageCount() {
     if (this.singleFileName === null) {
       this.status.set('Select one PDF file.');
       return;
     }
 
     this.pdfWorker?.terminate();
+    this.pdfWorker = null;
 
-    const reader = new FileReader();
+    this.status.set('Counting in progress...');
+    this.downloadVisilibity.set('display-none');
 
-    reader.onload = async (event) => {
-      const arrayBuffer = event.target!.result;
-      const blob = new Blob([arrayBuffer!], { type: 'application/pdf' });
-      const pdfDataURL = URL.createObjectURL(blob);
+    try {
+      const [pdfWorker, retvalPromise] = this.pdfWorkerService.pageCountPdf({
+        pdfBuffer: this.singleFileBuffer!,
+      });
+      this.pdfWorker = pdfWorker;
+      const retval = await retvalPromise;
 
-      this.status.set('Counting in progress...');
-      this.downloadVisilibity.set('display-none');
-
-      try {
-        const [pdfWorker, retvalPromise] = this.pdfWorkerService.pageCountPdf({
-          pdfDataURL,
-        });
-        this.pdfWorker = pdfWorker;
-        const retval = await retvalPromise;
-
-        if (retval.stdErr !== "") {
-          throw new Error(retval.stdErr)
-        }
-        if (retval.stdOut !== "" && retval.value !== parseInt(retval.stdOut.trim(), 10)) {
-          throw new Error(retval.stdOut)
-        }
-
-        this.numberOfPages.set(retval.value);
-
-        this.status.set('Counting done.');
-        this.buttonAction = ButtonAction.None;
-      } catch (error) {
-        console.error('Failed while counting: ', error);
-        this.status.set('Failed while counting.');
+      if (retval.stdErr !== '') {
+        throw new Error(retval.stdErr);
       }
-    };
+      if (
+        retval.stdOut !== '' &&
+        retval.value !== parseInt(retval.stdOut.trim(), 10)
+      ) {
+        throw new Error(retval.stdOut);
+      }
 
-    reader.readAsArrayBuffer(this.singleFileName);
+      this.numberOfPages.set(retval.value);
+
+      this.status.set('Counting done.');
+      this.buttonAction = ButtonAction.None;
+    } catch (error) {
+      console.error('Failed while counting: ', error);
+      this.status.set('Failed while counting.');
+    }
+
+    await this.generatePages();
   }
 
   private async getPageImage(pageNumber: number): Promise<string> {
@@ -199,11 +173,11 @@ export class MainPdfComponent {
     try {
       const retval = await retvalPromise;
 
-      if (retval.stdErr !== "") {
-        throw new Error(retval.stdErr)
+      if (retval.stdErr !== '') {
+        throw new Error(retval.stdErr);
       }
-      if (retval.stdOut !== "") {
-        throw new Error(retval.stdOut)
+      if (retval.stdOut !== '') {
+        throw new Error(retval.stdOut);
       }
 
       // Create blob URL in main thread context to allow worker termination.
@@ -216,14 +190,15 @@ export class MainPdfComponent {
 
   public async generatePages(): Promise<void> {
     if (this.singleFileName === null) {
-      return;
       throw new Error('No file selected');
     }
 
-    this.singleFileBuffer = await this.singleFileName.arrayBuffer();
+    this.pdfWorker?.terminate();
+    this.pdfWorker = null;
+
     const count = this.numberOfPages();
     const concurrency = Math.min(navigator.hardwareConcurrency, count);
-    this.generatedPageUrls().forEach(url => {
+    this.generatedPageUrls().forEach((url) => {
       if (url) URL.revokeObjectURL(url);
     });
     this.generatedPageUrls.set(new Array(count).fill(''));
@@ -235,6 +210,7 @@ export class MainPdfComponent {
         const i = indices.shift()!;
         for (let retry = 0; retry < 10; retry += 1) {
           try {
+            // eslint-disable-next-line no-await-in-loop
             const url = await this.getPageImage(i + 1);
             this.generatedPageUrls.update((urls) => {
               const newUrls = [...urls];
