@@ -2,13 +2,13 @@
 <input accept="application/pdf" type="file" (change)="onSingleFileSelected($event)">
 <button type="button" (click)="compress()">Compresser</button>
 <button type="button" (click)="split()">Split</button>
-<button type="button" (click)="pageCount()">Page count</button>
+<button type="button" (click)="pageCount()">Show</button>
 <p>{{this.status()}}</p>
 <button type="button" [class]="downloadVisilibity()" (click)="download()">Télécharger</button>
 
 @for (url of generatedPageUrls(); track $index) {
   @if (url) {
-    <img [src]="url" alt="Page">
+    <img ngSrc="url" [alt]="`Page ${$index}`">
   } @else {
     <div class="loader">Loading page {{ $index + 1 }}...</div>
   }
