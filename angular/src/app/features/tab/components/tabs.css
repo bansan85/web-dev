@@ -1,0 +1,28 @@
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #fefefe;
+  position: relative;
+}
+
+.nav-item {
+  text-decoration: none;
+  padding: 10px;
+  user-select: none;
+}
+
+.nav-item.active {
+  border-bottom: 3px solid lightblue;
+  padding-bottom: 7px;
+}
+
+.nav-item:hover {
+  background-color: #fefefe;
+  color: #1c1c1e;
+}
+
+.nav-item:not(.active):hover {
+  border-bottom: 3px solid #fefefe;
+  padding-bottom: 7px;
+}

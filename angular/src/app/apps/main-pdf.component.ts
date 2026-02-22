@@ -1,12 +1,13 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  effect,
   inject,
   signal,
 } from '@angular/core';
 
 import { PdfWorkerService } from '../features/pdf/services/pdf-worker.service';
+import { TabItem } from '../features/tab/components/tab-item';
+import { Tabs } from '../features/tab/components/tabs';
 import { GithubMarkInlineComponent } from '../img/github-mark-inline.component';
 
 enum ButtonAction {
@@ -17,7 +18,7 @@ enum ButtonAction {
 
 @Component({
   selector: 'app-main-pdf',
-  imports: [GithubMarkInlineComponent],
+  imports: [GithubMarkInlineComponent, TabItem, Tabs],
   templateUrl: './main-pdf.component.html',
   styleUrl: './main-pdf.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,

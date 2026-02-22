@@ -1,19 +1,32 @@
 <h1>PDF manipulation</h1>
-<input accept="application/pdf" type="file" (change)="onSingleFileSelected($event)">
-<button type="button" (click)="compress()">Compresser</button>
-<button type="button" (click)="split()">Split</button>
-<button type="button" (click)="pageCount()">Show</button>
-<p>{{this.status()}}</p>
-<button type="button" [class]="downloadVisilibity()" (click)="download()">Télécharger</button>
 
-@for (url of generatedPageUrls(); track $index) {
-  @if (url) {
-    <img ngSrc="url" [alt]="`Page ${$index}`">
-  } @else {
-    <div class="loader">Loading page {{ $index + 1 }}...</div>
-  }
-}
+<app-tabs>
+  <app-tab-item tabName="Single PDF">
+    <input
+      accept="application/pdf"
+      type="file"
+      (change)="onSingleFileSelected($event)"
+    />
+    <button type="button" (click)="compress()">Compresser</button>
+    <button type="button" (click)="split()">Split</button>
+    <button type="button" (click)="pageCount()">Show</button>
+    <p>{{ this.status() }}</p>
+    <button type="button" [class]="downloadVisilibity()" (click)="download()">
+      Télécharger
+    </button>
+
+    @for (url of generatedPageUrls(); track $index) {
+      @if (url) {
+        <img ngSrc="url" [alt]="`Page ${$index}`" />
+      } @else {
+        <div class="loader">Loading page {{ $index + 1 }}...</div>
+      }
+    }
+  </app-tab-item>
+  <app-tab-item tabName="Project">vcn,x</app-tab-item>
+  <app-tab-item tabName="Target">ghfdjkl</app-tab-item>
+</app-tabs>
 
 <a href="https://github.com/bansan85/web-demangler">
-    <app-github-mark-inline class="github_logo" />
+  <app-github-mark-inline class="github_logo" />
 </a>

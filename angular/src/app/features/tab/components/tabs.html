@@ -1,0 +1,17 @@
+<div class="tab-container">
+  <div class="nav">
+    @for(tab of tabs(); track tab) {
+    <div
+      class="nav-item"
+      tabindex="0"
+      [ngClass]="{active: $index === activeComponent}"
+      (click)="activateTab($index)"
+      (keydown.enter)="activateTab($index)"
+      (keydown.space)="activateTab($index); $event.preventDefault()"
+    >
+      {{tab.tabName()}}
+    </div>
+    }
+  </div>
+  <ng-content />
+</div>
