@@ -36,11 +36,14 @@ if(WITH_SANITIZE_UNDEFINED)
   set(LLVM_ENABLE_RTTI ON)
 endif()
 set(LIST_SANITIZER "")
+set(SANITIZE_FLAGS "")
 if(WITH_SANITIZE_ADDRESS)
   set(LIST_SANITIZER ${LIST_SANITIZER} "Address")
+  set(SANITIZE_FLAGS "${SANITIZE_FLAGS}\ -fsanitize=address")
 endif()
 if(WITH_SANITIZE_UNDEFINED)
   set(LIST_SANITIZER ${LIST_SANITIZER} "Undefined")
+  set(SANITIZE_FLAGS "${SANITIZE_FLAGS}\ -fsanitize=undefined")
 endif()
 set(LLVM_USE_SANITIZER
     "${LIST_SANITIZER}"
@@ -50,20 +53,29 @@ add_subdirectory(../third_party/llvm/llvm llvm_build EXCLUDE_FROM_ALL)
 
 include(ExternalProject)
 
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+  set(BUILD_TYPE_FLAGS "-g")
+else()
+  set(BUILD_TYPE_FLAGS "-O3 -DNDEBUG")
+endif()
+
+# GhostScript doesn't support sanitizers.
+set(SANITIZE_FLAGS "")
 ExternalProject_Add(
   ghostpdl
   SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../third_party/ghostpdl"
   CONFIGURE_COMMAND
     autoreconf -fi "${CMAKE_CURRENT_SOURCE_DIR}/../third_party/ghostpdl" &&
     emconfigure "${CMAKE_CURRENT_SOURCE_DIR}/../third_party/ghostpdl/configure"
-    CFLAGS=-Wno-error=incompatible-pointer-types
-    CXXFLAGS=-Wno-error=incompatible-pointer-types
+    CFLAGS=-Wno-error=incompatible-pointer-types\ ${SANITIZE_FLAGS}\ ${BUILD_TYPE_FLAGS}
+    CXXFLAGS=-Wno-error=incompatible-pointer-types\ ${SANITIZE_FLAGS}\ ${BUILD_TYPE_FLAGS}
+    LDFLAGS=${SANITIZE_FLAGS}\ ${BUILD_TYPE_FLAGS}
     --disable-threading --disable-cups --disable-dbus --disable-gtk
     --without-libtiff --with-drivers=PS CC=emcc CCAUX=gcc
     --with-arch_h="${CMAKE_CURRENT_SOURCE_DIR}/../third_party/ghostpdl/arch/windows-x86-msvc.h"
   BUILD_COMMAND
     emmake make XE=".html"
-    GS_LDFLAGS="-s MODULARIZE=1 -s EXPORT_ES6=1 -s EXPORTED_RUNTIME_METHODS='[\"FS\",\"FS_analyzePath\",\"FS_readFile\",\"FS_writeFile\"]' -s ENVIRONMENT=web -s INVOKE_RUN=1 -s EXIT_RUNTIME=1 -s MALLOC='emmalloc' -s ALLOW_MEMORY_GROWTH=1 $<IF:$<CONFIG:Debug>,--closure 0,--closure 1> $<IF:$<CONFIG:Debug>,-s ASSERTIONS=1,-s ASSERTIONS=0> $<$<CONFIG:Debug>:-s STACK_OVERFLOW_CHECK=2> $<$<CONFIG:Debug>:--emit-symbol-map> $<$<CONFIG:Debug>:-gsource-map> $<$<CONFIG:Debug>:-gseparate-dwarf> --emit-tsd gs.d.ts -fexceptions"
+    GS_LDFLAGS="-s MODULARIZE=1 -s EXPORT_ES6=1 -s EXPORTED_RUNTIME_METHODS='[\"FS\",\"FS_analyzePath\",\"FS_readFile\",\"FS_writeFile\"]' -s ENVIRONMENT=web -s INVOKE_RUN=1 -s EXIT_RUNTIME=1 -s MALLOC='emmalloc' -s ALLOW_MEMORY_GROWTH=1 ${SANITIZE_FLAGS} ${BUILD_TYPE_FLAGS} $<IF:$<CONFIG:Debug>,--closure 0,--closure 1> $<IF:$<CONFIG:Debug>,-s ASSERTIONS=1,-s ASSERTIONS=0> $<$<CONFIG:Debug>:-s STACK_OVERFLOW_CHECK=2> $<$<CONFIG:Debug>:--emit-symbol-map> $<$<CONFIG:Debug>:-gsource-map> $<$<CONFIG:Debug>:-gseparate-dwarf> --emit-tsd gs.d.ts -fexceptions"
     -j8
   INSTALL_COMMAND "")
 
