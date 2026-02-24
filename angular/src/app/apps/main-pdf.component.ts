@@ -32,7 +32,7 @@ export class MainPdfComponent {
   protected readonly downloadVisilibity = signal('display-none');
 
   private generatedUrl: string | null = null;
-  protected readonly generatedPageUrls = signal([] as string[]);
+  protected readonly generatedPageUrls = signal<string[]>([]);
 
   protected readonly numberOfPages = signal(0);
 
