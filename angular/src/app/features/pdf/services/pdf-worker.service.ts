@@ -16,10 +16,7 @@ import {
   providedIn: 'root',
 })
 export class PdfWorkerService {
-  private runWorker<T>(
-    dataStruct: unknown,
-    action: string,
-  ): [Worker, Promise<T>] {
+  private runWorker<T>(dataStruct: unknown, action: string): Promise<T> {
     const pdfWorker = new Worker(
       new URL('./ghostscript-worker.ts', import.meta.url),
       { type: 'module' },
@@ -30,30 +27,29 @@ export class PdfWorkerService {
       const listener = (e: MessageEvent<T>) => {
         resolve(e.data);
         pdfWorker.removeEventListener('message', listener);
+        pdfWorker.terminate();
       };
       pdfWorker.addEventListener('message', listener);
     });
 
-    return [pdfWorker, promise];
+    return promise;
   }
 
-  compressPdf(dataStruct: PdfWorkerInput): [Worker, Promise<WorkerPdfOutput>] {
+  compressPdf(dataStruct: PdfWorkerInput): Promise<WorkerPdfOutput> {
     return this.runWorker(dataStruct, 'compress');
   }
 
-  splitPdf(dataStruct: PdfWorkerInput): [Worker, Promise<WorkerZipOutput>] {
+  splitPdf(dataStruct: PdfWorkerInput): Promise<WorkerZipOutput> {
     return this.runWorker(dataStruct, 'split');
   }
 
-  pageCountPdf(
-    dataStruct: PdfWorkerInput,
-  ): [Worker, Promise<WorkerNumberOutput>] {
+  pageCountPdf(dataStruct: PdfWorkerInput): Promise<WorkerNumberOutput> {
     return this.runWorker(dataStruct, 'pageCount');
   }
 
   pageImageSized(
     dataStruct: PdfWorkerImageInput,
-  ): [Worker, Promise<WorkerImagePdfOutput>] {
+  ): Promise<WorkerImagePdfOutput> {
     return this.runWorker(dataStruct, 'pageImageSized');
   }
 }
