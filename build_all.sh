@@ -49,9 +49,9 @@ if [ "$enabled_debug" == "true" ]; then
     mkdir -p angular/src/assets
     rm -f angular/src/assets/*
     cp build_webassembly_debug/web* angular/src/assets/ || exit 1
-    rm build_webassembly_debug/ghostpdl-prefix/src/ghostpdl-build/bin/gs.html
-    cp build_webassembly_debug/ghostpdl-prefix/src/ghostpdl-build/bin/gs.* angular/src/assets/ || exit 1
-    cp build_webassembly_debug/ghostpdl-prefix/src/ghostpdl-build/bin/gs.js angular/src/app/features/pdf/services || exit 1
+    rm build_webassembly_debug/ghostpdl-prefix/src/ghostpdl-build/debugbin/gs.html
+    cp build_webassembly_debug/ghostpdl-prefix/src/ghostpdl-build/debugbin/gs.* angular/src/assets/ || exit 1
+    cp build_webassembly_debug/ghostpdl-prefix/src/ghostpdl-build/debugbin/gs.js angular/src/app/features/pdf/services || exit 1
 fi
 
 if [ -f /usr/lib/llvm/${clang_version}/bin/clang ]; then

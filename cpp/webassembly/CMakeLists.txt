@@ -54,9 +54,15 @@ add_subdirectory(../third_party/llvm/llvm llvm_build EXCLUDE_FROM_ALL)
 include(ExternalProject)
 
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-  set(BUILD_TYPE_FLAGS "-g")
+  set(GHOSTSCRIPT_TARGET "debug")
 else()
-  set(BUILD_TYPE_FLAGS "-O3 -DNDEBUG")
+  set(GHOSTSCRIPT_TARGET "")
+endif()
+
+include(ProcessorCount)
+ProcessorCount(N_PROCESSOR)
+if(N_PROCESSOR EQUAL 0)
+  set(N_PROCESSOR 1)
 endif()
 
 # GhostScript doesn't support sanitizers.
@@ -74,9 +80,9 @@ ExternalProject_Add(
     --without-libtiff --with-drivers=PS CC=emcc CCAUX=gcc
     --with-arch_h="${CMAKE_CURRENT_SOURCE_DIR}/../third_party/ghostpdl/arch/windows-x86-msvc.h"
   BUILD_COMMAND
-    emmake make XE=".html"
+    emmake make ${GHOSTSCRIPT_TARGET} XE=".html"
     GS_LDFLAGS="-s MODULARIZE=1 -s EXPORT_ES6=1 -s EXPORTED_RUNTIME_METHODS='[\"FS\",\"FS_analyzePath\",\"FS_readFile\",\"FS_writeFile\"]' -s ENVIRONMENT=web -s INVOKE_RUN=1 -s EXIT_RUNTIME=1 -s MALLOC='emmalloc' -s ALLOW_MEMORY_GROWTH=1 ${SANITIZE_FLAGS} ${BUILD_TYPE_FLAGS} $<IF:$<CONFIG:Debug>,--closure 0,--closure 1> $<IF:$<CONFIG:Debug>,-s ASSERTIONS=1,-s ASSERTIONS=0> $<$<CONFIG:Debug>:-s STACK_OVERFLOW_CHECK=2> $<$<CONFIG:Debug>:--emit-symbol-map> $<$<CONFIG:Debug>:-gsource-map> $<$<CONFIG:Debug>:-gseparate-dwarf> --emit-tsd gs.d.ts -fexceptions"
-    -j8
+    -j${N_PROCESSOR}
   INSTALL_COMMAND "")
 
 include(CheckIPOSupported)
