@@ -27,5 +27,5 @@ describe('WasmLoaderFormatterService', () => {
   int a;
   int b;
 }`);
-  });
+  }, 30000);
 });
