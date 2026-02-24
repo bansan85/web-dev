@@ -1,7 +1,10 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
+  HostListener,
   inject,
+  OnInit,
   signal,
 } from '@angular/core';
 
@@ -9,6 +12,8 @@ import { PdfWorkerService } from '../features/pdf/services/pdf-worker.service';
 import { TabItem } from '../features/tab/components/tab-item';
 import { Tabs } from '../features/tab/components/tabs';
 import { GithubMarkInlineComponent } from '../img/github-mark-inline.component';
+import { SpinnerLoadingComponent } from '../templates/spinner-loading.component';
+import { WasmLoaderGhostscriptService } from '../wasm-loader-ghostscript.service';
 
 enum ButtonAction {
   None,
@@ -18,12 +23,12 @@ enum ButtonAction {
 
 @Component({
   selector: 'app-main-pdf',
-  imports: [GithubMarkInlineComponent, TabItem, Tabs],
+  imports: [GithubMarkInlineComponent, TabItem, Tabs, SpinnerLoadingComponent],
   templateUrl: './main-pdf.component.html',
   styleUrl: './main-pdf.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MainPdfComponent {
+export class MainPdfComponent implements OnInit {
   private singleFileName: File | null = null;
   private singleFileBuffer: ArrayBuffer | null = null;
   private buttonAction = ButtonAction.None;
@@ -37,6 +42,10 @@ export class MainPdfComponent {
   protected readonly numberOfPages = signal(0);
 
   private readonly pdfWorkerService = inject(PdfWorkerService);
+
+  private readonly wasmLoaderGhostscript = inject(WasmLoaderGhostscriptService);
+  protected titleLoading = '';
+  protected readonly spinnerSize = signal(0);
 
   protected async onSingleFileSelected(event: Event) {
     const element = event.currentTarget as HTMLInputElement;
@@ -222,5 +231,29 @@ export class MainPdfComponent {
         document.body.removeChild(downloadLink);
       }
     }
+  }
+
+  protected readonly isLoading = computed(() => {
+    if (this.wasmLoaderGhostscript.isLoading()) {
+      this.titleLoading = 'ghostscript';
+      return true;
+    }
+    this.titleLoading = '';
+    return false;
+  });
+
+  private updateIconSize() {
+    this.spinnerSize.set(Math.min(window.innerWidth / 4, window.innerHeight / 2));
+  }
+
+  async ngOnInit() {
+    this.updateIconSize();
+
+    await this.wasmLoaderGhostscript.preload();
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    this.updateIconSize();
   }
 }

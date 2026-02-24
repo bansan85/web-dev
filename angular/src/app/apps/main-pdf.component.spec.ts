@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MainPdfComponent } from './main-pdf.component';
+import { importProvidersFrom } from '@angular/core';
+import { LoaderCircle, LucideAngularModule } from 'lucide-angular';
 
 describe('MainPdfComponent', () => {
   let component: MainPdfComponent;
@@ -8,9 +10,14 @@ describe('MainPdfComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MainPdfComponent]
+      imports: [MainPdfComponent],
+      providers: [
+        importProvidersFrom(
+          LucideAngularModule.pick({ LoaderCircle })
+        ),
+      ],
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(MainPdfComponent);
     component = fixture.componentInstance;

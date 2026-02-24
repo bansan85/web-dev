@@ -31,6 +31,10 @@
   <app-tab-item tabName="Target">ghfdjkl</app-tab-item>
 </app-tabs>
 
+@if (isLoading()) {
+  <app-spinner-loading [size]="spinnerSize()" [title]="titleLoading" />
+}
+
 <a href="https://github.com/bansan85/web-demangler">
   <app-github-mark-inline class="github_logo" />
 </a>
