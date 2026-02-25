@@ -1,18 +1,61 @@
 <h1>PDF manipulation</h1>
 
 <app-tabs>
-  <app-tab-item tabName="Single PDF">
+  <app-tab-item>
+    <ng-template>
+      <span>Single Pdf</span>
+    </ng-template>
+    <label for="input_pdf">Select PDF</label>
     <input
       accept="application/pdf"
+      id="input_pdf"
+      name="input_pdf"
       type="file"
       (change)="onSingleFileSelected($event)"
     /><br />
     <h2>Actions</h2>
+    <app-tabs>
+      <app-tab-item>
+        <ng-template>
+          <span>Split</span>
+        </ng-template>
+
+        <div>
+          <input
+            id="enableSplit"
+            name="split"
+            type="checkbox"
+            [(ngModel)]="enabledSplit"
+          />
+          <label for="enableSplit">Enabled</label>
+        </div>
+        <div [hidden]="!enabledSplit()">
+          <div>
+            <input id="splitEachPage" name="split" type="radio" />
+            <label for="splitEachPage">Each page</label>
+          </div>
+          <div>
+            <input id="splitOddPages" name="split" type="radio" />
+            <label for="splitOddPages">Odd pages</label>
+          </div>
+          <div>
+            <input id="splitEvenPages" name="split" type="radio" />
+            <label for="splitEvenPages">Even pages</label>
+          </div>
+        </div>
+
+        <button type="button" (click)="split()">Each page</button>
+      </app-tab-item>
+      <app-tab-item>
+        <ng-template>
+          <span>Compress</span>
+        </ng-template>
+        <button type="button" (click)="compress()">Compress</button><br />
+      </app-tab-item>
+    </app-tabs>
     <h3>Various</h3>
-    <button type="button" (click)="compress()">Compress</button><br />
     <button type="button" (click)="pageCount()">Show</button>
     <h3>Split</h3>
-    <button type="button" (click)="split()">Each page</button>
     <p>{{ this.status() }}</p>
     <h3>Result</h3>
     <button type="button" [class]="downloadVisilibity()" (click)="download()">
@@ -27,8 +70,6 @@
       }
     }
   </app-tab-item>
-  <app-tab-item tabName="Project">vcn,x</app-tab-item>
-  <app-tab-item tabName="Target">ghfdjkl</app-tab-item>
 </app-tabs>
 
 @if (isLoading()) {

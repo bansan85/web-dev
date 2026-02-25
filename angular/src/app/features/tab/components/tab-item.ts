@@ -2,8 +2,9 @@ import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  input,
+  contentChild,
   signal,
+  TemplateRef,
 } from '@angular/core';
 
 @Component({
@@ -14,6 +15,6 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TabItem {
-  readonly tabName = input<string>('default');
+  readonly header = contentChild(TemplateRef);
   readonly activate = signal(true);
 }

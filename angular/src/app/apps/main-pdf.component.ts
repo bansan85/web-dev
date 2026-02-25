@@ -4,9 +4,11 @@ import {
   computed,
   HostListener,
   inject,
+  model,
   OnInit,
   signal,
 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 import { PdfWorkerService } from '../features/pdf/services/pdf-worker.service';
 import { TabItem } from '../features/tab/components/tab-item';
@@ -23,7 +25,13 @@ enum ButtonAction {
 
 @Component({
   selector: 'app-main-pdf',
-  imports: [GithubMarkInlineComponent, TabItem, Tabs, SpinnerLoadingComponent],
+  imports: [
+    GithubMarkInlineComponent,
+    TabItem,
+    Tabs,
+    SpinnerLoadingComponent,
+    FormsModule,
+  ],
   templateUrl: './main-pdf.component.html',
   styleUrl: './main-pdf.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -35,6 +43,7 @@ export class MainPdfComponent implements OnInit {
 
   protected readonly status = signal('');
   protected readonly downloadVisilibity = signal('display-none');
+  protected readonly enabledSplit = model(false);
 
   private generatedUrl: string | null = null;
   protected readonly generatedPageUrls = signal<string[]>([]);
@@ -249,7 +258,9 @@ export class MainPdfComponent implements OnInit {
   });
 
   private updateIconSize() {
-    this.spinnerSize.set(Math.min(window.innerWidth / 4, window.innerHeight / 2));
+    this.spinnerSize.set(
+      Math.min(window.innerWidth / 4, window.innerHeight / 2),
+    );
   }
 
   async ngOnInit() {

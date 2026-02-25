@@ -9,7 +9,8 @@
       (keydown.enter)="activateTab($index)"
       (keydown.space)="activateTab($index); $event.preventDefault()"
     >
-      {{tab.tabName()}}
+      <ng-container [ngTemplateOutlet]="tab.header() || defaultHeader" />
+      <ng-template #defaultHeader>Tab {{ $index + 1 }}</ng-template>
     </div>
     }
   </div>
