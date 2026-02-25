@@ -102,5 +102,12 @@ describe('WasmLoaderLightenService', () => {
     expect(lighten.web_lighten_number('-1199999913.5', 4)).toEqual(
       '-1200000000'
     );
+
+    expect(lighten.web_lighten_number('0.000123400005', 4)).toEqual(
+      '0.0001234',
+    );
+    expect(lighten.web_lighten_number('-0.000123400005', 4)).toEqual(
+      '-0.0001234',
+    );
   });
 });

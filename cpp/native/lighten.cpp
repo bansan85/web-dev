@@ -82,7 +82,14 @@ std::string number(std::string num, size_t size) {
   }
 
   // Truncate if 0000 is found.
-  size_t pos0000 = num.find(std::string(size, '0'));
+  size_t pos0000 = 0;
+  if (num[0] == '+' || num[0] == '-') {
+    pos0000 = 1;
+  }
+  while (num[pos0000] == '0') {
+    pos0000++;
+  }
+  pos0000 = num.find(std::string(size, '0'), pos0000); 
   if (pos0000 != std::string::npos) {
     num = num.substr(0, pos0000);
   }
