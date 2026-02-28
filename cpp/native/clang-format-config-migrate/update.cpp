@@ -118,7 +118,7 @@ void renameField(std::string_view old_field_name, T &old_field,
   if constexpr (Upgrade == clang_vx::Update::UPGRADE) {
     std::cout << "Info when upgrading to version " << version << ". Old field "
               << old_field_name << " has been renamed to " << new_field_name
-              << ".";
+              << ".\n";
     new_field = old_field;
   } else {
     std::cout << "Info when downgrading to version " << version
