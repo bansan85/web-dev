@@ -4,6 +4,7 @@ import {
   computed,
   HostListener,
   inject,
+  model,
   OnInit,
   signal,
   viewChild,
@@ -54,10 +55,10 @@ export class ClangFormatConfigMigrateComponent implements OnInit {
   private readonly textareaTwo = viewChild.required(TextareaTwoComponent);
   private readonly settingsDialog = viewChild.required(DialogPopupComponent);
 
-  protected oldVersion = '';
-  protected newVersion = '';
-  protected defaultStyle = '';
-  protected exportOnlyChangedValue = true;
+  protected readonly oldVersion = model('');
+  protected readonly newVersion = model('');
+  protected readonly defaultStyle = model('');
+  protected readonly exportOnlyChangedValue = model(true);
 
   private readonly wasmLoaderClangFormatConfigMigrate = inject(WasmLoaderClangFormatConfigMigrateService);
 
@@ -128,7 +129,7 @@ export class ClangFormatConfigMigrateComponent implements OnInit {
       const compatibleStylesCpp =
         this.clangFormatConfigMigrate!.getStyleNamesRange(
           oldVersion,
-          this.clangFormatConfigMigrate!.versionStringToEnum(this.newVersion)
+          this.clangFormatConfigMigrate!.versionStringToEnum(this.newVersion())
         );
       const sizeStyles = compatibleStylesCpp.size();
       for (let i = 0; i < sizeStyles; i += 1) {
@@ -146,13 +147,13 @@ export class ClangFormatConfigMigrateComponent implements OnInit {
       return undefined;
     }
 
-    if (this.oldVersion === 'min') {
+    if (this.oldVersion() === 'min') {
       retval = this.compatibleVersions()[0].id;
-    } else if (this.oldVersion === 'max') {
+    } else if (this.oldVersion() === 'max') {
       retval = this.compatibleVersions()[this.compatibleVersions().length - 1].id;
     } else {
       retval = this.clangFormatConfigMigrate!.versionStringToEnum(
-        this.oldVersion
+        this.oldVersion()
       );
     }
 
@@ -174,10 +175,10 @@ export class ClangFormatConfigMigrateComponent implements OnInit {
 
     return this.clangFormatConfigMigrate!.migrateTo(
       realOldVersion,
-      this.clangFormatConfigMigrate!.versionStringToEnum(this.newVersion),
+      this.clangFormatConfigMigrate!.versionStringToEnum(this.newVersion()),
       config,
-      this.defaultStyle,
-      this.exportOnlyChangedValue
+      this.defaultStyle(),
+      this.exportOnlyChangedValue()
     );
   }
 
