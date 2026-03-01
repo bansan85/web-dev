@@ -76,6 +76,9 @@ export class MainPdfComponent implements OnInit {
       }
 
       const blob = new Blob([retval.pdfDataURL], { type: 'application/pdf' });
+      if (this.generatedUrl !== null) {
+        URL.revokeObjectURL(this.generatedUrl);
+      }
       this.generatedUrl = URL.createObjectURL(blob);
 
       this.status.set('Compress done.');
@@ -109,6 +112,9 @@ export class MainPdfComponent implements OnInit {
       }
 
       const blob = new Blob([retval.zipDataURL], { type: 'application/zip' });
+      if (this.generatedUrl !== null) {
+        URL.revokeObjectURL(this.generatedUrl);
+      }
       this.generatedUrl = URL.createObjectURL(blob);
 
       this.status.set('Split done.');
