@@ -91,26 +91,26 @@ describe('FormatterOptionsComponent', () => {
 
     // Test formatStyle.XXX enum
     {
-      const dtAlignAfterOpenBracket = Array.from(
+      const dtAlignArrayOfStructures = Array.from(
         document.querySelectorAll('dt')
-      ).find((dt) => dt.textContent === 'AlignAfterOpenBracket:')!;
-      const iAlignAfterOpenBracket =
-        dtAlignAfterOpenBracket.nextElementSibling!.querySelector('select')!;
-      expect(iAlignAfterOpenBracket.length).toEqual(4);
-      expect(iAlignAfterOpenBracket.options[0].text).toEqual('Align');
-      const iAlignAfterOpenBracketValue = iAlignAfterOpenBracket.selectedIndex;
-      expect(iAlignAfterOpenBracketValue).toEqual(
-        component.formatStyle.AlignAfterOpenBracket.value
+      ).find((dt) => dt.textContent === 'AlignArrayOfStructures:')!;
+      const iAlignArrayOfStructures =
+        dtAlignArrayOfStructures.nextElementSibling!.querySelector('select')!;
+      expect(iAlignArrayOfStructures.length).toEqual(3);
+      expect(iAlignArrayOfStructures.options[0].text).toEqual('Left');
+      const iAlignArrayOfStructuresValue = iAlignArrayOfStructures.selectedIndex;
+      expect(iAlignArrayOfStructuresValue).toEqual(
+        component.formatStyle.AlignArrayOfStructures.value
       );
-      iAlignAfterOpenBracket.value =
-        iAlignAfterOpenBracket.options[
-          (iAlignAfterOpenBracketValue + 1) % iAlignAfterOpenBracket.length
+      iAlignArrayOfStructures.value =
+        iAlignArrayOfStructures.options[
+          (iAlignArrayOfStructuresValue + 1) % iAlignArrayOfStructures.length
         ].value;
-      iAlignAfterOpenBracket.dispatchEvent(new Event('change'));
+      iAlignArrayOfStructures.dispatchEvent(new Event('change'));
       fixture.detectChanges();
-      expect(component.formatStyle.AlignAfterOpenBracket.value).toEqual(
-        ((iAlignAfterOpenBracketValue + 1) %
-          iAlignAfterOpenBracket.length) as any
+      expect(component.formatStyle.AlignArrayOfStructures.value).toEqual(
+        ((iAlignArrayOfStructuresValue + 1) %
+          iAlignArrayOfStructures.length) as any
       );
     }
 

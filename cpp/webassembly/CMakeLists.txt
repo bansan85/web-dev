@@ -75,9 +75,9 @@ ExternalProject_Add(
     emconfigure "${CMAKE_CURRENT_SOURCE_DIR}/../third_party/ghostpdl/configure"
     CFLAGS=-Wno-error=incompatible-pointer-types\ ${SANITIZE_FLAGS}\ ${BUILD_TYPE_FLAGS}
     CXXFLAGS=-Wno-error=incompatible-pointer-types\ ${SANITIZE_FLAGS}\ ${BUILD_TYPE_FLAGS}
-    LDFLAGS=${SANITIZE_FLAGS}\ ${BUILD_TYPE_FLAGS}
-    --disable-threading --disable-cups --disable-dbus --disable-gtk
-    --without-libtiff --with-drivers=PS CC=emcc CCAUX=gcc
+    LDFLAGS=${SANITIZE_FLAGS}\ ${BUILD_TYPE_FLAGS} --disable-threading
+    --disable-cups --disable-dbus --disable-gtk --without-libtiff
+    --with-drivers=PS CC=emcc CCAUX=gcc
     --with-arch_h="${CMAKE_CURRENT_SOURCE_DIR}/../third_party/ghostpdl/arch/windows-x86-msvc.h"
   BUILD_COMMAND
     emmake make ${GHOSTSCRIPT_TARGET} XE=".html"
@@ -96,8 +96,9 @@ target_sources(
           "${CMAKE_CURRENT_SOURCE_DIR}/../native/demangler.h"
           "${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt")
 target_link_libraries(web_demangler PRIVATE embind LLVMDemangle)
-target_include_directories(web_demangler PRIVATE SYSTEM
-                                                 ${LLVM_SOURCE_DIR}/include)
+target_include_directories(
+  web_demangler PRIVATE SYSTEM ${LLVM_SOURCE_DIR}/include
+                        ${LLVM_BINARY_DIR}/include)
 target_compile_options(web_demangler PRIVATE "-fexceptions")
 target_link_options(
   web_demangler
