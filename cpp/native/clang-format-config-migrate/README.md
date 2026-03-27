@@ -68,15 +68,17 @@ In prototype `getPredefinedStyle`, explicity set `llvm` namespace to `llvm::Stri
 
 After `getPredefinedStyle`, add a new prototype `std::vector<std::string> getStyleNames();`. This function is needed to know which style is supported by this version of Format.
 
-You need to remove other parameters that is not needed to serialize to Yaml. Replace prototypes `std::error_code parseConfiguration(llvm::MemoryBufferRef Config, FormatStyle *Style, bool AllowUnknownOptions = false, llvm::SourceMgr::DiagHandlerTy DiagHandler = nullptr, void *DiagHandlerCtx = nullptr)` to `std::error_code parseConfiguration(llvm::MemoryBufferRef Config, FormatStyle *Style)`
+You need to remove other parameters that is not needed to serialize to Yaml. Replace prototypes `std::error_code parseConfiguration(llvm::MemoryBufferRef Config, FormatStyle *Style, bool AllowUnknownOptions = false, llvm::SourceMgr::DiagHandlerTy DiagHandler = nullptr, void *DiagHandlerCtx = nullptr, bool IsDotHFile = false)` to `std::error_code parseConfiguration(llvm::MemoryBufferRef Config, FormatStyle *Style)`
 
 And replace
 
 ```cpp
 inline std::error_code parseConfiguration(StringRef Config, FormatStyle *Style,
-                                          bool AllowUnknownOptions = false) {
+                                          bool AllowUnknownOptions = false,
+                                          bool IsDotHFile = false) {
   return parseConfiguration(llvm::MemoryBufferRef(Config, "YAML"), Style,
-                            AllowUnknownOptions);
+                            AllowUnknownOptions, /*DiagHandler=*/nullptr,
+                            /*DiagHandlerCtx=*/nullptr, IsDotHFile);
 }
 ```
 
@@ -125,6 +127,7 @@ Cleanup headers. Replace
 #include "DefinitionBlockSeparator.h"
 #include "IntegerLiteralSeparatorFixer.h"
 #include "NamespaceEndCommentsFixer.h"
+#include "NumericLiteralCaseFixer.h"
 #include "ObjCPropertyAttributeOrderFixer.h"
 #include "QualifierAlignmentFixer.h"
 #include "SortJavaScriptImports.h"
@@ -143,6 +146,7 @@ to
 #include "llvm/ADT/Sequence.h"
 #include "llvm/ADT/StringSwitch.h"
 #include "llvm/Support/Debug.h"
+#include <limits>
 #include <set>
 ```
 
@@ -155,26 +159,13 @@ namespace prec = clang::prec;
 namespace tok = clang::tok;
 ```
 
-Replace all `IO.mapOptional(` by `clang_vx::IoMapOptional<FormatStyle>(IO, ` (`clang_vx` must not be replaced by the version of clang) except:
+Replace all `IO.mapOptional(` by `clang_vx::IoMapOptional<FormatStyle>(IO, ` (`clang_vx` must NOT be replaced by the version of clang) except:
 
+  - in `template <> struct MappingTraits<FormatStyle>`,
   - if `template <> struct MappingTraits` is used in a `std::vector` (i.e. `RawStringFormat`),
   - if you are in condition `!IO.outputting()` because you will only read, not write.
 
 In `template <> struct MappingTraits<FormatStyle>`, replace the `BasedOnStyle` field from:
-
-In `template <> struct MappingTraits<FormatStyle::SpacesInLineComment>`, replace
-
-```cpp
-    clang_vx::IoMapOptional<FormatStyle>(IO, "Maximum", signedMaximum);
-```
-
-by
-
-```cpp
-    clang_vx::IoMapOptional<FormatStyle>(IO, "Maximum", signedMaximum,
-                                         Space.Maximum);
-```
-
 
 ```cpp
     StringRef BasedOnStyle;
@@ -252,9 +243,22 @@ by
         BasedOnStyle == "google" || BasedOnStyle == "chromium";
 ```
 
+In `template <> struct MappingTraits<FormatStyle::SpacesInLineComment>`, replace
+
+```cpp
+    clang_vx::IoMapOptional<FormatStyle>(IO, "Maximum", signedMaximum);
+```
+
+by
+
+```cpp
+    clang_vx::IoMapOptional<FormatStyle>(IO, "Maximum", signedMaximum,
+                                         Space.Maximum);
+```
+
 Remove the function `make_string_error`. It will be unused after removing uneeded classes.
 
-Add function `getStyleNames`. i.e.
+Add function `getStyleNames` and check in `getPredefinedStyle` if there is new style. i.e.
 
 ```cpp
 std::vector<std::string> getStyleNames() {
@@ -265,7 +269,11 @@ std::vector<std::string> getStyleNames() {
 
 Replace `LeftRightQualifierAlignmentFixer::getTokenFromQualifier` by `clang_vx::getTokenFromQualifier`.
 
-Adjust parseConfiguration by removing parameters and not allowing unknown keys.
+Adjust parseConfiguration by removing parameters and not allowing unknown keys and
+
+  - Add `const bool IsDotHFile = false;`,
+  - Replace `Input.setAllowUnknownKeys(AllowUnknownOptions);` by `Input.setAllowUnknownKeys(false);`.
+
 
 Replace configurationAsText by
 
@@ -295,7 +303,7 @@ std::string configurationAsText(const FormatStyle &Style,
 }
 ```
 
-Remove the huge anonymous namespace at the end of the file and functions after. It contains classes that is non needed.
+Remove the huge anonymous namespace at the end of the file and functions after `FormatStyle::GetLanguageStyle`. It contains classes that is non needed.
 
 Replace `tooling::IncludeStyle` by `clang_vXX::IncludeStyle`.
 
@@ -354,7 +362,7 @@ Add:
 #include "XX.YY.ZZ/Format.h"
 ```
 
-Compare function `getTokenFromQualifier` with the one from `clang/lib/Format/QualifierAlignmentFixer.cpp` in llvm project.
+Compare function `getTokenFromQualifier` with the one from `cpp/third_party/llvm/clang/lib/Format/QualifierAlignmentFixer.cpp` in llvm project.
 
 In `getCompatibleVersion` function, add `PARSE_CONFIG(XX);`.
 
@@ -382,7 +390,7 @@ void update(clang_vPP::FormatStyle &prev, clang_vXX::FormatStyle &next,
 } // namespace clang_update_vXX
 ```
 
-The first `FormatStyle &prev` is the previous version and `FormatStyle &next` is the next version. i.e.:
+The first `clang_vPP::FormatStyle &prev` is the previous version and `clang_vXX::FormatStyle &next` is the next version. i.e.:
 
 ```cpp
 clang_v19::FormatStyle &prev, clang_v20::FormatStyle &next
@@ -391,8 +399,6 @@ clang_v19::FormatStyle &prev, clang_v20::FormatStyle &next
 ### `cpp/native/clang-format-config-migrate/update.cpp`
 
 In this section, `XX` is the new version (i.e. 20) and `PP` is the previous version (i.e. 19).
-
-This is the important file where you do the migration.
 
 Add the new version of FormatStyle (`clang_vXX::FormatStyle`) in the typedef variant `AllFormatStyle`.
 
@@ -453,8 +459,7 @@ Finally, duplicate the whole namespace `clang_update_vPP` to `clang_update_vXX`.
 
 Then you need to open `cpp/native/clang-format-config-migrate/XX.YY.ZZ/Format.h` and compare with `cpp/native/clang-format-config-migrate/PP.QQ.RR/Format.h`.
 
-At first, all `frozen::unordered_map` in `clang_update_vXX` before update `function`.
-
+At first, if there is any, comment all `frozen::unordered_map` in `clang_update_vXX` before update `function`.
 
 It's important to compare for each field, in both old and new version :
   - the field exist only in new version. Use `NEW_FIELD`.
@@ -465,19 +470,29 @@ It's important to compare for each field, in both old and new version :
 
 But sure to replace all `NEW_FIELD` of previous namespace by `ASSIGN_MAGIC_ENUM` or `ASSIGN_SAME_FIELD`.
 
-At the current time, an old field has never disappeared in a new version.
+At the current time, an old field has never disappeared in a new version. It was always rename or converted to multiple fields.
 
 `ASSIGN_MAGIC_ENUM` and `RENAME_MAGIC_ENUM` handle the case where an enum class is not the same. If a value doesn't exist while migrating, a warning is printed.
 
+If the conversion is to complex, you need to implement the upgrade and the downgrade feature:
+
+```cpp
+if constexpr (Upgrade == clang_vx::Update::UPGRADE) {
+  next.... = prev....;
+} else {
+  prev.... = next....;
+}
+```
+
 ### `cpp/webassembly/web-clang-format-config-migrate.cpp`
 
-Add the new version number to the binding of the `enum class Version`. Add `.value("VXX", clang_vx::Version::VXX)` at the end of the declaration of `emscripten::enum_<clang_vx::Version>("Version")`.
+Add `.value("VXX", clang_vx::Version::VXX)` at the end of the declaration of `emscripten::enum_<clang_vx::Version>("Version")`.
 
 ## Tests
 
 You need to generate dataset with default config for each style. Launch command with clang-format-XX (here for webkit style):
 
-`clang-format-XX -dump-config -style=webkit > cpp/tests/data/config-file-XX.cfg`
+`clang-format-XX -dump-config -style=webkit > cpp/tests/data/config-file/webkit-XX.cfg`
 
 In `cpp/tests/CMakeLists.txt`, add in source file of `test_clang_format_config_migrate`:
 
@@ -543,7 +558,12 @@ BasedOnStyle:    )XX" +
     }
 ```
 
-Then run tests. If a test fails while `REQUIRE(stylePP_old == stylePP_new)` or while `REQUIRE(styleXX_old == styleXX_new)`, launch `gdb ./test_clang_format_config_migrate` from `build_tests_debug` folder, add a breakpoint `b clang-format-config-migrate.cpp:1700`, execute the loop to be sure to be on the right style. Then `print stylePP_old` and `print stylePP_new` and compare result.
+Then run tests. If a test fails while `REQUIRE(stylePP_old == stylePP_new)` or while `REQUIRE(styleXX_old == styleXX_new)` :
+
+  - launch `gdb ./test_clang_format_config_migrate` from `build_tests_debug` folder,
+  - set `catch throw`,
+  - `r`un the program,
+  - `print stylePP_old` and `print stylePP_new` and compare result.
 
 ## Angular project
 

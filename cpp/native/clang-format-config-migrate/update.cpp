@@ -25,7 +25,7 @@ using AllFormatStyle = std::variant<
     clang_v12::FormatStyle, clang_v13::FormatStyle, clang_v14::FormatStyle,
     clang_v15::FormatStyle, clang_v16::FormatStyle, clang_v17::FormatStyle,
     clang_v18::FormatStyle, clang_v19::FormatStyle, clang_v20::FormatStyle,
-    clang_v21::FormatStyle>;
+    clang_v21::FormatStyle, clang_v22::FormatStyle>;
 
 template <typename K, typename V, size_t SIZE>
 std::optional<K> getKeyFromValue(const frozen::unordered_map<K, V, SIZE> &myMap,
@@ -4850,6 +4850,394 @@ template void update<clang_vx::Update::DOWNGRADE>(clang_v20::FormatStyle &prev,
 
 } // namespace clang_update_v21
 
+namespace clang_update_v22 {
+
+constexpr frozen::unordered_map<bool, clang_v22::FormatStyle::BracedListStyle,
+                                2>
+    braced_list_style{
+        {false, clang_v22::FormatStyle::BracedListStyle::BLS_Block},
+        {true, clang_v22::FormatStyle::BracedListStyle::BLS_AlignFirstComment}};
+
+constexpr frozen::unordered_map<
+    bool, clang_v22::FormatStyle::SpaceInEmptyBracesStyle, 2>
+    space_in_empty_braces_style{
+        {false, clang_v22::FormatStyle::SpaceInEmptyBracesStyle::SIEB_Never},
+        {true, clang_v22::FormatStyle::SpaceInEmptyBracesStyle::SIEB_Block}};
+
+template <clang_vx::Update Upgrade>
+void update(clang_v21::FormatStyle &prev, clang_v22::FormatStyle &next,
+            const std::string &style) {
+  if constexpr (Upgrade == clang_vx::Update::UPGRADE) {
+    if (!clang_v22::getPredefinedStyle(
+            style, clang_v22::FormatStyle::LanguageKind::LK_Cpp, &next)) {
+      throw std::runtime_error("Failed to load " + style + " style.");
+    }
+  } else {
+    if (!clang_v21::getPredefinedStyle(
+            style, clang_v21::FormatStyle::LanguageKind::LK_Cpp, &prev)) {
+      throw std::runtime_error("Failed to load " + style + " style.");
+    }
+  }
+
+  std::string_view prev_version = "21";
+  std::string_view next_version = "22";
+
+  ASSIGN_SAME_FIELD(InheritsParentConfig);
+  ASSIGN_SAME_FIELD(AccessModifierOffset);
+
+  if constexpr (Upgrade == clang_vx::Update::UPGRADE) {
+    next.BreakAfterOpenBracketBracedList = false;
+    next.BreakAfterOpenBracketFunction = false;
+    next.BreakAfterOpenBracketIf = false;
+    next.BreakAfterOpenBracketLoop = false;
+    next.BreakAfterOpenBracketSwitch = false;
+    next.BreakBeforeCloseBracketBracedList = false;
+    next.BreakBeforeCloseBracketFunction = false;
+    next.BreakBeforeCloseBracketIf = false;
+    next.BreakBeforeCloseBracketLoop = false;
+    next.BreakBeforeCloseBracketSwitch = false;
+
+    switch (prev.AlignAfterOpenBracket) {
+    case clang_v21::FormatStyle::BracketAlignmentStyle::BAS_DontAlign:
+      next.AlignAfterOpenBracket = false;
+      break;
+    case clang_v21::FormatStyle::BracketAlignmentStyle::BAS_BlockIndent:
+      next.BreakBeforeCloseBracketBracedList = true;
+      next.BreakBeforeCloseBracketFunction = true;
+      next.BreakBeforeCloseBracketIf = true;
+      [[fallthrough]];
+    case clang_v21::FormatStyle::BracketAlignmentStyle::BAS_AlwaysBreak:
+      next.BreakAfterOpenBracketBracedList = true;
+      next.BreakAfterOpenBracketFunction = true;
+      next.BreakAfterOpenBracketIf = true;
+      [[fallthrough]];
+    case clang_v21::FormatStyle::BracketAlignmentStyle::BAS_Align:
+      next.AlignAfterOpenBracket = true;
+      break;
+    }
+  } else {
+    if (next.AlignAfterOpenBracket == false) {
+      prev.AlignAfterOpenBracket = clang_v21::FormatStyle::BracketAlignmentStyle::BAS_DontAlign;
+    } else if (next.BreakBeforeCloseBracketBracedList ||
+               next.BreakBeforeCloseBracketFunction ||
+               next.BreakBeforeCloseBracketIf) {
+      prev.AlignAfterOpenBracket = clang_v21::FormatStyle::BracketAlignmentStyle::BAS_BlockIndent;
+    } else if (next.BreakAfterOpenBracketBracedList ||
+               next.BreakAfterOpenBracketFunction ||
+               next.BreakAfterOpenBracketIf) {
+      prev.AlignAfterOpenBracket = clang_v21::FormatStyle::BracketAlignmentStyle::BAS_AlwaysBreak;
+    } else {
+      prev.AlignAfterOpenBracket = clang_v21::FormatStyle::BracketAlignmentStyle::BAS_Align;
+    }
+  }
+
+  ASSIGN_MAGIC_ENUM(AlignArrayOfStructures);
+  ASSIGN_SAME_FIELD(AlignConsecutiveMacros.Enabled);
+  ASSIGN_SAME_FIELD(AlignConsecutiveMacros.AcrossEmptyLines);
+  ASSIGN_SAME_FIELD(AlignConsecutiveMacros.AcrossComments);
+  ASSIGN_SAME_FIELD(AlignConsecutiveMacros.AlignCompound);
+  ASSIGN_SAME_FIELD(AlignConsecutiveMacros.AlignFunctionDeclarations);
+  ASSIGN_SAME_FIELD(AlignConsecutiveMacros.AlignFunctionPointers);
+  ASSIGN_SAME_FIELD(AlignConsecutiveMacros.PadOperators);
+  ASSIGN_SAME_FIELD(AlignConsecutiveAssignments.Enabled);
+  ASSIGN_SAME_FIELD(AlignConsecutiveAssignments.AcrossEmptyLines);
+  ASSIGN_SAME_FIELD(AlignConsecutiveAssignments.AcrossComments);
+  ASSIGN_SAME_FIELD(AlignConsecutiveAssignments.AlignCompound);
+  ASSIGN_SAME_FIELD(AlignConsecutiveAssignments.AlignFunctionDeclarations);
+  ASSIGN_SAME_FIELD(AlignConsecutiveAssignments.AlignFunctionPointers);
+  ASSIGN_SAME_FIELD(AlignConsecutiveAssignments.PadOperators);
+  ASSIGN_SAME_FIELD(AlignConsecutiveBitFields.Enabled);
+  ASSIGN_SAME_FIELD(AlignConsecutiveBitFields.AcrossEmptyLines);
+  ASSIGN_SAME_FIELD(AlignConsecutiveBitFields.AcrossComments);
+  ASSIGN_SAME_FIELD(AlignConsecutiveBitFields.AlignCompound);
+  ASSIGN_SAME_FIELD(AlignConsecutiveBitFields.AlignFunctionDeclarations);
+  ASSIGN_SAME_FIELD(AlignConsecutiveBitFields.AlignFunctionPointers);
+  ASSIGN_SAME_FIELD(AlignConsecutiveBitFields.PadOperators);
+  ASSIGN_SAME_FIELD(AlignConsecutiveDeclarations.Enabled);
+  ASSIGN_SAME_FIELD(AlignConsecutiveDeclarations.AcrossEmptyLines);
+  ASSIGN_SAME_FIELD(AlignConsecutiveDeclarations.AcrossComments);
+  ASSIGN_SAME_FIELD(AlignConsecutiveDeclarations.AlignCompound);
+  ASSIGN_SAME_FIELD(AlignConsecutiveDeclarations.AlignFunctionDeclarations);
+  ASSIGN_SAME_FIELD(AlignConsecutiveDeclarations.AlignFunctionPointers);
+  ASSIGN_SAME_FIELD(AlignConsecutiveDeclarations.PadOperators);
+  ASSIGN_SAME_FIELD(AlignConsecutiveShortCaseStatements.Enabled);
+  ASSIGN_SAME_FIELD(AlignConsecutiveShortCaseStatements.AcrossEmptyLines);
+  ASSIGN_SAME_FIELD(AlignConsecutiveShortCaseStatements.AcrossComments);
+  ASSIGN_SAME_FIELD(AlignConsecutiveShortCaseStatements.AlignCaseArrows);
+  ASSIGN_SAME_FIELD(AlignConsecutiveShortCaseStatements.AlignCaseColons);
+  ASSIGN_SAME_FIELD(AlignConsecutiveTableGenBreakingDAGArgColons.Enabled);
+  ASSIGN_SAME_FIELD(
+      AlignConsecutiveTableGenBreakingDAGArgColons.AcrossEmptyLines);
+  ASSIGN_SAME_FIELD(
+      AlignConsecutiveTableGenBreakingDAGArgColons.AcrossComments);
+  ASSIGN_SAME_FIELD(AlignConsecutiveTableGenBreakingDAGArgColons.AlignCompound);
+  ASSIGN_SAME_FIELD(
+      AlignConsecutiveTableGenBreakingDAGArgColons.AlignFunctionDeclarations);
+  ASSIGN_SAME_FIELD(
+      AlignConsecutiveTableGenBreakingDAGArgColons.AlignFunctionPointers);
+  ASSIGN_SAME_FIELD(AlignConsecutiveTableGenBreakingDAGArgColons.PadOperators);
+  ASSIGN_SAME_FIELD(AlignConsecutiveTableGenCondOperatorColons.Enabled);
+  ASSIGN_SAME_FIELD(
+      AlignConsecutiveTableGenCondOperatorColons.AcrossEmptyLines);
+  ASSIGN_SAME_FIELD(AlignConsecutiveTableGenCondOperatorColons.AcrossComments);
+  ASSIGN_SAME_FIELD(AlignConsecutiveTableGenCondOperatorColons.AlignCompound);
+  ASSIGN_SAME_FIELD(
+      AlignConsecutiveTableGenCondOperatorColons.AlignFunctionDeclarations);
+  ASSIGN_SAME_FIELD(
+      AlignConsecutiveTableGenCondOperatorColons.AlignFunctionPointers);
+  ASSIGN_SAME_FIELD(AlignConsecutiveTableGenCondOperatorColons.PadOperators);
+  ASSIGN_SAME_FIELD(AlignConsecutiveTableGenDefinitionColons.Enabled);
+  ASSIGN_SAME_FIELD(AlignConsecutiveTableGenDefinitionColons.AcrossEmptyLines);
+  ASSIGN_SAME_FIELD(AlignConsecutiveTableGenDefinitionColons.AcrossComments);
+  ASSIGN_SAME_FIELD(AlignConsecutiveTableGenDefinitionColons.AlignCompound);
+  ASSIGN_SAME_FIELD(
+      AlignConsecutiveTableGenDefinitionColons.AlignFunctionDeclarations);
+  ASSIGN_SAME_FIELD(
+      AlignConsecutiveTableGenDefinitionColons.AlignFunctionPointers);
+  ASSIGN_SAME_FIELD(AlignConsecutiveTableGenDefinitionColons.PadOperators);
+  ASSIGN_MAGIC_ENUM(AlignEscapedNewlines);
+  ASSIGN_MAGIC_ENUM(AlignOperands);
+  ASSIGN_MAGIC_ENUM(AlignTrailingComments.Kind);
+  ASSIGN_SAME_FIELD(AlignTrailingComments.OverEmptyLines);
+  NEW_FIELD(AlignTrailingComments.AlignPPAndNotPP);
+  ASSIGN_SAME_FIELD(AllowAllArgumentsOnNextLine);
+  ASSIGN_SAME_FIELD(AllowAllParametersOfDeclarationOnNextLine);
+  ASSIGN_MAGIC_ENUM(AllowBreakBeforeNoexceptSpecifier);
+  NEW_FIELD(AllowBreakBeforeQtProperty);
+  ASSIGN_MAGIC_ENUM(AllowShortBlocksOnASingleLine);
+  ASSIGN_SAME_FIELD(AllowShortCaseExpressionOnASingleLine);
+  ASSIGN_SAME_FIELD(AllowShortCaseLabelsOnASingleLine);
+  ASSIGN_SAME_FIELD(AllowShortCompoundRequirementOnASingleLine);
+  ASSIGN_SAME_FIELD(AllowShortEnumsOnASingleLine);
+  ASSIGN_MAGIC_ENUM(AllowShortFunctionsOnASingleLine);
+  ASSIGN_MAGIC_ENUM(AllowShortIfStatementsOnASingleLine);
+  ASSIGN_MAGIC_ENUM(AllowShortLambdasOnASingleLine);
+  ASSIGN_SAME_FIELD(AllowShortLoopsOnASingleLine);
+  ASSIGN_SAME_FIELD(AllowShortNamespacesOnASingleLine);
+  ASSIGN_MAGIC_ENUM(AlwaysBreakAfterDefinitionReturnType);
+  ASSIGN_SAME_FIELD(AlwaysBreakBeforeMultilineStrings);
+  ASSIGN_SAME_FIELD(AttributeMacros);
+  ASSIGN_SAME_FIELD(BinPackArguments);
+  ASSIGN_SAME_FIELD(BinPackLongBracedList);
+  ASSIGN_MAGIC_ENUM(BinPackParameters);
+  ASSIGN_MAGIC_ENUM(BitFieldColonSpacing);
+  ASSIGN_SAME_FIELD(BracedInitializerIndentWidth);
+  ASSIGN_SAME_FIELD(BraceWrapping.AfterCaseLabel);
+  ASSIGN_SAME_FIELD(BraceWrapping.AfterClass);
+  ASSIGN_MAGIC_ENUM(BraceWrapping.AfterControlStatement);
+  ASSIGN_SAME_FIELD(BraceWrapping.AfterEnum);
+  ASSIGN_SAME_FIELD(BraceWrapping.AfterFunction);
+  ASSIGN_SAME_FIELD(BraceWrapping.AfterNamespace);
+  ASSIGN_SAME_FIELD(BraceWrapping.AfterObjCDeclaration);
+  ASSIGN_SAME_FIELD(BraceWrapping.AfterStruct);
+  ASSIGN_SAME_FIELD(BraceWrapping.AfterUnion);
+  ASSIGN_SAME_FIELD(BraceWrapping.AfterExternBlock);
+  ASSIGN_SAME_FIELD(BraceWrapping.BeforeCatch);
+  ASSIGN_SAME_FIELD(BraceWrapping.BeforeElse);
+  ASSIGN_SAME_FIELD(BraceWrapping.BeforeLambdaBody);
+  ASSIGN_SAME_FIELD(BraceWrapping.BeforeWhile);
+  ASSIGN_SAME_FIELD(BraceWrapping.IndentBraces);
+  ASSIGN_SAME_FIELD(BraceWrapping.SplitEmptyFunction);
+  ASSIGN_SAME_FIELD(BraceWrapping.SplitEmptyRecord);
+  ASSIGN_SAME_FIELD(BraceWrapping.SplitEmptyNamespace);
+  ASSIGN_SAME_FIELD(BreakAdjacentStringLiterals);
+  ASSIGN_MAGIC_ENUM(BreakAfterAttributes);
+  NEW_FIELD(BreakAfterOpenBracketBracedList);
+  NEW_FIELD(BreakAfterOpenBracketFunction);
+  NEW_FIELD(BreakAfterOpenBracketIf);
+  NEW_FIELD(BreakAfterOpenBracketLoop);
+  NEW_FIELD(BreakAfterOpenBracketSwitch);
+  ASSIGN_MAGIC_ENUM(BreakAfterReturnType);
+  ASSIGN_SAME_FIELD(BreakArrays);
+  ASSIGN_MAGIC_ENUM(BreakBeforeBinaryOperators);
+  ASSIGN_MAGIC_ENUM(BreakBeforeBraces);
+  NEW_FIELD(BreakBeforeCloseBracketBracedList);
+  NEW_FIELD(BreakBeforeCloseBracketFunction);
+  NEW_FIELD(BreakBeforeCloseBracketIf);
+  NEW_FIELD(BreakBeforeCloseBracketLoop);
+  NEW_FIELD(BreakBeforeCloseBracketSwitch);
+  ASSIGN_MAGIC_ENUM(BreakBeforeConceptDeclarations);
+  ASSIGN_MAGIC_ENUM(BreakBeforeInlineASMColon);
+  ASSIGN_SAME_FIELD(BreakBeforeTemplateCloser);
+  ASSIGN_SAME_FIELD(BreakBeforeTernaryOperators);
+  ASSIGN_MAGIC_ENUM(BreakBinaryOperations);
+  ASSIGN_MAGIC_ENUM(BreakConstructorInitializers);
+  ASSIGN_SAME_FIELD(BreakFunctionDefinitionParameters);
+  ASSIGN_SAME_FIELD(BreakAfterJavaFieldAnnotations);
+  ASSIGN_SAME_FIELD(BreakStringLiterals);
+  ASSIGN_SAME_FIELD(ColumnLimit);
+  ASSIGN_SAME_FIELD(CommentPragmas);
+  ASSIGN_MAGIC_ENUM(BreakInheritanceList);
+  ASSIGN_MAGIC_ENUM(BreakTemplateDeclarations);
+  ASSIGN_SAME_FIELD(CompactNamespaces);
+  ASSIGN_SAME_FIELD(ConstructorInitializerIndentWidth);
+  ASSIGN_SAME_FIELD(ContinuationIndentWidth);
+  SWITCH_TO_ENUM(Cpp11BracedListStyle, braced_list_style);
+  ASSIGN_SAME_FIELD(DerivePointerAlignment);
+  ASSIGN_SAME_FIELD(DisableFormat);
+  ASSIGN_MAGIC_ENUM(EmptyLineAfterAccessModifier);
+  ASSIGN_MAGIC_ENUM(EmptyLineBeforeAccessModifier);
+  ASSIGN_MAGIC_ENUM(EnumTrailingComma);
+  ASSIGN_SAME_FIELD(ExperimentalAutoDetectBinPacking);
+  ASSIGN_SAME_FIELD(FixNamespaceComments);
+  ASSIGN_SAME_FIELD(ForEachMacros);
+  ASSIGN_MAGIC_ENUM(IncludeStyle.IncludeBlocks);
+  ASSIGN_INCLUDE_CATEGORY3(IncludeStyle.IncludeCategories);
+  ASSIGN_SAME_FIELD(IncludeStyle.IncludeIsMainRegex);
+  ASSIGN_SAME_FIELD(IncludeStyle.IncludeIsMainSourceRegex);
+  ASSIGN_MAGIC_ENUM(IncludeStyle.MainIncludeChar);
+  ASSIGN_SAME_FIELD(IfMacros);
+  ASSIGN_SAME_FIELD(IndentAccessModifiers);
+  ASSIGN_SAME_FIELD(IndentCaseBlocks);
+  ASSIGN_SAME_FIELD(IndentCaseLabels);
+  ASSIGN_SAME_FIELD(IndentExportBlock);
+  ASSIGN_MAGIC_ENUM(IndentExternBlock);
+  ASSIGN_SAME_FIELD(IndentGotoLabels);
+  ASSIGN_MAGIC_ENUM(IndentPPDirectives);
+  ASSIGN_SAME_FIELD(IndentRequiresClause);
+  ASSIGN_SAME_FIELD(IndentWidth);
+  ASSIGN_SAME_FIELD(IndentWrappedFunctionNames);
+  ASSIGN_SAME_FIELD(InsertBraces);
+  ASSIGN_SAME_FIELD(InsertNewlineAtEOF);
+  ASSIGN_MAGIC_ENUM(InsertTrailingCommas);
+  ASSIGN_SAME_FIELD(IntegerLiteralSeparator.Binary);
+  RENAME_FIELD(IntegerLiteralSeparator.BinaryMinDigits,
+               IntegerLiteralSeparator.BinaryMinDigitsInsert);
+  NEW_FIELD(IntegerLiteralSeparator.BinaryMaxDigitsRemove);
+  ASSIGN_SAME_FIELD(IntegerLiteralSeparator.Decimal);
+  RENAME_FIELD(IntegerLiteralSeparator.DecimalMinDigits,
+               IntegerLiteralSeparator.DecimalMinDigitsInsert);
+  NEW_FIELD(IntegerLiteralSeparator.DecimalMaxDigitsRemove);
+  ASSIGN_SAME_FIELD(IntegerLiteralSeparator.Hex);
+  RENAME_FIELD(IntegerLiteralSeparator.HexMinDigits,
+               IntegerLiteralSeparator.HexMinDigitsInsert);
+  NEW_FIELD(IntegerLiteralSeparator.HexMaxDigitsRemove);
+  ASSIGN_SAME_FIELD(JavaImportGroups);
+  ASSIGN_MAGIC_ENUM(JavaScriptQuotes);
+  ASSIGN_SAME_FIELD(JavaScriptWrapImports);
+  ASSIGN_SAME_FIELD(KeepEmptyLines.AtEndOfFile);
+  ASSIGN_SAME_FIELD(KeepEmptyLines.AtStartOfBlock);
+  ASSIGN_SAME_FIELD(KeepEmptyLines.AtStartOfFile);
+  ASSIGN_SAME_FIELD(KeepFormFeed);
+  ASSIGN_MAGIC_ENUM(LambdaBodyIndentation);
+  ASSIGN_MAGIC_ENUM(Language);
+  ASSIGN_MAGIC_ENUM(LineEnding);
+  ASSIGN_SAME_FIELD(MacroBlockBegin);
+  ASSIGN_SAME_FIELD(MacroBlockEnd);
+  ASSIGN_SAME_FIELD(Macros);
+  ASSIGN_SAME_FIELD(MacrosSkippedByRemoveParentheses);
+  ASSIGN_SAME_FIELD(MaxEmptyLinesToKeep);
+  ASSIGN_MAGIC_ENUM(NamespaceIndentation);
+  ASSIGN_SAME_FIELD(NamespaceMacros);
+  NEW_FIELD(NumericLiteralCase.ExponentLetter);
+  NEW_FIELD(NumericLiteralCase.HexDigit);
+  NEW_FIELD(NumericLiteralCase.Prefix);
+  NEW_FIELD(NumericLiteralCase.Suffix);
+  ASSIGN_MAGIC_ENUM(ObjCBinPackProtocolList);
+  ASSIGN_SAME_FIELD(ObjCBlockIndentWidth);
+  ASSIGN_SAME_FIELD(ObjCBreakBeforeNestedBlockParam);
+  ASSIGN_SAME_FIELD(ObjCPropertyAttributeOrder);
+  ASSIGN_SAME_FIELD(ObjCSpaceAfterProperty);
+  ASSIGN_SAME_FIELD(ObjCSpaceBeforeProtocolList);
+  ASSIGN_SAME_FIELD(OneLineFormatOffRegex);
+  ASSIGN_MAGIC_ENUM(PackConstructorInitializers);
+  ASSIGN_SAME_FIELD(PenaltyBreakAssignment);
+  ASSIGN_SAME_FIELD(PenaltyBreakBeforeFirstCallParameter);
+  ASSIGN_SAME_FIELD(PenaltyBreakBeforeMemberAccess);
+  ASSIGN_SAME_FIELD(PenaltyBreakComment);
+  ASSIGN_SAME_FIELD(PenaltyBreakFirstLessLess);
+  ASSIGN_SAME_FIELD(PenaltyBreakOpenParenthesis);
+  ASSIGN_SAME_FIELD(PenaltyBreakScopeResolution);
+  ASSIGN_SAME_FIELD(PenaltyBreakString);
+  ASSIGN_SAME_FIELD(PenaltyBreakTemplateDeclaration);
+  ASSIGN_SAME_FIELD(PenaltyExcessCharacter);
+  ASSIGN_SAME_FIELD(PenaltyIndentedWhitespace);
+  ASSIGN_SAME_FIELD(PenaltyReturnTypeOnItsOwnLine);
+  ASSIGN_MAGIC_ENUM(PointerAlignment);
+  ASSIGN_SAME_FIELD(PPIndentWidth);
+  ASSIGN_MAGIC_ENUM(QualifierAlignment);
+  ASSIGN_SAME_FIELD(QualifierOrder);
+  ASSIGN_RAW_STRING_FORMAT(RawStringFormats, 21, 22);
+  ASSIGN_MAGIC_ENUM(ReferenceAlignment);
+  ASSIGN_MAGIC_ENUM(ReflowComments);
+  ASSIGN_SAME_FIELD(RemoveBracesLLVM);
+  ASSIGN_SAME_FIELD(RemoveEmptyLinesInUnwrappedLines);
+  ASSIGN_MAGIC_ENUM(RemoveParentheses);
+  ASSIGN_SAME_FIELD(RemoveSemicolon);
+  ASSIGN_MAGIC_ENUM(RequiresClausePosition);
+  ASSIGN_MAGIC_ENUM(RequiresExpressionIndentation);
+  ASSIGN_MAGIC_ENUM(SeparateDefinitionBlocks);
+  ASSIGN_SAME_FIELD(ShortNamespaceLines);
+  ASSIGN_SAME_FIELD(SkipMacroDefinitionBody);
+  ASSIGN_SAME_FIELD(SortIncludes.Enabled);
+  ASSIGN_SAME_FIELD(SortIncludes.IgnoreCase);
+  NEW_FIELD(SortIncludes.IgnoreExtension);
+  ASSIGN_MAGIC_ENUM(SortJavaStaticImport);
+  ASSIGN_MAGIC_ENUM(SortUsingDeclarations);
+  ASSIGN_SAME_FIELD(SpaceAfterCStyleCast);
+  ASSIGN_SAME_FIELD(SpaceAfterLogicalNot);
+  ASSIGN_SAME_FIELD(SpaceAfterOperatorKeyword);
+  ASSIGN_SAME_FIELD(SpaceAfterTemplateKeyword);
+  ASSIGN_MAGIC_ENUM(SpaceAroundPointerQualifiers);
+  ASSIGN_SAME_FIELD(SpaceBeforeAssignmentOperators);
+  ASSIGN_SAME_FIELD(SpaceBeforeCaseColon);
+  ASSIGN_SAME_FIELD(SpaceBeforeCpp11BracedList);
+  ASSIGN_SAME_FIELD(SpaceBeforeCtorInitializerColon);
+  ASSIGN_SAME_FIELD(SpaceBeforeInheritanceColon);
+  ASSIGN_SAME_FIELD(SpaceBeforeJsonColon);
+  ASSIGN_MAGIC_ENUM(SpaceBeforeParens);
+  ASSIGN_SAME_FIELD(SpaceBeforeParensOptions.AfterControlStatements);
+  ASSIGN_SAME_FIELD(SpaceBeforeParensOptions.AfterForeachMacros);
+  ASSIGN_SAME_FIELD(SpaceBeforeParensOptions.AfterFunctionDeclarationName);
+  ASSIGN_SAME_FIELD(SpaceBeforeParensOptions.AfterFunctionDefinitionName);
+  ASSIGN_SAME_FIELD(SpaceBeforeParensOptions.AfterIfMacros);
+  ASSIGN_SAME_FIELD(SpaceBeforeParensOptions.AfterNot);
+  ASSIGN_SAME_FIELD(SpaceBeforeParensOptions.AfterOverloadedOperator);
+  ASSIGN_SAME_FIELD(SpaceBeforeParensOptions.AfterPlacementOperator);
+  ASSIGN_SAME_FIELD(SpaceBeforeParensOptions.AfterRequiresInClause);
+  ASSIGN_SAME_FIELD(SpaceBeforeParensOptions.AfterRequiresInExpression);
+  ASSIGN_SAME_FIELD(SpaceBeforeParensOptions.BeforeNonEmptyParentheses);
+  ASSIGN_SAME_FIELD(SpaceBeforeSquareBrackets);
+  ASSIGN_SAME_FIELD(SpaceBeforeRangeBasedForLoopColon);
+  RENAME_AND_SWITCH_TO_ENUM(SpaceInEmptyBlock, SpaceInEmptyBraces,
+                            space_in_empty_braces_style);
+  ASSIGN_SAME_FIELD(SpacesBeforeTrailingComments);
+  ASSIGN_MAGIC_ENUM(SpacesInAngles);
+  ASSIGN_SAME_FIELD(SpacesInContainerLiterals);
+  ASSIGN_SAME_FIELD(SpacesInLineCommentPrefix.Minimum);
+  ASSIGN_SAME_FIELD(SpacesInLineCommentPrefix.Maximum);
+  ASSIGN_MAGIC_ENUM(SpacesInParens);
+  ASSIGN_SAME_FIELD(SpacesInParensOptions.ExceptDoubleParentheses);
+  ASSIGN_SAME_FIELD(SpacesInParensOptions.InConditionalStatements);
+  ASSIGN_SAME_FIELD(SpacesInParensOptions.InCStyleCasts);
+  ASSIGN_SAME_FIELD(SpacesInParensOptions.InEmptyParentheses);
+  ASSIGN_SAME_FIELD(SpacesInParensOptions.Other);
+  ASSIGN_SAME_FIELD(SpacesInSquareBrackets);
+  ASSIGN_MAGIC_ENUM(Standard);
+  ASSIGN_SAME_FIELD(StatementAttributeLikeMacros);
+  ASSIGN_SAME_FIELD(StatementMacros);
+  ASSIGN_SAME_FIELD(TableGenBreakingDAGArgOperators);
+  ASSIGN_MAGIC_ENUM(TableGenBreakInsideDAGArg);
+  ASSIGN_SAME_FIELD(TabWidth);
+  ASSIGN_SAME_FIELD(TemplateNames);
+  ASSIGN_SAME_FIELD(TypeNames);
+  ASSIGN_SAME_FIELD(TypenameMacros);
+  ASSIGN_MAGIC_ENUM(UseTab);
+  ASSIGN_SAME_FIELD(VariableTemplates);
+  ASSIGN_SAME_FIELD(VerilogBreakBetweenInstancePorts);
+  ASSIGN_SAME_FIELD(WhitespaceSensitiveMacros);
+  ASSIGN_MAGIC_ENUM(WrapNamespaceBodyWithEmptyLines);
+}
+
+template void update<clang_vx::Update::UPGRADE>(clang_v21::FormatStyle &prev,
+                                                clang_v22::FormatStyle &next,
+                                                const std::string &style);
+template void update<clang_vx::Update::DOWNGRADE>(clang_v21::FormatStyle &prev,
+                                                  clang_v22::FormatStyle &next,
+                                                  const std::string &style);
+
+} // namespace clang_update_v22
+
 namespace {
 
 AllFormatStyle versionToFormatStyle(clang_vx::Version version,
@@ -5210,6 +5598,21 @@ AllFormatStyle versionToFormatStyle(clang_vx::Version version,
     }
     return fs21;
   }
+  case clang_vx::Version::V22: {
+    clang_v22::FormatStyle fs22;
+    fs22.Language = clang_v22::FormatStyle::LanguageKind::LK_Cpp;
+    if (!clang_v22::getPredefinedStyle(
+            default_style, clang_v22::FormatStyle::LanguageKind::LK_Cpp,
+            &fs22)) {
+      throw std::runtime_error("Unknown style " + default_style + ";");
+    }
+    std::error_code ec = clang_v22::parseConfiguration(data, &fs22);
+    if (ec) {
+      throw std::runtime_error("Failed to parse yaml config file v22.\n" +
+                               ec.message());
+    }
+    return fs22;
+  }
   default: {
     throw std::runtime_error("Unknown version.");
   }
@@ -5319,6 +5722,10 @@ std::string formatStyleToVersion(const AllFormatStyle &data,
           },
           [&default_style, skip_same_value](const clang_v21::FormatStyle &fs) {
             return clang_v21::configurationAsText(fs, default_style,
+                                                  skip_same_value);
+          },
+          [&default_style, skip_same_value](const clang_v22::FormatStyle &fs) {
+            return clang_v22::configurationAsText(fs, default_style,
                                                   skip_same_value);
           }},
       data);
@@ -5558,6 +5965,13 @@ std::string updateTo(Version vstart, Version vend, const std::string &data,
           std::get<clang_v21::FormatStyle>(after), style_i);
       break;
     }
+    case Version::V21: {
+      after = clang_v22::FormatStyle{};
+      clang_update_v22::update<Update::UPGRADE>(
+          std::get<clang_v21::FormatStyle>(before),
+          std::get<clang_v22::FormatStyle>(after), style_i);
+      break;
+    }
     default: {
       throw std::runtime_error("Unsupported version while upgrading.");
       break;
@@ -5768,6 +6182,13 @@ std::string downgradeTo(Version vstart, Version vend, const std::string &data,
       clang_update_v21::update<Update::DOWNGRADE>(
           std::get<clang_v20::FormatStyle>(after),
           std::get<clang_v21::FormatStyle>(before), style_i);
+      break;
+    }
+    case Version::V22: {
+      after = clang_v21::FormatStyle{};
+      clang_update_v22::update<Update::DOWNGRADE>(
+          std::get<clang_v21::FormatStyle>(after),
+          std::get<clang_v22::FormatStyle>(before), style_i);
       break;
     }
     default: {
