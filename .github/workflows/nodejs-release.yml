@@ -46,8 +46,8 @@ jobs:
           cd ../../..
           emcmake cmake -S cpp/webassembly -B build -G "Ninja" -DCMAKE_BUILD_TYPE="Release" -DWITH_SANITIZE_ADDRESS=OFF -DWITH_SANITIZE_UNDEFINED=OFF -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
           cd build
-          pnpm install typescript
-          export PATH=$PATH:$(pwd)/node_modules/.bin
+          pnpm install typescript@^5
+          export PATH=$(pwd)/node_modules/.bin:$PATH
           cmake --build . --parallel $(nproc --all)
           cd ..
       - name: Angular

@@ -10,8 +10,8 @@ git submodule update --init --recursive --depth=1
 if [ "$enabled_release" == "true" ]; then
     cmake -S cpp/native -B build_native_release -G Ninja -DCMAKE_BUILD_TYPE=Release || exit 1
     cd build_native_release || exit 1
-    pnpm install typescript || exit 1
-    export PATH=$PATH:$(pwd)/node_modules/.bin
+    pnpm install typescript@^5 || exit 1
+    export PATH=$(pwd)/node_modules/.bin:$PATH
     cmake --build . --parallel $(nproc --all) || exit 1
     cd .. || exit 1
 fi
@@ -19,8 +19,8 @@ fi
 if [ "$enabled_debug" == "true" ]; then
     cmake -S cpp/native -B build_native_debug -G Ninja -DCMAKE_BUILD_TYPE=Debug || exit 1
     cd build_native_debug || exit 1
-    pnpm install typescript || exit 1
-    export PATH=$PATH:$(pwd)/node_modules/.bin
+    pnpm install typescript@^5 || exit 1
+    export PATH=$(pwd)/node_modules/.bin:$PATH
     cmake --build . --parallel $(nproc --all) || exit 1
     cd .. || exit 1
 fi
