@@ -13,7 +13,7 @@ jobs:
         with:
           submodules: "true"
       - name: install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v5
         with:
           package_json_file: "angular/package.json"
       - name: Use Node.js ${{ matrix.node-version }}
@@ -23,7 +23,7 @@ jobs:
           cache: "pnpm"
           cache-dependency-path: angular/pnpm-lock.yaml
       - name: ccache
-        uses: hendrikmuhs/ccache-action@v1.2
+        uses: hendrikmuhs/ccache-action@v1.2.22
         with:
           max-size: "1000M"
           key: ${{ github.job }}-Release
